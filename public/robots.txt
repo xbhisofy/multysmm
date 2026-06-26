@@ -1,6 +1,6 @@
 # MultySMM — robots.txt
 # Site:    https://multysmm.site
-# Updated: 2026-05-05
+# Updated: 2026-06-26
 
 # ───────────────────────────── Default rule ─────────────────────────────
 User-agent: *
