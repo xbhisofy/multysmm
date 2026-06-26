@@ -1116,6 +1116,43 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
               .eq('id', item.id)
           }
         }
+
+        // Extra self-heal: if a previous order item was created before the bundle
+        // mapping was fixed, use the cheapest active service matching platform+type.
+        if (!item.service) {
+          const orderLinkForFallback = (item.engagement_order?.link || '').toLowerCase()
+          const platformForFallback = orderLinkForFallback.includes('instagram.com') ? 'instagram'
+            : orderLinkForFallback.includes('tiktok.com') ? 'tiktok'
+            : orderLinkForFallback.includes('youtube.com') ? 'youtube'
+            : orderLinkForFallback.includes('twitter.com') || orderLinkForFallback.includes('x.com') ? 'twitter'
+            : ''
+          const typeKeywords: Record<string, string[]> = {
+            views: ['view'], likes: ['like'], comments: ['comment'], saves: ['save'], shares: ['share'],
+            reposts: ['repost'], followers: ['follow'], subscribers: ['subscrib'], watch_hours: ['watch'],
+          }
+          const keywords = typeKeywords[String(item.engagement_type || '').toLowerCase()] || [String(item.engagement_type || '').toLowerCase()]
+          if (platformForFallback && keywords.length > 0) {
+            const { data: fallbackServices } = await supabase
+              .from('services')
+              .select('*')
+              .eq('is_active', true)
+              .or(`name.ilike.%${platformForFallback}%,category.ilike.%${platformForFallback}%`)
+              .order('price', { ascending: true })
+              .limit(50)
+
+            const fallbackService = (fallbackServices || []).find((svc: any) => {
+              const haystack = `${svc.name || ''} ${svc.category || ''}`.toLowerCase()
+              return keywords.some((kw) => haystack.includes(kw))
+            })
+
+            if (fallbackService) {
+              item.service = fallbackService
+              await supabase.from('engagement_order_items')
+                .update({ service_id: fallbackService.id })
+                .eq('id', item.id)
+            }
+          }
+        }
         
         if (!item.service) {
           const retryCount = (run.retry_count || 0) + 1

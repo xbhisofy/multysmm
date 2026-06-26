@@ -282,6 +282,44 @@ serve(async (req) => {
     if (!Array.isArray(engagements) || engagements.length === 0) {
       return new Response(JSON.stringify({ error: 'No engagements provided' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
+
+    // If the browser has stale bundle data and sends service_id=null, resolve it
+    // server-side from the selected bundle so valid orders are not rejected/stuck.
+    if (bundle_id) {
+      const missingServiceTypes = engagements
+        .filter((e: any) => !e.service_id && e.type)
+        .map((e: any) => String(e.type).toLowerCase().trim())
+
+      if (missingServiceTypes.length > 0) {
+        const { data: linkedBundleItems } = await supabase
+          .from('bundle_items')
+          .select('engagement_type, service_id')
+          .eq('bundle_id', bundle_id)
+          .not('service_id', 'is', null)
+
+        const serviceByType = new Map<string, string>()
+        for (const bi of linkedBundleItems || []) {
+          if (bi.engagement_type && bi.service_id) {
+            serviceByType.set(String(bi.engagement_type).toLowerCase().trim(), bi.service_id as string)
+          }
+        }
+
+        for (const eng of engagements) {
+          if (!eng.service_id && eng.type) {
+            const resolvedServiceId = serviceByType.get(String(eng.type).toLowerCase().trim())
+            if (resolvedServiceId) eng.service_id = resolvedServiceId
+          }
+        }
+      }
+    }
+
+    const unresolvedTypes = engagements
+      .filter((e: any) => !e.service_id)
+      .map((e: any) => e.type || 'unknown')
+    if (unresolvedTypes.length > 0) {
+      return new Response(JSON.stringify({ error: `${unresolvedTypes.join(', ')} service is not configured yet` }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
     const serviceIds = [...new Set(engagements.map((e: any) => e.service_id).filter(Boolean))]
     const { data: svcRows, error: svcErr } = await supabase
       .from('services')

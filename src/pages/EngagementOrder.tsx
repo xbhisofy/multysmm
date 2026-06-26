@@ -148,7 +148,7 @@ export default function EngagementOrder() {
     if (!allBundles) return [];
     // Show platforms that have at least one bundle with items configured
     const platforms = allBundles
-      .filter(b => b.items && b.items.length > 0)
+      .filter(b => b.items?.some((item) => item.service_id))
       .map(b => b.platform);
     const result = [...new Set(platforms)];
     console.log('[EngagementOrder] availablePlatforms:', result);
@@ -195,6 +195,7 @@ export default function EngagementOrder() {
     if (!bundle?.items) return [];
     // Return unique engagement types sorted by preferred order
     const types = bundle.items
+      .filter(item => item.service_id || item.service)
       .map(item => item.engagement_type as EngagementType);
     const uniqueTypes = [...new Set(types)];
 
@@ -363,6 +364,9 @@ export default function EngagementOrder() {
         const ratioQuantity = Math.round(debouncedBaseQuantity * (ratioPercent / 100));
 
         const serviceData = servicePrices[type];
+        const resolvedServiceId = serviceData?.serviceId ?? prev[type]?.serviceId ?? null;
+        const hasProviderService = Boolean(resolvedServiceId);
+        const serviceJustResolved = Boolean(prev[type] && !prev[type].serviceId && serviceData?.serviceId);
 
         // Respect user's base quantity exactly — no auto bump to provider minimum.
         // If it's below provider min, the per-card warning will appear.
@@ -378,10 +382,12 @@ export default function EngagementOrder() {
 
         updated[type] = {
           type,
-          enabled: prev[type] ? prev[type].enabled : isEnabledByDefault,
+          enabled: hasProviderService
+            ? (serviceJustResolved ? isEnabledByDefault : (prev[type] ? prev[type].enabled : isEnabledByDefault))
+            : false,
           quantity: finalQuantity,
           price: finalPrice,
-          serviceId: serviceData?.serviceId ?? prev[type]?.serviceId ?? null,
+          serviceId: resolvedServiceId,
           minQuantity: serviceData?.minQuantity ?? prev[type]?.minQuantity,
           // Per-type organic settings
           timeLimitHours: prev[type]?.timeLimitHours ?? DEFAULT_ORGANIC_SETTINGS.timeLimitHours,
