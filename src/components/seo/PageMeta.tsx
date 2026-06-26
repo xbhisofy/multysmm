@@ -19,9 +19,9 @@ interface PageMetaProps {
   faqItems?: FaqItem[];
 }
 
-const DEFAULT_DESCRIPTION = "OrganicSMM — World's first AI-organic SMM panel. Real Instagram, YouTube & TikTok engagement with natural delivery. 50,000+ orders, zero bans, 100% safe.";
-const SITE_NAME = 'OrganicSMM';
-const BASE_URL = 'https://organicsmm.online';
+const DEFAULT_DESCRIPTION = "MultySMM — World's first AI-organic SMM panel. Real Instagram, YouTube & TikTok engagement with natural delivery. 50,000+ orders, zero bans, 100% safe.";
+const SITE_NAME = 'MultySMM';
+const BASE_URL = 'https://multysmm.site';
 const BREADCRUMB_SCRIPT_ID = 'breadcrumb-jsonld';
 const FAQ_SCRIPT_ID = 'faq-page-jsonld';
 

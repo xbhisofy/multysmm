@@ -5,12 +5,12 @@ const WHATSAPP_NUMBER = '255637520201'; // +255 637 520 201
 
 function buildMessage(email?: string, name?: string | null) {
   return (
-    `Hello OrganicSMM Support Team! 👋\n\n` +
+    `Hello MultySMM Support Team! 👋\n\n` +
     `I need help regarding my account. Here are my details:\n\n` +
     `━━━━━━━━━━━━━━━━━━\n` +
     (name ? `👤 Name: ${name}\n` : '') +
     (email ? `📧 Email: ${email}\n` : '') +
-    `🌐 Website: organicsmm.online\n` +
+    `🌐 Website: multysmm.site\n` +
     `━━━━━━━━━━━━━━━━━━\n\n` +
     `📝 My issue / question:\n` +
     `(Please describe your problem here — order ID, payment, services, etc.)\n\n` +
