@@ -185,10 +185,10 @@ export default function ZapUpiDepositCard() {
               onClick={() => setAmount(String(v))}
               className="py-2.5 rounded-xl text-[12px] font-bold transition-all active:scale-95"
               style={{
-                background: active ? 'linear-gradient(135deg, #ff8a3d, #ea580c)' : 'white',
-                color: active ? 'white' : '#475569',
-                border: active ? '1px solid transparent' : '1.5px solid #e2e8f0',
-                boxShadow: active ? '0 4px 12px -4px rgba(234,88,12,.45)' : 'none',
+                background: active ? 'linear-gradient(135deg, #7C3AED, #EC4899)' : 'white',
+                color: active ? 'white' : '#4A4A5E',
+                border: active ? '1px solid transparent' : '1.5px solid #EDE4FE',
+                boxShadow: active ? '0 4px 12px -4px rgba(124,58,237,.45)' : 'none',
               }}
             >
               ₹{v >= 1000 ? `${v / 1000}k` : v}
@@ -202,10 +202,9 @@ export default function ZapUpiDepositCard() {
         disabled={loading || !amount}
         className="w-full mt-6 h-14 rounded-2xl font-bold text-[15px] flex items-center justify-center gap-2 transition-all active:scale-[.98] disabled:opacity-60 disabled:cursor-not-allowed"
         style={{
-          background: 'linear-gradient(135deg, #ff8a3d 0%, #ea580c 50%, #c2410c 100%)',
+          background: 'linear-gradient(135deg, #7C3AED 0%, #A855F7 45%, #EC4899 100%)',
           color: 'white',
-          boxShadow: '0 10px 24px -8px rgba(234,88,12,.55), inset 0 1px 0 rgba(255,255,255,.25)',
-          fontFamily: 'Sora, system-ui, sans-serif',
+          boxShadow: '0 14px 30px -10px rgba(124,58,237,.6), inset 0 1px 0 rgba(255,255,255,.25)',
           letterSpacing: '-0.01em',
         }}
       >
@@ -221,6 +220,7 @@ export default function ZapUpiDepositCard() {
           </>
         )}
       </button>
+
 
       <div className="flex items-center justify-center gap-1.5 mt-4">
         <ShieldCheck className="h-3 w-3" style={{ color: '#94a3b8' }} />
