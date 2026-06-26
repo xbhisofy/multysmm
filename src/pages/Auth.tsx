@@ -4,11 +4,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Mail, Lock, User, Loader2, ArrowLeft, Shield, Zap, Eye, EyeOff, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, User, Loader2, ArrowLeft, Shield, Zap, Eye, EyeOff, ArrowRight, CheckCircle2, Send } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { z } from 'zod';
-import logo from '@/assets/logo.jpg';
 import { PageMeta } from '@/components/seo/PageMeta';
+
+const GRADIENT = 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)';
+
 
 
 const loginSchema = z.object({
@@ -91,45 +93,57 @@ export default function Auth() {
     } finally { setIsSubmitting(false); }
   };
 
-  const inputClass = "h-12 rounded-xl border-[#e5e5e5] bg-white focus:border-[#1a1a2e] focus:ring-1 focus:ring-[#1a1a2e] text-[#1a1a2e] font-medium px-4 placeholder:text-[#bbb] transition-all";
+  const inputClass = "h-12 rounded-xl border-[#EDE4FE] bg-white focus:border-[#7C3AED] focus:ring-2 focus:ring-[#7C3AED]/15 text-[#0B0B16] font-medium px-4 placeholder:text-[#bbb] transition-all";
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-12" style={{ background: 'linear-gradient(180deg, #fff 0%, #f0fdf4 50%, #dcfce7 100%)' }}>
+    <div className="min-h-screen flex items-center justify-center px-6 py-12 relative overflow-hidden"
+      style={{ background: 'linear-gradient(180deg, #ffffff 0%, #FAF5FF 50%, #FDF2F8 100%)' }}>
+      {/* glow */}
+      <div aria-hidden className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.18), transparent 70%)', filter: 'blur(40px)' }} />
+      <div aria-hidden className="absolute bottom-[-200px] right-[-100px] w-[500px] h-[500px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.18), transparent 70%)', filter: 'blur(40px)' }} />
+
       <PageMeta
-        title={isLogin ? 'Sign in — OrganicSMM' : 'Create your account — OrganicSMM'}
-        description="Sign in or create your free OrganicSMM account to launch organic Instagram, YouTube and TikTok growth campaigns. No credit card required."
+        title={isLogin ? 'Sign in — MultySMM' : 'Create your account — MultySMM'}
+        description="Sign in or create your free MultySMM account to launch AI-powered Instagram, YouTube and TikTok growth campaigns. No credit card required."
         canonicalPath="/auth"
       />
-      <div className="w-full max-w-[400px]">
+      <div className="w-full max-w-[400px] relative">
           {/* Logo */}
           <div className="flex items-center justify-center gap-2.5 mb-10">
-            <img src={logo} alt="OrganicSMM" className="w-10 h-10 rounded-xl object-cover shadow-sm" />
-            <div className="flex flex-col">
-              <span className="text-[16px] font-bold tracking-tight" style={{ color: '#1a1a2e' }}>OrganicSMM</span>
-              <span className="text-[9px] font-semibold uppercase tracking-[0.15em]" style={{ background: 'linear-gradient(90deg, #16a34a, #f97316)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>✦ Updated Version</span>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-[17px]"
+              style={{ background: GRADIENT, boxShadow: '0 10px 24px rgba(124,58,237,.35)' }}>M</div>
+            <div className="flex flex-col leading-tight">
+              <span className="text-[16px] font-extrabold tracking-tight" style={{ color: '#0B0B16' }}>MultySMM</span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.18em]"
+                style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                ✦ AI-Powered Panel
+              </span>
             </div>
           </div>
 
-          <Link to="/" className="inline-flex items-center gap-1.5 text-[12px] font-medium mb-8" style={{ color: '#999' }}>
+          <Link to="/" className="inline-flex items-center gap-1.5 text-[12px] font-medium mb-8" style={{ color: '#9b8fb8' }}>
             <ArrowLeft className="w-3.5 h-3.5" /> Back to home
           </Link>
 
-          <h1 className="text-2xl font-extrabold tracking-tight mb-1" style={{ color: '#1a1a2e', fontFamily: "'Outfit', system-ui, sans-serif" }}>
+          <h1 className="text-3xl font-black tracking-[-0.02em] mb-1" style={{ color: '#0B0B16' }}>
             {isForgotPassword ? 'Reset password' : isLogin ? 'Welcome back' : 'Create account'}
           </h1>
-          <p className="text-[14px] mb-8" style={{ color: '#999' }}>
-            {isForgotPassword ? 'Enter your email to receive a reset link.' : isLogin ? 'Sign in to your account.' : 'Get started for free.'}
+          <p className="text-[14px] mb-8" style={{ color: '#7d6f97' }}>
+            {isForgotPassword ? 'Enter your email to receive a reset link.' : isLogin ? 'Sign in to your MultySMM account.' : 'Get started for free — no credit card.'}
           </p>
+
 
           {showVerifyEmail ? (
             <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: '#f0fdf4' }}>
-                <Mail className="w-7 h-7" style={{ color: '#22c55e' }} />
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: '#FAF5FF' }}>
+                <Mail className="w-7 h-7" style={{ color: '#7C3AED' }} />
               </div>
-              <h3 className="text-xl font-bold mb-2" style={{ color: '#1a1a2e' }}>Check your inbox</h3>
-              <p className="text-[13px] mb-2" style={{ color: '#888' }}>Verification link sent to:</p>
-              <p className="text-[13px] font-semibold mb-6" style={{ color: '#1a1a2e' }}>{email}</p>
-              <button onClick={() => { setShowVerifyEmail(false); setIsLogin(true); }} className="text-[13px] font-semibold" style={{ color: '#9333ea' }}>
+              <h3 className="text-xl font-bold mb-2" style={{ color: '#0B0B16' }}>Check your inbox</h3>
+              <p className="text-[13px] mb-2" style={{ color: '#7d6f97' }}>Verification link sent to:</p>
+              <p className="text-[13px] font-semibold mb-6" style={{ color: '#0B0B16' }}>{email}</p>
+              <button onClick={() => { setShowVerifyEmail(false); setIsLogin(true); }} className="text-[13px] font-bold" style={{ color: '#7C3AED' }}>
                 ← Back to login
               </button>
             </div>
@@ -138,15 +152,17 @@ export default function Auth() {
               {isForgotPassword ? (
                 <div className="space-y-4">
                   <div>
-                    <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: '#555', textTransform: 'none', letterSpacing: 'normal' }}>Email</Label>
+                    <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: '#4A4A5E', textTransform: 'none', letterSpacing: 'normal' }}>Email</Label>
                     <Input type="email" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
                   </div>
                   {error && <p className="text-[13px] font-medium" style={{ color: '#ef4444' }}>{error}</p>}
-                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#22c55e' }}>{successMessage}</p>}
-                  <button type="submit" disabled={isSubmitting} className="w-full h-11 rounded-xl text-[13px] font-semibold text-white flex items-center justify-center gap-2" style={{ background: '#1a1a2e' }}>
+                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#7C3AED' }}>{successMessage}</p>}
+                  <button type="submit" disabled={isSubmitting}
+                    className="w-full h-12 rounded-xl text-[13.5px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-70"
+                    style={{ background: GRADIENT, boxShadow: '0 12px 28px -8px rgba(124,58,237,.45)' }}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Send reset link <ArrowRight className="w-3.5 h-3.5" /></>}
                   </button>
-                  <button type="button" onClick={() => setIsForgotPassword(false)} className="w-full text-center text-[13px] font-medium" style={{ color: '#999' }}>
+                  <button type="button" onClick={() => setIsForgotPassword(false)} className="w-full text-center text-[13px] font-medium" style={{ color: '#7d6f97' }}>
                     Back to login
                   </button>
                 </div>
@@ -154,41 +170,43 @@ export default function Auth() {
                 <div className="space-y-4">
                   {!isLogin && (
                     <div>
-                      <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: '#555', textTransform: 'none', letterSpacing: 'normal' }}>Full name</Label>
+                      <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: '#4A4A5E', textTransform: 'none', letterSpacing: 'normal' }}>Full name</Label>
                       <Input placeholder="John Doe" value={fullName} onChange={e => setFullName(e.target.value)} className={inputClass} />
                     </div>
                   )}
                   <div>
-                    <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: '#555', textTransform: 'none', letterSpacing: 'normal' }}>Email</Label>
+                    <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: '#4A4A5E', textTransform: 'none', letterSpacing: 'normal' }}>Email</Label>
                     <Input type="email" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <Label className="text-[12px] font-semibold" style={{ color: '#555', textTransform: 'none', letterSpacing: 'normal' }}>Password</Label>
+                      <Label className="text-[12px] font-semibold" style={{ color: '#4A4A5E', textTransform: 'none', letterSpacing: 'normal' }}>Password</Label>
                       {isLogin && (
-                        <button type="button" onClick={() => setIsForgotPassword(true)} className="text-[11px] font-medium" style={{ color: '#9333ea' }}>
+                        <button type="button" onClick={() => setIsForgotPassword(true)} className="text-[11px] font-semibold" style={{ color: '#7C3AED' }}>
                           Forgot password?
                         </button>
                       )}
                     </div>
                     <div className="relative">
                       <Input type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} className={`${inputClass} pr-11`} />
-                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: '#bbb' }}>
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: '#a99dc1' }}>
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
                   </div>
 
                   {error && <p className="text-[13px] font-medium" style={{ color: '#ef4444' }}>{error}</p>}
-                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#22c55e' }}>{successMessage}</p>}
+                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#7C3AED' }}>{successMessage}</p>}
 
-                  <button type="submit" disabled={isSubmitting} className="w-full h-11 rounded-xl text-[13px] font-semibold text-white flex items-center justify-center gap-2 disabled:opacity-70" style={{ background: '#1a1a2e' }}>
+                  <button type="submit" disabled={isSubmitting}
+                    className="w-full h-12 rounded-xl text-[13.5px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-70 transition-transform hover:-translate-y-0.5"
+                    style={{ background: GRADIENT, boxShadow: '0 12px 28px -8px rgba(124,58,237,.45)' }}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{isLogin ? 'Sign in' : 'Create account'} <ArrowRight className="w-3.5 h-3.5" /></>}
                   </button>
 
-                  <p className="text-center text-[13px]" style={{ color: '#999' }}>
+                  <p className="text-center text-[13px]" style={{ color: '#7d6f97' }}>
                     {isLogin ? "Don't have an account? " : 'Already have an account? '}
-                    <button type="button" onClick={() => { setIsLogin(!isLogin); setError(''); setSuccessMessage(''); }} className="font-semibold" style={{ color: '#9333ea' }}>
+                    <button type="button" onClick={() => { setIsLogin(!isLogin); setError(''); setSuccessMessage(''); }} className="font-bold" style={{ color: '#7C3AED' }}>
                       {isLogin ? 'Sign up' : 'Sign in'}
                     </button>
                   </p>
@@ -198,15 +216,18 @@ export default function Auth() {
           )}
 
           {/* Telegram */}
-          <a href="https://t.me/organicsmm" target="_blank" rel="noopener noreferrer" className="mt-8 flex items-center gap-3 p-3.5 rounded-xl transition-colors" style={{ border: '1px solid rgba(0,0,0,.06)', background: 'white' }}>
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: '#0088cc15' }}>
-              <svg className="w-4 h-4 fill-[#0088cc]" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.11.02-1.93 1.23-5.46 3.62-.51.35-.98.53-1.39.52-.46-.01-1.33-.26-1.98-.48-.8-.27-1.43-.42-1.37-.89.03-.25.38-.51 1.03-.78 4.04-1.76 6.74-2.92 8.09-3.48 3.85-1.61.8-1.88 1.77-1.88.21 0 .69.05.99.23.32.19.43.46.46.72.02.16.01.32-.01.48z" /></svg>
+          <a href="https://t.me/HenryMiller08" target="_blank" rel="noopener noreferrer"
+            className="mt-8 flex items-center gap-3 p-3.5 rounded-xl transition-colors hover:bg-purple-50"
+            style={{ border: '1px solid #EDE4FE', background: 'white' }}>
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: '#F5EEFF' }}>
+              <Send className="w-4 h-4" style={{ color: '#7C3AED' }} />
             </div>
             <div>
-              <p className="text-[12px] font-semibold" style={{ color: '#1a1a2e' }}>Join our Telegram</p>
-              <p className="text-[11px]" style={{ color: '#999' }}>Updates & support</p>
+              <p className="text-[12px] font-bold" style={{ color: '#0B0B16' }}>Join our Telegram</p>
+              <p className="text-[11px]" style={{ color: '#7d6f97' }}>Updates & support</p>
             </div>
           </a>
+
       </div>
     </div>
   );
