@@ -102,57 +102,59 @@ export default function ZapUpiDepositCard() {
       className="relative overflow-hidden rounded-3xl p-7"
       style={{
         background: 'white',
-        border: '1px solid #eef1f6',
-        boxShadow: '0 4px 24px -8px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.04)',
-        fontFamily: 'Manrope, system-ui, sans-serif',
+        border: '1px solid #EDE4FE',
+        boxShadow: '0 4px 24px -8px rgba(124,58,237,.12), 0 1px 2px rgba(15,23,42,.04)',
       }}
     >
       {/* accent orb */}
       <div
         className="absolute -top-16 -right-16 w-56 h-56 rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(closest-side, rgba(234,88,12,.10), transparent 70%)' }}
+        style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.16), transparent 70%)' }}
       />
-
-      {/* Maintenance overlay removed — ZapUPI is live again */}
+      <div
+        className="absolute -bottom-20 -left-16 w-48 h-48 rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.14), transparent 70%)' }}
+      />
 
       <div className="relative flex items-start justify-between mb-5">
         <div className="flex items-center gap-3">
           <div
-            className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm"
-            style={{ background: 'linear-gradient(135deg, #ff8a3d, #ea580c)', boxShadow: '0 6px 16px -6px rgba(234,88,12,.5)' }}
+            className="w-11 h-11 rounded-2xl flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, #7C3AED, #EC4899)', boxShadow: '0 10px 22px -6px rgba(124,58,237,.5)' }}
           >
             <Zap className="h-5 w-5 text-white" strokeWidth={2.5} />
           </div>
           <div>
-            <h2 className="text-[17px] font-bold tracking-tight" style={{ color: '#0f172a', fontFamily: 'Sora, system-ui, sans-serif' }}>
+            <h2 className="text-[17px] font-extrabold tracking-tight" style={{ color: '#0B0B16' }}>
               Add Funds
             </h2>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] mt-0.5" style={{ color: '#ea580c' }}>
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] mt-0.5"
+              style={{ background: 'linear-gradient(135deg, #7C3AED, #EC4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               Instant UPI · Auto-credit
             </p>
           </div>
         </div>
         <div
-          className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold"
-          style={{ background: 'rgba(16,185,129,.08)', color: '#059669', border: '1px solid rgba(16,185,129,.18)' }}
+          className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold"
+          style={{ background: '#F5EEFF', color: '#6D28D9', border: '1px solid #E5D7FA' }}
         >
           <ShieldCheck className="h-3 w-3" /> SECURE
         </div>
       </div>
 
-      <p className="text-[13px] leading-relaxed mb-6" style={{ color: '#64748b' }}>
+      <p className="relative text-[13px] leading-relaxed mb-6" style={{ color: '#7d6f97' }}>
         Pay via UPI · GPay · PhonePe · Paytm — your wallet is credited instantly after payment.
       </p>
 
-      <Label htmlFor="zap-amount" className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#64748b' }}>
+      <Label htmlFor="zap-amount" className="text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: '#7d6f97' }}>
         Enter Amount
       </Label>
       <div className="relative mt-2">
         <div
-          className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded-lg"
-          style={{ background: 'rgba(234,88,12,.08)' }}
+          className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded-lg z-10"
+          style={{ background: '#F5EEFF' }}
         >
-          <IndianRupee className="h-3.5 w-3.5" style={{ color: '#ea580c' }} strokeWidth={2.5} />
+          <IndianRupee className="h-3.5 w-3.5" style={{ color: '#7C3AED' }} strokeWidth={2.5} />
         </div>
         <Input
           id="zap-amount"
@@ -163,15 +165,15 @@ export default function ZapUpiDepositCard() {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           placeholder="500"
-          className="pl-14 pr-4 h-14 text-2xl font-bold border-2 rounded-xl"
+          className="pl-14 pr-4 h-14 text-2xl font-bold border-2 rounded-xl relative"
           style={{
-            color: '#0f172a',
-            borderColor: '#e2e8f0',
-            background: '#f8fafc',
-            fontFamily: 'Sora, system-ui, sans-serif',
+            color: '#0B0B16',
+            borderColor: '#EDE4FE',
+            background: '#FBF8FF',
           }}
         />
       </div>
+
 
       <div className="grid grid-cols-5 gap-2 mt-3">
         {QUICK.map((v) => {
