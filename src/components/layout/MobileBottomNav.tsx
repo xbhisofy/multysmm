@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Menu } from 'lucide-react';
 import { Sidebar } from './Sidebar';
-import logo from '@/assets/logo.jpg';
+
+const GRADIENT = 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)';
 
 export function MobileBottomNav() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -9,13 +10,14 @@ export function MobileBottomNav() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-40 lg:hidden">
-        <div className="flex items-center justify-between h-14 px-4" style={{ background: 'rgba(250,250,248,.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(0,0,0,.06)' }}>
-          <button onClick={() => setSidebarOpen(true)} className="flex items-center justify-center w-9 h-9 rounded-lg" style={{ border: '1px solid rgba(0,0,0,.08)' }}>
-            <Menu className="w-4 h-4" style={{ color: '#555' }} />
+        <div className="flex items-center justify-between h-14 px-4"
+          style={{ background: 'rgba(255,255,255,.92)', backdropFilter: 'blur(14px)', borderBottom: '1px solid #efeaf7' }}>
+          <button onClick={() => setSidebarOpen(true)} className="flex items-center justify-center w-9 h-9 rounded-lg" style={{ border: '1px solid #efeaf7' }}>
+            <Menu className="w-4 h-4" style={{ color: '#6D28D9' }} />
           </button>
           <div className="flex items-center gap-2">
-            <img src={logo} alt="OrganicSMM" className="w-7 h-7 rounded-md object-cover" />
-            <span className="text-[14px] font-bold tracking-tight" style={{ color: '#1a1a2e' }}>OrganicSMM</span>
+            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-black text-[12px]" style={{ background: GRADIENT }}>M</div>
+            <span className="text-[14px] font-extrabold tracking-tight" style={{ color: '#0B0B16' }}>MultySMM</span>
           </div>
           <div className="w-9" />
         </div>
