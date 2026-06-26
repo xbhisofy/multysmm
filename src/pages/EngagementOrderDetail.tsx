@@ -198,6 +198,17 @@ export default function EngagementOrderDetail() {
     return () => { cancelled = true; clearInterval(interval); };
   }, [order?.id, order?.items, queryClient, orderNumber]);
 
+  // Fallback: refetch order every 25s while it's still active, in case realtime is missed
+  useEffect(() => {
+    if (!order?.id) return;
+    const activeStatuses = ['pending', 'processing', 'queued', 'in_progress', 'partial'];
+    if (!activeStatuses.includes(String(order.status || '').toLowerCase())) return;
+    const interval = setInterval(() => {
+      queryClient.invalidateQueries({ queryKey: ['engagement-order-detail', orderNumber] });
+    }, 25000);
+    return () => clearInterval(interval);
+  }, [order?.id, order?.status, queryClient, orderNumber]);
+
   // Retry failed runs mutation - resets failed runs back to pending
   const retryFailedMutation = useMutation({
     mutationFn: async () => {
