@@ -3,37 +3,33 @@ import { Link } from 'react-router-dom';
 import {
   ArrowRight, Sparkles, Brain, Zap, Wand2, Layers, Shield, Shuffle,
   CheckCircle2, X, Instagram, Youtube, Music2, Twitter, Plus, Users,
-  Package, Target, Activity,
+  Package, Target, Activity, Link2,
 } from 'lucide-react';
 import { PageMeta } from '@/components/seo/PageMeta';
 
-// MultySMM Noir Edition — Obsidian + Gold + Parchment
+// MultySMM brand palette — purple → pink gradient on white
 const C = {
-  bg: '#0a0a0a',
-  bgSoft: '#111111',
-  panel: '#161616',
-  panelSoft: '#1c1c1c',
-  ink: '#efe7d4',         // parchment
-  ink2: '#a8a094',
-  muted: '#6b6357',
-  line: 'rgba(201,168,76,.14)',
-  lineSoft: 'rgba(239,231,212,.08)',
-  gold: '#c9a84c',
-  goldSoft: '#f0d78c',
-  goldDeep: '#8a6f2a',
+  bg: '#FFFFFF',
+  bgSoft: '#FAFAFE',
+  ink: '#0B0B16',
+  ink2: '#4A4A5E',
+  muted: '#8A8A9E',
+  line: 'rgba(11,11,22,.08)',
+  card: '#FFFFFF',
+  purple: '#7C3AED',
+  purpleDeep: '#6D28D9',
+  pink: '#EC4899',
+  lilac: '#F3EFFF',
   serif: "'Instrument Serif', 'Times New Roman', serif",
-  sans: "'Work Sans', system-ui, sans-serif",
+  sans: "'Inter', system-ui, sans-serif",
 };
 
-const GOLD_GRAD = `linear-gradient(135deg, ${C.goldDeep} 0%, ${C.gold} 50%, ${C.goldSoft} 100%)`;
-const GOLD_TEXT = `linear-gradient(135deg, ${C.goldSoft} 0%, ${C.gold} 45%, ${C.goldDeep} 100%)`;
+const GRADIENT = `linear-gradient(135deg, ${C.purple} 0%, ${C.pink} 100%)`;
 
 const Eyebrow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="inline-flex items-center gap-2 text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-[0.32em]"
-    style={{ color: C.gold }}>
-    <span className="w-6 h-px" style={{ background: C.gold }} />
-    {children}
-    <span className="w-6 h-px" style={{ background: C.gold }} />
+  <div className="inline-flex items-center gap-2 text-[11px] sm:text-[12px] font-bold uppercase tracking-[0.18em]"
+    style={{ color: C.purple }}>
+    <Sparkles className="w-3.5 h-3.5" /> {children}
   </div>
 );
 
@@ -43,143 +39,122 @@ const Index = () => {
   return (
     <div className="min-h-screen w-full overflow-x-hidden" style={{ background: C.bg, color: C.ink, fontFamily: C.sans }}>
       <PageMeta
-        title="MultySMM — Noir Edition · AI-Powered Growth Atelier"
-        description="A noir, AI-paced growth atelier for creators. Paste a link, choose your ascent, watch MultySMM deliver editorial-grade engagement."
+        title="MultySMM — AI-Powered Social Media Growth Panel"
+        description="Paste your post link, pick what to grow, and let MultySMM deliver real, human-paced engagement — AI-scheduled and 100% safe."
         canonicalPath="/"
         breadcrumbs={[{ name: 'Home', path: '/' }]}
       />
 
-      {/* ambient gold orbs */}
+      {/* soft purple glow background */}
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1100px] h-[700px] rounded-full"
-          style={{ background: 'radial-gradient(closest-side, rgba(201,168,76,.15), transparent 70%)', filter: 'blur(60px)' }} />
-        <div className="absolute top-[55%] -right-40 w-[600px] h-[600px] rounded-full"
-          style={{ background: 'radial-gradient(closest-side, rgba(240,215,140,.10), transparent 70%)', filter: 'blur(50px)' }} />
-        <div className="absolute bottom-0 -left-40 w-[600px] h-[500px] rounded-full"
-          style={{ background: 'radial-gradient(closest-side, rgba(138,111,42,.12), transparent 70%)', filter: 'blur(60px)' }} />
-        {/* subtle grain */}
-        <div className="absolute inset-0 opacity-[0.035] mix-blend-overlay"
-          style={{ backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")" }} />
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[1200px] h-[700px] rounded-full"
+          style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.18), transparent 70%)', filter: 'blur(40px)' }} />
+        <div className="absolute top-[60%] -right-40 w-[600px] h-[600px] rounded-full"
+          style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.18), transparent 70%)', filter: 'blur(40px)' }} />
       </div>
 
       {/* ═══ NAV ═══ */}
       <nav className="sticky top-4 z-50 w-full px-3 sm:px-4">
         <div className="max-w-6xl mx-auto rounded-full flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6"
-          style={{ background: 'rgba(15,15,15,.75)', backdropFilter: 'blur(24px) saturate(140%)', border: `1px solid ${C.line}`, boxShadow: '0 12px 40px rgba(0,0,0,.55), inset 0 1px 0 rgba(240,215,140,.08)' }}>
+          style={{ background: 'rgba(255,255,255,.85)', backdropFilter: 'blur(20px) saturate(180%)', border: `1px solid ${C.line}`, boxShadow: '0 8px 32px rgba(11,11,22,.06)' }}>
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="relative w-9 h-9 rounded-xl flex items-center justify-center font-black text-[15px]"
-              style={{ background: GOLD_GRAD, color: '#0a0a0a', boxShadow: '0 6px 20px rgba(201,168,76,.35), inset 0 1px 0 rgba(255,255,255,.4)' }}>
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-white font-black text-[15px]"
+              style={{ background: GRADIENT, boxShadow: '0 6px 18px rgba(124,58,237,.35)' }}>
               M
             </div>
-            <div className="leading-tight">
-              <div className="text-[15.5px] font-bold tracking-tight" style={{ color: C.ink }}>MultySMM</div>
-              <div className="text-[8.5px] uppercase tracking-[0.32em]" style={{ color: C.gold }}>✦ Noir Edition</div>
-            </div>
+            <span className="text-[15px] sm:text-[16px] font-extrabold tracking-tight">MultySMM</span>
           </Link>
           <div className="hidden md:flex items-center gap-8">
-            {[['Atelier','#how'],['Craft','#features'],['Manifesto','#why'],['FAQ','#faq']].map(([t,h]) => (
-              <a key={t} href={h} className="text-[12.5px] font-medium uppercase tracking-[0.18em] transition-colors"
-                style={{ color: C.ink2 }}
-                onMouseEnter={(e)=>(e.currentTarget.style.color=C.gold)}
-                onMouseLeave={(e)=>(e.currentTarget.style.color=C.ink2)}>{t}</a>
+            {[['Features','#features'],['How it works','#how'],['Why us','#why'],['FAQ','#faq']].map(([t,h]) => (
+              <a key={t} href={h} className="text-[13.5px] font-medium transition-opacity hover:opacity-70" style={{ color: C.ink2 }}>{t}</a>
             ))}
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/auth" className="hidden sm:inline-flex h-9 px-3 items-center text-[12.5px] font-medium uppercase tracking-[0.18em]" style={{ color: C.ink }}>
-              Sign In
+            <Link to="/auth" className="hidden sm:inline-flex h-9 px-3 items-center text-[13.5px] font-semibold" style={{ color: C.ink }}>
+              Log in
             </Link>
-            <Link to="/auth" className="h-10 px-5 rounded-full text-[12px] font-bold uppercase tracking-[0.18em] inline-flex items-center gap-1.5"
-              style={{ background: GOLD_GRAD, color: '#0a0a0a', boxShadow: '0 10px 28px rgba(201,168,76,.30), inset 0 1px 0 rgba(255,255,255,.35)' }}>
-              Enter <ArrowRight className="w-3.5 h-3.5" />
+            <Link to="/auth" className="h-10 px-5 rounded-full text-[13px] font-bold text-white inline-flex items-center gap-1.5"
+              style={{ background: GRADIENT, boxShadow: '0 10px 24px rgba(236,72,153,.35)' }}>
+              Get Started <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
       </nav>
 
       {/* ═══ HERO ═══ */}
-      <section className="pt-20 sm:pt-28 lg:pt-32 pb-16 sm:pb-24 text-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-10"><Eyebrow>An AI Growth Atelier · Est. 2026</Eyebrow></div>
+      <section className="pt-16 sm:pt-24 lg:pt-28 pb-16 sm:pb-24 text-center px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8"><Eyebrow>AI-Powered SMM Panel</Eyebrow></div>
 
-          <h1 className="text-[2.8rem] sm:text-[4.6rem] lg:text-[6.2rem] leading-[0.95] tracking-[-0.025em] mb-8"
-            style={{ fontFamily: C.serif, fontWeight: 400 }}>
-            <span style={{ color: C.ink }}>Grow </span>
-            <em style={{ background: GOLD_TEXT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-              smarter accounts
-            </em>
-            <br />
-            <span style={{ color: C.ink2 }}>instantly with </span>
-            <em style={{ background: GOLD_TEXT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>AI</em>
-            <span style={{ color: C.gold }}>.</span>
+          <h1 className="text-[2.6rem] sm:text-[4.2rem] lg:text-[5.5rem] font-black leading-[0.98] tracking-[-0.04em] mb-6">
+            Grow{' '}
+            <span style={{ fontFamily: C.serif, fontWeight: 400, fontStyle: 'italic', background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              Smarter Accounts
+            </span>
+            <br className="hidden sm:block" />
+            Instantly With{' '}
+            <span style={{ fontFamily: C.serif, fontWeight: 400, fontStyle: 'italic' }}>AI</span>
           </h1>
 
-          <p className="text-[15px] sm:text-[17.5px] leading-[1.7] mb-12 max-w-2xl mx-auto" style={{ color: C.ink2 }}>
-            Paste your link. Compose your ascent. MultySMM's noir engine delivers
-            real, human-paced engagement — orchestrated like a private commission.
+          <p className="text-[15px] sm:text-[18px] leading-[1.6] mb-10 max-w-2xl mx-auto" style={{ color: C.ink2 }}>
+            Paste your post link, pick what you want to grow, and watch MultySMM deliver real,
+            human-paced engagement — designed, scheduled, and 100% safe.
           </p>
 
-          {/* ═══ AI GROWTH ENGINE — noir console ═══ */}
-          <div className="max-w-3xl mx-auto rounded-[28px] p-1 text-left relative"
-            style={{ background: `linear-gradient(135deg, ${C.goldDeep}, ${C.gold}, ${C.goldSoft}, ${C.goldDeep})`, boxShadow: '0 40px 100px -30px rgba(201,168,76,.35), 0 0 0 1px rgba(201,168,76,.10)' }}>
-            <div className="rounded-[24px] p-5 sm:p-7 relative overflow-hidden"
-              style={{ background: 'radial-gradient(120% 100% at 0% 0%, #1a1a1a 0%, #0d0d0d 60%)' }}>
-              {/* corner filigree */}
-              <div aria-hidden className="absolute top-3 right-3 w-12 h-12 opacity-40">
-                <svg viewBox="0 0 48 48" fill="none"><path d="M2 2h14M2 2v14M46 46h-14M46 46v-14" stroke={C.gold} strokeWidth="0.8" /></svg>
+          {/* ═══ AI GROWTH ENGINE ═══ */}
+          <div className="max-w-3xl mx-auto rounded-3xl p-5 sm:p-6 text-left relative"
+            style={{ background: C.card, border: `1.5px solid rgba(124,58,237,.25)`, boxShadow: '0 30px 80px -20px rgba(124,58,237,.25)' }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: C.purple }}>
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.purple }} /> AI Growth Engine
               </div>
-
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: C.gold }}>
-                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: C.gold, boxShadow: `0 0 12px ${C.gold}` }} /> AI Growth Console
-                </div>
-                <div className="flex items-center gap-1.5 text-[10.5px] font-medium uppercase tracking-[0.22em]" style={{ color: C.muted }}>
-                  <Sparkles className="w-3 h-3" style={{ color: C.goldSoft }} /> Noir Engine v3
-                </div>
+              <div className="flex items-center gap-1.5 text-[11.5px] font-medium" style={{ color: C.muted }}>
+                <Sparkles className="w-3 h-3" style={{ color: C.pink }} /> Powered by MultySMM
               </div>
+            </div>
 
-              <textarea
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Compose your ascent — e.g. 10k organic views, 800 likes & 50 comments on my Reel, paced over 18 hours."
-                className="w-full h-28 sm:h-32 resize-none rounded-2xl p-4 text-[14.5px] outline-none transition-all"
-                style={{ background: '#0a0a0a', color: C.ink, border: `1px solid ${C.line}`, fontFamily: C.sans }}
-              />
+            <textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="Grow my Instagram reel with 10k views, 800 likes, 50 comments — natural pace"
+              className="w-full h-24 sm:h-28 resize-none rounded-2xl p-4 text-[14px] sm:text-[15px] outline-none transition-shadow focus:shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #FAF5FF 0%, #FDF2F8 100%)', color: C.ink, border: '1px solid rgba(124,58,237,.10)' }}
+            />
 
-              <div className="flex items-center justify-between gap-3 mt-5 flex-wrap">
-                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                  <button className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
-                    style={{ border: `1px solid ${C.line}`, color: C.ink2 }}>
-                    <Plus className="w-4 h-4" />
+            <div className="flex items-center justify-between gap-3 mt-4 flex-wrap">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                <button className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:bg-purple-50"
+                  style={{ border: `1px solid ${C.line}` }}>
+                  <Plus className="w-4 h-4" style={{ color: C.ink2 }} />
+                </button>
+                {[
+                  { icon: Instagram, label: 'Instagram' },
+                  { icon: Youtube, label: 'YouTube' },
+                  { icon: Music2, label: 'TikTok' },
+                  { icon: Twitter, label: 'Twitter' },
+                ].map((p) => (
+                  <button key={p.label} className="h-8 px-3 rounded-full flex items-center gap-1.5 text-[12px] font-semibold transition-colors hover:bg-purple-50"
+                    style={{ border: `1px solid ${C.line}`, color: C.ink }}>
+                    <p.icon className="w-3.5 h-3.5" /> {p.label}
                   </button>
-                  {[
-                    { icon: Instagram, label: 'Instagram' },
-                    { icon: Youtube, label: 'YouTube' },
-                    { icon: Music2, label: 'TikTok' },
-                    { icon: Twitter, label: 'X' },
-                  ].map((p) => (
-                    <button key={p.label} className="h-9 px-3.5 rounded-full flex items-center gap-1.5 text-[11.5px] font-semibold uppercase tracking-[0.14em] transition-all"
-                      style={{ border: `1px solid ${C.line}`, color: C.ink, background: 'rgba(201,168,76,.04)' }}>
-                      <p.icon className="w-3.5 h-3.5" style={{ color: C.gold }} /> {p.label}
-                    </button>
-                  ))}
-                </div>
-                <Link to="/auth" className="h-11 px-6 rounded-full text-[12px] font-bold uppercase tracking-[0.22em] inline-flex items-center gap-2"
-                  style={{ background: GOLD_GRAD, color: '#0a0a0a', boxShadow: '0 14px 32px rgba(201,168,76,.35), inset 0 1px 0 rgba(255,255,255,.4)' }}>
-                  Commission <Sparkles className="w-3.5 h-3.5" />
-                </Link>
+                ))}
               </div>
+              <Link to="/auth" className="h-10 px-5 rounded-full text-[13px] font-bold text-white inline-flex items-center gap-1.5"
+                style={{ background: GRADIENT, boxShadow: '0 10px 24px rgba(236,72,153,.35)' }}>
+                Generate <Sparkles className="w-3.5 h-3.5" />
+              </Link>
             </div>
           </div>
 
           {/* prompt examples */}
-          <div className="mt-7 flex flex-col items-center gap-2.5">
+          <div className="mt-6 flex flex-col items-center gap-2.5">
             {[
-              'Grow my Instagram reel — 10k views · 800 likes · 50 comments',
-              'YouTube video — 5k views · 300 likes · 100 subscribers',
-              'TikTok — 20k views · 1.5k likes · 200 followers',
+              '🎬  Grow my Instagram reel — 10k views, 800 likes, 50 comments',
+              '▶️  YouTube video: 5k views, 300 likes, 100 subscribers',
+              '🎵  TikTok: 20k views, 1.5k likes, 200 followers',
             ].map((t) => (
-              <button key={t} className="text-[12px] sm:text-[12.5px] px-5 py-2.5 rounded-full transition-all uppercase tracking-[0.14em] font-medium"
-                style={{ border: `1px solid ${C.lineSoft}`, color: C.ink2, background: 'rgba(22,22,22,.6)', backdropFilter: 'blur(8px)' }}>
+              <button key={t} className="text-[12.5px] sm:text-[13px] px-4 py-2 rounded-full transition-colors hover:bg-purple-50"
+                style={{ border: `1px solid ${C.line}`, color: C.ink2, background: C.card }}>
                 {t}
               </button>
             ))}
@@ -188,27 +163,26 @@ const Index = () => {
       </section>
 
       {/* ═══ HOW IT WORKS ═══ */}
-      <section id="how" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <section id="how" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
-            <Eyebrow>The Atelier · Three Movements</Eyebrow>
-            <h2 className="mt-6 text-[2.2rem] sm:text-[3.2rem] lg:text-[3.8rem] leading-[1.02] tracking-[-0.02em]"
-              style={{ fontFamily: C.serif, fontWeight: 400 }}>
-              From a single link<br /> to <em style={{ background: GOLD_TEXT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>measured ascent</em>.
+            <Eyebrow>How it works</Eyebrow>
+            <h2 className="mt-4 text-[2rem] sm:text-[3rem] lg:text-[3.4rem] font-black leading-[1.02] tracking-[-0.035em]">
+              From link to growth<br /> in <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>3 simple steps</span>
             </h2>
 
-            <div className="mt-10 space-y-3">
+            <div className="mt-8 space-y-3">
               {[
-                { n: 'I', t: 'Present the link', d: 'Drop any Instagram, YouTube or TikTok URL — the atelier needs nothing more.' },
-                { n: 'II', t: 'Compose the brief', d: 'Choose views, likes, comments, saves and shares. Set quantity for each movement.' },
-                { n: 'III', t: 'Witness the delivery', d: 'AI plans the curve, jitters timing, and unfurls naturally over the chosen hours.' },
+                { n: '01', t: 'Paste your post link', d: 'Drop any Instagram, YouTube or TikTok URL — that is all we need to begin.' },
+                { n: '02', t: 'Pick what to grow', d: 'Choose views, likes, comments, saves and shares. Set quantity for each.' },
+                { n: '03', t: 'Watch it deliver', d: 'AI plans the curve, jitters timing, and delivers naturally over hours.' },
               ].map((s) => (
-                <div key={s.n} className="rounded-2xl p-6 transition-all hover:-translate-y-0.5 group"
-                  style={{ background: 'linear-gradient(180deg, #161616 0%, #111111 100%)', border: `1px solid ${C.line}`, boxShadow: 'inset 0 1px 0 rgba(240,215,140,.05)' }}>
-                  <div className="flex items-baseline gap-5">
-                    <span className="text-[20px] font-normal" style={{ fontFamily: C.serif, color: C.gold, fontStyle: 'italic' }}>{s.n}.</span>
+                <div key={s.n} className="rounded-2xl p-5 transition-all hover:-translate-y-0.5"
+                  style={{ background: C.card, border: `1px solid ${C.line}`, boxShadow: '0 4px 20px rgba(11,11,22,.04)' }}>
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-[14px] font-bold" style={{ color: C.purple }}>{s.n}</span>
                     <div className="flex-1">
-                      <h3 className="text-[16px] font-semibold mb-1.5" style={{ color: C.ink }}>{s.t}</h3>
+                      <h3 className="text-[16px] font-bold mb-1.5">{s.t}</h3>
                       <p className="text-[13.5px] leading-relaxed" style={{ color: C.ink2 }}>{s.d}</p>
                     </div>
                   </div>
@@ -216,51 +190,48 @@ const Index = () => {
               ))}
             </div>
 
-            <Link to="/auth" className="mt-10 inline-flex h-12 px-7 rounded-full text-[12px] font-bold uppercase tracking-[0.22em] items-center gap-2"
-              style={{ background: GOLD_GRAD, color: '#0a0a0a', boxShadow: '0 16px 36px rgba(201,168,76,.30), inset 0 1px 0 rgba(255,255,255,.4)' }}>
-              Begin a commission <ArrowRight className="w-4 h-4" />
+            <Link to="/auth" className="mt-8 inline-flex h-12 px-6 rounded-full text-[14px] font-bold text-white items-center gap-2"
+              style={{ background: GRADIENT, boxShadow: '0 14px 30px rgba(124,58,237,.35)' }}>
+              Get Started <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
           {/* preview card */}
           <div className="relative">
-            <div aria-hidden className="absolute -inset-10 rounded-[40px] -z-10"
-              style={{ background: 'radial-gradient(closest-side, rgba(201,168,76,.20), rgba(138,111,42,.08) 60%, transparent 80%)', filter: 'blur(40px)' }} />
-            <div className="rounded-3xl p-7 relative"
-              style={{ background: 'linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%)', border: `1px solid ${C.line}`, boxShadow: '0 40px 100px -30px rgba(201,168,76,.25), inset 0 1px 0 rgba(240,215,140,.06)' }}>
-              {/* floating chip top-left */}
+            <div aria-hidden className="absolute -inset-8 rounded-[40px] -z-10"
+              style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.20), rgba(124,58,237,.10) 60%, transparent 80%)', filter: 'blur(30px)' }} />
+            <div className="rounded-3xl p-6 sm:p-7 relative"
+              style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #FAF5FF 100%)', border: `1px solid ${C.line}`, boxShadow: '0 30px 80px -20px rgba(124,58,237,.25)' }}>
+              {/* floating success chip */}
               <div className="absolute -top-4 -left-4 rounded-2xl px-3 py-2 flex items-center gap-2"
-                style={{ background: '#0d0d0d', border: `1px solid ${C.line}`, boxShadow: '0 12px 32px rgba(0,0,0,.6)' }}>
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(201,168,76,.15)', border: `1px solid ${C.line}` }}>
-                  <CheckCircle2 className="w-4 h-4" style={{ color: C.gold }} />
+                style={{ background: '#fff', border: `1px solid ${C.line}`, boxShadow: '0 10px 30px rgba(11,11,22,.10)' }}>
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: '#D1FAE5' }}>
+                  <CheckCircle2 className="w-4 h-4" style={{ color: '#059669' }} />
                 </div>
                 <div className="leading-tight">
-                  <div className="text-[12px] font-bold" style={{ color: C.ink }}>+1,250 views</div>
-                  <div className="text-[10px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>2 min ago</div>
+                  <div className="text-[12px] font-bold">+1,250 views</div>
+                  <div className="text-[10px]" style={{ color: C.muted }}>2 min ago</div>
                 </div>
               </div>
 
               <div className="flex items-center justify-between mb-4">
-                <div className="text-[9.5px] font-bold uppercase tracking-[0.32em]" style={{ color: C.muted }}>multysmm.atelier/commission</div>
-                <div className="flex gap-1.5">
-                  {[0,1,2].map(i => <span key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: C.line }} />)}
-                </div>
+                <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: C.muted }}>multysmm.app/order</div>
               </div>
 
-              <div className="rounded-xl px-3 py-2.5 mb-5 text-[11.5px] font-mono truncate"
-                style={{ background: '#0a0a0a', border: `1px solid ${C.line}`, color: C.ink2 }}>
+              <div className="rounded-xl px-3 py-2.5 mb-5 text-[12px] font-mono truncate"
+                style={{ background: '#fff', border: `1px solid ${C.line}`, color: C.ink2 }}>
                 https://instagram.com/p/Cx9...
               </div>
 
               <div className="grid grid-cols-3 gap-2.5 mb-5">
                 {[
-                  { l: 'Views', v: '10K' },
-                  { l: 'Likes', v: '800' },
-                  { l: 'Comments', v: '50' },
+                  { l: 'Views', v: '10K', c: C.purple },
+                  { l: 'Likes', v: '800', c: C.pink },
+                  { l: 'Comments', v: '50', c: '#14B8A6' },
                 ].map((s) => (
-                  <div key={s.l} className="rounded-xl p-3 text-center" style={{ background: '#0a0a0a', border: `1px solid ${C.line}` }}>
-                    <div className="text-[10px] uppercase tracking-[0.22em]" style={{ color: C.muted }}>{s.l}</div>
-                    <div className="text-[22px] font-bold mt-1" style={{ fontFamily: C.serif, background: GOLD_TEXT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{s.v}</div>
+                  <div key={s.l} className="rounded-xl p-3 text-center" style={{ background: '#fff', border: `1px solid ${C.line}` }}>
+                    <div className="text-[11px]" style={{ color: C.muted }}>{s.l}</div>
+                    <div className="text-[20px] font-extrabold mt-0.5" style={{ color: s.c }}>{s.v}</div>
                   </div>
                 ))}
               </div>
@@ -268,31 +239,30 @@ const Index = () => {
               <svg viewBox="0 0 320 100" className="w-full h-24">
                 <defs>
                   <linearGradient id="curve" x1="0" x2="1">
-                    <stop offset="0%" stopColor={C.goldDeep} />
-                    <stop offset="50%" stopColor={C.gold} />
-                    <stop offset="100%" stopColor={C.goldSoft} />
+                    <stop offset="0%" stopColor={C.purple} />
+                    <stop offset="100%" stopColor={C.pink} />
                   </linearGradient>
                   <linearGradient id="fill" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0%" stopColor={C.gold} stopOpacity="0.22" />
-                    <stop offset="100%" stopColor={C.gold} stopOpacity="0" />
+                    <stop offset="0%" stopColor={C.purple} stopOpacity="0.2" />
+                    <stop offset="100%" stopColor={C.purple} stopOpacity="0" />
                   </linearGradient>
                 </defs>
                 <path d="M0 80 C 60 78, 100 60, 160 35 S 260 20, 320 28 L 320 100 L 0 100 Z" fill="url(#fill)" />
                 <path d="M0 80 C 60 78, 100 60, 160 35 S 260 20, 320 28" stroke="url(#curve)" strokeWidth="2.5" fill="none" />
               </svg>
 
-              <div className="flex items-center justify-between mt-2 text-[10px] uppercase tracking-[0.22em]" style={{ color: C.muted }}>
+              <div className="flex items-center justify-between mt-2 text-[11px]" style={{ color: C.muted }}>
                 <span>Now</span><span>+6h</span><span>+12h</span><span>+24h</span>
               </div>
 
               <div className="absolute -bottom-4 -right-4 rounded-2xl px-3 py-2 flex items-center gap-2"
-                style={{ background: '#0d0d0d', border: `1px solid ${C.line}`, boxShadow: '0 12px 32px rgba(0,0,0,.6)' }}>
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(201,168,76,.15)', border: `1px solid ${C.line}` }}>
-                  <Brain className="w-4 h-4" style={{ color: C.gold }} />
+                style={{ background: '#fff', border: `1px solid ${C.line}`, boxShadow: '0 10px 30px rgba(11,11,22,.10)' }}>
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: C.lilac }}>
+                  <Brain className="w-4 h-4" style={{ color: C.purple }} />
                 </div>
                 <div className="leading-tight">
-                  <div className="text-[12px] font-bold" style={{ color: C.ink }}>AI scheduling</div>
-                  <div className="text-[10px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>Optimized curve</div>
+                  <div className="text-[12px] font-bold">AI scheduling</div>
+                  <div className="text-[10px]" style={{ color: C.muted }}>Optimized curve</div>
                 </div>
               </div>
             </div>
@@ -301,37 +271,32 @@ const Index = () => {
       </section>
 
       {/* ═══ FEATURES ═══ */}
-      <section id="features" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative" style={{ background: 'linear-gradient(180deg, transparent 0%, #0d0d0d 50%, transparent 100%)' }}>
+      <section id="features" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8" style={{ background: C.bgSoft }}>
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <Eyebrow>The Craft · Six Disciplines</Eyebrow>
-            <h2 className="mt-6 text-[2.2rem] sm:text-[3.2rem] lg:text-[3.8rem] leading-[1.02] tracking-[-0.02em]"
-              style={{ fontFamily: C.serif, fontWeight: 400 }}>
-              Built for speed,<br />
-              tailored by <em style={{ background: GOLD_TEXT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>intelligence</em>.
+          <div className="text-center mb-12">
+            <Eyebrow>Core Features</Eyebrow>
+            <h2 className="mt-4 text-[2rem] sm:text-[3rem] lg:text-[3.4rem] font-black leading-[1.02] tracking-[-0.035em]">
+              Built for Speed, <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400 }}>Powered</span><br />
+              by <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Intelligence</span>
             </h2>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px rounded-[28px] overflow-hidden"
-            style={{ background: C.line, border: `1px solid ${C.line}` }}>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {[
-              { icon: Brain, t: 'AI Delivery Assist', d: 'Every commission is paced by AI — analyzing peak hours, jitter and audience timezone for natural growth.' },
-              { icon: Zap, t: 'Instant Inception', d: 'Orders begin within 60 seconds. No waiting, no queues — straight into delivery.' },
-              { icon: Wand2, t: 'Visual Customizer', d: 'Tune quantity, speed, and spread with a live curve preview before the brief is signed.' },
-              { icon: Shuffle, t: 'Multi-Provider Routing', d: 'We rotate across top-tier providers so you always receive the fastest, safest source.' },
-              { icon: Layers, t: 'Engagement Bundles', d: 'Pre-composed packs for Reels, Shorts, Stories and viral campaigns — one click, done.' },
-              { icon: Shield, t: 'Account Safety First', d: 'Human-pace patterns, ±50% variance and night slowdown — zero account bans on record.' },
-            ].map((f, i) => (
-              <div key={f.t} className="p-7 sm:p-8 transition-all group relative"
-                style={{ background: C.bg }}>
-                <div className="absolute top-5 right-6 text-[9.5px] font-medium uppercase tracking-[0.32em]" style={{ color: C.muted, fontFamily: C.serif, fontStyle: 'italic' }}>
-                  №{String(i+1).padStart(2,'0')}
+              { icon: Brain, t: 'AI Delivery Assist', d: 'Every order is paced by AI — analyzing peak hours, jitter and audience timezone for natural growth.' },
+              { icon: Zap, t: 'Instant Start', d: 'Orders start within 60 seconds. No waiting, no queues — straight into delivery.' },
+              { icon: Wand2, t: 'Visual Customizer', d: 'Tune quantity, speed, and spread with live curve preview before you ever press order.' },
+              { icon: Shuffle, t: 'Multi-Provider Routing', d: 'We rotate across top-tier providers automatically so you always get the fastest, safest source.' },
+              { icon: Layers, t: 'Engagement Bundles', d: 'Pre-built packs for Reels, Shorts, Stories and viral campaigns — one click, done.' },
+              { icon: Shield, t: 'Account Safety First', d: 'Human-pace patterns, ±50% variance and night slowdown — zero account bans reported.' },
+            ].map((f) => (
+              <div key={f.t} className="rounded-2xl p-6 transition-all hover:-translate-y-1"
+                style={{ background: C.card, border: `1px solid ${C.line}`, boxShadow: '0 4px 20px rgba(11,11,22,.04)' }}>
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
+                  style={{ background: C.lilac }}>
+                  <f.icon className="w-5 h-5" style={{ color: C.purple }} />
                 </div>
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
-                  style={{ background: 'radial-gradient(closest-side, rgba(201,168,76,.18), rgba(201,168,76,.04))', border: `1px solid ${C.line}` }}>
-                  <f.icon className="w-5 h-5" style={{ color: C.gold }} />
-                </div>
-                <h3 className="text-[18px] mb-2.5" style={{ fontFamily: C.serif, color: C.ink }}>{f.t}</h3>
+                <h3 className="text-[16px] font-bold mb-2">{f.t}</h3>
                 <p className="text-[13.5px] leading-relaxed" style={{ color: C.ink2 }}>{f.d}</p>
               </div>
             ))}
@@ -339,38 +304,37 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ═══ MANIFESTO / COMPARISON ═══ */}
-      <section id="why" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8">
+      {/* ═══ WHY US — comparison ═══ */}
+      <section id="why" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <Eyebrow>The Manifesto</Eyebrow>
-            <h2 className="mt-6 text-[2.2rem] sm:text-[3.2rem] lg:text-[3.8rem] leading-[1.02] tracking-[-0.02em]"
-              style={{ fontFamily: C.serif, fontWeight: 400 }}>
-              The old panels deliver volume.<br />
-              <em style={{ background: GOLD_TEXT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>We deliver craft.</em>
+          <div className="text-center mb-12">
+            <Eyebrow>Why MultySMM</Eyebrow>
+            <h2 className="mt-4 text-[2rem] sm:text-[3rem] lg:text-[3.4rem] font-black leading-[1.02] tracking-[-0.035em]">
+              We're Building Trust &<br />
+              <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Brand Personality</span>
             </h2>
           </div>
 
           <div className="relative grid md:grid-cols-2 gap-5">
             {/* OLD */}
-            <div className="rounded-3xl p-8 relative"
-              style={{ background: '#111111', border: `1px dashed ${C.lineSoft}` }}>
-              <span className="absolute top-5 right-5 inline-flex items-center gap-1.5 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-[0.22em]"
-                style={{ background: 'rgba(239,68,68,.08)', color: '#a85858', border: '1px solid rgba(239,68,68,.18)' }}>
-                <X className="w-3 h-3" /> Old Way
+            <div className="rounded-3xl p-7 sm:p-8 relative"
+              style={{ background: C.card, border: `1.5px dashed rgba(236,72,153,.35)` }}>
+              <span className="absolute top-5 right-5 inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full"
+                style={{ background: '#FEE2E2', color: '#DC2626' }}>
+                <X className="w-3 h-3" /> OLD WAY
               </span>
-              <div className="text-[10px] font-medium uppercase tracking-[0.32em] mb-3" style={{ color: C.muted }}>Regular Panels</div>
-              <h3 className="text-[26px] mb-6" style={{ fontFamily: C.serif, color: C.ink2, fontStyle: 'italic' }}>Bot-pattern delivery</h3>
-              <div className="space-y-3.5">
+              <div className="text-[11px] font-bold uppercase tracking-[0.18em] mb-3" style={{ color: C.muted }}>Regular Panels</div>
+              <h3 className="text-[22px] font-extrabold mb-6 line-through opacity-80" style={{ textDecorationColor: '#EF4444' }}>Bot-pattern delivery</h3>
+              <div className="space-y-3">
                 {[
-                  'Same quantity each batch — pattern visible',
-                  'Fixed intervals, zero variance',
+                  'Same quantity each batch — bot pattern visible',
+                  'Fixed intervals, no variance',
                   '24/7 dumping looks unnatural',
                   'Account flags & bans common',
                 ].map((t) => (
                   <div key={t} className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full flex items-center justify-center mt-0.5" style={{ background: 'rgba(239,68,68,.08)', border: '1px solid rgba(239,68,68,.18)' }}>
-                      <X className="w-3 h-3" style={{ color: '#a85858' }} />
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center mt-0.5" style={{ background: '#FEE2E2' }}>
+                      <X className="w-3 h-3" style={{ color: '#DC2626' }} />
                     </div>
                     <span className="text-[13.5px]" style={{ color: C.ink2 }}>{t}</span>
                   </div>
@@ -379,32 +343,31 @@ const Index = () => {
             </div>
 
             {/* VS badge */}
-            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full items-center justify-center z-10 font-black text-[13px] uppercase tracking-widest"
-              style={{ background: GOLD_GRAD, color: '#0a0a0a', boxShadow: '0 14px 40px rgba(201,168,76,.40), inset 0 1px 0 rgba(255,255,255,.4)' }}>VS</div>
+            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full items-center justify-center z-10 text-white font-black text-[14px]"
+              style={{ background: '#0B0B16', boxShadow: '0 10px 30px rgba(0,0,0,.25)' }}>VS</div>
 
             {/* NEW */}
-            <div className="rounded-3xl p-8 relative overflow-hidden"
-              style={{ background: 'radial-gradient(120% 100% at 100% 0%, #1f1a0d 0%, #0d0d0d 60%)', border: `1px solid ${C.gold}`, boxShadow: '0 40px 100px -30px rgba(201,168,76,.40), inset 0 1px 0 rgba(240,215,140,.15)' }}>
-              <span className="absolute top-5 right-5 inline-flex items-center gap-1.5 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-[0.22em]"
-                style={{ background: 'rgba(201,168,76,.15)', color: C.goldSoft, border: `1px solid ${C.line}` }}>
-                <Sparkles className="w-3 h-3" /> Noir Way
+            <div className="rounded-3xl p-7 sm:p-8 relative text-white overflow-hidden"
+              style={{ background: GRADIENT, boxShadow: '0 30px 80px -20px rgba(124,58,237,.45)' }}>
+              <span className="absolute top-5 right-5 inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full"
+                style={{ background: 'rgba(255,255,255,.2)', color: '#fff', backdropFilter: 'blur(8px)' }}>
+                <Sparkles className="w-3 h-3" /> THE NEW WAY
               </span>
-              <div className="text-[10px] font-medium uppercase tracking-[0.32em] mb-3" style={{ color: C.gold }}>MultySMM Atelier</div>
-              <h3 className="text-[26px] mb-6" style={{ fontFamily: C.serif, color: C.ink }}>
-                <em style={{ background: GOLD_TEXT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI-organic</em> delivery
-              </h3>
-              <div className="space-y-3.5">
+              <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] mb-3 px-3 py-1 rounded-full"
+                style={{ background: 'rgba(255,255,255,.18)' }}>MultySMM</div>
+              <h3 className="text-[22px] font-extrabold mb-6">AI-organic delivery</h3>
+              <div className="space-y-3">
                 {[
-                  'Random variance — indistinguishable from humans',
+                  'Random variance — looks like real humans',
                   'AI-jittered timing — undetectable',
                   'Peak hours + night slowdown built-in',
-                  '100% safe — zero account bans on record',
+                  '100% safe — zero account bans',
                 ].map((t) => (
                   <div key={t} className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full flex items-center justify-center mt-0.5" style={{ background: 'rgba(201,168,76,.18)', border: `1px solid ${C.line}` }}>
-                      <CheckCircle2 className="w-3 h-3" style={{ color: C.gold }} />
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center mt-0.5" style={{ background: 'rgba(255,255,255,.22)' }}>
+                      <CheckCircle2 className="w-3 h-3 text-white" />
                     </div>
-                    <span className="text-[13.5px]" style={{ color: C.ink }}>{t}</span>
+                    <span className="text-[13.5px]">{t}</span>
                   </div>
                 ))}
               </div>
@@ -412,23 +375,23 @@ const Index = () => {
           </div>
 
           {/* Stats strip */}
-          <div className="mt-14 rounded-[28px] p-px relative overflow-hidden"
-            style={{ background: GOLD_GRAD }}>
-            <div className="rounded-[27px] grid grid-cols-2 lg:grid-cols-4 gap-px" style={{ background: C.line }}>
+          <div className="mt-10 rounded-3xl p-1 relative overflow-hidden"
+            style={{ background: GRADIENT }}>
+            <div className="rounded-[22px] grid grid-cols-2 lg:grid-cols-4 gap-px" style={{ background: C.line }}>
               {[
-                { n: 'I',   icon: Users,   v: '2,400+', l: 'Active Creators' },
-                { n: 'II',  icon: Package, v: '50K+',   l: 'Commissions Delivered' },
-                { n: 'III', icon: Target,  v: '99.9%',  l: 'Success Rate' },
-                { n: 'IV',  icon: Zap,     v: '24 / 7', l: 'Concierge' },
+                { n: '01', icon: Users, v: '2,400+', l: 'Active Creators' },
+                { n: '02', icon: Package, v: '50K+', l: 'Orders Delivered' },
+                { n: '03', icon: Target, v: '99.9%', l: 'Success Rate' },
+                { n: '04', icon: Zap, v: '24/7', l: 'Live Support' },
               ].map((s) => (
-                <div key={s.l} className="p-8 text-center relative" style={{ background: '#0d0d0d' }}>
-                  <div className="text-[11px] uppercase tracking-[0.32em] mb-4" style={{ color: C.gold, fontFamily: C.serif, fontStyle: 'italic' }}>{s.n}</div>
-                  <s.icon className="w-6 h-6 mx-auto mb-3" style={{ color: C.ink2 }} />
-                  <div className="text-[34px] sm:text-[42px] leading-none"
-                    style={{ fontFamily: C.serif, background: GOLD_TEXT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <div key={s.l} className="p-6 sm:p-7 text-center" style={{ background: C.card }}>
+                  <div className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: C.muted }}>{s.n}</div>
+                  <s.icon className="w-6 h-6 mx-auto mb-2.5" style={{ color: C.ink2 }} />
+                  <div className="text-[28px] sm:text-[34px] font-black leading-none"
+                    style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                     {s.v}
                   </div>
-                  <div className="text-[10px] font-medium uppercase tracking-[0.32em] mt-3" style={{ color: C.muted }}>{s.l}</div>
+                  <div className="text-[11px] font-bold uppercase tracking-widest mt-2.5" style={{ color: C.muted }}>{s.l}</div>
                 </div>
               ))}
             </div>
@@ -437,78 +400,72 @@ const Index = () => {
       </section>
 
       {/* ═══ CTA ═══ */}
-      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto rounded-[36px] text-center py-20 px-6 sm:px-12 relative overflow-hidden"
-          style={{ background: 'radial-gradient(120% 100% at 50% 0%, #1f1a0d 0%, #0a0a0a 60%)', border: `1px solid ${C.gold}`, boxShadow: '0 40px 120px -30px rgba(201,168,76,.45), inset 0 1px 0 rgba(240,215,140,.12)' }}>
-          {/* gold filigree corners */}
-          {[
-            'top-5 left-5 rotate-0', 'top-5 right-5 rotate-90',
-            'bottom-5 left-5 -rotate-90', 'bottom-5 right-5 rotate-180',
-          ].map((pos, i) => (
-            <div key={i} className={`absolute ${pos} w-10 h-10 opacity-50`}>
-              <svg viewBox="0 0 40 40" fill="none"><path d="M2 2h14M2 2v14" stroke={C.gold} strokeWidth="0.8" /></svg>
-            </div>
-          ))}
-          <div aria-hidden className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full"
-            style={{ background: 'radial-gradient(closest-side, rgba(201,168,76,.30), transparent 70%)', filter: 'blur(50px)' }} />
+      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto rounded-[32px] text-center py-16 sm:py-20 px-6 sm:px-10 relative overflow-hidden"
+          style={{ background: 'linear-gradient(180deg, #FAF5FF 0%, #FDF2F8 100%)', border: `1px solid ${C.line}` }}>
+          <div aria-hidden className="absolute -top-20 left-1/2 -translate-x-1/2 w-[500px] h-[400px] rounded-full"
+            style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.25), transparent 70%)', filter: 'blur(40px)' }} />
           <div className="relative">
-            <Eyebrow>By Appointment</Eyebrow>
-            <h2 className="mt-6 text-[2.4rem] sm:text-[3.6rem] leading-[1.02] tracking-[-0.02em] mb-6"
-              style={{ fontFamily: C.serif, fontWeight: 400, color: C.ink }}>
-              Ready to grow <em style={{ background: GOLD_TEXT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>smarter</em>?
+            <Eyebrow>Start Today</Eyebrow>
+            <h2 className="mt-4 text-[2rem] sm:text-[3rem] font-black leading-[1.02] tracking-[-0.035em] mb-5">
+              Ready to grow <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>smarter?</span>
             </h2>
-            <p className="text-[15px] sm:text-[16.5px] mb-10 max-w-md mx-auto" style={{ color: C.ink2 }}>
-              Join 2,400+ creators commissioning growth through the MultySMM atelier.
-              No card required.
+            <p className="text-[15px] sm:text-[16.5px] mb-9 max-w-md mx-auto" style={{ color: C.ink2 }}>
+              Join 2,400+ creators using MultySMM's AI engine. No credit card required.
             </p>
-            <Link to="/auth" className="inline-flex h-13 px-9 py-4 rounded-full text-[12px] font-bold uppercase tracking-[0.28em] items-center gap-2.5"
-              style={{ background: GOLD_GRAD, color: '#0a0a0a', boxShadow: '0 18px 44px rgba(201,168,76,.40), inset 0 1px 0 rgba(255,255,255,.45)' }}>
-              Open an account <ArrowRight className="w-4 h-4" />
+            <Link to="/auth" className="inline-flex h-13 px-8 rounded-full text-[14.5px] font-bold text-white items-center gap-2"
+              style={{ background: GRADIENT, boxShadow: '0 14px 30px rgba(124,58,237,.4)' }}>
+              Create free account <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
       </section>
 
       {/* ═══ FOOTER ═══ */}
-      <footer className="py-14 px-4 sm:px-6 lg:px-8" style={{ borderTop: `1px solid ${C.line}` }}>
+      <footer className="py-12 px-4 sm:px-6 lg:px-8" style={{ borderTop: `1px solid ${C.line}` }}>
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             <div className="col-span-2 sm:col-span-1">
-              <div className="flex items-center gap-2.5 mb-5">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black"
-                  style={{ background: GOLD_GRAD, color: '#0a0a0a', boxShadow: 'inset 0 1px 0 rgba(255,255,255,.4)' }}>M</div>
-                <div className="leading-tight">
-                  <div className="text-[16px] font-bold" style={{ color: C.ink }}>MultySMM</div>
-                  <div className="text-[8.5px] uppercase tracking-[0.32em]" style={{ color: C.gold }}>✦ Noir Edition</div>
-                </div>
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black"
+                  style={{ background: GRADIENT }}>M</div>
+                <span className="text-[16px] font-extrabold">MultySMM</span>
               </div>
-              <p className="text-[12.5px] leading-relaxed" style={{ color: C.ink2 }}>
-                The AI-powered growth atelier for creators who treat their accounts as craft.
+              <p className="text-[13px] leading-relaxed" style={{ color: C.muted }}>
+                The AI-powered SMM panel for creators who want real growth without risking their accounts.
               </p>
             </div>
-            {[
-              { h: 'Atelier',  links: [['Features','#features'],['API','/api-access']] },
-              { h: 'House',    links: [['About','/about'],['Contact','/contact'],['Support','/support']] },
-              { h: 'Legal',    links: [['Terms','/terms'],['Privacy','/privacy'],['Refunds','/refund'],['Cookies','/cookies']] },
-            ].map((col) => (
-              <div key={col.h}>
-                <h4 className="text-[10px] font-bold uppercase tracking-[0.32em] mb-5" style={{ color: C.gold }}>{col.h}</h4>
-                <div className="space-y-3">
-                  {col.links.map(([t,h]) => (
-                    h.startsWith('#')
-                      ? <a key={t} href={h} className="block text-[13px]" style={{ color: C.ink2 }}>{t}</a>
-                      : <Link key={t} to={h} className="block text-[13px]" style={{ color: C.ink2 }}>{t}</Link>
-                  ))}
-                </div>
+            <div>
+              <h4 className="text-[11px] font-bold uppercase tracking-widest mb-4" style={{ color: C.muted }}>Product</h4>
+              <div className="space-y-2.5">
+                <a href="#features" className="block text-[13.5px]" style={{ color: C.ink }}>Features</a>
+                <Link to="/api-access" className="block text-[13.5px]" style={{ color: C.ink }}>API</Link>
               </div>
-            ))}
+            </div>
+            <div>
+              <h4 className="text-[11px] font-bold uppercase tracking-widest mb-4" style={{ color: C.muted }}>Company</h4>
+              <div className="space-y-2.5">
+                <Link to="/about" className="block text-[13.5px]" style={{ color: C.ink }}>About</Link>
+                <Link to="/contact" className="block text-[13.5px]" style={{ color: C.ink }}>Contact</Link>
+                <Link to="/support" className="block text-[13.5px]" style={{ color: C.ink }}>Support</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-[11px] font-bold uppercase tracking-widest mb-4" style={{ color: C.muted }}>Legal</h4>
+              <div className="space-y-2.5">
+                <Link to="/terms" className="block text-[13.5px]" style={{ color: C.ink }}>Terms</Link>
+                <Link to="/privacy" className="block text-[13.5px]" style={{ color: C.ink }}>Privacy</Link>
+                <Link to="/refund" className="block text-[13.5px]" style={{ color: C.ink }}>Refunds</Link>
+                <Link to="/cookies" className="block text-[13.5px]" style={{ color: C.ink }}>Cookies</Link>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-7" style={{ borderTop: `1px solid ${C.line}` }}>
-            <p className="text-[11.5px] uppercase tracking-[0.22em]" style={{ color: C.muted }}>© {new Date().getFullYear()} MultySMM — All rights reserved.</p>
-            <div className="flex items-center gap-6 text-[11.5px] font-medium uppercase tracking-[0.22em]" style={{ color: C.muted }}>
-              <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" style={{ color: C.gold }} /> SSL Secured</span>
-              <span className="flex items-center gap-1.5"><Activity className="w-3.5 h-3.5" style={{ color: C.gold }} /> 99.9% Uptime</span>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6" style={{ borderTop: `1px solid ${C.line}` }}>
+            <p className="text-[12.5px]" style={{ color: C.muted }}>© {new Date().getFullYear()} MultySMM — All rights reserved.</p>
+            <div className="flex items-center gap-5 text-[12.5px] font-medium" style={{ color: C.muted }}>
+              <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" /> SSL Secured</span>
+              <span className="flex items-center gap-1.5"><Activity className="w-3.5 h-3.5" /> 99.9% Uptime</span>
             </div>
           </div>
         </div>
