@@ -205,106 +205,72 @@ export default function Wallet() {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-black tracking-[-0.02em]" style={{ color: '#0B0B16' }}>Wallet</h1>
-          <p className="text-[13px] mt-1" style={{ color: '#7d6f97' }}>Manage your balance and transactions.</p>
+          <h1 className="text-[40px] leading-[1.05] tracking-tight" style={{ color: '#efe7d4', fontFamily: "'Instrument Serif', serif", fontWeight: 400 }}>
+            Your <em style={{ color: '#f0d78c' }}>wallet</em>
+          </h1>
+          <p className="text-[13px] mt-2" style={{ color: 'rgba(239,231,212,.55)' }}>Manage your balance and transactions.</p>
         </div>
 
-        {/* Balance Card — MultySMM purple→pink */}
+        {/* Balance Card — Noir & Gold */}
         <div
-          className="relative overflow-hidden rounded-2xl p-4"
+          className="relative overflow-hidden rounded-2xl p-5"
           style={{
-            background: 'linear-gradient(135deg, #6D28D9 0%, #7C3AED 45%, #EC4899 100%)',
-            boxShadow: '0 14px 32px -12px rgba(124,58,237,.55), inset 0 1px 0 rgba(255,255,255,.20)',
+            background: 'radial-gradient(120% 120% at 0% 0%, #1c1a13 0%, #0d0d0d 60%), #0d0d0d',
+            border: '1px solid rgba(201,168,76,.22)',
+            boxShadow: '0 24px 60px -20px rgba(201,168,76,.30), inset 0 1px 0 rgba(255,255,255,.04)',
           }}
         >
-
-          {/* decorative orbs */}
-          <div
-            aria-hidden
-            className="absolute -top-16 -right-12 w-48 h-48 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(closest-side, rgba(255,255,255,.22), transparent 70%)' }}
-          />
-          <div
-            aria-hidden
-            className="absolute -bottom-20 -left-10 w-40 h-40 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.45), transparent 70%)' }}
-          />
-
+          <div aria-hidden className="absolute -top-16 -right-12 w-56 h-56 rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(closest-side, rgba(201,168,76,.30), transparent 70%)' }} />
+          <div aria-hidden className="absolute -bottom-20 -left-10 w-48 h-48 rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(closest-side, rgba(240,215,140,.18), transparent 70%)' }} />
+          {/* gold filigree */}
+          <div aria-hidden className="absolute top-0 left-0 right-0 h-px"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(201,168,76,.6), transparent)' }} />
 
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span
-                className="inline-flex items-center justify-center w-7 h-7 rounded-lg"
-                style={{ background: 'rgba(255,255,255,.18)', backdropFilter: 'blur(4px)' }}
-              >
-                <WalletIcon className="h-3.5 w-3.5 text-white" />
+              <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg"
+                style={{ background: 'rgba(201,168,76,.14)', border: '1px solid rgba(201,168,76,.25)' }}>
+                <WalletIcon className="h-3.5 w-3.5" style={{ color: '#f0d78c' }} />
               </span>
-              <p
-                className="text-[10px] font-semibold uppercase text-white/80"
-                style={{ letterSpacing: '0.16em' }}
-              >
+              <p className="text-[10px] font-semibold uppercase" style={{ color: '#c9a84c', letterSpacing: '0.20em' }}>
                 Available Balance
               </p>
             </div>
-            <div
-              className="px-2 py-0.5 rounded-full text-[10px] font-bold text-white"
-              style={{ background: 'rgba(255,255,255,.18)', letterSpacing: '0.05em' }}
-            >
+            <div className="px-2 py-0.5 rounded-full text-[10px] font-bold"
+              style={{ background: 'rgba(201,168,76,.14)', color: '#f0d78c', letterSpacing: '0.06em', border: '1px solid rgba(201,168,76,.25)' }}>
               INR
             </div>
           </div>
 
-          <p
-            className="relative z-10 mt-2 text-3xl md:text-4xl text-white"
-            style={{
-              fontFamily: "'Sora', system-ui, sans-serif",
-              fontWeight: 700,
-              letterSpacing: '-0.02em',
-              lineHeight: 1.05,
-            }}
-          >
-            {formatPrice(wallet?.balance || 0)}
+          <p className="relative z-10 mt-3 text-4xl md:text-5xl"
+            style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 1.05, color: '#efe7d4' }}>
+            ₹<span className="gold-shimmer">{formatPrice(wallet?.balance || 0).replace('₹', '')}</span>
           </p>
 
-          {/* stats row */}
-          <div
-            className="relative z-10 mt-3 pt-3 grid grid-cols-2 gap-3"
-            style={{ borderTop: '1px solid rgba(255,255,255,.18)' }}
-          >
+          <div className="relative z-10 mt-4 pt-4 grid grid-cols-2 gap-3"
+            style={{ borderTop: '1px solid rgba(201,168,76,.18)' }}>
             <div className="flex items-center gap-2">
-              <span
-                className="inline-flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
-                style={{ background: 'rgba(255,255,255,.18)' }}
-              >
-                <ArrowDownLeft className="h-3.5 w-3.5 text-white" />
+              <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
+                style={{ background: 'rgba(201,168,76,.12)', border: '1px solid rgba(201,168,76,.22)' }}>
+                <ArrowDownLeft className="h-3.5 w-3.5" style={{ color: '#f0d78c' }} />
               </span>
               <div className="min-w-0">
-                <p className="text-[9px] font-semibold uppercase text-white/70" style={{ letterSpacing: '0.14em' }}>
-                  Total In
-                </p>
-                <p
-                  className="text-[13px] text-white truncate"
-                  style={{ fontFamily: "'Sora', system-ui, sans-serif", fontWeight: 600 }}
-                >
+                <p className="text-[9px] font-semibold uppercase" style={{ color: '#c9a84c', letterSpacing: '0.16em' }}>Total In</p>
+                <p className="text-[14px] truncate" style={{ color: '#efe7d4', fontFamily: "'Instrument Serif', serif" }}>
                   {formatPrice(wallet?.total_deposited || 0)}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span
-                className="inline-flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
-                style={{ background: 'rgba(255,255,255,.18)' }}
-              >
-                <ArrowUpRight className="h-3.5 w-3.5 text-white" />
+              <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
+                style={{ background: 'rgba(201,168,76,.12)', border: '1px solid rgba(201,168,76,.22)' }}>
+                <ArrowUpRight className="h-3.5 w-3.5" style={{ color: '#f0d78c' }} />
               </span>
               <div className="min-w-0">
-                <p className="text-[9px] font-semibold uppercase text-white/70" style={{ letterSpacing: '0.14em' }}>
-                  Total Out
-                </p>
-                <p
-                  className="text-[13px] text-white truncate"
-                  style={{ fontFamily: "'Sora', system-ui, sans-serif", fontWeight: 600 }}
-                >
+                <p className="text-[9px] font-semibold uppercase" style={{ color: '#c9a84c', letterSpacing: '0.16em' }}>Total Out</p>
+                <p className="text-[14px] truncate" style={{ color: '#efe7d4', fontFamily: "'Instrument Serif', serif" }}>
                   {formatPrice(wallet?.total_spent || 0)}
                 </p>
               </div>
@@ -312,30 +278,33 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Deposit Section — ZapUPI auto-credit (manual & screenshot flow removed) */}
+        {/* Deposit Section — ZapUPI auto-credit */}
         <ZapUpiDepositCard />
 
         {/* Transaction History */}
-        <div className="rounded-2xl p-6" style={{ background: 'white', border: '1px solid rgba(0,0,0,.06)', boxShadow: '0 2px 12px rgba(0,0,0,.04)' }}>
+        <div className="rounded-2xl p-6"
+          style={{ background: '#141414', border: '1px solid rgba(201,168,76,.18)', boxShadow: '0 10px 30px -12px rgba(0,0,0,.7)' }}>
           <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-            <h2 className="text-lg font-bold" style={{ color: '#1a1a2e' }}>Transaction History</h2>
-            <div className="flex gap-1 p-1 rounded-xl" style={{ background: 'rgba(0,0,0,.03)' }}>
+            <h2 className="text-2xl tracking-tight" style={{ color: '#efe7d4', fontFamily: "'Instrument Serif', serif" }}>
+              Transaction <em style={{ color: '#f0d78c' }}>history</em>
+            </h2>
+            <div className="flex gap-1 p-1 rounded-xl" style={{ background: '#0a0a0a', border: '1px solid rgba(201,168,76,.14)' }}>
               {(['all', 'deposit', 'order', 'refund'] as const).map((f) => (
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
                   className="px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all"
                   style={{
-                    background: filter === f ? 'linear-gradient(135deg, #7C3AED, #EC4899)' : 'transparent',
-                    color: filter === f ? 'white' : '#7d6f97',
+                    background: filter === f ? 'linear-gradient(135deg, #f0d78c, #c9a84c)' : 'transparent',
+                    color: filter === f ? '#0a0a0a' : 'rgba(239,231,212,.6)',
                   }}
                 >
                   {f === 'all' ? 'All' : f === 'deposit' ? 'Deposits' : f === 'order' ? 'Orders' : 'Refunds'}
                 </button>
-
               ))}
             </div>
           </div>
+
 
           {displayTransactions.length > 0 ? (
             <div className="space-y-2">
