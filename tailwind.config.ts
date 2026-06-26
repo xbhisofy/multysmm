@@ -14,12 +14,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Work Sans', 'system-ui', 'sans-serif'],
-        display: ['Instrument Serif', 'Georgia', 'serif'],
-        serif: ['Instrument Serif', 'Georgia', 'serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Outfit', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
-
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
