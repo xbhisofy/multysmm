@@ -93,35 +93,47 @@ export default function Auth() {
     } finally { setIsSubmitting(false); }
   };
 
-  const inputClass = "h-12 rounded-xl border-[#e5e5e5] bg-white focus:border-[#1a1a2e] focus:ring-1 focus:ring-[#1a1a2e] text-[#1a1a2e] font-medium px-4 placeholder:text-[#bbb] transition-all";
+  const inputClass = "h-12 rounded-xl border-[#EDE4FE] bg-white focus:border-[#7C3AED] focus:ring-2 focus:ring-[#7C3AED]/15 text-[#0B0B16] font-medium px-4 placeholder:text-[#bbb] transition-all";
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-12" style={{ background: 'linear-gradient(180deg, #fff 0%, #f0fdf4 50%, #dcfce7 100%)' }}>
+    <div className="min-h-screen flex items-center justify-center px-6 py-12 relative overflow-hidden"
+      style={{ background: 'linear-gradient(180deg, #ffffff 0%, #FAF5FF 50%, #FDF2F8 100%)' }}>
+      {/* glow */}
+      <div aria-hidden className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.18), transparent 70%)', filter: 'blur(40px)' }} />
+      <div aria-hidden className="absolute bottom-[-200px] right-[-100px] w-[500px] h-[500px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.18), transparent 70%)', filter: 'blur(40px)' }} />
+
       <PageMeta
-        title={isLogin ? 'Sign in — OrganicSMM' : 'Create your account — OrganicSMM'}
-        description="Sign in or create your free OrganicSMM account to launch organic Instagram, YouTube and TikTok growth campaigns. No credit card required."
+        title={isLogin ? 'Sign in — MultySMM' : 'Create your account — MultySMM'}
+        description="Sign in or create your free MultySMM account to launch AI-powered Instagram, YouTube and TikTok growth campaigns. No credit card required."
         canonicalPath="/auth"
       />
-      <div className="w-full max-w-[400px]">
+      <div className="w-full max-w-[400px] relative">
           {/* Logo */}
           <div className="flex items-center justify-center gap-2.5 mb-10">
-            <img src={logo} alt="OrganicSMM" className="w-10 h-10 rounded-xl object-cover shadow-sm" />
-            <div className="flex flex-col">
-              <span className="text-[16px] font-bold tracking-tight" style={{ color: '#1a1a2e' }}>OrganicSMM</span>
-              <span className="text-[9px] font-semibold uppercase tracking-[0.15em]" style={{ background: 'linear-gradient(90deg, #16a34a, #f97316)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>✦ Updated Version</span>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-[17px]"
+              style={{ background: GRADIENT, boxShadow: '0 10px 24px rgba(124,58,237,.35)' }}>M</div>
+            <div className="flex flex-col leading-tight">
+              <span className="text-[16px] font-extrabold tracking-tight" style={{ color: '#0B0B16' }}>MultySMM</span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.18em]"
+                style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                ✦ AI-Powered Panel
+              </span>
             </div>
           </div>
 
-          <Link to="/" className="inline-flex items-center gap-1.5 text-[12px] font-medium mb-8" style={{ color: '#999' }}>
+          <Link to="/" className="inline-flex items-center gap-1.5 text-[12px] font-medium mb-8" style={{ color: '#9b8fb8' }}>
             <ArrowLeft className="w-3.5 h-3.5" /> Back to home
           </Link>
 
-          <h1 className="text-2xl font-extrabold tracking-tight mb-1" style={{ color: '#1a1a2e', fontFamily: "'Outfit', system-ui, sans-serif" }}>
+          <h1 className="text-3xl font-black tracking-[-0.02em] mb-1" style={{ color: '#0B0B16' }}>
             {isForgotPassword ? 'Reset password' : isLogin ? 'Welcome back' : 'Create account'}
           </h1>
-          <p className="text-[14px] mb-8" style={{ color: '#999' }}>
-            {isForgotPassword ? 'Enter your email to receive a reset link.' : isLogin ? 'Sign in to your account.' : 'Get started for free.'}
+          <p className="text-[14px] mb-8" style={{ color: '#7d6f97' }}>
+            {isForgotPassword ? 'Enter your email to receive a reset link.' : isLogin ? 'Sign in to your MultySMM account.' : 'Get started for free — no credit card.'}
           </p>
+
 
           {showVerifyEmail ? (
             <div className="text-center py-8">
