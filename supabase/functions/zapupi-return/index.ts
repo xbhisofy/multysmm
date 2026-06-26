@@ -1,6 +1,6 @@
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 
-const FALLBACK_RETURN_URL = 'https://organicsmm.online/wallet'
+const FALLBACK_RETURN_URL = 'https://multitsmmm.lovable.app/wallet'
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
