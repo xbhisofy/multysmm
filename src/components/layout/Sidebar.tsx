@@ -1,12 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Package, Wallet, ListOrdered, Settings, LifeBuoy, Shield, LogOut, Rocket, Sparkles, X, ChevronDown, Code2 } from 'lucide-react';
-import logo from '@/assets/logo.jpg';
+import { LayoutDashboard, Wallet, Settings, LifeBuoy, Shield, LogOut, Rocket, Sparkles, X, Code2, Send } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useCurrency, CURRENCIES } from '@/hooks/useCurrency';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
 
 interface SidebarProps { onClose?: () => void; }
+
+const GRADIENT = 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)';
 
 const userNavItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
@@ -23,72 +22,87 @@ const adminNavItems = [{ icon: Shield, label: 'Admin Panel', path: '/admin' }];
 export function Sidebar({ onClose }: SidebarProps) {
   const location = useLocation();
   const { isAdmin, signOut, wallet, profile } = useAuth();
-  const { currency, setCurrency, formatPrice, currencyInfo } = useCurrency();
-  const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
 
   return (
-    <div className="h-full w-full overflow-hidden flex flex-col" style={{ background: '#fff', borderRight: '1px solid #f0e8ef' }}>
-      {/* Logo */}
+    <div className="h-full w-full overflow-hidden flex flex-col" style={{ background: '#fff', borderRight: '1px solid #efeaf7' }}>
+      {/* Brand */}
       <div className="flex items-center justify-between px-5 pt-4 pb-3">
         <Link to="/" className="flex items-center gap-2.5">
-          <img src={logo} alt="OrganicSMM" className="w-9 h-9 rounded-xl object-cover shadow-sm" />
-          <div className="flex flex-col">
-            <span className="text-[15px] font-bold tracking-tight leading-tight" style={{ color: '#1a1a2e' }}>OrganicSMM</span>
-            <span className="text-[9px] font-semibold uppercase tracking-[0.15em] leading-tight" style={{ background: 'linear-gradient(90deg, #16a34a, #f97316)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>✦ Updated Version</span>
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-[15px]"
+            style={{ background: GRADIENT, boxShadow: '0 6px 18px rgba(124,58,237,.35)' }}>
+            M
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="text-[15px] font-extrabold tracking-tight" style={{ color: '#0B0B16' }}>MultySMM</span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.18em]"
+              style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              ✦ AI-Powered
+            </span>
           </div>
         </Link>
-        <button onClick={onClose} className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#ccc' }}>
+        <button onClick={onClose} className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>
           <X className="w-4 h-4" />
         </button>
       </div>
 
-      {/* User info */}
+      {/* User chip */}
       {profile && (
-        <div className="mx-4 mb-3 flex items-center gap-2.5 px-3 py-2.5 rounded-xl" style={{ background: '#f0fdf4', border: '1px solid #dcfce7' }}>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0" style={{ background: '#16a34a' }}>
-            {profile.full_name?.[0]?.toUpperCase() || 'U'}
+        <div className="mx-4 mb-3 flex items-center gap-2.5 px-3 py-2.5 rounded-xl" style={{ background: '#FAF5FF', border: '1px solid #EDE4FE' }}>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+            style={{ background: GRADIENT }}>
+            {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || 'U'}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[12px] font-semibold truncate" style={{ color: '#1a1a2e' }}>{profile.full_name || 'User'}</p>
-            <p className="text-[10px] truncate" style={{ color: '#aaa' }}>{profile.email}</p>
+            <p className="text-[12px] font-semibold truncate" style={{ color: '#0B0B16' }}>{profile.full_name || 'User'}</p>
+            <p className="text-[10px] truncate" style={{ color: '#9b8fb8' }}>{profile.email}</p>
           </div>
         </div>
       )}
 
-      {/* Wallet */}
+      {/* Wallet card */}
       <div className="mx-4 mb-4">
-        <div className="rounded-xl p-4" style={{ background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)', border: '1px solid #dcfce7' }}>
-          <div className="flex items-center gap-1.5 mb-1.5">
-            <Wallet className="w-3 h-3" style={{ color: '#16a34a' }} />
-            <span className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: '#16a34a' }}>Wallet Balance</span>
+        <div className="rounded-2xl p-4 relative overflow-hidden text-white"
+          style={{ background: GRADIENT, boxShadow: '0 14px 30px -10px rgba(124,58,237,.45)' }}>
+          <div aria-hidden className="absolute -top-10 -right-10 w-32 h-32 rounded-full"
+            style={{ background: 'radial-gradient(closest-side, rgba(255,255,255,.25), transparent 70%)' }} />
+          <div className="relative">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <Wallet className="w-3 h-3" />
+              <span className="text-[9px] font-bold uppercase tracking-[0.16em] opacity-90">Wallet Balance</span>
+            </div>
+            <p className="text-[24px] font-extrabold tracking-tight mb-3">
+              ₹{Number(wallet?.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </p>
+            <Link to="/wallet" onClick={onClose}
+              className="flex items-center justify-center gap-1.5 w-full h-9 rounded-xl text-[12px] font-bold"
+              style={{ background: 'rgba(255,255,255,.95)', color: '#7C3AED' }}>
+              <Wallet className="w-3.5 h-3.5" /> Add Funds
+            </Link>
           </div>
-          <p className="text-[22px] font-extrabold tracking-tight mb-3" style={{ color: '#1a1a2e' }}>{formatPrice(wallet?.balance || 0)}</p>
-          <Link to="/wallet" onClick={onClose} className="flex items-center justify-center gap-1.5 w-full h-8 rounded-lg text-[11px] font-semibold text-white" style={{ background: '#16a34a' }}>
-            <Wallet className="w-3 h-3" /> Add Funds
-          </Link>
         </div>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 pb-3 scrollbar-thin">
-        <p className="px-3 mb-2 text-[9px] font-semibold uppercase tracking-wider" style={{ color: '#ccc' }}>Menu</p>
+        <p className="px-3 mb-2 text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: '#b8a8d0' }}>Menu</p>
         {userNavItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <Link key={item.path} to={item.path} onClick={onClose}
               className={cn('flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium mb-0.5 transition-all duration-150',
-                isActive ? 'font-semibold' : 'hover:bg-green-50/60'
+                !isActive && 'hover:bg-purple-50/70'
               )}
               style={{
-                background: isActive ? '#f0fdf4' : 'transparent',
-                color: isActive ? '#166534' : '#666',
-                border: isActive ? '1px solid #dcfce7' : '1px solid transparent',
+                background: isActive ? '#F5EEFF' : 'transparent',
+                color: isActive ? '#6D28D9' : '#4A4A5E',
+                border: isActive ? '1px solid #E5D7FA' : '1px solid transparent',
+                fontWeight: isActive ? 600 : 500,
               }}
             >
-              <item.icon className="w-4 h-4" style={{ color: isActive ? '#16a34a' : '#bbb' }} />
+              <item.icon className="w-4 h-4" style={{ color: isActive ? '#7C3AED' : '#a99dc1' }} />
               <span className="flex-1">{item.label}</span>
               {(item as any).highlight && !isActive && (
-                <span className="text-[8px] px-1.5 py-0.5 rounded-full font-bold" style={{ background: '#dcfce7', color: '#16a34a' }}>HOT</span>
+                <span className="text-[8px] px-1.5 py-0.5 rounded-full font-bold text-white" style={{ background: GRADIENT }}>HOT</span>
               )}
             </Link>
           );
@@ -96,20 +110,20 @@ export function Sidebar({ onClose }: SidebarProps) {
 
         {isAdmin && (
           <>
-            <div className="my-3 mx-3" style={{ borderTop: '1px solid #f5f0f4' }} />
-            <p className="px-3 mb-2 text-[9px] font-semibold uppercase tracking-wider" style={{ color: '#ccc' }}>Admin</p>
+            <div className="my-3 mx-3" style={{ borderTop: '1px solid #f3eefa' }} />
+            <p className="px-3 mb-2 text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: '#b8a8d0' }}>Admin</p>
             {adminNavItems.map((item) => {
               const isActive = location.pathname.startsWith(item.path);
               return (
                 <Link key={item.path} to={item.path} onClick={onClose}
                   className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium mb-0.5 transition-all duration-150"
                   style={{
-                    background: isActive ? '#fef2f2' : 'transparent',
-                    color: isActive ? '#dc2626' : '#666',
-                    border: isActive ? '1px solid #fecaca' : '1px solid transparent',
+                    background: isActive ? '#FDF2F8' : 'transparent',
+                    color: isActive ? '#BE185D' : '#4A4A5E',
+                    border: isActive ? '1px solid #FBCFE8' : '1px solid transparent',
                   }}
                 >
-                  <item.icon className="w-4 h-4" style={{ color: isActive ? '#ef4444' : '#bbb' }} />
+                  <item.icon className="w-4 h-4" style={{ color: isActive ? '#EC4899' : '#a99dc1' }} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -120,32 +134,33 @@ export function Sidebar({ onClose }: SidebarProps) {
 
       {/* Currency */}
       <div className="px-3 pb-2">
-        <div className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-[12px] font-medium" style={{ color: '#888', background: '#fafafa', border: '1px solid #f0e8ef' }}>
+        <div className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-[12px] font-medium"
+          style={{ color: '#7d6f97', background: '#FAF7FF', border: '1px solid #efeaf7' }}>
           <div className="flex items-center gap-2">
             <span className="text-base">🇮🇳</span>
             <span className="uppercase tracking-wider">INR</span>
           </div>
-          <span className="text-[10px] opacity-60">₹</span>
+          <span className="text-[10px] opacity-70">₹</span>
         </div>
       </div>
 
       {/* Telegram */}
       <div className="px-3 pb-1">
-        <a href="https://t.me/whopcampaign" target="_blank" rel="noopener noreferrer"
-          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[12px] font-medium transition-colors hover:bg-sky-50/60"
-          style={{ background: '#f0f9ff', border: '1px solid #e0f2fe', color: '#0ea5e9' }}>
-          <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-          <div className="flex flex-col">
-            <span className="font-semibold text-[11px]" style={{ color: '#0284c7' }}>Join our Telegram</span>
-            <span className="text-[10px]" style={{ color: '#7dd3fc' }}>Updates & support</span>
+        <a href="https://t.me/HenryMiller08" target="_blank" rel="noopener noreferrer"
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[12px] font-medium transition-colors"
+          style={{ background: '#F5EEFF', border: '1px solid #E5D7FA', color: '#6D28D9' }}>
+          <Send className="w-4 h-4 shrink-0" style={{ color: '#7C3AED' }} />
+          <div className="flex flex-col leading-tight">
+            <span className="font-bold text-[11px]">Join our Telegram</span>
+            <span className="text-[10px] opacity-80">Updates & support</span>
           </div>
         </a>
       </div>
 
       {/* Sign out */}
-      <div className="p-3" style={{ borderTop: '1px solid #f5f0f4' }}>
-        <button onClick={() => signOut()} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12px] font-medium transition-colors hover:bg-red-50" style={{ color: '#aaa' }}>
-          <LogOut className="w-3.5 h-3.5" style={{ color: '#ef4444' }} />
+      <div className="p-3" style={{ borderTop: '1px solid #f3eefa' }}>
+        <button onClick={() => signOut()} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12px] font-medium transition-colors hover:bg-red-50" style={{ color: '#9b8fb8' }}>
+          <LogOut className="w-3.5 h-3.5" style={{ color: '#EC4899' }} />
           <span>Sign out</span>
         </button>
       </div>
