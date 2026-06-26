@@ -762,7 +762,9 @@ Deno.serve(async (req) => {
       }
     }
 
+    const durationMs = Date.now() - invocationStartedAt
     console.log(`\n=== STATUS CHECK COMPLETE ===`)
+    console.log(`Trace: ${traceId} | Source: ${callSource} | Duration: ${durationMs}ms`)
     console.log(`Completed: ${completed}, Still Processing: ${stillProcessing}, Failed: ${failed}`)
 
     // Send admin alert if there were failures
