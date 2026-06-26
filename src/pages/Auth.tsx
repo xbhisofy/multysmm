@@ -9,7 +9,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { z } from 'zod';
 import { PageMeta } from '@/components/seo/PageMeta';
 
-const GRADIENT = 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)';
+const GOLD = '#c9a84c';
+const GOLD_SOFT = '#f0d78c';
+const INK = '#0a0a0a';
+const COAL = '#141414';
+const PARCHMENT = '#efe7d4';
+const BORDER = 'rgba(201,168,76,.22)';
+const GOLD_GRAD = 'linear-gradient(135deg, #f0d78c 0%, #c9a84c 55%, #8b6f24 100%)';
+
 
 
 
@@ -93,46 +100,52 @@ export default function Auth() {
     } finally { setIsSubmitting(false); }
   };
 
-  const inputClass = "h-12 rounded-xl border-[#EDE4FE] bg-white focus:border-[#7C3AED] focus:ring-2 focus:ring-[#7C3AED]/15 text-[#0B0B16] font-medium px-4 placeholder:text-[#bbb] transition-all";
+  const inputClass = "h-12 rounded-xl bg-[#141414] focus:border-[#c9a84c] focus:ring-2 focus:ring-[#c9a84c]/25 font-medium px-4 placeholder:text-[#6b6453] transition-all";
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 py-12 relative overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #ffffff 0%, #FAF5FF 50%, #FDF2F8 100%)' }}>
-      {/* glow */}
+      style={{ background: INK, color: PARCHMENT }}>
+      {/* gold orbs */}
       <div aria-hidden className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.18), transparent 70%)', filter: 'blur(40px)' }} />
+        style={{ background: 'radial-gradient(closest-side, rgba(201,168,76,.18), transparent 70%)', filter: 'blur(40px)' }} />
       <div aria-hidden className="absolute bottom-[-200px] right-[-100px] w-[500px] h-[500px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.18), transparent 70%)', filter: 'blur(40px)' }} />
+        style={{ background: 'radial-gradient(closest-side, rgba(240,215,140,.12), transparent 70%)', filter: 'blur(40px)' }} />
+      {/* gold filigree */}
+      <div aria-hidden className="absolute top-0 left-0 right-0 h-px pointer-events-none"
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(201,168,76,.5), transparent)' }} />
 
       <PageMeta
         title={isLogin ? 'Sign in — MultySMM' : 'Create your account — MultySMM'}
         description="Sign in or create your free MultySMM account to launch AI-powered Instagram, YouTube and TikTok growth campaigns. No credit card required."
         canonicalPath="/auth"
       />
-      <div className="w-full max-w-[400px] relative">
+      <div className="w-full max-w-[420px] relative">
           {/* Logo */}
-          <div className="flex items-center justify-center gap-2.5 mb-10">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-[17px]"
-              style={{ background: GRADIENT, boxShadow: '0 10px 24px rgba(124,58,237,.35)' }}>M</div>
+          <div className="flex items-center justify-center gap-3 mb-10">
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center font-black text-[18px]"
+              style={{ background: GOLD_GRAD, color: INK, boxShadow: '0 12px 28px -8px rgba(201,168,76,.55)' }}>M</div>
             <div className="flex flex-col leading-tight">
-              <span className="text-[16px] font-extrabold tracking-tight" style={{ color: '#0B0B16' }}>MultySMM</span>
-              <span className="text-[9px] font-bold uppercase tracking-[0.18em]"
-                style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                ✦ AI-Powered Panel
+              <span className="text-[22px] tracking-tight" style={{ color: PARCHMENT, fontFamily: "'Instrument Serif', serif" }}>
+                Multy<em style={{ color: GOLD_SOFT }}>SMM</em>
+              </span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.22em]" style={{ color: GOLD }}>
+                ✦ Noir Edition
               </span>
             </div>
           </div>
 
-          <Link to="/" className="inline-flex items-center gap-1.5 text-[12px] font-medium mb-8" style={{ color: '#9b8fb8' }}>
+          <Link to="/" className="inline-flex items-center gap-1.5 text-[12px] font-medium mb-8 transition-colors hover:text-[#f0d78c]"
+            style={{ color: 'rgba(239,231,212,.55)' }}>
             <ArrowLeft className="w-3.5 h-3.5" /> Back to home
           </Link>
 
-          <h1 className="text-3xl font-black tracking-[-0.02em] mb-1" style={{ color: '#0B0B16' }}>
-            {isForgotPassword ? 'Reset password' : isLogin ? 'Welcome back' : 'Create account'}
+          <h1 className="text-[44px] leading-[1.05] mb-2 tracking-tight" style={{ color: PARCHMENT, fontFamily: "'Instrument Serif', serif", fontWeight: 400 }}>
+            {isForgotPassword ? <>Reset your <em style={{ color: GOLD_SOFT }}>password</em></> : isLogin ? <>Welcome <em style={{ color: GOLD_SOFT }}>back</em></> : <>Create an <em style={{ color: GOLD_SOFT }}>account</em></>}
           </h1>
-          <p className="text-[14px] mb-8" style={{ color: '#7d6f97' }}>
+          <p className="text-[14px] mb-8" style={{ color: 'rgba(239,231,212,.55)' }}>
             {isForgotPassword ? 'Enter your email to receive a reset link.' : isLogin ? 'Sign in to your MultySMM account.' : 'Get started for free — no credit card.'}
           </p>
+
 
 
           {showVerifyEmail ? (
