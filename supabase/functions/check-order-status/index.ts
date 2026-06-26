@@ -132,16 +132,33 @@ Deno.serve(async (req) => {
 
     // Check if specific run ID was passed (for on-demand check)
     let targetRunId: string | null = null
+    let callSource: string = 'unknown'
+    let callContext: Record<string, unknown> = {}
     try {
       const body = await req.json()
       targetRunId = body?.runId || null
+      callSource = (body?.source || 'unknown').toString().slice(0, 40)
+      callContext = {
+        order_id: body?.orderId ?? body?.engagementOrderId ?? null,
+        order_number: body?.orderNumber ?? null,
+        reason: body?.reason ?? null,
+      }
     } catch {
       // No body or invalid JSON - check all
     }
 
+    const invocationStartedAt = Date.now()
+    const traceId = crypto.randomUUID().slice(0, 8)
     console.log(`=== CHECK PROVIDER ORDER STATUS ===`)
-    console.log(`Time: ${new Date().toISOString()}`)
-    console.log(`Target Run: ${targetRunId || 'ALL STARTED RUNS'}`)
+    console.log(`Trace: ${traceId} | Time: ${new Date().toISOString()}`)
+    console.log(`Source: ${callSource} | Target Run: ${targetRunId || 'ALL STARTED RUNS'}`)
+    if (callContext.order_id || callContext.order_number || callContext.reason) {
+      console.log(`Context: ${JSON.stringify(callContext)}`)
+    }
+    // User-agent helps separate browser polling from server-side/cron calls
+    const ua = req.headers.get('user-agent') || 'none'
+    const ip = req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || 'unknown'
+    console.log(`Caller: ip=${ip} ua="${ua.slice(0, 120)}"`)
 
     let completed = 0
     let stillProcessing = 0
