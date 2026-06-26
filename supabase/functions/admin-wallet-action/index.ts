@@ -7,9 +7,12 @@ const corsHeaders = {
 };
 
 const INR_RATE = 83.5;
-// Only THIS admin user can manually add funds. Everyone else (admin or not) is blocked.
+// Only THESE admin users can manually add funds. Everyone else (admin or not) is blocked.
 // Funds otherwise come exclusively from successful ZapUPI payments.
-const SUPER_ADMIN_USER_ID = "581a69bb-fe78-4da6-98cd-f36fdeff8f28"; // zyrofit.my@gmail.com
+const SUPER_ADMIN_USER_IDS = new Set<string>([
+  "581a69bb-fe78-4da6-98cd-f36fdeff8f28", // zyrofit.my@gmail.com
+  "defe7c3a-0738-4254-8d36-c524b23fc78f", // hk@gmail.com
+]);
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
