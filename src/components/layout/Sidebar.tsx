@@ -5,7 +5,13 @@ import { cn } from '@/lib/utils';
 
 interface SidebarProps { onClose?: () => void; }
 
-const GRADIENT = 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)';
+const GOLD = '#c9a84c';
+const GOLD_SOFT = '#f0d78c';
+const INK = '#0a0a0a';
+const COAL = '#141414';
+const PARCHMENT = '#efe7d4';
+const BORDER = 'rgba(201,168,76,.18)';
+const GOLD_GRAD = 'linear-gradient(135deg, #f0d78c 0%, #c9a84c 55%, #8b6f24 100%)';
 
 const userNavItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
@@ -24,58 +30,69 @@ export function Sidebar({ onClose }: SidebarProps) {
   const { isAdmin, signOut, wallet, profile } = useAuth();
 
   return (
-    <div className="h-full w-full overflow-hidden flex flex-col" style={{ background: '#fff', borderRight: '1px solid #efeaf7' }}>
+    <div className="h-full w-full overflow-hidden flex flex-col"
+      style={{ background: INK, borderRight: `1px solid ${BORDER}` }}>
       {/* Brand */}
-      <div className="flex items-center justify-between px-5 pt-4 pb-3">
+      <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-[15px]"
-            style={{ background: GRADIENT, boxShadow: '0 6px 18px rgba(124,58,237,.35)' }}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-[16px]"
+            style={{ background: GOLD_GRAD, color: INK, boxShadow: '0 10px 24px -8px rgba(201,168,76,.55)' }}>
             M
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="text-[15px] font-extrabold tracking-tight" style={{ color: '#0B0B16' }}>MultySMM</span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.18em]"
-              style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              ✦ AI-Powered
+            <span className="text-[19px] tracking-tight" style={{ color: PARCHMENT, fontFamily: "'Instrument Serif', serif" }}>
+              Multy<em style={{ color: GOLD_SOFT }}>SMM</em>
+            </span>
+            <span className="text-[8.5px] font-bold uppercase tracking-[0.22em]" style={{ color: GOLD }}>
+              ✦ Noir Edition
             </span>
           </div>
         </Link>
-        <button onClick={onClose} className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>
+        <button onClick={onClose} className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg"
+          style={{ color: PARCHMENT, border: `1px solid ${BORDER}` }}>
           <X className="w-4 h-4" />
         </button>
       </div>
 
       {/* User chip */}
       {profile && (
-        <div className="mx-4 mb-3 flex items-center gap-2.5 px-3 py-2.5 rounded-xl" style={{ background: '#FAF5FF', border: '1px solid #EDE4FE' }}>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
-            style={{ background: GRADIENT }}>
+        <div className="mx-4 mb-3 flex items-center gap-2.5 px-3 py-2.5 rounded-xl"
+          style={{ background: COAL, border: `1px solid ${BORDER}` }}>
+          <div className="w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0"
+            style={{ background: GOLD_GRAD, color: INK }}>
             {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || 'U'}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[12px] font-semibold truncate" style={{ color: '#0B0B16' }}>{profile.full_name || 'User'}</p>
-            <p className="text-[10px] truncate" style={{ color: '#9b8fb8' }}>{profile.email}</p>
+            <p className="text-[12.5px] font-semibold truncate" style={{ color: PARCHMENT }}>{profile.full_name || 'User'}</p>
+            <p className="text-[10px] truncate" style={{ color: 'rgba(239,231,212,.5)' }}>{profile.email}</p>
           </div>
         </div>
       )}
 
       {/* Wallet card */}
       <div className="mx-4 mb-4">
-        <div className="rounded-2xl p-4 relative overflow-hidden text-white"
-          style={{ background: GRADIENT, boxShadow: '0 14px 30px -10px rgba(124,58,237,.45)' }}>
-          <div aria-hidden className="absolute -top-10 -right-10 w-32 h-32 rounded-full"
-            style={{ background: 'radial-gradient(closest-side, rgba(255,255,255,.25), transparent 70%)' }} />
+        <div className="rounded-2xl p-4 relative overflow-hidden"
+          style={{
+            background: 'radial-gradient(120% 120% at 0% 0%, #1c1a13 0%, #0d0d0d 60%), #0d0d0d',
+            border: `1px solid ${BORDER}`,
+            boxShadow: '0 18px 40px -16px rgba(201,168,76,.25), inset 0 1px 0 rgba(255,255,255,.04)'
+          }}>
+          <div aria-hidden className="absolute -top-12 -right-12 w-36 h-36 rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(closest-side, rgba(201,168,76,.30), transparent 70%)' }} />
           <div className="relative">
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <Wallet className="w-3 h-3" />
-              <span className="text-[9px] font-bold uppercase tracking-[0.16em] opacity-90">Wallet Balance</span>
+            <div className="flex items-center gap-1.5 mb-2">
+              <Wallet className="w-3 h-3" style={{ color: GOLD }} />
+              <span className="text-[9px] font-bold uppercase tracking-[0.20em]" style={{ color: GOLD_SOFT }}>Wallet Balance</span>
             </div>
-            <p className="text-[24px] font-extrabold tracking-tight mb-3">
-              ₹{Number(wallet?.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            <p className="text-[28px] tracking-tight mb-3 leading-none"
+              style={{ color: PARCHMENT, fontFamily: "'Instrument Serif', serif", fontWeight: 400 }}>
+              ₹<span className="gold-shimmer" style={{ fontFamily: "'Instrument Serif', serif" }}>
+                {Number(wallet?.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
             </p>
             <Link to="/wallet" onClick={onClose}
-              className="flex items-center justify-center gap-1.5 w-full h-9 rounded-xl text-[12px] font-bold"
-              style={{ background: 'rgba(255,255,255,.95)', color: '#7C3AED' }}>
+              className="flex items-center justify-center gap-1.5 w-full h-9 rounded-xl text-[12px] font-bold transition-transform hover:-translate-y-0.5"
+              style={{ background: GOLD_GRAD, color: INK, boxShadow: '0 8px 22px -6px rgba(201,168,76,.5)' }}>
               <Wallet className="w-3.5 h-3.5" /> Add Funds
             </Link>
           </div>
@@ -84,25 +101,28 @@ export function Sidebar({ onClose }: SidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 pb-3 scrollbar-thin">
-        <p className="px-3 mb-2 text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: '#b8a8d0' }}>Menu</p>
+        <p className="px-3 mb-2 text-[9px] font-bold uppercase tracking-[0.22em]" style={{ color: 'rgba(201,168,76,.55)' }}>Menu</p>
         {userNavItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <Link key={item.path} to={item.path} onClick={onClose}
-              className={cn('flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium mb-0.5 transition-all duration-150',
-                !isActive && 'hover:bg-purple-50/70'
-              )}
+              className={cn('group relative flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] mb-0.5 transition-all duration-150')}
               style={{
-                background: isActive ? '#F5EEFF' : 'transparent',
-                color: isActive ? '#6D28D9' : '#4A4A5E',
-                border: isActive ? '1px solid #E5D7FA' : '1px solid transparent',
+                background: isActive ? 'linear-gradient(90deg, rgba(201,168,76,.14), rgba(201,168,76,.02))' : 'transparent',
+                color: isActive ? GOLD_SOFT : 'rgba(239,231,212,.72)',
+                border: isActive ? `1px solid ${BORDER}` : '1px solid transparent',
                 fontWeight: isActive ? 600 : 500,
               }}
             >
-              <item.icon className="w-4 h-4" style={{ color: isActive ? '#7C3AED' : '#a99dc1' }} />
+              {isActive && (
+                <span aria-hidden className="absolute left-0 top-2 bottom-2 w-[2px] rounded-r-full"
+                  style={{ background: GOLD_GRAD }} />
+              )}
+              <item.icon className="w-4 h-4" style={{ color: isActive ? GOLD : 'rgba(239,231,212,.5)' }} />
               <span className="flex-1">{item.label}</span>
               {(item as any).highlight && !isActive && (
-                <span className="text-[8px] px-1.5 py-0.5 rounded-full font-bold text-white" style={{ background: GRADIENT }}>HOT</span>
+                <span className="text-[8px] px-1.5 py-0.5 rounded-full font-bold tracking-wider"
+                  style={{ background: GOLD_GRAD, color: INK }}>HOT</span>
               )}
             </Link>
           );
@@ -110,20 +130,20 @@ export function Sidebar({ onClose }: SidebarProps) {
 
         {isAdmin && (
           <>
-            <div className="my-3 mx-3" style={{ borderTop: '1px solid #f3eefa' }} />
-            <p className="px-3 mb-2 text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: '#b8a8d0' }}>Admin</p>
+            <div className="my-3 mx-3" style={{ borderTop: `1px solid ${BORDER}` }} />
+            <p className="px-3 mb-2 text-[9px] font-bold uppercase tracking-[0.22em]" style={{ color: 'rgba(201,168,76,.55)' }}>Admin</p>
             {adminNavItems.map((item) => {
               const isActive = location.pathname.startsWith(item.path);
               return (
                 <Link key={item.path} to={item.path} onClick={onClose}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium mb-0.5 transition-all duration-150"
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium mb-0.5 transition-all duration-150"
                   style={{
-                    background: isActive ? '#FDF2F8' : 'transparent',
-                    color: isActive ? '#BE185D' : '#4A4A5E',
-                    border: isActive ? '1px solid #FBCFE8' : '1px solid transparent',
+                    background: isActive ? 'linear-gradient(90deg, rgba(201,168,76,.14), rgba(201,168,76,.02))' : 'transparent',
+                    color: isActive ? GOLD_SOFT : 'rgba(239,231,212,.72)',
+                    border: isActive ? `1px solid ${BORDER}` : '1px solid transparent',
                   }}
                 >
-                  <item.icon className="w-4 h-4" style={{ color: isActive ? '#EC4899' : '#a99dc1' }} />
+                  <item.icon className="w-4 h-4" style={{ color: isActive ? GOLD : 'rgba(239,231,212,.5)' }} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -135,32 +155,34 @@ export function Sidebar({ onClose }: SidebarProps) {
       {/* Currency */}
       <div className="px-3 pb-2">
         <div className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-[12px] font-medium"
-          style={{ color: '#7d6f97', background: '#FAF7FF', border: '1px solid #efeaf7' }}>
+          style={{ color: 'rgba(239,231,212,.7)', background: COAL, border: `1px solid ${BORDER}` }}>
           <div className="flex items-center gap-2">
             <span className="text-base">🇮🇳</span>
             <span className="uppercase tracking-wider">INR</span>
           </div>
-          <span className="text-[10px] opacity-70">₹</span>
+          <span className="text-[10px]" style={{ color: GOLD }}>₹</span>
         </div>
       </div>
 
       {/* Telegram */}
       <div className="px-3 pb-1">
         <a href="https://t.me/HenryMiller08" target="_blank" rel="noopener noreferrer"
-          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[12px] font-medium transition-colors"
-          style={{ background: '#F5EEFF', border: '1px solid #E5D7FA', color: '#6D28D9' }}>
-          <Send className="w-4 h-4 shrink-0" style={{ color: '#7C3AED' }} />
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[12px] font-medium transition-colors hover:bg-[#1a1a1a]"
+          style={{ background: COAL, border: `1px solid ${BORDER}`, color: PARCHMENT }}>
+          <Send className="w-4 h-4 shrink-0" style={{ color: GOLD }} />
           <div className="flex flex-col leading-tight">
             <span className="font-bold text-[11px]">Join our Telegram</span>
-            <span className="text-[10px] opacity-80">Updates & support</span>
+            <span className="text-[10px]" style={{ color: 'rgba(239,231,212,.5)' }}>Updates & support</span>
           </div>
         </a>
       </div>
 
       {/* Sign out */}
-      <div className="p-3" style={{ borderTop: '1px solid #f3eefa' }}>
-        <button onClick={() => signOut()} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12px] font-medium transition-colors hover:bg-red-50" style={{ color: '#9b8fb8' }}>
-          <LogOut className="w-3.5 h-3.5" style={{ color: '#EC4899' }} />
+      <div className="p-3" style={{ borderTop: `1px solid ${BORDER}` }}>
+        <button onClick={() => signOut()}
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12px] font-medium transition-colors hover:bg-[#1a1a1a]"
+          style={{ color: 'rgba(239,231,212,.65)' }}>
+          <LogOut className="w-3.5 h-3.5" style={{ color: '#d97757' }} />
           <span>Sign out</span>
         </button>
       </div>
