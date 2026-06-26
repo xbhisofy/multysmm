@@ -29,7 +29,7 @@ Deno.serve(async (req) => {
     }
     const amountInr = Math.round(amount * 100) / 100
 
-    const origin = safeOrigin(req.headers.get('origin') || (body?.origin as string) || 'https://multitsmmm.lovable.app')
+    const origin = safeOrigin(req.headers.get('origin') || (body?.origin as string) || 'https://multysmm.site')
     const returnBaseUrl = safeReturnUrl(body?.return_url, origin)
     const customerMobile = String(body?.customer_mobile || '').replace(/\D/g, '').slice(-10)
     const webhookUrl = `${SUPABASE_URL}/functions/v1/zapupi-webhook`
