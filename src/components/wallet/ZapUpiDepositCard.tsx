@@ -222,16 +222,3 @@ export default function ZapUpiDepositCard() {
   );
 }
 
-
-
-      <div className="flex items-center justify-center gap-1.5 mt-4">
-        <ShieldCheck className="h-3 w-3" style={{ color: '#94a3b8' }} />
-        <p className="text-[11px]" style={{ color: '#94a3b8' }}>
-          Auto-verified by server · No refresh needed
-        </p>
-      </div>
-
-      {/* Support links hidden temporarily — will re-enable after subscription is taken */}
-    </div>
-  );
-}
