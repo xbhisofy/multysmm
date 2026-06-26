@@ -324,14 +324,15 @@ export default function Wallet() {
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className="px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all"
+                  className="px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all"
                   style={{
-                    background: filter === f ? '#16a34a' : 'transparent',
-                    color: filter === f ? 'white' : '#888',
+                    background: filter === f ? 'linear-gradient(135deg, #7C3AED, #EC4899)' : 'transparent',
+                    color: filter === f ? 'white' : '#7d6f97',
                   }}
                 >
                   {f === 'all' ? 'All' : f === 'deposit' ? 'Deposits' : f === 'order' ? 'Orders' : 'Refunds'}
                 </button>
+
               ))}
             </div>
           </div>
