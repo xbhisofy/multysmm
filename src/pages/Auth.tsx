@@ -150,13 +150,14 @@ export default function Auth() {
 
           {showVerifyEmail ? (
             <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: '#FAF5FF' }}>
-                <Mail className="w-7 h-7" style={{ color: '#7C3AED' }} />
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ background: COAL, border: `1px solid ${BORDER}` }}>
+                <Mail className="w-7 h-7" style={{ color: GOLD }} />
               </div>
-              <h3 className="text-xl font-bold mb-2" style={{ color: '#0B0B16' }}>Check your inbox</h3>
-              <p className="text-[13px] mb-2" style={{ color: '#7d6f97' }}>Verification link sent to:</p>
-              <p className="text-[13px] font-semibold mb-6" style={{ color: '#0B0B16' }}>{email}</p>
-              <button onClick={() => { setShowVerifyEmail(false); setIsLogin(true); }} className="text-[13px] font-bold" style={{ color: '#7C3AED' }}>
+              <h3 className="text-2xl mb-2" style={{ color: PARCHMENT, fontFamily: "'Instrument Serif', serif" }}>Check your inbox</h3>
+              <p className="text-[13px] mb-2" style={{ color: 'rgba(239,231,212,.55)' }}>Verification link sent to:</p>
+              <p className="text-[13px] font-semibold mb-6" style={{ color: PARCHMENT }}>{email}</p>
+              <button onClick={() => { setShowVerifyEmail(false); setIsLogin(true); }} className="text-[13px] font-bold" style={{ color: GOLD_SOFT }}>
                 ← Back to login
               </button>
             </div>
@@ -165,17 +166,17 @@ export default function Auth() {
               {isForgotPassword ? (
                 <div className="space-y-4">
                   <div>
-                    <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: '#4A4A5E', textTransform: 'none', letterSpacing: 'normal' }}>Email</Label>
-                    <Input type="email" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
+                    <Label className="text-[11px] font-bold mb-1.5 block uppercase tracking-[0.14em]" style={{ color: 'rgba(239,231,212,.6)' }}>Email</Label>
+                    <Input type="email" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} style={{ border: `1px solid ${BORDER}`, color: PARCHMENT }} />
                   </div>
-                  {error && <p className="text-[13px] font-medium" style={{ color: '#ef4444' }}>{error}</p>}
-                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#7C3AED' }}>{successMessage}</p>}
+                  {error && <p className="text-[13px] font-medium" style={{ color: '#ef6f6f' }}>{error}</p>}
+                  {successMessage && <p className="text-[13px] font-medium" style={{ color: GOLD_SOFT }}>{successMessage}</p>}
                   <button type="submit" disabled={isSubmitting}
-                    className="w-full h-12 rounded-xl text-[13.5px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-70"
-                    style={{ background: GRADIENT, boxShadow: '0 12px 28px -8px rgba(124,58,237,.45)' }}>
+                    className="w-full h-12 rounded-xl text-[13.5px] font-bold flex items-center justify-center gap-2 disabled:opacity-70 transition-transform hover:-translate-y-0.5"
+                    style={{ background: GOLD_GRAD, color: INK, boxShadow: '0 14px 30px -10px rgba(201,168,76,.55)' }}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Send reset link <ArrowRight className="w-3.5 h-3.5" /></>}
                   </button>
-                  <button type="button" onClick={() => setIsForgotPassword(false)} className="w-full text-center text-[13px] font-medium" style={{ color: '#7d6f97' }}>
+                  <button type="button" onClick={() => setIsForgotPassword(false)} className="w-full text-center text-[13px] font-medium" style={{ color: 'rgba(239,231,212,.55)' }}>
                     Back to login
                   </button>
                 </div>
@@ -183,43 +184,43 @@ export default function Auth() {
                 <div className="space-y-4">
                   {!isLogin && (
                     <div>
-                      <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: '#4A4A5E', textTransform: 'none', letterSpacing: 'normal' }}>Full name</Label>
-                      <Input placeholder="John Doe" value={fullName} onChange={e => setFullName(e.target.value)} className={inputClass} />
+                      <Label className="text-[11px] font-bold mb-1.5 block uppercase tracking-[0.14em]" style={{ color: 'rgba(239,231,212,.6)' }}>Full name</Label>
+                      <Input placeholder="John Doe" value={fullName} onChange={e => setFullName(e.target.value)} className={inputClass} style={{ border: `1px solid ${BORDER}`, color: PARCHMENT }} />
                     </div>
                   )}
                   <div>
-                    <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: '#4A4A5E', textTransform: 'none', letterSpacing: 'normal' }}>Email</Label>
-                    <Input type="email" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
+                    <Label className="text-[11px] font-bold mb-1.5 block uppercase tracking-[0.14em]" style={{ color: 'rgba(239,231,212,.6)' }}>Email</Label>
+                    <Input type="email" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} style={{ border: `1px solid ${BORDER}`, color: PARCHMENT }} />
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <Label className="text-[12px] font-semibold" style={{ color: '#4A4A5E', textTransform: 'none', letterSpacing: 'normal' }}>Password</Label>
+                      <Label className="text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: 'rgba(239,231,212,.6)' }}>Password</Label>
                       {isLogin && (
-                        <button type="button" onClick={() => setIsForgotPassword(true)} className="text-[11px] font-semibold" style={{ color: '#7C3AED' }}>
+                        <button type="button" onClick={() => setIsForgotPassword(true)} className="text-[11px] font-semibold" style={{ color: GOLD_SOFT }}>
                           Forgot password?
                         </button>
                       )}
                     </div>
                     <div className="relative">
-                      <Input type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} className={`${inputClass} pr-11`} />
-                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: '#a99dc1' }}>
+                      <Input type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} className={`${inputClass} pr-11`} style={{ border: `1px solid ${BORDER}`, color: PARCHMENT }} />
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: 'rgba(239,231,212,.5)' }}>
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
                   </div>
 
-                  {error && <p className="text-[13px] font-medium" style={{ color: '#ef4444' }}>{error}</p>}
-                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#7C3AED' }}>{successMessage}</p>}
+                  {error && <p className="text-[13px] font-medium" style={{ color: '#ef6f6f' }}>{error}</p>}
+                  {successMessage && <p className="text-[13px] font-medium" style={{ color: GOLD_SOFT }}>{successMessage}</p>}
 
                   <button type="submit" disabled={isSubmitting}
-                    className="w-full h-12 rounded-xl text-[13.5px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-70 transition-transform hover:-translate-y-0.5"
-                    style={{ background: GRADIENT, boxShadow: '0 12px 28px -8px rgba(124,58,237,.45)' }}>
+                    className="w-full h-12 rounded-xl text-[13.5px] font-bold flex items-center justify-center gap-2 disabled:opacity-70 transition-transform hover:-translate-y-0.5"
+                    style={{ background: GOLD_GRAD, color: INK, boxShadow: '0 14px 30px -10px rgba(201,168,76,.55)' }}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{isLogin ? 'Sign in' : 'Create account'} <ArrowRight className="w-3.5 h-3.5" /></>}
                   </button>
 
-                  <p className="text-center text-[13px]" style={{ color: '#7d6f97' }}>
+                  <p className="text-center text-[13px]" style={{ color: 'rgba(239,231,212,.55)' }}>
                     {isLogin ? "Don't have an account? " : 'Already have an account? '}
-                    <button type="button" onClick={() => { setIsLogin(!isLogin); setError(''); setSuccessMessage(''); }} className="font-bold" style={{ color: '#7C3AED' }}>
+                    <button type="button" onClick={() => { setIsLogin(!isLogin); setError(''); setSuccessMessage(''); }} className="font-bold" style={{ color: GOLD_SOFT }}>
                       {isLogin ? 'Sign up' : 'Sign in'}
                     </button>
                   </p>
@@ -230,16 +231,17 @@ export default function Auth() {
 
           {/* Telegram */}
           <a href="https://t.me/HenryMiller08" target="_blank" rel="noopener noreferrer"
-            className="mt-8 flex items-center gap-3 p-3.5 rounded-xl transition-colors hover:bg-purple-50"
-            style={{ border: '1px solid #EDE4FE', background: 'white' }}>
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: '#F5EEFF' }}>
-              <Send className="w-4 h-4" style={{ color: '#7C3AED' }} />
+            className="mt-8 flex items-center gap-3 p-3.5 rounded-xl transition-colors hover:bg-[#1a1a1a]"
+            style={{ border: `1px solid ${BORDER}`, background: COAL }}>
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: 'rgba(201,168,76,.10)', border: `1px solid ${BORDER}` }}>
+              <Send className="w-4 h-4" style={{ color: GOLD }} />
             </div>
             <div>
-              <p className="text-[12px] font-bold" style={{ color: '#0B0B16' }}>Join our Telegram</p>
-              <p className="text-[11px]" style={{ color: '#7d6f97' }}>Updates & support</p>
+              <p className="text-[12px] font-bold" style={{ color: PARCHMENT }}>Join our Telegram</p>
+              <p className="text-[11px]" style={{ color: 'rgba(239,231,212,.55)' }}>Updates & support</p>
             </div>
           </a>
+
 
       </div>
     </div>
