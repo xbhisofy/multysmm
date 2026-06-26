@@ -931,6 +931,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
 
     // PRE-FILTER failed runs
     const activeFailedRuns = (failedEngagementRuns || []).filter((run: any) => {
+      if (targetEngagementOrderId && run.engagement_order_item?.engagement_order?.id !== targetEngagementOrderId) return false
       const orderStatus = run.engagement_order_item?.engagement_order?.status
       const itemStatus = run.engagement_order_item?.status
       if (orderStatus === 'cancelled' || orderStatus === 'paused') return false
