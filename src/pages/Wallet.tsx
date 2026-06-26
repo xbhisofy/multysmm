@@ -205,19 +205,19 @@ export default function Wallet() {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: '#1a1a2e' }}>Wallet</h1>
-          <p className="text-[13px] mt-1" style={{ color: '#999' }}>Manage your balance and transactions.</p>
+          <h1 className="text-2xl font-black tracking-[-0.02em]" style={{ color: '#0B0B16' }}>Wallet</h1>
+          <p className="text-[13px] mt-1" style={{ color: '#7d6f97' }}>Manage your balance and transactions.</p>
         </div>
 
-        {/* Balance Card — Compact Emerald */}
+        {/* Balance Card — MultySMM purple→pink */}
         <div
           className="relative overflow-hidden rounded-2xl p-4"
           style={{
-            background: 'linear-gradient(135deg, #047857 0%, #059669 55%, #10b981 100%)',
-            boxShadow: '0 10px 28px -12px rgba(5,150,105,.55), inset 0 1px 0 rgba(255,255,255,.18)',
-            fontFamily: "'Manrope', system-ui, sans-serif",
+            background: 'linear-gradient(135deg, #6D28D9 0%, #7C3AED 45%, #EC4899 100%)',
+            boxShadow: '0 14px 32px -12px rgba(124,58,237,.55), inset 0 1px 0 rgba(255,255,255,.20)',
           }}
         >
+
           {/* decorative orbs */}
           <div
             aria-hidden
