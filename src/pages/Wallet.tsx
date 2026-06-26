@@ -227,8 +227,9 @@ export default function Wallet() {
           <div
             aria-hidden
             className="absolute -bottom-20 -left-10 w-40 h-40 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(closest-side, rgba(16,185,129,.45), transparent 70%)' }}
+            style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.45), transparent 70%)' }}
           />
+
 
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-2">
