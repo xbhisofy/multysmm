@@ -82,72 +82,110 @@ const Index = () => {
       </nav>
 
       {/* ═══ HERO ═══ */}
-      <section className="pt-16 sm:pt-24 lg:pt-28 pb-16 sm:pb-24 text-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-8"><Eyebrow>AI-Powered SMM Panel</Eyebrow></div>
+      <section className="pt-16 sm:pt-24 lg:pt-28 pb-16 sm:pb-24 text-center px-4 sm:px-6 lg:px-8 relative">
+        {/* extra ambient glows behind hero */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full"
+            style={{ background: 'rgba(124,58,237,.10)', filter: 'blur(120px)' }} />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full"
+            style={{ background: 'rgba(236,72,153,.10)', filter: 'blur(100px)' }} />
+        </div>
 
-          <h1 className="text-[2.6rem] sm:text-[4.2rem] lg:text-[5.5rem] font-black leading-[0.98] tracking-[-0.04em] mb-6">
+        <div className="max-w-5xl mx-auto">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8"
+            style={{ background: '#F5EFFF', border: '1px solid rgba(124,58,237,.18)' }}>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: C.purple }} />
+            <span className="text-[10px] sm:text-[11px] font-extrabold tracking-[0.2em] uppercase" style={{ color: C.purpleDeep }}>
+              AI-Powered SMM Panel
+            </span>
+          </div>
+
+          <h1 className="text-[2.8rem] sm:text-[4.6rem] lg:text-[6.2rem] font-black leading-[1.02] tracking-[-0.04em] mb-8">
             Grow{' '}
             <span style={{ fontFamily: C.serif, fontWeight: 400, fontStyle: 'italic', background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               Smarter Accounts
             </span>
             <br className="hidden sm:block" />
             Instantly With{' '}
-            <span style={{ fontFamily: C.serif, fontWeight: 400, fontStyle: 'italic' }}>AI</span>
+            <span style={{ fontFamily: C.serif, fontWeight: 400, fontStyle: 'italic', color: '#CBD5E1' }}>AI</span>
           </h1>
 
-          <p className="text-[15px] sm:text-[18px] leading-[1.6] mb-10 max-w-2xl mx-auto" style={{ color: C.ink2 }}>
-            Paste your post link, pick what you want to grow, and watch MultySMM deliver real,
-            human-paced engagement — designed, scheduled, and 100% safe.
+          <p className="text-[15px] sm:text-[18px] leading-[1.65] mb-14 sm:mb-16 max-w-2xl mx-auto" style={{ color: C.ink2 }}>
+            Paste your link, select growth parameters, and watch MultySMM deliver{' '}
+            <span className="font-semibold italic" style={{ color: C.ink }}>human-paced engagement</span>{' '}
+            designed for safety and speed.
           </p>
 
-          {/* ═══ AI GROWTH ENGINE ═══ */}
-          <div className="max-w-3xl mx-auto rounded-3xl p-5 sm:p-6 text-left relative"
-            style={{ background: C.card, border: `1.5px solid rgba(124,58,237,.25)`, boxShadow: '0 30px 80px -20px rgba(124,58,237,.25)' }}>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: C.purple }}>
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.purple }} /> AI Growth Engine
-              </div>
-              <div className="flex items-center gap-1.5 text-[11.5px] font-medium" style={{ color: C.muted }}>
-                <Sparkles className="w-3 h-3" style={{ color: C.pink }} /> Powered by MultySMM
-              </div>
-            </div>
+          {/* ═══ AI GROWTH ENGINE (Premium glass) ═══ */}
+          <div className="max-w-3xl mx-auto relative">
+            {/* outer glow */}
+            <div aria-hidden className="absolute -inset-1 rounded-[42px] -z-10"
+              style={{ background: 'linear-gradient(135deg, rgba(124,58,237,.25), rgba(236,72,153,.25))', filter: 'blur(40px)' }} />
+            {/* gradient frame */}
+            <div className="p-[6px] rounded-[40px]"
+              style={{ background: 'linear-gradient(180deg, rgba(203,189,232,.7) 0%, rgba(255,255,255,0) 100%)', boxShadow: '0 30px 80px -20px rgba(124,58,237,.30)' }}>
+              <div className="rounded-[34px] p-5 sm:p-7 text-left"
+                style={{ background: 'rgba(255,255,255,.92)', backdropFilter: 'blur(20px)' }}>
+                {/* Meta Header */}
+                <div className="flex items-center justify-between mb-6 px-1">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg" style={{ background: '#F3E8FF' }}>
+                      <Zap className="w-4 h-4" style={{ color: C.purple }} />
+                    </div>
+                    <span className="text-[11px] font-extrabold tracking-[0.18em] uppercase" style={{ color: C.ink }}>
+                      AI Growth Engine
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold" style={{ color: C.muted }}>
+                    <Sparkles className="w-3 h-3" style={{ color: C.pink }} /> Powered by MultySMM
+                  </div>
+                </div>
 
-            <textarea
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Grow my Instagram reel with 10k views, 800 likes, 50 comments — natural pace"
-              className="w-full h-24 sm:h-28 resize-none rounded-2xl p-4 text-[14px] sm:text-[15px] outline-none transition-shadow focus:shadow-lg"
-              style={{ background: 'linear-gradient(135deg, #FAF5FF 0%, #FDF2F8 100%)', color: C.ink, border: '1px solid rgba(124,58,237,.10)' }}
-            />
+                {/* Textarea */}
+                <textarea
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="Grow my Instagram reel with 10k views, 800 likes, 50 comments — natural pace"
+                  className="w-full min-h-[120px] sm:min-h-[140px] resize-none rounded-3xl p-6 sm:p-7 text-[15px] sm:text-[17px] leading-relaxed font-medium outline-none transition-all focus:bg-white focus:ring-4"
+                  style={{ background: 'rgba(248,247,253,.6)', color: C.ink, border: '1px solid rgba(124,58,237,.10)' }}
+                />
 
-            <div className="flex items-center justify-between gap-3 mt-4 flex-wrap">
-              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                <button className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:bg-purple-50"
-                  style={{ border: `1px solid ${C.line}` }}>
-                  <Plus className="w-4 h-4" style={{ color: C.ink2 }} />
-                </button>
-                {[
-                  { icon: Instagram, label: 'Instagram' },
-                  { icon: Youtube, label: 'YouTube' },
-                  { icon: Music2, label: 'TikTok' },
-                  { icon: Twitter, label: 'Twitter' },
-                ].map((p) => (
-                  <button key={p.label} className="h-8 px-3 rounded-full flex items-center gap-1.5 text-[12px] font-semibold transition-colors hover:bg-purple-50"
-                    style={{ border: `1px solid ${C.line}`, color: C.ink }}>
-                    <p.icon className="w-3.5 h-3.5" /> {p.label}
-                  </button>
-                ))}
+                {/* Control bar */}
+                <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 mt-6">
+                  <div className="flex flex-wrap items-center gap-2 flex-grow">
+                    <button className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-colors hover:bg-purple-50 shrink-0"
+                      style={{ background: '#F4F4F8', color: C.muted }}>
+                      <Plus className="w-4 h-4" />
+                    </button>
+                    {[
+                      { icon: Instagram, label: 'Instagram', active: true },
+                      { icon: Youtube, label: 'YouTube' },
+                      { icon: Music2, label: 'TikTok' },
+                      { icon: Twitter, label: 'Twitter' },
+                    ].map((p) => (
+                      <button key={p.label}
+                        className="h-10 sm:h-11 px-3.5 sm:px-4 rounded-2xl flex items-center gap-2 text-[12px] font-bold transition-all"
+                        style={p.active
+                          ? { border: `2px solid ${C.purple}`, background: 'rgba(243,232,255,.5)', color: C.ink }
+                          : { border: `1px solid ${C.line}`, background: '#fff', color: C.muted }}>
+                        <p.icon className="w-3.5 h-3.5" /> {p.label}
+                      </button>
+                    ))}
+                  </div>
+                  <Link to="/auth"
+                    className="group w-full lg:w-auto h-12 px-8 sm:px-10 rounded-2xl text-[14px] font-extrabold text-white inline-flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02] active:scale-95"
+                    style={{ background: GRADIENT, boxShadow: '0 14px 30px rgba(236,72,153,.40)' }}>
+                    Generate
+                    <Zap className="w-4 h-4 transition-transform group-hover:rotate-12" />
+                  </Link>
+                </div>
               </div>
-              <Link to="/auth" className="h-10 px-5 rounded-full text-[13px] font-bold text-white inline-flex items-center gap-1.5"
-                style={{ background: GRADIENT, boxShadow: '0 10px 24px rgba(236,72,153,.35)' }}>
-                Generate <Sparkles className="w-3.5 h-3.5" />
-              </Link>
             </div>
           </div>
 
           {/* prompt examples */}
-          <div className="mt-6 flex flex-col items-center gap-2.5">
+          <div className="mt-10 flex flex-col items-center gap-2.5">
             {[
               '🎬  Grow my Instagram reel — 10k views, 800 likes, 50 comments',
               '▶️  YouTube video: 5k views, 300 likes, 100 subscribers',
