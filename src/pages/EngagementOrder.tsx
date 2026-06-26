@@ -363,6 +363,9 @@ export default function EngagementOrder() {
         const ratioQuantity = Math.round(debouncedBaseQuantity * (ratioPercent / 100));
 
         const serviceData = servicePrices[type];
+        const resolvedServiceId = serviceData?.serviceId ?? prev[type]?.serviceId ?? null;
+        const hasProviderService = Boolean(resolvedServiceId);
+        const serviceJustResolved = Boolean(prev[type] && !prev[type].serviceId && serviceData?.serviceId);
 
         // Respect user's base quantity exactly — no auto bump to provider minimum.
         // If it's below provider min, the per-card warning will appear.
@@ -378,10 +381,12 @@ export default function EngagementOrder() {
 
         updated[type] = {
           type,
-          enabled: prev[type] ? prev[type].enabled : isEnabledByDefault,
+          enabled: hasProviderService
+            ? (serviceJustResolved ? isEnabledByDefault : (prev[type] ? prev[type].enabled : isEnabledByDefault))
+            : false,
           quantity: finalQuantity,
           price: finalPrice,
-          serviceId: serviceData?.serviceId ?? prev[type]?.serviceId ?? null,
+          serviceId: resolvedServiceId,
           minQuantity: serviceData?.minQuantity ?? prev[type]?.minQuantity,
           // Per-type organic settings
           timeLimitHours: prev[type]?.timeLimitHours ?? DEFAULT_ORGANIC_SETTINGS.timeLimitHours,
