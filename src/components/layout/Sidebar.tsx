@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Wallet, Settings, LifeBuoy, Shield, LogOut, Rocket, Sparkles, X, Code2, Send } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useCurrency } from '@/hooks/useCurrency';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps { onClose?: () => void; }
@@ -28,6 +29,7 @@ const adminNavItems = [{ icon: Shield, label: 'Admin Panel', path: '/admin' }];
 export function Sidebar({ onClose }: SidebarProps) {
   const location = useLocation();
   const { isAdmin, signOut, wallet, profile } = useAuth();
+  const { formatPrice } = useCurrency();
 
   return (
     <div className="h-full w-full overflow-hidden flex flex-col"
@@ -87,7 +89,7 @@ export function Sidebar({ onClose }: SidebarProps) {
             <p className="text-[28px] tracking-tight mb-3 leading-none"
               style={{ color: PARCHMENT, fontFamily: "'Instrument Serif', serif", fontWeight: 400 }}>
               ₹<span className="gold-shimmer" style={{ fontFamily: "'Instrument Serif', serif" }}>
-                {Number(wallet?.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {formatPrice(wallet?.balance || 0).replace('₹', '')}
               </span>
             </p>
             <Link to="/wallet" onClick={onClose}
