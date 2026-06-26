@@ -1,6 +1,6 @@
-# OrganicSMM — robots.txt
-# Site:    https://organicsmm.online
-# Updated: 2026-05-05
+# MultySMM — robots.txt
+# Site:    https://multysmm.site
+# Updated: 2026-06-26
 
 # ───────────────────────────── Default rule ─────────────────────────────
 User-agent: *
@@ -98,5 +98,5 @@ User-agent: DotBot
 Disallow: /
 
 # ───────────────────────────── Sitemap & host ─────────────────────────────
-Sitemap: https://organicsmm.online/sitemap.xml
-Host: https://organicsmm.online
+Sitemap: https://multysmm.site/sitemap.xml
+Host: https://multysmm.site
