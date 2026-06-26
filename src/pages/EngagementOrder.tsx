@@ -148,7 +148,7 @@ export default function EngagementOrder() {
     if (!allBundles) return [];
     // Show platforms that have at least one bundle with items configured
     const platforms = allBundles
-      .filter(b => b.items && b.items.length > 0)
+      .filter(b => b.items?.some((item) => item.service_id))
       .map(b => b.platform);
     const result = [...new Set(platforms)];
     console.log('[EngagementOrder] availablePlatforms:', result);
@@ -195,6 +195,7 @@ export default function EngagementOrder() {
     if (!bundle?.items) return [];
     // Return unique engagement types sorted by preferred order
     const types = bundle.items
+      .filter(item => item.service_id || item.service)
       .map(item => item.engagement_type as EngagementType);
     const uniqueTypes = [...new Set(types)];
 

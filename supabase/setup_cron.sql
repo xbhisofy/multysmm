@@ -18,7 +18,7 @@ SELECT cron.unschedule('sync-service-prices-every-12-hours');
 -- 3. Schedule Organic Run Execution (Every minute)
 SELECT cron.schedule('organic-runs-minutely', '* * * * *', $$ 
   SELECT net.http_post(
-    url:='https://[YOUR_PROJECT_ID].supabase.co/functions/v1/execute-all-runs', 
+    url:='https://bcowzxvrjcyqwdkufoeu.supabase.co/functions/v1/execute-all-runs', 
     headers:='{"Content-Type": "application/json", "Authorization": "Bearer [YOUR_SERVICE_ROLE_KEY]", "apikey": "[YOUR_SERVICE_ROLE_KEY]"}'::jsonb, 
     body:='{}'::jsonb
   ) as request_id; 
@@ -36,7 +36,7 @@ $$);
 -- 5. Schedule Service Price Sync (Every 12 hours)
 SELECT cron.schedule('sync-service-prices-every-12-hours', '0 */12 * * *', $$ 
   SELECT net.http_post(
-    url:='https://[YOUR_PROJECT_ID].supabase.co/functions/v1/sync-service-prices', 
+    url:='https://bcowzxvrjcyqwdkufoeu.supabase.co/functions/v1/sync-service-prices', 
     headers:='{"Content-Type": "application/json", "Authorization": "Bearer [YOUR_SERVICE_ROLE_KEY]", "apikey": "[YOUR_SERVICE_ROLE_KEY]"}'::jsonb, 
     body:='{}'::jsonb
   ) as request_id; 
