@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Wallet, Settings, LifeBuoy, Shield, LogOut, Rocket, Sparkles, X, Code2, Send } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useCurrency } from '@/hooks/useCurrency';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps { onClose?: () => void; }
