@@ -89,7 +89,7 @@ export function Sidebar({ onClose }: SidebarProps) {
             <p className="text-[28px] tracking-tight mb-3 leading-none"
               style={{ color: PARCHMENT, fontFamily: "'Instrument Serif', serif", fontWeight: 400 }}>
               ₹<span className="gold-shimmer" style={{ fontFamily: "'Instrument Serif', serif" }}>
-                {Number(wallet?.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {formatPrice(wallet?.balance || 0).replace('₹', '')}
               </span>
             </p>
             <Link to="/wallet" onClick={onClose}
