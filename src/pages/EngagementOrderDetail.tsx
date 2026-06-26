@@ -138,40 +138,65 @@ export default function EngagementOrderDetail() {
     }
   }, [order?.status, order?.items?.length]);
 
-  // Real-time subscription — ONLY listen for this order's changes (filtered)
+  // Real-time subscription — listen for this order AND its runs
   useEffect(() => {
     if (!order?.id || !user) return;
 
+    const itemIds: string[] = (order.items || []).map((i: any) => i.id).filter(Boolean);
     const channelName = `engagement-order-${order.id}-${Date.now()}`;
-    
-    // Debounce invalidation to prevent cascading refetches
+
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;
     const debouncedInvalidate = () => {
       if (debounceTimer) clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['engagement-order-detail', orderNumber] });
-      }, 2000); // Wait 2s to batch multiple rapid changes
+      }, 800);
     };
-    
+
     const channel = supabase
       .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'engagement_orders',
-          filter: `id=eq.${order.id}`,
-        },
-        () => debouncedInvalidate()
-      )
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'engagement_orders',
+        filter: `id=eq.${order.id}`,
+      }, () => debouncedInvalidate())
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'organic_run_schedule',
+      }, (payload: any) => {
+        const itemId = payload?.new?.engagement_order_item_id || payload?.old?.engagement_order_item_id;
+        if (itemId && itemIds.includes(itemId)) debouncedInvalidate();
+      })
       .subscribe();
 
     return () => {
       if (debounceTimer) clearTimeout(debounceTimer);
       supabase.removeChannel(channel);
     };
-  }, [order?.id, user, queryClient, orderNumber]);
+  }, [order?.id, user, queryClient, orderNumber, order?.items?.length]);
+
+  // Auto-sync provider status for started runs (so UI shows real-time provider updates)
+  useEffect(() => {
+    if (!order?.id) return;
+    const startedRunIds: string[] = (order.items || []).flatMap((item: any) =>
+      (item.runs || []).filter((r: any) => r.status === 'started').map((r: any) => r.id)
+    );
+    if (startedRunIds.length === 0) return;
+
+    let cancelled = false;
+    const tick = async () => {
+      for (const runId of startedRunIds) {
+        if (cancelled) return;
+        try {
+          await supabase.functions.invoke('check-order-status', { body: { runId } });
+        } catch (_) { /* ignore */ }
+      }
+      if (!cancelled) {
+        queryClient.invalidateQueries({ queryKey: ['engagement-order-detail', orderNumber] });
+      }
+    };
+    tick();
+    const interval = setInterval(tick, 20000); // every 20s
+    return () => { cancelled = true; clearInterval(interval); };
+  }, [order?.id, order?.items, queryClient, orderNumber]);
 
   // Retry failed runs mutation - resets failed runs back to pending
   const retryFailedMutation = useMutation({
