@@ -72,7 +72,7 @@ export function Sidebar({ onClose }: SidebarProps) {
               <span className="text-[9px] font-bold uppercase tracking-[0.16em] opacity-90">Wallet Balance</span>
             </div>
             <p className="text-[24px] font-extrabold tracking-tight mb-3">
-              ₹{Number(wallet?.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {formatPrice(wallet?.balance || 0)}
             </p>
             <Link to="/wallet" onClick={onClose}
               className="flex items-center justify-center gap-1.5 w-full h-9 rounded-xl text-[12px] font-bold"
