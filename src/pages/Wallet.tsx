@@ -311,40 +311,40 @@ export default function Wallet() {
               {displayTransactions.map((tx) => (
                 <div
                   key={tx.id}
-                  className="flex items-center justify-between p-4 rounded-xl transition-colors"
-                  style={{ background: 'rgba(0,0,0,.015)', border: '1px solid rgba(0,0,0,.04)' }}
+                  className="flex items-center justify-between p-4 rounded-xl transition-all hover:border-[rgba(201,168,76,.35)]"
+                  style={{ background: '#0a0a0a', border: '1px solid rgba(201,168,76,.12)' }}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center" style={{ background: getIconBg(tx.type) }}>
                       {getIcon(tx.type)}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-medium text-[13px] leading-tight truncate max-w-[260px]" style={{ color: '#1a1a2e' }}>
+                      <p className="font-medium text-[13px] leading-tight truncate max-w-[260px]" style={{ color: '#efe7d4' }}>
                         {tx.displayDescription}
                       </p>
                       <div className="flex items-center flex-wrap gap-x-2 gap-y-0.5 mt-1">
                         {tx.payment_method && (
-                          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(0,0,0,.04)', color: '#888' }}>
+                          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(201,168,76,.10)', color: '#c9a84c', border: '1px solid rgba(201,168,76,.18)' }}>
                             {tx.payment_method.replace(/_/g, ' ').toUpperCase()}
                           </span>
                         )}
                         <span
                           className="text-[9px] font-semibold px-1.5 py-0.5 rounded"
                           style={{
-                            background: tx.status === 'pending' ? 'rgba(245,158,11,.1)' : tx.status === 'completed' ? 'rgba(16,185,129,.1)' : 'rgba(239,68,68,.1)',
-                            color: tx.status === 'pending' ? '#f59e0b' : tx.status === 'completed' ? '#10b981' : '#ef4444',
+                            background: tx.status === 'pending' ? 'rgba(245,158,11,.14)' : tx.status === 'completed' ? 'rgba(74,222,128,.14)' : 'rgba(239,68,68,.14)',
+                            color: tx.status === 'pending' ? '#fbbf24' : tx.status === 'completed' ? '#86efac' : '#fca5a5',
                           }}
                         >
                           {tx.status}
                         </span>
-                        <span className="text-[11px]" style={{ color: '#bbb' }}>{fmtDate(tx.created_at!)}</span>
+                        <span className="text-[11px]" style={{ color: 'rgba(239,231,212,.45)' }}>{fmtDate(tx.created_at!)}</span>
                         {tx.payment_reference && tx.payment_method === 'usdt_bep20' && (
                           <a
                             href={`https://bscscan.com/tx/${tx.payment_reference}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-[11px] flex items-center gap-0.5 hover:underline"
-                            style={{ color: '#16a34a' }}
+                            style={{ color: '#f0d78c' }}
                           >
                             BSCScan <ExternalLink className="h-3 w-3" />
                           </a>
@@ -354,11 +354,11 @@ export default function Wallet() {
                   </div>
 
                   <div className="text-right flex-shrink-0 ml-4">
-                    <p className="font-bold text-[15px]" style={{ color: getAmountColor(tx.type) }}>
+                    <p className="font-bold text-[15px]" style={{ color: tx.type === 'order' ? '#fca5a5' : '#f0d78c' }}>
                       {tx.type === 'order' ? '−' : '+'}{formatPrice(Math.abs(Number(tx.displayAmount)))}
                     </p>
                     {tx.displayBalanceAfter != null && (
-                      <p className="text-[11px] mt-0.5" style={{ color: '#bbb' }}>
+                      <p className="text-[11px] mt-0.5" style={{ color: 'rgba(239,231,212,.45)' }}>
                         Bal: {formatPrice(Number(tx.displayBalanceAfter))}
                       </p>
                     )}
@@ -368,13 +368,14 @@ export default function Wallet() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(22, 163, 74,.08)' }}>
-                <WalletIcon className="h-6 w-6" style={{ color: '#16a34a' }} />
+              <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(201,168,76,.10)', border: '1px solid rgba(201,168,76,.22)' }}>
+                <WalletIcon className="h-6 w-6" style={{ color: '#c9a84c' }} />
               </div>
-              <p className="font-medium text-[14px]" style={{ color: '#666' }}>No transactions yet</p>
-              <p className="text-[12px] mt-1" style={{ color: '#bbb' }}>Your deposits and spending history will appear here.</p>
+              <p className="font-medium text-[14px]" style={{ color: 'rgba(239,231,212,.7)' }}>No transactions yet</p>
+              <p className="text-[12px] mt-1" style={{ color: 'rgba(239,231,212,.45)' }}>Your deposits and spending history will appear here.</p>
             </div>
           )}
+
         </div>
       </div>
     </DashboardLayout>
