@@ -144,11 +144,15 @@ export default function EngagementOrderDetail() {
 
     const itemIds: string[] = (order.items || []).map((i: any) => i.id).filter(Boolean);
     const channelName = `engagement-order-${order.id}-${Date.now()}`;
+    const lastRealtimeAt = { current: Date.now() };
 
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-    const debouncedInvalidate = () => {
+    const debouncedInvalidate = (src: string, payload?: any) => {
+      lastRealtimeAt.current = Date.now();
+      console.log(`[order-detail] realtime event src=${src} order=${orderNumber} runId=${payload?.new?.id || payload?.old?.id || '-'} status=${payload?.new?.status || '-'}`);
       if (debounceTimer) clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
+        console.log(`[order-detail] invalidate triggered by realtime (${src})`);
         queryClient.invalidateQueries({ queryKey: ['engagement-order-detail', orderNumber] });
       }, 800);
     };
@@ -158,14 +162,16 @@ export default function EngagementOrderDetail() {
       .on('postgres_changes', {
         event: '*', schema: 'public', table: 'engagement_orders',
         filter: `id=eq.${order.id}`,
-      }, () => debouncedInvalidate())
+      }, (payload: any) => debouncedInvalidate('engagement_orders', payload))
       .on('postgres_changes', {
         event: '*', schema: 'public', table: 'organic_run_schedule',
       }, (payload: any) => {
         const itemId = payload?.new?.engagement_order_item_id || payload?.old?.engagement_order_item_id;
-        if (itemId && itemIds.includes(itemId)) debouncedInvalidate();
+        if (itemId && itemIds.includes(itemId)) debouncedInvalidate('organic_run_schedule', payload);
       })
-      .subscribe();
+      .subscribe((status) => {
+        console.log(`[order-detail] realtime channel ${channelName} status=${status}`);
+      });
 
     return () => {
       if (debounceTimer) clearTimeout(debounceTimer);
@@ -182,14 +188,28 @@ export default function EngagementOrderDetail() {
     if (startedRunIds.length === 0) return;
 
     let cancelled = false;
+    let tickNum = 0;
     const tick = async () => {
+      tickNum += 1;
+      const t0 = performance.now();
+      console.log(`[order-detail] poll started-runs tick=${tickNum} count=${startedRunIds.length} order=${orderNumber}`);
       for (const runId of startedRunIds) {
         if (cancelled) return;
         try {
-          await supabase.functions.invoke('check-order-status', { body: { runId } });
-        } catch (_) { /* ignore */ }
+          await supabase.functions.invoke('check-order-status', {
+            body: {
+              runId,
+              source: 'client-poll-started',
+              orderNumber,
+              reason: `tick#${tickNum}`,
+            },
+          });
+        } catch (e) {
+          console.warn(`[order-detail] check-order-status failed for run ${runId}`, e);
+        }
       }
       if (!cancelled) {
+        console.log(`[order-detail] poll tick=${tickNum} done in ${Math.round(performance.now() - t0)}ms, invalidating`);
         queryClient.invalidateQueries({ queryKey: ['engagement-order-detail', orderNumber] });
       }
     };
@@ -203,7 +223,10 @@ export default function EngagementOrderDetail() {
     if (!order?.id) return;
     const activeStatuses = ['pending', 'processing', 'queued', 'in_progress', 'partial'];
     if (!activeStatuses.includes(String(order.status || '').toLowerCase())) return;
+    let fallbackTick = 0;
     const interval = setInterval(() => {
+      fallbackTick += 1;
+      console.log(`[order-detail] fallback refetch tick=${fallbackTick} order=${orderNumber} status=${order.status}`);
       queryClient.invalidateQueries({ queryKey: ['engagement-order-detail', orderNumber] });
     }, 25000);
     return () => clearInterval(interval);
