@@ -46,9 +46,8 @@ function safeWalletUrl(value: string | null) {
     const url = new URL(value || FALLBACK_RETURN_URL)
     const host = url.hostname.toLowerCase()
     const allowedHost =
-      host === 'organicsmm.online' ||
-      host === 'sologrow-pro.lovable.app' ||
-      (host.startsWith('id-preview--') && host.endsWith('.lovable.app')) ||
+      host.endsWith('.lovable.app') ||
+      host === 'lovable.app' ||
       host === 'localhost' ||
       host === '127.0.0.1'
 
