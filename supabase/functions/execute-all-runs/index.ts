@@ -681,6 +681,13 @@ async function triggerContinuation(executionId: string, reason: string) {
 // Declare EdgeRuntime for waitUntil support
 declare const EdgeRuntime: { waitUntil(promise: Promise<any>): void }
 
+type ExecuteAllRunsOptions = {
+  instant?: boolean
+  order_id?: string
+  continued_from?: string
+  reason?: string
+}
+
 serve(async (req) => {
   const startTime = Date.now()
   if (req.method === 'OPTIONS') {
@@ -725,11 +732,15 @@ serve(async (req) => {
       })
     }
 
+    const requestOptions = await req.json().catch(() => ({})) as ExecuteAllRunsOptions
     const executionId = crypto.randomUUID().slice(0, 8)
     console.log(`=== EXECUTE ALL ORGANIC RUNS [${executionId}] ===`)
+    if (requestOptions.instant || requestOptions.order_id) {
+      console.log(`⚡ Instant run requested [${executionId}] order=${requestOptions.order_id || 'all'}`)
+    }
 
     // Return 202 immediately, process in background to avoid context-canceled
-    const backgroundWork = processAllRuns(supabase, executionId, startTime)
+    const backgroundWork = processAllRuns(supabase, executionId, startTime, requestOptions)
     
     try {
       EdgeRuntime.waitUntil(backgroundWork)
@@ -754,7 +765,7 @@ serve(async (req) => {
   }
 })
 
-async function processAllRuns(supabase: any, executionId: string, startTime: number) {
+async function processAllRuns(supabase: any, executionId: string, startTime: number, options: ExecuteAllRunsOptions = {}) {
   try {
     let processed = 0
     let skipped = 0
@@ -772,7 +783,13 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
     // ==========================================
     // PRE-FETCH ALL DATA IN PARALLEL (batch queries)
     // ==========================================
-    const nowWithBuffer = new Date(Date.now() + 2000).toISOString()
+    // `process-engagement-order` invokes this worker immediately after it creates
+    // the organic schedule. The first run can be scheduled a few seconds ahead, so
+    // an instant invocation needs a larger look-ahead window; otherwise it fetches
+    // 0 runs and the user sees the order sitting as "overdue" until the cron cycle.
+    const dueLookaheadMs = options.instant ? 60 * 1000 : 2000
+    const targetEngagementOrderId = options.order_id && isValidUUID(options.order_id) ? options.order_id : null
+    const nowWithBuffer = new Date(Date.now() + dueLookaheadMs).toISOString()
     const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString()
     const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString()
 
@@ -887,6 +904,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
 
     // PRE-FILTER: Remove paused/cancelled
     const activeEngagementRuns = (pendingEngagementRuns || []).filter((run: any) => {
+      if (targetEngagementOrderId && run.engagement_order_item?.engagement_order?.id !== targetEngagementOrderId) return false
       const orderStatus = run.engagement_order_item?.engagement_order?.status
       const itemStatus = run.engagement_order_item?.status
       if (orderStatus === 'paused' || orderStatus === 'cancelled') return false
