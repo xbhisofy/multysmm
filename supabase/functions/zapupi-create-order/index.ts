@@ -117,7 +117,7 @@ function safeOrigin(value: string) {
     const url = new URL(value)
     if (url.protocol === 'https:' || url.protocol === 'http:') return url.origin
   } catch { /* fallback below */ }
-  return 'https://multitsmmm.lovable.app'
+  return 'https://multysmm.site'
 }
 
 function safeReturnUrl(value: unknown, origin: string) {
