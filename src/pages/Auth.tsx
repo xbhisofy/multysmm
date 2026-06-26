@@ -4,11 +4,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Mail, Lock, User, Loader2, ArrowLeft, Shield, Zap, Eye, EyeOff, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, User, Loader2, ArrowLeft, Shield, Zap, Eye, EyeOff, ArrowRight, CheckCircle2, Send } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { z } from 'zod';
-import logo from '@/assets/logo.jpg';
 import { PageMeta } from '@/components/seo/PageMeta';
+
+const GRADIENT = 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)';
+
 
 
 const loginSchema = z.object({
