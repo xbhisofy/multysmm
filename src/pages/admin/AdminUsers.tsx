@@ -848,7 +848,7 @@ export default function AdminUsers() {
                   </div>
                 ) : (
                   <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive">
-                    🔒 Only the super-admin (zyrofit.my) can add or subtract funds. All other credits come from ZapUPI.
+                    🔒 Only the super-admin (multysmm@gmail.com) can add or subtract funds. All other credits come from ZapUPI.
                   </div>
                 )}
 
