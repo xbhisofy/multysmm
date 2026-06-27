@@ -17,7 +17,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [user, isLoading, navigate]);
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #ffffff 0%, #FAF5FF 40%, #FDF2F8 100%)', color: '#0B0B16' }}>
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       <aside className="fixed inset-y-0 left-0 z-40 w-[260px] hidden lg:block">
         <Sidebar />
       </aside>
