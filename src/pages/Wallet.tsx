@@ -204,38 +204,19 @@ export default function Wallet() {
   return (
     <DashboardLayout>
       <div className="min-h-[calc(100vh-120px)] flex items-center justify-center px-4">
-        <div
-          className="relative w-full max-w-2xl text-center rounded-3xl p-10 md:p-14 overflow-hidden border"
-          style={{
-            background: '#ffffff',
-            borderColor: '#e5e7eb',
-            boxShadow: '0 10px 40px -12px rgba(0,0,0,.08)',
-          }}
-        >
+        <div className="relative w-full max-w-2xl text-center rounded-3xl p-10 md:p-14 overflow-hidden border border-border bg-card shadow-[0_10px_40px_-12px_rgba(0,0,0,0.08)]">
           <div className="relative z-10">
-            <div
-              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mx-auto mb-6"
-              style={{ background: '#f3f4f6' }}
-            >
-              <WalletIcon className="h-8 w-8" style={{ color: '#6b7280' }} />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mx-auto mb-6 bg-muted">
+              <WalletIcon className="h-8 w-8 text-muted-foreground" />
             </div>
 
-            <h1
-              className="text-3xl md:text-4xl"
-              style={{
-                fontFamily: "'Outfit', system-ui, sans-serif",
-                fontWeight: 800,
-                letterSpacing: '-0.02em',
-                lineHeight: 1.1,
-                color: '#111827',
-              }}
-            >
+            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight text-foreground">
               Contact Admin to
               <br />
               Add Funds
             </h1>
 
-            <p className="mt-5 text-[15px] md:text-base max-w-md mx-auto leading-relaxed" style={{ color: '#6b7280' }}>
+            <p className="mt-5 text-[15px] md:text-base max-w-md mx-auto leading-relaxed text-muted-foreground">
               To add funds to your wallet, please contact the admin.
               You will receive assistance shortly.
             </p>
