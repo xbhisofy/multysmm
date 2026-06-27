@@ -205,48 +205,39 @@ export default function Wallet() {
     <DashboardLayout>
       <div className="min-h-[calc(100vh-120px)] flex items-center justify-center px-4">
         <div
-          className="relative w-full max-w-2xl text-center rounded-3xl p-10 md:p-14 overflow-hidden"
+          className="relative w-full max-w-2xl text-center rounded-3xl p-10 md:p-14 overflow-hidden border"
           style={{
-            background: 'linear-gradient(135deg, #6D28D9 0%, #7C3AED 45%, #EC4899 100%)',
-            boxShadow: '0 24px 60px -20px rgba(124,58,237,.55), inset 0 1px 0 rgba(255,255,255,.20)',
+            background: '#ffffff',
+            borderColor: '#e5e7eb',
+            boxShadow: '0 10px 40px -12px rgba(0,0,0,.08)',
           }}
         >
-          <div
-            aria-hidden
-            className="absolute -top-24 -right-16 w-72 h-72 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(closest-side, rgba(255,255,255,.22), transparent 70%)' }}
-          />
-          <div
-            aria-hidden
-            className="absolute -bottom-24 -left-16 w-72 h-72 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.45), transparent 70%)' }}
-          />
-
           <div className="relative z-10">
             <div
               className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mx-auto mb-6"
-              style={{ background: 'rgba(255,255,255,.18)', backdropFilter: 'blur(6px)' }}
+              style={{ background: '#f3f4f6' }}
             >
-              <WalletIcon className="h-8 w-8 text-white" />
+              <WalletIcon className="h-8 w-8" style={{ color: '#6b7280' }} />
             </div>
 
             <h1
-              className="text-3xl md:text-4xl text-white"
+              className="text-3xl md:text-4xl"
               style={{
-                fontFamily: "'Sora', system-ui, sans-serif",
+                fontFamily: "'Outfit', system-ui, sans-serif",
                 fontWeight: 800,
                 letterSpacing: '-0.02em',
                 lineHeight: 1.1,
+                color: '#111827',
               }}
             >
-              Fund Add Karne Ke Liye
+              Contact Admin to
               <br />
-              Admin Se Contact Karein
+              Add Funds
             </h1>
 
-            <p className="mt-5 text-[15px] md:text-base text-white/85 max-w-md mx-auto leading-relaxed">
-              Wallet me funds add karne ke liye please admin se sampark karein.
-              Aapko jaldi assistance mil jayegi.
+            <p className="mt-5 text-[15px] md:text-base max-w-md mx-auto leading-relaxed" style={{ color: '#6b7280' }}>
+              To add funds to your wallet, please contact the admin.
+              You will receive assistance shortly.
             </p>
           </div>
         </div>
