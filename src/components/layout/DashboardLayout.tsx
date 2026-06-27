@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Sidebar } from './Sidebar';
 import { MobileBottomNav } from './MobileBottomNav';
-import { WhatsAppFloatingButton } from '@/components/chat/WhatsAppFloatingButton';
 import { PopupAdDialog } from '@/components/PopupAdDialog';
 
 interface DashboardLayoutProps { children: ReactNode; }
