@@ -88,8 +88,7 @@ export default function AdminUsers() {
   const [balanceAction, setBalanceAction] = useState<'subtract' | 'add'>('subtract');
   // Only these admins can manually add funds. Everyone else: subtract only.
   const SUPER_ADMIN_USER_IDS = new Set<string>([
-    '581a69bb-fe78-4da6-98cd-f36fdeff8f28', // zyrofit.my@gmail.com
-    'defe7c3a-0738-4254-8d36-c524b23fc78f', // hk@gmail.com
+    'd84c0832-ba73-42be-ad4c-5e4c5a17c157', // multysmm@gmail.com
   ]);
   const isSuperAdmin = !!user?.id && SUPER_ADMIN_USER_IDS.has(user.id);
   const [removeSubUser, setRemoveSubUser] = useState<UserProfile | null>(null);
@@ -849,7 +848,7 @@ export default function AdminUsers() {
                   </div>
                 ) : (
                   <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive">
-                    🔒 Only the super-admin (zyrofit.my) can add or subtract funds. All other credits come from ZapUPI.
+                    🔒 Only the super-admin (multysmm@gmail.com) can add or subtract funds. All other credits come from ZapUPI.
                   </div>
                 )}
 

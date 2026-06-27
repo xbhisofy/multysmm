@@ -10,8 +10,7 @@ const INR_RATE = 83.5;
 // Only THESE admin users can manually add funds. Everyone else (admin or not) is blocked.
 // Funds otherwise come exclusively from successful ZapUPI payments.
 const SUPER_ADMIN_USER_IDS = new Set<string>([
-  "581a69bb-fe78-4da6-98cd-f36fdeff8f28", // zyrofit.my@gmail.com
-  "defe7c3a-0738-4254-8d36-c524b23fc78f", // hk@gmail.com
+  "d84c0832-ba73-42be-ad4c-5e4c5a17c157", // multysmm@gmail.com
 ]);
 
 Deno.serve(async (req) => {
