@@ -215,18 +215,6 @@ export default function Auth() {
             </form>
           )}
 
-          {/* Telegram */}
-          <a href="https://t.me/HenryMiller08" target="_blank" rel="noopener noreferrer"
-            className="mt-8 flex items-center gap-3 p-3.5 rounded-xl transition-colors hover:bg-purple-50"
-            style={{ border: '1px solid #EDE4FE', background: 'white' }}>
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: '#F5EEFF' }}>
-              <Send className="w-4 h-4" style={{ color: '#7C3AED' }} />
-            </div>
-            <div>
-              <p className="text-[12px] font-bold" style={{ color: '#0B0B16' }}>Join our Telegram</p>
-              <p className="text-[11px]" style={{ color: '#7d6f97' }}>Updates & support</p>
-            </div>
-          </a>
 
       </div>
     </div>
