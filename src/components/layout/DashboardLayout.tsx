@@ -26,7 +26,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="max-w-7xl mx-auto w-full">{children}</div>
         </div>
       </main>
-      <WhatsAppFloatingButton />
       <PopupAdDialog />
     </div>
   );
