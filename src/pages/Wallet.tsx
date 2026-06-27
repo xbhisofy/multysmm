@@ -203,211 +203,55 @@ export default function Wallet() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-black tracking-[-0.02em]" style={{ color: '#0B0B16' }}>Wallet</h1>
-          <p className="text-[13px] mt-1" style={{ color: '#7d6f97' }}>Manage your balance and transactions.</p>
-        </div>
-
-        {/* Balance Card — MultySMM purple→pink */}
+      <div className="min-h-[calc(100vh-120px)] flex items-center justify-center px-4">
         <div
-          className="relative overflow-hidden rounded-2xl p-4"
+          className="relative w-full max-w-2xl text-center rounded-3xl p-10 md:p-14 overflow-hidden"
           style={{
             background: 'linear-gradient(135deg, #6D28D9 0%, #7C3AED 45%, #EC4899 100%)',
-            boxShadow: '0 14px 32px -12px rgba(124,58,237,.55), inset 0 1px 0 rgba(255,255,255,.20)',
+            boxShadow: '0 24px 60px -20px rgba(124,58,237,.55), inset 0 1px 0 rgba(255,255,255,.20)',
           }}
         >
-
-          {/* decorative orbs */}
           <div
             aria-hidden
-            className="absolute -top-16 -right-12 w-48 h-48 rounded-full pointer-events-none"
+            className="absolute -top-24 -right-16 w-72 h-72 rounded-full pointer-events-none"
             style={{ background: 'radial-gradient(closest-side, rgba(255,255,255,.22), transparent 70%)' }}
           />
           <div
             aria-hidden
-            className="absolute -bottom-20 -left-10 w-40 h-40 rounded-full pointer-events-none"
+            className="absolute -bottom-24 -left-16 w-72 h-72 rounded-full pointer-events-none"
             style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.45), transparent 70%)' }}
           />
 
-
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span
-                className="inline-flex items-center justify-center w-7 h-7 rounded-lg"
-                style={{ background: 'rgba(255,255,255,.18)', backdropFilter: 'blur(4px)' }}
-              >
-                <WalletIcon className="h-3.5 w-3.5 text-white" />
-              </span>
-              <p
-                className="text-[10px] font-semibold uppercase text-white/80"
-                style={{ letterSpacing: '0.16em' }}
-              >
-                Available Balance
-              </p>
-            </div>
+          <div className="relative z-10">
             <div
-              className="px-2 py-0.5 rounded-full text-[10px] font-bold text-white"
-              style={{ background: 'rgba(255,255,255,.18)', letterSpacing: '0.05em' }}
+              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mx-auto mb-6"
+              style={{ background: 'rgba(255,255,255,.18)', backdropFilter: 'blur(6px)' }}
             >
-              INR
+              <WalletIcon className="h-8 w-8 text-white" />
             </div>
+
+            <h1
+              className="text-3xl md:text-4xl text-white"
+              style={{
+                fontFamily: "'Sora', system-ui, sans-serif",
+                fontWeight: 800,
+                letterSpacing: '-0.02em',
+                lineHeight: 1.1,
+              }}
+            >
+              Fund Add Karne Ke Liye
+              <br />
+              Admin Se Contact Karein
+            </h1>
+
+            <p className="mt-5 text-[15px] md:text-base text-white/85 max-w-md mx-auto leading-relaxed">
+              Wallet me funds add karne ke liye please admin se sampark karein.
+              Aapko jaldi assistance mil jayegi.
+            </p>
           </div>
-
-          <p
-            className="relative z-10 mt-2 text-3xl md:text-4xl text-white"
-            style={{
-              fontFamily: "'Sora', system-ui, sans-serif",
-              fontWeight: 700,
-              letterSpacing: '-0.02em',
-              lineHeight: 1.05,
-            }}
-          >
-            {formatPrice(wallet?.balance || 0)}
-          </p>
-
-          {/* stats row */}
-          <div
-            className="relative z-10 mt-3 pt-3 grid grid-cols-2 gap-3"
-            style={{ borderTop: '1px solid rgba(255,255,255,.18)' }}
-          >
-            <div className="flex items-center gap-2">
-              <span
-                className="inline-flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
-                style={{ background: 'rgba(255,255,255,.18)' }}
-              >
-                <ArrowDownLeft className="h-3.5 w-3.5 text-white" />
-              </span>
-              <div className="min-w-0">
-                <p className="text-[9px] font-semibold uppercase text-white/70" style={{ letterSpacing: '0.14em' }}>
-                  Total In
-                </p>
-                <p
-                  className="text-[13px] text-white truncate"
-                  style={{ fontFamily: "'Sora', system-ui, sans-serif", fontWeight: 600 }}
-                >
-                  {formatPrice(wallet?.total_deposited || 0)}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <span
-                className="inline-flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
-                style={{ background: 'rgba(255,255,255,.18)' }}
-              >
-                <ArrowUpRight className="h-3.5 w-3.5 text-white" />
-              </span>
-              <div className="min-w-0">
-                <p className="text-[9px] font-semibold uppercase text-white/70" style={{ letterSpacing: '0.14em' }}>
-                  Total Out
-                </p>
-                <p
-                  className="text-[13px] text-white truncate"
-                  style={{ fontFamily: "'Sora', system-ui, sans-serif", fontWeight: 600 }}
-                >
-                  {formatPrice(wallet?.total_spent || 0)}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Deposit Section — ZapUPI auto-credit (manual & screenshot flow removed) */}
-        <ZapUpiDepositCard />
-
-        {/* Transaction History */}
-        <div className="rounded-2xl p-6" style={{ background: 'white', border: '1px solid rgba(0,0,0,.06)', boxShadow: '0 2px 12px rgba(0,0,0,.04)' }}>
-          <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-            <h2 className="text-lg font-bold" style={{ color: '#1a1a2e' }}>Transaction History</h2>
-            <div className="flex gap-1 p-1 rounded-xl" style={{ background: 'rgba(0,0,0,.03)' }}>
-              {(['all', 'deposit', 'order', 'refund'] as const).map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className="px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all"
-                  style={{
-                    background: filter === f ? 'linear-gradient(135deg, #7C3AED, #EC4899)' : 'transparent',
-                    color: filter === f ? 'white' : '#7d6f97',
-                  }}
-                >
-                  {f === 'all' ? 'All' : f === 'deposit' ? 'Deposits' : f === 'order' ? 'Orders' : 'Refunds'}
-                </button>
-
-              ))}
-            </div>
-          </div>
-
-          {displayTransactions.length > 0 ? (
-            <div className="space-y-2">
-              {displayTransactions.map((tx) => (
-                <div
-                  key={tx.id}
-                  className="flex items-center justify-between p-4 rounded-xl transition-colors"
-                  style={{ background: 'rgba(0,0,0,.015)', border: '1px solid rgba(0,0,0,.04)' }}
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center" style={{ background: getIconBg(tx.type) }}>
-                      {getIcon(tx.type)}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-medium text-[13px] leading-tight truncate max-w-[260px]" style={{ color: '#1a1a2e' }}>
-                        {tx.displayDescription}
-                      </p>
-                      <div className="flex items-center flex-wrap gap-x-2 gap-y-0.5 mt-1">
-                        {tx.payment_method && (
-                          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(0,0,0,.04)', color: '#888' }}>
-                            {tx.payment_method.replace(/_/g, ' ').toUpperCase()}
-                          </span>
-                        )}
-                        <span
-                          className="text-[9px] font-semibold px-1.5 py-0.5 rounded"
-                          style={{
-                            background: tx.status === 'pending' ? 'rgba(245,158,11,.1)' : tx.status === 'completed' ? 'rgba(16,185,129,.1)' : 'rgba(239,68,68,.1)',
-                            color: tx.status === 'pending' ? '#f59e0b' : tx.status === 'completed' ? '#10b981' : '#ef4444',
-                          }}
-                        >
-                          {tx.status}
-                        </span>
-                        <span className="text-[11px]" style={{ color: '#bbb' }}>{fmtDate(tx.created_at!)}</span>
-                        {tx.payment_reference && tx.payment_method === 'usdt_bep20' && (
-                          <a
-                            href={`https://bscscan.com/tx/${tx.payment_reference}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[11px] flex items-center gap-0.5 hover:underline"
-                            style={{ color: '#16a34a' }}
-                          >
-                            BSCScan <ExternalLink className="h-3 w-3" />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="text-right flex-shrink-0 ml-4">
-                    <p className="font-bold text-[15px]" style={{ color: getAmountColor(tx.type) }}>
-                      {tx.type === 'order' ? '−' : '+'}{formatPrice(Math.abs(Number(tx.displayAmount)))}
-                    </p>
-                    {tx.displayBalanceAfter != null && (
-                      <p className="text-[11px] mt-0.5" style={{ color: '#bbb' }}>
-                        Bal: {formatPrice(Number(tx.displayBalanceAfter))}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(22, 163, 74,.08)' }}>
-                <WalletIcon className="h-6 w-6" style={{ color: '#16a34a' }} />
-              </div>
-              <p className="font-medium text-[14px]" style={{ color: '#666' }}>No transactions yet</p>
-              <p className="text-[12px] mt-1" style={{ color: '#bbb' }}>Your deposits and spending history will appear here.</p>
-            </div>
-          )}
         </div>
       </div>
     </DashboardLayout>
   );
 }
+
