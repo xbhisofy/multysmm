@@ -146,18 +146,6 @@ export function Sidebar({ onClose }: SidebarProps) {
         </div>
       </div>
 
-      {/* Telegram */}
-      <div className="px-3 pb-1">
-        <a href="https://t.me/HenryMiller08" target="_blank" rel="noopener noreferrer"
-          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[12px] font-medium transition-colors"
-          style={{ background: '#F5EEFF', border: '1px solid #E5D7FA', color: '#6D28D9' }}>
-          <Send className="w-4 h-4 shrink-0" style={{ color: '#7C3AED' }} />
-          <div className="flex flex-col leading-tight">
-            <span className="font-bold text-[11px]">Join our Telegram</span>
-            <span className="text-[10px] opacity-80">Updates & support</span>
-          </div>
-        </a>
-      </div>
 
       {/* Sign out */}
       <div className="p-3" style={{ borderTop: '1px solid #f3eefa' }}>
