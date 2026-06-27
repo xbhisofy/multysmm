@@ -205,21 +205,30 @@ export default function Wallet() {
     <DashboardLayout>
       <div className="min-h-[calc(100vh-120px)] flex items-center justify-center px-4">
         <div className="relative w-full max-w-2xl text-center rounded-3xl p-10 md:p-14 overflow-hidden border border-border bg-card shadow-[0_10px_40px_-12px_rgba(0,0,0,0.08)]">
+          {/* decorative gradient blobs */}
+          <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 -right-20 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+
           <div className="relative z-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mx-auto mb-6 bg-muted">
-              <WalletIcon className="h-8 w-8 text-muted-foreground" />
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mx-auto mb-6 bg-primary/10 border border-primary/20">
+              <WalletIcon className="h-10 w-10 text-primary" />
             </div>
 
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight text-foreground">
               Contact Admin to
               <br />
-              Add Funds
+              <span className="gradient-text">Add Funds</span>
             </h1>
 
             <p className="mt-5 text-[15px] md:text-base max-w-md mx-auto leading-relaxed text-muted-foreground">
               To add funds to your wallet, please contact the admin.
               You will receive assistance shortly.
             </p>
+
+            <div className="mt-8 flex items-center justify-center gap-2 text-sm text-muted-foreground/80">
+              <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse" />
+              Wallet balance updates in real-time
+            </div>
           </div>
         </div>
       </div>
