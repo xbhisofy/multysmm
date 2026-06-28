@@ -11,7 +11,11 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 )
 
-// Stop future runs when public delivery already reached the target, even if a provider over-delivers.
+// Strict mode: no organic-growth buffer. Configurable via env if ever needed.
+const PUBLIC_DELTA_BUFFER_PERCENT = Number(Deno.env.get('PUBLIC_DELTA_BUFFER_PERCENT') ?? '0')
+const PUBLIC_DELTA_BUFFER_MIN = Number(Deno.env.get('PUBLIC_DELTA_BUFFER_MIN') ?? '0')
+
+// Stop future runs when delivered >= ordered_quantity, even if a provider over-delivers.
 function calculateObservedRunDelivery(run: any): number {
   const providerStatus = (run?.provider_status || '').toString().toLowerCase().trim()
 
@@ -31,11 +35,11 @@ async function syncObservedOverdeliveryGuard(supabase: any, itemId?: string | nu
 
   const { data: item } = await supabase
     .from('engagement_order_items')
-    .select('id, quantity, status')
+    .select('id, quantity, status, start_count, start_count_captured_at')
     .eq('id', itemId)
     .maybeSingle()
 
-  if (!item || item.status === 'cancelled') return
+  if (!item || item.status === 'cancelled' || item.status === 'completed') return
 
   const orderedQty = Number(item.quantity || 0)
   if (orderedQty <= 0) return
@@ -60,21 +64,51 @@ async function syncObservedOverdeliveryGuard(supabase: any, itemId?: string | nu
     0,
   )
 
-  const startCounts = runs
-    .map((run: any) => Number(run.provider_start_count))
-    .filter((value: number) => Number.isFinite(value) && value > 0)
+  // Capture baseline if not yet recorded (allows 0)
+  let baseline: number | null = item.start_count !== null && item.start_count !== undefined
+    ? Number(item.start_count) : null
+  if (baseline === null) {
+    const candidates = runs
+      .map((r: any) => Number(r.provider_start_count))
+      .filter((v: number) => Number.isFinite(v) && v >= 0)
+    if (candidates.length > 0) {
+      baseline = Math.min(...candidates)
+      await supabase
+        .from('engagement_order_items')
+        .update({ start_count: baseline, start_count_captured_at: new Date().toISOString() })
+        .eq('id', itemId)
+        .is('start_count', null)
+      console.log(`📍 [check-order-status] Captured start_count=${baseline} for item ${itemId}`)
+    }
+  }
 
-  const publicCountDelta = startCounts.length > 0
-    ? Math.max(0, Math.max(...startCounts) - Math.min(...startCounts))
+  // currentPublic ≈ MAX over runs of (provider_start_count + delivered_for_that_run)
+  let currentPublic: number | null = null
+  for (const run of runs) {
+    const sc = Number(run.provider_start_count)
+    if (!Number.isFinite(sc) || sc < 0) continue
+    const snap = sc + calculateObservedRunDelivery(run)
+    if (currentPublic === null || snap > currentPublic) currentPublic = snap
+  }
+  const publicCountDelta = (currentPublic !== null && baseline !== null)
+    ? Math.max(0, currentPublic - baseline)
     : 0
 
+  // STRICT: take MAX of all three signals
   const delivered = Math.max(askedSent, observedByRuns, publicCountDelta)
-  if (delivered < orderedQty) return
+  const decision = (
+    (currentPublic !== null && baseline !== null && currentPublic >= (baseline + orderedQty))
+    || delivered >= orderedQty
+  ) ? 'auto_complete' : 'continue'
+
+  console.log(`🔎 [check-order-status] Guard item=${itemId} start=${baseline ?? 'null'} cur=${currentPublic ?? 'null'} publicΔ=${publicCountDelta} asked=${askedSent} obs=${observedByRuns} delivered=${delivered} target=${orderedQty} decision=${decision}`)
+
+  if (decision !== 'auto_complete') return
 
   await supabase.from('organic_run_schedule').update({
     status: 'cancelled',
     completed_at: new Date().toISOString(),
-    error_message: `Target met (asked=${askedSent}, observed=${observedByRuns}, public_delta=${publicCountDelta}, target=${orderedQty}) — cancelling remaining runs`,
+    error_message: `Target met (start=${baseline ?? 'n/a'}, current=${currentPublic ?? 'n/a'}, delivered=${delivered}, target=${orderedQty}) — auto-completed`,
   }).eq('engagement_order_item_id', itemId).eq('status', 'pending')
 
   await supabase.from('engagement_order_items').update({

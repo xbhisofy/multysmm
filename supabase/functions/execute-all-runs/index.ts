@@ -494,7 +494,14 @@ const calculateObservedRunDelivery = (run: any) => {
   return 0
 }
 
-const calculateObservedItemDelivery = (runs: any[]) => {
+// Strict mode: no organic-growth buffer. Configurable via env if ever needed.
+const PUBLIC_DELTA_BUFFER_PERCENT = Number(Deno.env.get('PUBLIC_DELTA_BUFFER_PERCENT') ?? '0')
+const PUBLIC_DELTA_BUFFER_MIN = Number(Deno.env.get('PUBLIC_DELTA_BUFFER_MIN') ?? '0')
+
+// Best-estimate current public count, computed from provider status snapshots:
+//   currentPublic ≈ MAX over runs of (provider_start_count + delivered_for_that_run)
+// Treats public count drops as no progress (never negative).
+const calculateObservedItemDelivery = (runs: any[], itemStartCount: number | null | undefined) => {
   const askedSent = (runs || []).reduce((sum: number, run: any) => {
     if (run?.status === 'started' || run?.status === 'completed') {
       return sum + Number(run?.quantity_to_send || 0)
@@ -507,25 +514,60 @@ const calculateObservedItemDelivery = (runs: any[]) => {
     0,
   )
 
-  const startCounts = (runs || [])
-    .map((run: any) => Number(run?.provider_start_count))
-    .filter((value: number) => Number.isFinite(value) && value > 0)
+  // Highest public count observed across all runs (provider_start_count + that run's delivered)
+  let currentPublic: number | null = null
+  for (const run of runs || []) {
+    const sc = Number(run?.provider_start_count)
+    if (!Number.isFinite(sc) || sc < 0) continue
+    const snapshot = sc + calculateObservedRunDelivery(run)
+    if (currentPublic === null || snapshot > currentPublic) currentPublic = snapshot
+  }
 
-  const publicCountDelta = startCounts.length > 0
-    ? Math.max(0, Math.max(...startCounts) - Math.min(...startCounts))
+  const hasBaseline = itemStartCount !== null && itemStartCount !== undefined && Number.isFinite(Number(itemStartCount))
+  const baseline = hasBaseline ? Number(itemStartCount) : null
+  // Never negative (public counts can drop temporarily)
+  const publicCountDelta = (currentPublic !== null && baseline !== null)
+    ? Math.max(0, currentPublic - baseline)
     : 0
+
+  // STRICT: take the MAX of all three signals — provider over-delivery is detected
+  // even when its API under-reports.
+  const delivered = Math.max(askedSent, observedByRuns, publicCountDelta)
 
   return {
     askedSent,
     observedByRuns,
     publicCountDelta,
-    // NOTE: publicCountDelta is intentionally EXCLUDED from `delivered`.
-    // The public like/view count on a real post grows organically (natural users),
-    // so including it inflates our "delivered" total and causes future scheduled
-    // runs to be capped/cancelled even though we haven't actually sent that quantity.
-    // We only trust what we asked the provider to send + what the provider reports remaining.
-    delivered: Math.max(askedSent, observedByRuns),
+    currentPublic,
+    delivered,
   }
+}
+
+// Capture start_count baseline on the very first available provider start_count reading.
+// Allows 0 as a legitimate baseline (new posts). Idempotent: only writes when not yet captured.
+async function captureItemStartCountIfNeeded(
+  supabase: SupabaseClient,
+  item: { id: string; start_count: number | null; start_count_captured_at: string | null },
+  runs: any[],
+): Promise<number | null> {
+  if (item.start_count !== null && item.start_count !== undefined) return Number(item.start_count)
+  // Pick the lowest provider_start_count we have (the run that started earliest at the smallest count)
+  const candidates = (runs || [])
+    .map((r: any) => Number(r?.provider_start_count))
+    .filter((v: number) => Number.isFinite(v) && v >= 0)
+  if (candidates.length === 0) return null
+  const baseline = Math.min(...candidates)
+  const { error } = await supabase
+    .from('engagement_order_items')
+    .update({ start_count: baseline, start_count_captured_at: new Date().toISOString() })
+    .eq('id', item.id)
+    .is('start_count', null)
+  if (error) {
+    console.error(`⚠️ Failed to persist start_count for item ${item.id}:`, error.message)
+    return baseline
+  }
+  console.log(`📍 Captured start_count=${baseline} for item ${item.id}`)
+  return baseline
 }
 
 async function batchPostponeEngagementRunsForLink(
@@ -1056,37 +1098,61 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         continue
       }
 
-      // 🛡️ OVER-DELIVERY GUARD: Ensure cumulative sent quantity never exceeds item.quantity.
-      // Some providers over-deliver on the public post even when our scheduled qty is lower,
-      // so we must stop future runs based on observed public delivery too.
+      // 🛡️ STRICT OVER-DELIVERY GUARD: start_count + ordered_quantity cap.
+      // Cancel ALL remaining pending runs once delivered >= target, with no buffer.
       try {
         const orderedQty = Number(item.quantity || 0)
         if (orderedQty > 0) {
+          // Refresh authoritative item snapshot (status + start_count baseline)
+          const { data: itemSnap } = await supabase
+            .from('engagement_order_items')
+            .select('id, quantity, status, start_count, start_count_captured_at')
+            .eq('id', item.id)
+            .maybeSingle()
+          if (itemSnap?.status === 'completed' || itemSnap?.status === 'cancelled') {
+            // Idempotent skip — already terminal
+            await supabase.from('organic_run_schedule').update({
+              status: 'cancelled',
+              error_message: `Item already ${itemSnap.status} — skipping dispatch`,
+              completed_at: new Date().toISOString(),
+            }).eq('id', run.id)
+            skipped++
+            continue
+          }
+
           const { data: sentRows } = await supabase
             .from('organic_run_schedule')
             .select('quantity_to_send,status,provider_start_count,provider_remains,provider_status,run_number')
             .eq('engagement_order_item_id', item.id)
             .in('status', ['completed', 'started', 'failed'])
 
-          const observed = calculateObservedItemDelivery(sentRows || [])
-          const alreadySent = observed.delivered
-          const remaining = orderedQty - alreadySent
-          if (remaining <= 0) {
-            // Target met (or exceeded via over-delivery) — cancel ALL remaining pending runs
+          // Capture start_count on first opportunity (allows 0 baseline)
+          const baseline = await captureItemStartCountIfNeeded(supabase, {
+            id: item.id,
+            start_count: itemSnap?.start_count ?? null,
+            start_count_captured_at: itemSnap?.start_count_captured_at ?? null,
+          }, sentRows || [])
+
+          const observed = calculateObservedItemDelivery(sentRows || [], baseline)
+          const decision = observed.delivered >= orderedQty ? 'auto_complete' : 'continue'
+          console.log(`🔎 Guard item=${item.id} start=${baseline ?? 'null'} cur=${observed.currentPublic ?? 'null'} publicΔ=${observed.publicCountDelta} asked=${observed.askedSent} obs=${observed.observedByRuns} delivered=${observed.delivered} target=${orderedQty} decision=${decision}`)
+
+          if (decision === 'auto_complete') {
             await supabase.from('organic_run_schedule').update({
               status: 'cancelled',
-              error_message: `Target met (asked=${observed.askedSent}, observed=${observed.observedByRuns}, public_delta=${observed.publicCountDelta}, target=${orderedQty}) — cancelling remaining runs`,
+              error_message: `Target met (start=${baseline ?? 'n/a'}, current=${observed.currentPublic ?? 'n/a'}, delivered=${observed.delivered}, target=${orderedQty}) — auto-completed`,
               completed_at: new Date().toISOString(),
             }).eq('engagement_order_item_id', item.id).eq('status', 'pending')
             await supabase.from('engagement_order_items').update({
               status: 'completed', updated_at: new Date().toISOString(),
             }).eq('id', item.id).neq('status', 'completed')
             skipped++
-            console.log(`🛡️ Item ${item.id} target met — asked=${observed.askedSent}, observed=${observed.observedByRuns}, public_delta=${observed.publicCountDelta}, target=${orderedQty}. Cancelling remaining.`)
             continue
           }
+
+          const remaining = orderedQty - observed.delivered
           if (run.quantity_to_send > remaining) {
-            console.log(`🛡️ Capping run #${run.run_number} qty ${run.quantity_to_send} → ${remaining} (asked=${observed.askedSent}, observed=${observed.observedByRuns}, public_delta=${observed.publicCountDelta}, target=${orderedQty})`)
+            console.log(`🛡️ Capping run #${run.run_number} qty ${run.quantity_to_send} → ${remaining}`)
             await supabase.from('organic_run_schedule').update({
               quantity_to_send: remaining,
             }).eq('id', run.id)
