@@ -314,6 +314,8 @@ export type Database = {
           quantity: number
           service_id: string | null
           speed_preset: string | null
+          start_count: number | null
+          start_count_captured_at: string | null
           status: string | null
           updated_at: string | null
         }
@@ -332,6 +334,8 @@ export type Database = {
           quantity: number
           service_id?: string | null
           speed_preset?: string | null
+          start_count?: number | null
+          start_count_captured_at?: string | null
           status?: string | null
           updated_at?: string | null
         }
@@ -350,6 +354,8 @@ export type Database = {
           quantity?: number
           service_id?: string | null
           speed_preset?: string | null
+          start_count?: number | null
+          start_count_captured_at?: string | null
           status?: string | null
           updated_at?: string | null
         }
