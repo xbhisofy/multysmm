@@ -494,7 +494,14 @@ const calculateObservedRunDelivery = (run: any) => {
   return 0
 }
 
-const calculateObservedItemDelivery = (runs: any[]) => {
+// Strict mode: no organic-growth buffer. Configurable via env if ever needed.
+const PUBLIC_DELTA_BUFFER_PERCENT = Number(Deno.env.get('PUBLIC_DELTA_BUFFER_PERCENT') ?? '0')
+const PUBLIC_DELTA_BUFFER_MIN = Number(Deno.env.get('PUBLIC_DELTA_BUFFER_MIN') ?? '0')
+
+// Best-estimate current public count, computed from provider status snapshots:
+//   currentPublic ≈ MAX over runs of (provider_start_count + delivered_for_that_run)
+// Treats public count drops as no progress (never negative).
+const calculateObservedItemDelivery = (runs: any[], itemStartCount: number | null | undefined) => {
   const askedSent = (runs || []).reduce((sum: number, run: any) => {
     if (run?.status === 'started' || run?.status === 'completed') {
       return sum + Number(run?.quantity_to_send || 0)
@@ -507,25 +514,60 @@ const calculateObservedItemDelivery = (runs: any[]) => {
     0,
   )
 
-  const startCounts = (runs || [])
-    .map((run: any) => Number(run?.provider_start_count))
-    .filter((value: number) => Number.isFinite(value) && value > 0)
+  // Highest public count observed across all runs (provider_start_count + that run's delivered)
+  let currentPublic: number | null = null
+  for (const run of runs || []) {
+    const sc = Number(run?.provider_start_count)
+    if (!Number.isFinite(sc) || sc < 0) continue
+    const snapshot = sc + calculateObservedRunDelivery(run)
+    if (currentPublic === null || snapshot > currentPublic) currentPublic = snapshot
+  }
 
-  const publicCountDelta = startCounts.length > 0
-    ? Math.max(0, Math.max(...startCounts) - Math.min(...startCounts))
+  const hasBaseline = itemStartCount !== null && itemStartCount !== undefined && Number.isFinite(Number(itemStartCount))
+  const baseline = hasBaseline ? Number(itemStartCount) : null
+  // Never negative (public counts can drop temporarily)
+  const publicCountDelta = (currentPublic !== null && baseline !== null)
+    ? Math.max(0, currentPublic - baseline)
     : 0
+
+  // STRICT: take the MAX of all three signals — provider over-delivery is detected
+  // even when its API under-reports.
+  const delivered = Math.max(askedSent, observedByRuns, publicCountDelta)
 
   return {
     askedSent,
     observedByRuns,
     publicCountDelta,
-    // NOTE: publicCountDelta is intentionally EXCLUDED from `delivered`.
-    // The public like/view count on a real post grows organically (natural users),
-    // so including it inflates our "delivered" total and causes future scheduled
-    // runs to be capped/cancelled even though we haven't actually sent that quantity.
-    // We only trust what we asked the provider to send + what the provider reports remaining.
-    delivered: Math.max(askedSent, observedByRuns),
+    currentPublic,
+    delivered,
   }
+}
+
+// Capture start_count baseline on the very first available provider start_count reading.
+// Allows 0 as a legitimate baseline (new posts). Idempotent: only writes when not yet captured.
+async function captureItemStartCountIfNeeded(
+  supabase: SupabaseClient,
+  item: { id: string; start_count: number | null; start_count_captured_at: string | null },
+  runs: any[],
+): Promise<number | null> {
+  if (item.start_count !== null && item.start_count !== undefined) return Number(item.start_count)
+  // Pick the lowest provider_start_count we have (the run that started earliest at the smallest count)
+  const candidates = (runs || [])
+    .map((r: any) => Number(r?.provider_start_count))
+    .filter((v: number) => Number.isFinite(v) && v >= 0)
+  if (candidates.length === 0) return null
+  const baseline = Math.min(...candidates)
+  const { error } = await supabase
+    .from('engagement_order_items')
+    .update({ start_count: baseline, start_count_captured_at: new Date().toISOString() })
+    .eq('id', item.id)
+    .is('start_count', null)
+  if (error) {
+    console.error(`⚠️ Failed to persist start_count for item ${item.id}:`, error.message)
+    return baseline
+  }
+  console.log(`📍 Captured start_count=${baseline} for item ${item.id}`)
+  return baseline
 }
 
 async function batchPostponeEngagementRunsForLink(
