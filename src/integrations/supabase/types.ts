@@ -703,11 +703,14 @@ export type Database = {
         Row: {
           api_key: string | null
           avatar_url: string | null
+          banned_at: string | null
+          banned_reason: string | null
           created_at: string | null
           currency: string | null
           email: string
           full_name: string | null
           id: string
+          is_banned: boolean
           is_organic_mode_default: boolean | null
           organic_peak_hours_enabled: boolean | null
           organic_ratios: Json | null
@@ -722,11 +725,14 @@ export type Database = {
         Insert: {
           api_key?: string | null
           avatar_url?: string | null
+          banned_at?: string | null
+          banned_reason?: string | null
           created_at?: string | null
           currency?: string | null
           email: string
           full_name?: string | null
           id?: string
+          is_banned?: boolean
           is_organic_mode_default?: boolean | null
           organic_peak_hours_enabled?: boolean | null
           organic_ratios?: Json | null
@@ -741,11 +747,14 @@ export type Database = {
         Update: {
           api_key?: string | null
           avatar_url?: string | null
+          banned_at?: string | null
+          banned_reason?: string | null
           created_at?: string | null
           currency?: string | null
           email?: string
           full_name?: string | null
           id?: string
+          is_banned?: boolean
           is_organic_mode_default?: boolean | null
           organic_peak_hours_enabled?: boolean | null
           organic_ratios?: Json | null
@@ -1263,6 +1272,7 @@ export type Database = {
           credited: boolean
           gateway_response: Json | null
           id: string
+          mismatch_meta: Json | null
           order_id: string
           payment_url: string | null
           status: string
@@ -1278,6 +1288,7 @@ export type Database = {
           credited?: boolean
           gateway_response?: Json | null
           id?: string
+          mismatch_meta?: Json | null
           order_id: string
           payment_url?: string | null
           status?: string
@@ -1293,12 +1304,49 @@ export type Database = {
           credited?: boolean
           gateway_response?: Json | null
           id?: string
+          mismatch_meta?: Json | null
           order_id?: string
           payment_url?: string | null
           status?: string
           txn_id?: string | null
           updated_at?: string
           user_id?: string
+          utr?: string | null
+        }
+        Relationships: []
+      }
+      zapupi_webhook_events: {
+        Row: {
+          created_at: string
+          event_key: string
+          id: string
+          order_id: string | null
+          payload: Json | null
+          source: string
+          status: string | null
+          txn_id: string | null
+          utr: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_key: string
+          id?: string
+          order_id?: string | null
+          payload?: Json | null
+          source: string
+          status?: string | null
+          txn_id?: string | null
+          utr?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_key?: string
+          id?: string
+          order_id?: string | null
+          payload?: Json | null
+          source?: string
+          status?: string | null
+          txn_id?: string | null
           utr?: string | null
         }
         Relationships: []
@@ -1421,6 +1469,10 @@ export type Database = {
       }
       is_maintenance_mode: { Args: never; Returns: boolean }
       pg_advisory_xact_lock: { Args: { key: number }; Returns: undefined }
+      record_zapupi_fraud_strike: {
+        Args: { p_meta?: Json; p_reason_code: string; p_user_id: string }
+        Returns: Json
+      }
       reschedule_organic_run: {
         Args: { p_quantity: number; p_run_id: string; p_scheduled_at: string }
         Returns: Json
