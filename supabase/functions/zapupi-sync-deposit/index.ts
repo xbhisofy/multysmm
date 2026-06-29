@@ -1,7 +1,15 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
+import {
+  verifyOrderWithGateway,
+  claimEvent,
+  amountsMatch,
+  handleAmountMismatch,
+  markFailed,
+  recordFailureStrike,
+  telegramCreditAlert,
+} from '../_shared/zapupi-security.ts'
 
-const ZAPUPI_KEY = Deno.env.get('ZAPUPI_ZAP_KEY')!
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!
@@ -28,18 +36,46 @@ Deno.serve(async (req) => {
     const { data: dep, error: depErr } = await admin
       .from('zapupi_deposits')
       .select('id,user_id,credited,status,amount_inr')
-      .eq('order_id', orderId)
-      .maybeSingle()
+      .eq('order_id', orderId).maybeSingle()
     if (depErr || !dep) return json({ error: 'Order not found' }, 404)
     if (dep.user_id !== userId) return json({ error: 'Forbidden' }, 403)
     if (dep.credited) return json({ credited: true, already: true })
 
-    const verify = await verifyOrder(orderId)
+    const verify = await verifyOrderWithGateway(orderId)
+
+    // Layer 4: idempotency claim
+    const claim = await claimEvent({
+      admin, source: 'sync', orderId,
+      txn_id: verify.txn_id, utr: verify.utr,
+      status: verify.statusStr || 'unknown',
+      payload: { sync_verify: verify.raw },
+    })
+    if (!claim.ok) return json({ credited: dep.credited, replay: true })
+
     if (!verify.success) {
       await admin.from('zapupi_deposits').update({
         gateway_response: { sync_verify: verify.raw },
       }).eq('order_id', orderId)
+      if (verify.statusStr === 'failed' || verify.statusStr === 'cancelled' || verify.statusStr === 'expired') {
+        await markFailed(admin, orderId, { sync_verify: verify.raw })
+        await recordFailureStrike({
+          admin, userId: dep.user_id, orderId,
+          source: 'sync', reason: 'gateway_failed',
+        })
+      }
       return json({ credited: false, status: verify.statusStr || 'pending' })
+    }
+
+    // Layer 3: amount-match guard
+    if (!amountsMatch(Number(dep.amount_inr), verify.paid_amount)) {
+      await handleAmountMismatch({
+        admin, userId: dep.user_id, orderId,
+        expectedInr: Number(dep.amount_inr),
+        paidInr: verify.paid_amount,
+        verifyRaw: verify.raw,
+        source: 'sync',
+      })
+      return json({ credited: false, mismatch: true }, 400)
     }
 
     const { data, error } = await admin.rpc('credit_wallet_zapupi', {
@@ -50,7 +86,7 @@ Deno.serve(async (req) => {
     })
     if (error) return json({ error: error.message }, 500)
     if ((data as any)?.credited && !(data as any)?.duplicate) {
-      notifyTelegram(admin, orderId).catch((e) => console.error('tg notify', e))
+      telegramCreditAlert(admin, orderId, 'sync').catch((e) => console.error('tg credit alert', e))
     }
     return json({ credited: true, result: data })
   } catch (e) {
@@ -58,60 +94,9 @@ Deno.serve(async (req) => {
   }
 })
 
-async function verifyOrder(orderId: string) {
-  const r = await fetch('https://pay.zapupi.com/api/order-status', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-    body: JSON.stringify({ zap_key: ZAPUPI_KEY, order_id: orderId }),
-  })
-  const text = await r.text()
-  let data: any = {}
-  try { data = JSON.parse(text) } catch { data = { raw: text } }
-  const d = data?.data ?? data
-  const statusStr = String(d?.status ?? data?.status ?? '').toLowerCase()
-  const success = statusStr === 'success' || statusStr === 'completed' || statusStr === 'paid'
-  return {
-    success,
-    statusStr,
-    txn_id: d?.txn_id || data?.txn_id,
-    utr: d?.utr || data?.utr,
-    raw: data,
-  }
-}
-
 function json(b: unknown, status = 200) {
   return new Response(JSON.stringify(b), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     status,
-  })
-}
-
-async function notifyTelegram(admin: any, orderId: string) {
-  const { data: dep } = await admin
-    .from('zapupi_deposits')
-    .select('user_id, amount_inr, txn_id, utr')
-    .eq('order_id', orderId)
-    .maybeSingle()
-  if (!dep) return
-  const { data: prof } = await admin
-    .from('profiles').select('email').eq('user_id', dep.user_id).maybeSingle()
-  const { data: wal } = await admin
-    .from('wallets').select('balance').eq('user_id', dep.user_id).maybeSingle()
-  const balInr = wal?.balance ? (Number(wal.balance) * 83.5).toFixed(2) : '?'
-  const msg = [
-    `💰 <b>Auto Fund Added (ZapUPI)</b>`,
-    ``,
-    `👤 <b>User:</b> ${prof?.email ?? dep.user_id}`,
-    `💵 <b>Amount:</b> ₹${Number(dep.amount_inr).toFixed(2)}`,
-    `🏦 <b>New Balance:</b> ₹${balInr}`,
-    `🆔 <b>Order:</b> <code>${orderId}</code>`,
-    dep.utr ? `🔁 <b>UTR:</b> <code>${dep.utr}</code>` : '',
-    dep.txn_id ? `🧾 <b>Txn:</b> <code>${dep.txn_id}</code>` : '',
-    `📡 <b>Source:</b> sync (manual verify)`,
-  ].filter(Boolean).join('\n')
-  await fetch(`${SUPABASE_URL}/functions/v1/send-telegram-notification`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SERVICE_ROLE}` },
-    body: JSON.stringify({ message: msg, parse_mode: 'HTML' }),
   })
 }
