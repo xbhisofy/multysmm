@@ -78,6 +78,8 @@ interface UserProfile {
 
 type UserTab = 'all' | 'normal' | 'monthly' | 'lifetime';
 
+const INR_RATE = 83.5;
+
 export default function AdminUsers() {
   const { user, isAdmin, isLoading: authLoading } = useAuth();
   const queryClient = useQueryClient();
@@ -85,7 +87,7 @@ export default function AdminUsers() {
   const [activeTab, setActiveTab] = useState<UserTab>('all');
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [balanceAmount, setBalanceAmount] = useState('');
-  const [balanceAction, setBalanceAction] = useState<'subtract' | 'add'>('subtract');
+  const [balanceAction, setBalanceAction] = useState<'subtract' | 'add'>('add');
   // Only these admins can manually add funds. Everyone else: subtract only.
   const SUPER_ADMIN_USER_IDS = new Set<string>([
     'd84c0832-ba73-42be-ad4c-5e4c5a17c157', // multysmm@gmail.com
@@ -129,6 +131,10 @@ export default function AdminUsers() {
       if (!selectedUser || !balanceAmount) return;
       const inrAmount = parseFloat(balanceAmount);
       if (!inrAmount || inrAmount <= 0) throw new Error('Enter a valid INR amount');
+      const currentBalanceInr = (selectedUser.wallet?.balance || 0) * INR_RATE;
+      if (balanceAction === 'subtract' && inrAmount > currentBalanceInr + 0.01) {
+        throw new Error(`Cannot subtract more than current balance ₹${currentBalanceInr.toFixed(2)}`);
+      }
 
       // All admin wallet changes go through the audited edge function.
       // Direct client-side wallet/transaction writes are blocked at the RLS layer.
@@ -139,7 +145,19 @@ export default function AdminUsers() {
           inr_amount: inrAmount,
         },
       });
-      if (error) throw new Error(error.message || 'Action failed');
+      if (error) {
+        let message = error.message || 'Action failed';
+        const response = (error as any)?.context;
+        if (response?.json) {
+          try {
+            const body = await response.json();
+            message = body?.error || message;
+          } catch {
+            // Keep the default message if response parsing fails.
+          }
+        }
+        throw new Error(message);
+      }
       if (data?.error) throw new Error(data.error);
     },
     onSuccess: () => {
@@ -470,6 +488,10 @@ export default function AdminUsers() {
   };
 
   const filteredUsers = getFilteredUsers();
+  const selectedBalanceInr = selectedUser ? (selectedUser.wallet?.balance || 0) * INR_RATE : 0;
+  const parsedBalanceAmount = parseFloat(balanceAmount || '0') || 0;
+  const isSubtractTooMuch =
+    balanceAction === 'subtract' && parsedBalanceAmount > 0 && parsedBalanceAmount > selectedBalanceInr + 0.01;
 
   // Stats
   const totalBalance = users?.reduce((sum, u) => sum + (u.wallet?.balance || 0), 0) || 0;
@@ -822,7 +844,7 @@ export default function AdminUsers() {
                     {selectedUser.email}
                   </p>
                   <p className="text-3xl font-bold text-success">
-                    ₹{((selectedUser.wallet?.balance || 0) * 83.5).toFixed(2)}
+                    ₹{selectedBalanceInr.toFixed(2)}
                   </p>
                   <p className="text-xs text-muted-foreground">Current Balance</p>
                 </div>
@@ -863,6 +885,11 @@ export default function AdminUsers() {
                     className="h-11 rounded-xl"
                   />
                   <p className="text-[10px] text-muted-foreground">Wallet credit converted at ₹83.5 / $1</p>
+                  {isSubtractTooMuch && (
+                    <p className="text-xs font-medium text-destructive">
+                      Subtract amount cannot be more than current balance ₹{selectedBalanceInr.toFixed(2)}.
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -872,7 +899,7 @@ export default function AdminUsers() {
               </Button>
               <Button
                 onClick={() => updateBalanceMutation.mutate()}
-                disabled={updateBalanceMutation.isPending || !balanceAmount || !isSuperAdmin}
+                disabled={updateBalanceMutation.isPending || !balanceAmount || !isSuperAdmin || isSubtractTooMuch}
               >
                 {updateBalanceMutation.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
                 {balanceAction === 'add' ? 'Add' : 'Subtract'} ₹{balanceAmount || '0'}
