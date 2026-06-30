@@ -87,7 +87,7 @@ export default function AdminUsers() {
   const [activeTab, setActiveTab] = useState<UserTab>('all');
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [balanceAmount, setBalanceAmount] = useState('');
-  const [balanceAction, setBalanceAction] = useState<'subtract' | 'add'>('subtract');
+  const [balanceAction, setBalanceAction] = useState<'subtract' | 'add'>('add');
   // Only these admins can manually add funds. Everyone else: subtract only.
   const SUPER_ADMIN_USER_IDS = new Set<string>([
     'd84c0832-ba73-42be-ad4c-5e4c5a17c157', // multysmm@gmail.com
