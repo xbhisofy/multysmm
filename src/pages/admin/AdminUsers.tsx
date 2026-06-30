@@ -131,6 +131,10 @@ export default function AdminUsers() {
       if (!selectedUser || !balanceAmount) return;
       const inrAmount = parseFloat(balanceAmount);
       if (!inrAmount || inrAmount <= 0) throw new Error('Enter a valid INR amount');
+      const currentBalanceInr = (selectedUser.wallet?.balance || 0) * INR_RATE;
+      if (balanceAction === 'subtract' && inrAmount > currentBalanceInr + 0.01) {
+        throw new Error(`Cannot subtract more than current balance ₹${currentBalanceInr.toFixed(2)}`);
+      }
 
       // All admin wallet changes go through the audited edge function.
       // Direct client-side wallet/transaction writes are blocked at the RLS layer.
@@ -141,7 +145,19 @@ export default function AdminUsers() {
           inr_amount: inrAmount,
         },
       });
-      if (error) throw new Error(error.message || 'Action failed');
+      if (error) {
+        let message = error.message || 'Action failed';
+        const response = (error as any)?.context;
+        if (response?.json) {
+          try {
+            const body = await response.json();
+            message = body?.error || message;
+          } catch {
+            // Keep the default message if response parsing fails.
+          }
+        }
+        throw new Error(message);
+      }
       if (data?.error) throw new Error(data.error);
     },
     onSuccess: () => {
