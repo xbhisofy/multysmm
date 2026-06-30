@@ -108,47 +108,25 @@ Deno.serve(async (req) => {
     }
     const usd = Math.trunc((inr / INR_RATE) * 10000) / 10000;
 
-    // Fetch target wallet + email
-    const { data: wallet, error: wErr } = await admin
-      .from("wallets")
-      .select("balance, total_deposited")
-      .eq("user_id", target_user_id)
-      .single();
-    if (wErr || !wallet) return json({ error: "Target wallet not found" }, 404);
-
+    // Fetch target email (for audit/Telegram)
     const { data: targetProfile } = await admin
       .from("profiles")
       .select("email")
       .eq("user_id", target_user_id)
       .maybeSingle();
 
-    const currentBalance = Number(wallet.balance) || 0;
-    const isAdd = action === "add";
-    const delta = isAdd ? usd : -usd;
-    const newBalance = Math.trunc((currentBalance + delta) * 10000) / 10000;
-    if (newBalance < 0) return json({ error: "Balance cannot be negative" }, 400);
-
-    const currentDeposited = Number(wallet.total_deposited) || 0;
-    const newDeposited = isAdd
-      ? Math.trunc((currentDeposited + usd) * 10000) / 10000
-      : currentDeposited;
-
-    const { error: updErr } = await admin
-      .from("wallets")
-      .update({ balance: newBalance, total_deposited: newDeposited })
-      .eq("user_id", target_user_id);
-    if (updErr) throw updErr;
-
-    const { error: txErr } = await admin.from("transactions").insert({
-      user_id: target_user_id,
-      type: isAdd ? "deposit" : "refund",
-      amount: isAdd ? usd : -usd,
-      balance_after: newBalance,
-      description: `${isAdd ? "Admin manual credit" : "Admin withdrawal"} — ₹${inr.toFixed(2)}${notes ? " — " + notes : ""}`,
-      status: "completed",
-      payment_method: isAdd ? "manual_admin" : undefined,
+    // Atomic adjust: wallet update + transaction insert in a single DB transaction
+    const { data: rpcData, error: rpcErr } = await admin.rpc("admin_adjust_wallet", {
+      p_target_user_id: target_user_id,
+      p_action: action,
+      p_usd: usd,
+      p_inr: inr,
+      p_notes: notes ?? null,
     });
-    if (txErr) throw txErr;
+    if (rpcErr) throw rpcErr;
+    const newBalance = Number((rpcData as any)?.new_balance ?? 0);
+    const isAdd = action === "add";
+
 
     // Audit log — never let logging failure block the action result
     await admin.from("admin_audit_log").insert({
