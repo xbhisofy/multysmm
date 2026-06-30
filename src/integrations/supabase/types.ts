@@ -1393,6 +1393,16 @@ export type Database = {
       }
     }
     Functions: {
+      admin_adjust_wallet: {
+        Args: {
+          p_action: string
+          p_inr: number
+          p_notes?: string
+          p_target_user_id: string
+          p_usd: number
+        }
+        Returns: Json
+      }
       cancel_order_with_refund: {
         Args: { p_actor: string; p_is_admin: boolean; p_order_id: string }
         Returns: Json
