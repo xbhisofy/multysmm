@@ -56,10 +56,24 @@ serve(async (req) => {
       });
     }
 
-    const TG_CHAT_ID = Deno.env.get("TELEGRAM_CHAT_ID");
-    if (!TG_CHAT_ID) {
+    // Collect ALL admin chat IDs (dedupe). Sends to every configured admin.
+    const rawIds = [
+      Deno.env.get("TELEGRAM_CHAT_ID"),
+      Deno.env.get("PROVIDER_BALANCE_CHAT_ID_1"),
+      Deno.env.get("PROVIDER_BALANCE_CHAT_ID_2"),
+    ];
+    const chatIds = Array.from(
+      new Set(
+        rawIds
+          .flatMap((v) => (v ? v.split(",") : []))
+          .map((s) => s.trim())
+          .filter(Boolean),
+      ),
+    );
+
+    if (chatIds.length === 0) {
       return new Response(
-        JSON.stringify({ skipped: true, reason: "TELEGRAM_CHAT_ID not set" }),
+        JSON.stringify({ skipped: true, reason: "No admin chat IDs configured" }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -72,22 +86,26 @@ serve(async (req) => {
       });
     }
 
-    let result;
-    if (photo_url) {
-      result = await tg("sendPhoto", {
-        chat_id: TG_CHAT_ID,
-        photo: photo_url,
-        caption: message,
-        parse_mode,
-      });
-      if (!result?.ok) {
-        result = await tg("sendMessage", { chat_id: TG_CHAT_ID, text: message, parse_mode });
-      }
-    } else {
-      result = await tg("sendMessage", { chat_id: TG_CHAT_ID, text: message, parse_mode });
-    }
+    const results = await Promise.all(
+      chatIds.map(async (chat_id) => {
+        try {
+          let r;
+          if (photo_url) {
+            r = await tg("sendPhoto", { chat_id, photo: photo_url, caption: message, parse_mode });
+            if (!r?.ok) {
+              r = await tg("sendMessage", { chat_id, text: message, parse_mode });
+            }
+          } else {
+            r = await tg("sendMessage", { chat_id, text: message, parse_mode });
+          }
+          return { chat_id, ok: !!r?.ok, error: r?.description ?? null };
+        } catch (e) {
+          return { chat_id, ok: false, error: String(e) };
+        }
+      }),
+    );
 
-    return new Response(JSON.stringify(result), {
+    return new Response(JSON.stringify({ ok: true, sent: results }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
