@@ -459,6 +459,7 @@ const Index = () => {
           </div>
         </div>
       </section>
+      </main>
 
       {/* ═══ FOOTER ═══ */}
       <footer className="py-12 px-4 sm:px-6 lg:px-8" style={{ borderTop: `1px solid ${C.line}` }}>
