@@ -1,11 +1,10 @@
 # MultySMM — robots.txt
-# Site:    https://multysmm.site
+# Site:    https://multysmm.com
 # Updated: 2026-06-26
 
 # ───────────────────────────── Default rule ─────────────────────────────
 User-agent: *
 Allow: /
-Allow: /services
 Allow: /auth
 Allow: /terms
 Allow: /privacy
@@ -98,5 +97,5 @@ User-agent: DotBot
 Disallow: /
 
 # ───────────────────────────── Sitemap & host ─────────────────────────────
-Sitemap: https://multysmm.site/sitemap.xml
-Host: https://multysmm.site
+Sitemap: https://multysmm.com/sitemap.xml
+Host: https://multysmm.com

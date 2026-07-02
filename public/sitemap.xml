@@ -4,59 +4,71 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
   <url>
-    <loc>https://multysmm.site/</loc>
-    <lastmod>2026-06-26</lastmod>
+    <loc>https://multysmm.com/</loc>
+    <lastmod>2026-07-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://multysmm.site/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://multysmm.site/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://multysmm.com/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://multysmm.com/" />
     <image:image>
-      <image:loc>https://multysmm.site/og-image.jpg</image:loc>
-      <image:title>MultySMM — Organic Social Media Growth Platform</image:title>
-      <image:caption>World's first AI-organic SMM panel</image:caption>
+      <image:loc>https://multysmm.com/og-image.jpg</image:loc>
+      <image:title>MultySMM — AI-Powered Social Media Growth</image:title>
     </image:image>
   </url>
 
   <url>
-    <loc>https://multysmm.site/services</loc>
-    <lastmod>2026-06-26</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.95</priority>
-    <image:image>
-      <image:loc>https://multysmm.site/og-image.jpg</image:loc>
-      <image:title>MultySMM Services & Pricing</image:title>
-    </image:image>
-  </url>
-
-  <url>
-    <loc>https://multysmm.site/auth</loc>
-    <lastmod>2026-06-26</lastmod>
+    <loc>https://multysmm.com/auth</loc>
+    <lastmod>2026-07-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://multysmm.site/terms</loc>
-    <lastmod>2026-06-26</lastmod>
+    <loc>https://multysmm.com/about</loc>
+    <lastmod>2026-07-02</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://multysmm.com/contact</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://multysmm.com/terms</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
+
   <url>
-    <loc>https://multysmm.site/privacy</loc>
-    <lastmod>2026-06-26</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://multysmm.com/privacy</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
+
   <url>
-    <loc>https://multysmm.site/refund</loc>
-    <lastmod>2026-06-26</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://multysmm.com/refund</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
+
   <url>
-    <loc>https://multysmm.site/cookies</loc>
-    <lastmod>2026-06-26</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://multysmm.com/cookies</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://multysmm.com/shipping</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 

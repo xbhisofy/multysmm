@@ -42,7 +42,7 @@ export function Sidebar({ onClose }: SidebarProps) {
             </span>
           </div>
         </Link>
-        <button onClick={onClose} className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>
+        <button onClick={onClose} aria-label="Close navigation menu" className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>
           <X className="w-4 h-4" />
         </button>
       </div>

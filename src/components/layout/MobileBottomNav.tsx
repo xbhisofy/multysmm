@@ -12,7 +12,7 @@ export function MobileBottomNav() {
       <header className="fixed top-0 left-0 right-0 z-40 lg:hidden">
         <div className="flex items-center justify-between h-14 px-4"
           style={{ background: 'rgba(255,255,255,.92)', backdropFilter: 'blur(14px)', borderBottom: '1px solid #efeaf7' }}>
-          <button onClick={() => setSidebarOpen(true)} className="flex items-center justify-center w-9 h-9 rounded-lg" style={{ border: '1px solid #efeaf7' }}>
+          <button onClick={() => setSidebarOpen(true)} aria-label="Open navigation menu" className="flex items-center justify-center w-9 h-9 rounded-lg" style={{ border: '1px solid #efeaf7' }}>
             <Menu className="w-4 h-4" style={{ color: '#6D28D9' }} />
           </button>
           <div className="flex items-center gap-2">

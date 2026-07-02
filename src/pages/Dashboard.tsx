@@ -71,8 +71,11 @@ export default function Dashboard() {
               Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'},
             </p>
             <h1 className="text-2xl font-extrabold tracking-tight" style={{ color: '#1a1a2e', fontFamily: "'Outfit', system-ui, sans-serif" }}>
-              {profile?.full_name || 'User'}
+              Your Account Dashboard
             </h1>
+            <p className="text-[13px] mt-1" style={{ color: '#666' }}>
+              Welcome back, {profile?.full_name || 'User'}
+            </p>
           </div>
           <div className="flex gap-2">
             <button onClick={() => navigate('/engagement-order')} className="h-10 px-4 rounded-lg text-[12px] font-semibold flex items-center gap-1.5" style={{ border: '1px solid rgba(0,0,0,.08)', color: '#555' }}>
