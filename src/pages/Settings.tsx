@@ -347,7 +347,7 @@ export default function Settings() {
                 {avatarUrl ? (
                   <img
                     src={avatarUrl}
-                    alt="Profile"
+                    alt="User profile photo"
                     className="w-20 h-20 rounded-2xl object-cover border-2 border-primary/30 shadow-lg"
                   />
                 ) : (
