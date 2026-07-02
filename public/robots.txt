@@ -5,7 +5,6 @@
 # ───────────────────────────── Default rule ─────────────────────────────
 User-agent: *
 Allow: /
-Allow: /services
 Allow: /auth
 Allow: /terms
 Allow: /privacy
