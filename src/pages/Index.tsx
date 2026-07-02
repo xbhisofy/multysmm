@@ -81,6 +81,7 @@ const Index = () => {
         </div>
       </nav>
 
+      <main>
       {/* ═══ HERO ═══ */}
       <section className="pt-16 sm:pt-24 lg:pt-28 pb-16 sm:pb-24 text-center px-4 sm:px-6 lg:px-8 relative">
         {/* extra ambient glows behind hero */}
