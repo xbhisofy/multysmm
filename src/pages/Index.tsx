@@ -154,7 +154,7 @@ const Index = () => {
                 {/* Control bar */}
                 <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 mt-6">
                   <div className="flex flex-wrap items-center gap-2 flex-grow">
-                    <button className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-colors hover:bg-purple-50 shrink-0"
+                    <button aria-label="Add attachment" className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-colors hover:bg-purple-50 shrink-0"
                       style={{ background: '#F4F4F8', color: C.muted }}>
                       <Plus className="w-4 h-4" />
                     </button>
