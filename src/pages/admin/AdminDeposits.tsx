@@ -224,7 +224,7 @@ export default function AdminDeposits() {
                                                 {(tx.profiles as any)?.avatar_url ? (
                                                     <img
                                                         src={(tx.profiles as any).avatar_url}
-                                                        alt={(tx.profiles as any)?.full_name || 'User'}
+                                                        alt={`${(tx.profiles as any)?.full_name || 'User'} profile photo`}
                                                         className="w-9 h-9 rounded-full object-cover shrink-0 border-2 border-primary/20"
                                                     />
                                                 ) : (
