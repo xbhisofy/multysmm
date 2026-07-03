@@ -58,7 +58,7 @@ const Index = () => {
         <div className="max-w-6xl mx-auto rounded-full flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6"
           style={{ background: 'rgba(255,255,255,.85)', backdropFilter: 'blur(20px) saturate(180%)', border: `1px solid ${C.line}`, boxShadow: '0 8px 32px rgba(11,11,22,.06)' }}>
           <Link to="/" className="flex items-center">
-            <img src="/logo.png" alt="MultySMM" className="h-9 sm:h-10 w-auto object-contain" />
+            <img src="/__l5e/assets-v1/629907e8-d337-4ae6-907a-d50fec419bdb/organicsmm-logo.jpg" alt="MultySMM" className="h-9 sm:h-10 w-auto object-contain" />
           </Link>
           <div className="hidden md:flex items-center gap-8">
             {[['Features','#features'],['How it works','#how'],['Why us','#why'],['FAQ','#faq']].map(([t,h]) => (
@@ -98,14 +98,14 @@ const Index = () => {
             </span>
           </div>
 
-          <h1 className="text-[2.8rem] sm:text-[4.6rem] lg:text-[6.2rem] font-black leading-[1.02] tracking-[-0.04em] mb-8">
+          <h1 className="text-[2.8rem] sm:text-[4.6rem] lg:text-[6.2rem] font-black leading-[1.02] tracking-[-0.04em] mb-8" style={{ fontFamily: C.sans }}>
             Grow{' '}
-            <span style={{ fontFamily: C.serif, fontWeight: 400, fontStyle: 'italic', background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            <span style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               Smarter Accounts
             </span>
             <br className="hidden sm:block" />
             Instantly With{' '}
-            <span style={{ fontFamily: C.serif, fontWeight: 400, fontStyle: 'italic', color: '#CBD5E1' }}>AI</span>
+            <span style={{ color: '#CBD5E1' }}>AI</span>
           </h1>
 
           <p className="text-[15px] sm:text-[18px] leading-[1.65] mb-14 sm:mb-16 max-w-2xl mx-auto" style={{ color: C.ink2 }}>
@@ -463,7 +463,7 @@ const Index = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             <div className="col-span-2 sm:col-span-1">
               <div className="flex items-center mb-4">
-                <img src="/logo.png" alt="MultySMM" className="h-10 w-auto object-contain" />
+                <img src="/__l5e/assets-v1/629907e8-d337-4ae6-907a-d50fec419bdb/organicsmm-logo.jpg" alt="MultySMM" className="h-10 w-auto object-contain" />
               </div>
               <p className="text-[13px] leading-relaxed" style={{ color: C.muted }}>
                 The AI-powered SMM panel for creators who want real growth without risking their accounts.
