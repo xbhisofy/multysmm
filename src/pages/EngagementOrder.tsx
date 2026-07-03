@@ -970,6 +970,36 @@ export default function EngagementOrder() {
           </CardContent>
         </Card>
 
+        {/* Repeat Order Banner */}
+        {(repeatSource || repeatError) && (
+          <Card className={cn(
+            "glass-card border-2",
+            repeatError ? "border-destructive/40 bg-destructive/5" : "border-primary/40 bg-primary/5"
+          )}>
+            <CardContent className="p-3 sm:p-4 flex items-center gap-3">
+              <RefreshCw className={cn("h-5 w-5 shrink-0", repeatError ? "text-destructive" : "text-primary")} />
+              <div className="flex-1 min-w-0">
+                {repeatError ? (
+                  <>
+                    <p className="text-sm font-semibold text-destructive">This service is no longer available.</p>
+                    <p className="text-xs text-muted-foreground">{repeatError}</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm font-semibold text-foreground">Repeating Order #{repeatSource.order_number}</p>
+                    <p className="text-xs text-muted-foreground">Everything has been restored. Just replace your old link with a new one and click Place Order.</p>
+                  </>
+                )}
+              </div>
+              {repeatError && (
+                <Button size="sm" variant="outline" onClick={() => { setRepeatError(null); navigate('/engagement-order', { replace: true, state: null }); }}>
+                  Choose Similar Service
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
         {/* Link Input */}
         <Card className="glass-card border-2 border-border">
           <CardContent className="p-4 sm:p-6">
