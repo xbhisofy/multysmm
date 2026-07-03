@@ -477,54 +477,98 @@ export default function EngagementOrder() {
     });
   }, [debouncedBaseQuantity, bundles, servicePrices, userSavedRatios, isAutoRatios]);
 
-  // Apply repeat-order per-type overrides once engagements are seeded from the bundle
+  // Apply repeat-order per-type overrides once engagements are seeded from the bundle.
+  // Prefers the persisted config_snapshot (100% restore) and falls back to
+  // reconstructing values from stored drip fields for legacy orders.
   useEffect(() => {
     if (!repeatSource || prefillAppliedRef.current) return;
     if (!bundles || bundles.length === 0) return;
     const items: any[] = repeatSource.items || [];
-    if (items.length === 0) return;
-    const ready = items.every((i) => engagements[i.engagement_type]);
+    const snap: any = (repeatSource as any).config_snapshot || null;
+    const snapEngagements: Record<string, any> = snap?.engagements || {};
+    const hasSnap = snap && Object.keys(snapEngagements).length > 0;
+    if (!hasSnap && items.length === 0) return;
+
+    const typesToApply = hasSnap ? Object.keys(snapEngagements) : items.map((i) => i.engagement_type);
+    const ready = typesToApply.every((t) => engagements[t]);
     if (!ready) return;
+
+    const missingWarnings: string[] = [];
 
     setEngagements((prev) => {
       const updated: EngagementConfigs = { ...prev };
       Object.keys(updated).forEach((k) => {
         updated[k] = { ...updated[k], enabled: false };
       });
-      items.forEach((item) => {
-        const type = item.engagement_type as EngagementType;
-        if (!updated[type]) return;
-        const svc = servicePrices[type];
-        const pricePerK = svc?.pricePerK ?? 0;
-        const qty = Math.max(1, Number(item.quantity) || 0);
 
-        // Reconstruct runs/time from stored drip fields so the schedule matches original
-        const dripQty = Math.max(1, Number(item.drip_qty_per_run) || qty);
-        const runs = Math.max(1, Math.ceil(qty / dripQty));
-        const interval = Number(item.drip_interval) || 0;
-        const unit = String(item.drip_interval_unit || 'minutes').toLowerCase();
-        const unitToHours = unit === 'days' ? 24 : unit === 'hours' ? 1 : unit === 'minutes' ? 1 / 60 : 1 / 60;
-        const computedHours = Math.round(runs * interval * unitToHours);
-        const timeLimitHours = computedHours > 0 ? computedHours : updated[type].timeLimitHours;
+      if (hasSnap) {
+        // ---------- FULL SNAPSHOT RESTORE ----------
+        Object.entries(snapEngagements).forEach(([type, cfg]: [string, any]) => {
+          if (!updated[type]) {
+            missingWarnings.push(type);
+            return;
+          }
+          const svc = servicePrices[type];
+          const pricePerK = svc?.pricePerK ?? 0;
+          const qty = Math.max(1, Number(cfg.quantity) || 0);
+          updated[type] = {
+            ...updated[type],
+            enabled: !!cfg.enabled,
+            quantity: qty,
+            // Recompute price at CURRENT rates so charge reflects latest pricing,
+            // while every other setting stays identical to the original order.
+            price: (qty / 1000) * pricePerK,
+            timeLimitHours: cfg.time_limit_hours ?? updated[type].timeLimitHours,
+            timeLimitCustomMode: cfg.time_limit_custom_mode ?? (cfg.time_limit_hours > 0),
+            variancePercent: cfg.variance_percent ?? updated[type].variancePercent,
+            peakHoursEnabled: cfg.peak_hours_enabled ?? updated[type].peakHoursEnabled,
+            runCount: cfg.run_count ?? updated[type].runCount,
+          };
+          userEditedQtyRef.current.add(type as EngagementType);
+        });
+      } else {
+        // ---------- LEGACY FALLBACK (reconstruct from drip fields) ----------
+        items.forEach((item) => {
+          const type = item.engagement_type as EngagementType;
+          if (!updated[type]) return;
+          const svc = servicePrices[type];
+          const pricePerK = svc?.pricePerK ?? 0;
+          const qty = Math.max(1, Number(item.quantity) || 0);
 
-        updated[type] = {
-          ...updated[type],
-          enabled: true,
-          quantity: qty,
-          price: (qty / 1000) * pricePerK,
-          variancePercent: repeatSource.variance_percent ?? updated[type].variancePercent,
-          peakHoursEnabled: repeatSource.peak_hours_enabled ?? updated[type].peakHoursEnabled,
-          timeLimitHours,
-          timeLimitCustomMode: computedHours > 0,
-          runCount: runs,
-        };
-        userEditedQtyRef.current.add(type);
-      });
+          const dripQty = Math.max(1, Number(item.drip_qty_per_run) || qty);
+          const runs = Math.max(1, Math.ceil(qty / dripQty));
+          const interval = Number(item.drip_interval) || 0;
+          const unit = String(item.drip_interval_unit || 'minutes').toLowerCase();
+          const unitToHours = unit === 'days' ? 24 : unit === 'hours' ? 1 : unit === 'minutes' ? 1 / 60 : 1 / 60;
+          const computedHours = Math.round(runs * interval * unitToHours);
+          const timeLimitHours = computedHours > 0 ? computedHours : updated[type].timeLimitHours;
+
+          updated[type] = {
+            ...updated[type],
+            enabled: true,
+            quantity: qty,
+            price: (qty / 1000) * pricePerK,
+            variancePercent: repeatSource.variance_percent ?? updated[type].variancePercent,
+            peakHoursEnabled: repeatSource.peak_hours_enabled ?? updated[type].peakHoursEnabled,
+            timeLimitHours,
+            timeLimitCustomMode: computedHours > 0,
+            runCount: runs,
+          };
+          userEditedQtyRef.current.add(type);
+        });
+      }
       return updated;
     });
     prefillAppliedRef.current = true;
+
+    if (missingWarnings.length > 0) {
+      toast({
+        title: '⚠️ Some options unavailable',
+        description: `The original order used: ${missingWarnings.join(', ')} — these are no longer offered. All other settings were restored.`,
+      });
+    }
     toast({
-      title: '✅ Order restored',
+      title: '✅ Order fully restored',
       description: `Repeating Order #${repeatSource.order_number}. Just replace the link and click Place Order.`,
     });
   }, [repeatSource, bundles, engagements, servicePrices, toast]);
