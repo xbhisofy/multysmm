@@ -169,7 +169,12 @@ export default function EngagementOrders() {
         ) : (
           <div className="space-y-4">
             {filteredOrders?.map((order) => (
-              <OrderCard key={order.id} order={order} onClick={() => navigate(`/engagement-orders/${order.order_number}`)} />
+              <OrderCard
+                key={order.id}
+                order={order}
+                onClick={() => navigate(`/engagement-orders/${order.order_number}`)}
+                onRepeat={() => navigate('/engagement-order', { state: { repeatFrom: order.order_number } })}
+              />
             ))}
           </div>
         )}
