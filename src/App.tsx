@@ -40,6 +40,11 @@ import AdminServiceProviderMapping from "./pages/admin/AdminServiceProviderMappi
 import AdminAuditLog from "./pages/admin/AdminAuditLog";
 import AdminPopupAd from "./pages/admin/AdminPopupAd";
 import AdminTopupPlan from "./pages/admin/AdminTopupPlan";
+import AdminChat from "./pages/admin/AdminChat";
+
+import { GlobalSubscriptionGuard } from "@/components/subscription/GlobalSubscriptionGuard";
+import { LiveChatWidget } from "@/components/chat/LiveChatWidget";
+import { WhatsAppFloatingButton } from "@/components/chat/WhatsAppFloatingButton";
 
 // Legal pages
 import TermsOfService from "./pages/legal/TermsOfService";
@@ -96,11 +101,10 @@ const App = () => {
             <AppErrorBoundary>
               <BrowserRouter>
                 <ScrollToTop />
-                
+                <GlobalSubscriptionGuard>
                   <Routes>
                     {/* User pages */}
                     <Route path="/" element={<Index />} />
-                    <Route path="*" element={<NotFound />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/orders" element={<Orders />} />
@@ -120,7 +124,7 @@ const App = () => {
                     <Route path="/admin/users" element={<AdminGuard><AdminUsers /></AdminGuard>} />
                     <Route path="/admin/bundles" element={<AdminGuard><AdminBundles /></AdminGuard>} />
                     <Route path="/admin/cron-monitor" element={<AdminGuard><AdminCronMonitor /></AdminGuard>} />
-                    <Route path="/admin/chat" element={<NotFound />} />
+                    <Route path="/admin/chat" element={<AdminGuard><AdminChat /></AdminGuard>} />
                     <Route path="/admin/deposits" element={<AdminGuard><AdminDeposits /></AdminGuard>} />
                     <Route path="/admin/provider-accounts" element={<AdminGuard><AdminProviderAccounts /></AdminGuard>} />
                     <Route path="/admin/service-provider-mapping" element={<AdminGuard><AdminServiceProviderMapping /></AdminGuard>} />
@@ -136,8 +140,11 @@ const App = () => {
                     <Route path="/contact" element={<ContactUs />} />
                     <Route path="/about" element={<AboutUs />} />
                     <Route path="/shipping" element={<ShippingPolicy />} />
+                    <Route path="*" element={<NotFound />} />
                   </Routes>
-                
+                  <LiveChatWidget />
+                  <WhatsAppFloatingButton />
+                </GlobalSubscriptionGuard>
               </BrowserRouter>
             </AppErrorBoundary>
           </TooltipProvider>
