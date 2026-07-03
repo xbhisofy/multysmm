@@ -171,7 +171,7 @@ export default function EngagementOrder() {
         .select(`
           id, order_number, bundle_id, base_quantity, is_organic_mode,
           variance_percent, peak_hours_enabled,
-          items:engagement_order_items(engagement_type, quantity),
+          items:engagement_order_items(engagement_type, quantity, drip_qty_per_run, drip_interval, drip_interval_unit, speed_preset),
           bundle:engagement_bundles(platform, is_active)
         `)
         .eq('user_id', user.id)
@@ -496,6 +496,16 @@ export default function EngagementOrder() {
         const svc = servicePrices[type];
         const pricePerK = svc?.pricePerK ?? 0;
         const qty = Math.max(1, Number(item.quantity) || 0);
+
+        // Reconstruct runs/time from stored drip fields so the schedule matches original
+        const dripQty = Math.max(1, Number(item.drip_qty_per_run) || qty);
+        const runs = Math.max(1, Math.ceil(qty / dripQty));
+        const interval = Number(item.drip_interval) || 0;
+        const unit = String(item.drip_interval_unit || 'minutes').toLowerCase();
+        const unitToHours = unit === 'days' ? 24 : unit === 'hours' ? 1 : unit === 'minutes' ? 1 / 60 : 1 / 60;
+        const computedHours = Math.round(runs * interval * unitToHours);
+        const timeLimitHours = computedHours > 0 ? computedHours : updated[type].timeLimitHours;
+
         updated[type] = {
           ...updated[type],
           enabled: true,
@@ -503,6 +513,9 @@ export default function EngagementOrder() {
           price: (qty / 1000) * pricePerK,
           variancePercent: repeatSource.variance_percent ?? updated[type].variancePercent,
           peakHoursEnabled: repeatSource.peak_hours_enabled ?? updated[type].peakHoursEnabled,
+          timeLimitHours,
+          timeLimitCustomMode: computedHours > 0,
+          runCount: runs,
         };
         userEditedQtyRef.current.add(type);
       });
