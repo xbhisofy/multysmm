@@ -104,7 +104,14 @@ export default function EngagementOrder() {
   const [platform, setPlatform] = useState('instagram');
   const [link, setLink] = useState('');
   // Mass Order mode state
-  const [orderMode, setOrderMode] = useState<'single' | 'mass'>('single');
+  const [orderMode, setOrderMode] = useState<'single' | 'mass'>(
+    () => (new URLSearchParams(location.search).get('mode') === 'mass' ? 'mass' : 'single')
+  );
+  // Sync mode with URL query (?mode=mass) so sidebar navigation switches modes
+  useEffect(() => {
+    const mode = new URLSearchParams(location.search).get('mode');
+    setOrderMode(mode === 'mass' ? 'mass' : 'single');
+  }, [location.search]);
   const [massLinksText, setMassLinksText] = useState('');
   const [massConfirmOpen, setMassConfirmOpen] = useState(false);
   const [massProgress, setMassProgress] = useState<{
