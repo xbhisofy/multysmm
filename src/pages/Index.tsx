@@ -462,10 +462,8 @@ const Index = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             <div className="col-span-2 sm:col-span-1">
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black"
-                  style={{ background: GRADIENT }}>M</div>
-                <span className="text-[16px] font-extrabold">MultySMM</span>
+              <div className="flex items-center mb-4">
+                <img src="/logo.png" alt="MultySMM" className="h-10 w-auto object-contain" />
               </div>
               <p className="text-[13px] leading-relaxed" style={{ color: C.muted }}>
                 The AI-powered SMM panel for creators who want real growth without risking their accounts.
