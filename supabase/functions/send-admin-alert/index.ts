@@ -84,6 +84,19 @@ Deno.serve(async (req) => {
     console.log(`Execution ID: ${payload.execution_id}`)
     console.log(`Failed: ${payload.failed_count}`)
 
+    const isCritical = CRITICAL_JOBS.has(payload.job_name)
+
+    // Threshold gate — skip small failure counts unless it's a critical job or test mode
+    if (!isCritical && !payload.test_mode && (payload.failed_count ?? 0) < MIN_FAILED_THRESHOLD) {
+      console.log(`Below threshold (${payload.failed_count} < ${MIN_FAILED_THRESHOLD}) for ${payload.job_name}, skipping`)
+      return new Response(JSON.stringify({
+        skipped: true,
+        reason: 'below_threshold',
+        failed_count: payload.failed_count,
+        threshold: MIN_FAILED_THRESHOLD,
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
     // Check cooldown to prevent spam
     const cooldownKey = `${payload.job_name}`
     const lastAlert = lastAlertTimes[cooldownKey] || 0
