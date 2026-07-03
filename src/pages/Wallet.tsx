@@ -5,6 +5,7 @@ import { useTransactions, type TransactionFilter } from '@/hooks/useTransactions
 import { useCurrency } from '@/hooks/useCurrency';
 import ZapUpiDepositCard from '@/components/wallet/ZapUpiDepositCard';
 import OxaPayAddFunds from '@/components/wallet/OxaPayAddFunds';
+import ManualFundCard from '@/components/wallet/ManualFundCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -288,10 +289,11 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Add Funds — UPI + Crypto side by side */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* Add Funds — UPI + Crypto + Manual */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <ZapUpiDepositCard />
           <OxaPayAddFunds />
+          <ManualFundCard />
         </div>
 
 
