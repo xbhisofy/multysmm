@@ -1380,6 +1380,90 @@ export default function EngagementOrder() {
         </Card>
       </div>
 
+      {/* Mass Order Confirmation */}
+      <AlertDialog open={massConfirmOpen} onOpenChange={setMassConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Mass Order Summary</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2 pt-2 text-sm">
+                <div className="flex justify-between"><span className="text-muted-foreground">Total Links</span><strong className="text-foreground">{parsedMassLinks.all.length}</strong></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Valid Links</span><strong className="text-success">{parsedMassLinks.valid.length}</strong></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Invalid Links</span><strong className="text-destructive">{parsedMassLinks.invalid.length}</strong></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Price Per Order</span><strong className="text-foreground">{formatPrice(totalPrice)}</strong></div>
+                <div className="flex justify-between pt-2 border-t border-border"><span className="font-semibold">Total Amount</span><strong className="text-lg text-primary">{formatPrice(massTotalCost)}</strong></div>
+                <p className="text-xs text-muted-foreground pt-1">Each valid link becomes a separate order with its own tracking.</p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={runMassOrders}>Place {parsedMassLinks.valid.length} Orders</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Mass Order Progress Overlay */}
+      {(massProgress.running || massProgress.done) && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
+          <Card className="w-full max-w-md glass-card border-2 border-primary/40">
+            <CardContent className="p-5 space-y-4">
+              <div className="flex items-center gap-3">
+                {massProgress.running ? (
+                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                ) : (
+                  <div className="h-5 w-5 rounded-full bg-success flex items-center justify-center text-white text-xs">✓</div>
+                )}
+                <div>
+                  <h3 className="font-bold text-foreground">
+                    {massProgress.running ? 'Creating Orders...' : 'Done'}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Order {massProgress.current} / {massProgress.total}
+                  </p>
+                </div>
+              </div>
+              <Progress value={(massProgress.current / Math.max(1, massProgress.total)) * 100} />
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="p-2 rounded-lg bg-success/10 border border-success/30 text-center">
+                  <p className="text-xs text-muted-foreground">Success</p>
+                  <p className="font-bold text-success">{massProgress.success}</p>
+                </div>
+                <div className="p-2 rounded-lg bg-destructive/10 border border-destructive/30 text-center">
+                  <p className="text-xs text-muted-foreground">Failed</p>
+                  <p className="font-bold text-destructive">{massProgress.failed.length}</p>
+                </div>
+              </div>
+              {massProgress.failed.length > 0 && (
+                <div className="max-h-32 overflow-auto rounded-lg border border-destructive/30 bg-destructive/5 p-2">
+                  <p className="text-xs font-semibold text-destructive mb-1">Failed:</p>
+                  <ul className="space-y-1">
+                    {massProgress.failed.map((f, i) => (
+                      <li key={i} className="text-[11px] text-muted-foreground">
+                        <span className="truncate block">{f.link}</span>
+                        <span className="text-destructive">{f.error}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {massProgress.done && (
+                <div className="flex gap-2 justify-end pt-1">
+                  <Button
+                    variant="outline"
+                    onClick={() => setMassProgress(p => ({ ...p, done: false, running: false }))}
+                  >
+                    Close
+                  </Button>
+                  <Button onClick={() => navigate('/engagement-orders')}>
+                    View Orders
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </DashboardLayout>
   );
 }
