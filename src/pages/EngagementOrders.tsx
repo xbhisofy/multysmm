@@ -281,14 +281,28 @@ function OrderCard({ order, onClick, onRepeat }: { order: any; onClick: () => vo
               <ExternalLink className="h-3 w-3" />
             </a>
           </div>
-          <div className="text-right flex items-center gap-2">
-            <div>
-              <p className="font-semibold text-foreground">{formatPrice(order.total_price || 0)}</p>
-              <p className="text-xs text-muted-foreground">
-                {formatDistanceToNow(new Date(order.created_at), { addSuffix: true })}
-              </p>
+          <div className="text-right flex items-start gap-2">
+            <div className="flex flex-col items-end gap-2">
+              <div>
+                <p className="font-semibold text-foreground">{formatPrice(order.total_price || 0)}</p>
+                <p className="text-xs text-muted-foreground">
+                  {formatDistanceToNow(new Date(order.created_at), { addSuffix: true })}
+                </p>
+              </div>
+              <Button
+                size="sm"
+                onClick={handleRepeat}
+                disabled={isRepeating}
+                className="rounded-full h-8 px-3 gap-1.5 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+              >
+                {isRepeating ? (
+                  <><Loader2 className="h-3.5 w-3.5 animate-spin" />Loading...</>
+                ) : (
+                  <><RefreshCw className="h-3.5 w-3.5" />Repeat Order</>
+                )}
+              </Button>
             </div>
-            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+            <ChevronRight className="h-5 w-5 text-muted-foreground mt-1" />
           </div>
         </div>
       </CardHeader>
