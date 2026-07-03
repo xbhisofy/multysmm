@@ -444,6 +444,47 @@ export default function EngagementOrder() {
     });
   }, [debouncedBaseQuantity, bundles, servicePrices, userSavedRatios, isAutoRatios]);
 
+  // Apply repeat-order per-type overrides once engagements are seeded from the bundle
+  useEffect(() => {
+    if (!repeatSource || prefillAppliedRef.current) return;
+    if (!bundles || bundles.length === 0) return;
+    const items: any[] = repeatSource.items || [];
+    if (items.length === 0) return;
+    const ready = items.every((i) => engagements[i.engagement_type]);
+    if (!ready) return;
+
+    setEngagements((prev) => {
+      const updated: EngagementConfigs = { ...prev };
+      Object.keys(updated).forEach((k) => {
+        updated[k] = { ...updated[k], enabled: false };
+      });
+      items.forEach((item) => {
+        const type = item.engagement_type as EngagementType;
+        if (!updated[type]) return;
+        const svc = servicePrices[type];
+        const pricePerK = svc?.pricePerK ?? 0;
+        const qty = Math.max(1, Number(item.quantity) || 0);
+        updated[type] = {
+          ...updated[type],
+          enabled: true,
+          quantity: qty,
+          price: (qty / 1000) * pricePerK,
+          variancePercent: repeatSource.variance_percent ?? updated[type].variancePercent,
+          peakHoursEnabled: repeatSource.peak_hours_enabled ?? updated[type].peakHoursEnabled,
+        };
+        userEditedQtyRef.current.add(type);
+      });
+      return updated;
+    });
+    prefillAppliedRef.current = true;
+    toast({
+      title: '✅ Order restored',
+      description: `Repeating Order #${repeatSource.order_number}. Just replace the link and click Place Order.`,
+    });
+  }, [repeatSource, bundles, engagements, servicePrices, toast]);
+
+
+
   const handleEngagementChange = useCallback((type: EngagementType, config: EngagementConfig) => {
     setEngagements(prev => {
       const prevQty = prev[type]?.quantity;
