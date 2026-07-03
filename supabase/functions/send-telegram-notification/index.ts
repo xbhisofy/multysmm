@@ -86,12 +86,35 @@ serve(async (req) => {
       );
     }
 
-    const { message, photo_url, parse_mode = "HTML" } = await req.json();
+    const { message, photo_url, parse_mode = "HTML", alert_kind, force } = await req.json();
     if (!message) {
       return new Response(JSON.stringify({ error: "No message provided" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Priority filter — suppress noisy warnings unless critical / forced
+    const lower = String(message).toLowerCase();
+    const isCritical = force === true || CRITICAL_KEYWORDS.some((k) => lower.includes(k));
+    const isLowPriority = !isCritical && LOW_PRIORITY_KEYWORDS.some((k) => lower.includes(k));
+
+    if (isLowPriority) {
+      const key = alert_kind || LOW_PRIORITY_KEYWORDS.find((k) => lower.includes(k)) || "low";
+      const last = lastSent[key] || 0;
+      const now = Date.now();
+      if (now - last < COOLDOWN_MS) {
+        return new Response(
+          JSON.stringify({
+            skipped: true,
+            reason: "cooldown_active",
+            alert_kind: key,
+            remaining_seconds: Math.round((COOLDOWN_MS - (now - last)) / 1000),
+          }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      lastSent[key] = now;
     }
 
     const api = (method: string, body: Record<string, unknown>) =>
