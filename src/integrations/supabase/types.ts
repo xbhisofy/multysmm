@@ -381,6 +381,7 @@ export type Database = {
           base_quantity: number
           bundle_id: string | null
           completed_at: string | null
+          config_snapshot: Json | null
           created_at: string | null
           error_message: string | null
           id: string
@@ -398,6 +399,7 @@ export type Database = {
           base_quantity: number
           bundle_id?: string | null
           completed_at?: string | null
+          config_snapshot?: Json | null
           created_at?: string | null
           error_message?: string | null
           id?: string
@@ -415,6 +417,7 @@ export type Database = {
           base_quantity?: number
           bundle_id?: string | null
           completed_at?: string | null
+          config_snapshot?: Json | null
           created_at?: string | null
           error_message?: string | null
           id?: string
