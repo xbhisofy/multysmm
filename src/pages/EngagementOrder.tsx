@@ -170,7 +170,7 @@ export default function EngagementOrder() {
         .from('engagement_orders')
         .select(`
           id, order_number, bundle_id, base_quantity, is_organic_mode,
-          variance_percent, peak_hours_enabled,
+          variance_percent, peak_hours_enabled, config_snapshot,
           items:engagement_order_items(engagement_type, quantity, drip_qty_per_run, drip_interval, drip_interval_unit, speed_preset),
           bundle:engagement_bundles(platform, is_active)
         `)
@@ -188,11 +188,12 @@ export default function EngagementOrder() {
         setRepeatError('This bundle is no longer available. Please choose a similar service.');
         return;
       }
+      const snap: any = (data as any).config_snapshot || null;
       setRepeatSource(data);
-      setPlatform(bundle.platform);
-      setBaseQuantity(data.base_quantity || 10000);
-      setIsOrganicMode(!!data.is_organic_mode);
-      setIsAutoRatios(false);
+      setPlatform(snap?.platform || bundle.platform);
+      setBaseQuantity(snap?.base_quantity ?? data.base_quantity ?? 10000);
+      setIsOrganicMode(snap?.is_organic_mode ?? !!data.is_organic_mode);
+      setIsAutoRatios(snap?.is_auto_ratios ?? false);
       setLink('');
     })();
     return () => { cancelled = true; };
@@ -476,54 +477,98 @@ export default function EngagementOrder() {
     });
   }, [debouncedBaseQuantity, bundles, servicePrices, userSavedRatios, isAutoRatios]);
 
-  // Apply repeat-order per-type overrides once engagements are seeded from the bundle
+  // Apply repeat-order per-type overrides once engagements are seeded from the bundle.
+  // Prefers the persisted config_snapshot (100% restore) and falls back to
+  // reconstructing values from stored drip fields for legacy orders.
   useEffect(() => {
     if (!repeatSource || prefillAppliedRef.current) return;
     if (!bundles || bundles.length === 0) return;
     const items: any[] = repeatSource.items || [];
-    if (items.length === 0) return;
-    const ready = items.every((i) => engagements[i.engagement_type]);
+    const snap: any = (repeatSource as any).config_snapshot || null;
+    const snapEngagements: Record<string, any> = snap?.engagements || {};
+    const hasSnap = snap && Object.keys(snapEngagements).length > 0;
+    if (!hasSnap && items.length === 0) return;
+
+    const typesToApply = hasSnap ? Object.keys(snapEngagements) : items.map((i) => i.engagement_type);
+    const ready = typesToApply.every((t) => engagements[t]);
     if (!ready) return;
+
+    const missingWarnings: string[] = [];
 
     setEngagements((prev) => {
       const updated: EngagementConfigs = { ...prev };
       Object.keys(updated).forEach((k) => {
         updated[k] = { ...updated[k], enabled: false };
       });
-      items.forEach((item) => {
-        const type = item.engagement_type as EngagementType;
-        if (!updated[type]) return;
-        const svc = servicePrices[type];
-        const pricePerK = svc?.pricePerK ?? 0;
-        const qty = Math.max(1, Number(item.quantity) || 0);
 
-        // Reconstruct runs/time from stored drip fields so the schedule matches original
-        const dripQty = Math.max(1, Number(item.drip_qty_per_run) || qty);
-        const runs = Math.max(1, Math.ceil(qty / dripQty));
-        const interval = Number(item.drip_interval) || 0;
-        const unit = String(item.drip_interval_unit || 'minutes').toLowerCase();
-        const unitToHours = unit === 'days' ? 24 : unit === 'hours' ? 1 : unit === 'minutes' ? 1 / 60 : 1 / 60;
-        const computedHours = Math.round(runs * interval * unitToHours);
-        const timeLimitHours = computedHours > 0 ? computedHours : updated[type].timeLimitHours;
+      if (hasSnap) {
+        // ---------- FULL SNAPSHOT RESTORE ----------
+        Object.entries(snapEngagements).forEach(([type, cfg]: [string, any]) => {
+          if (!updated[type]) {
+            missingWarnings.push(type);
+            return;
+          }
+          const svc = servicePrices[type];
+          const pricePerK = svc?.pricePerK ?? 0;
+          const qty = Math.max(1, Number(cfg.quantity) || 0);
+          updated[type] = {
+            ...updated[type],
+            enabled: !!cfg.enabled,
+            quantity: qty,
+            // Recompute price at CURRENT rates so charge reflects latest pricing,
+            // while every other setting stays identical to the original order.
+            price: (qty / 1000) * pricePerK,
+            timeLimitHours: cfg.time_limit_hours ?? updated[type].timeLimitHours,
+            timeLimitCustomMode: cfg.time_limit_custom_mode ?? (cfg.time_limit_hours > 0),
+            variancePercent: cfg.variance_percent ?? updated[type].variancePercent,
+            peakHoursEnabled: cfg.peak_hours_enabled ?? updated[type].peakHoursEnabled,
+            runCount: cfg.run_count ?? updated[type].runCount,
+          };
+          userEditedQtyRef.current.add(type as EngagementType);
+        });
+      } else {
+        // ---------- LEGACY FALLBACK (reconstruct from drip fields) ----------
+        items.forEach((item) => {
+          const type = item.engagement_type as EngagementType;
+          if (!updated[type]) return;
+          const svc = servicePrices[type];
+          const pricePerK = svc?.pricePerK ?? 0;
+          const qty = Math.max(1, Number(item.quantity) || 0);
 
-        updated[type] = {
-          ...updated[type],
-          enabled: true,
-          quantity: qty,
-          price: (qty / 1000) * pricePerK,
-          variancePercent: repeatSource.variance_percent ?? updated[type].variancePercent,
-          peakHoursEnabled: repeatSource.peak_hours_enabled ?? updated[type].peakHoursEnabled,
-          timeLimitHours,
-          timeLimitCustomMode: computedHours > 0,
-          runCount: runs,
-        };
-        userEditedQtyRef.current.add(type);
-      });
+          const dripQty = Math.max(1, Number(item.drip_qty_per_run) || qty);
+          const runs = Math.max(1, Math.ceil(qty / dripQty));
+          const interval = Number(item.drip_interval) || 0;
+          const unit = String(item.drip_interval_unit || 'minutes').toLowerCase();
+          const unitToHours = unit === 'days' ? 24 : unit === 'hours' ? 1 : unit === 'minutes' ? 1 / 60 : 1 / 60;
+          const computedHours = Math.round(runs * interval * unitToHours);
+          const timeLimitHours = computedHours > 0 ? computedHours : updated[type].timeLimitHours;
+
+          updated[type] = {
+            ...updated[type],
+            enabled: true,
+            quantity: qty,
+            price: (qty / 1000) * pricePerK,
+            variancePercent: repeatSource.variance_percent ?? updated[type].variancePercent,
+            peakHoursEnabled: repeatSource.peak_hours_enabled ?? updated[type].peakHoursEnabled,
+            timeLimitHours,
+            timeLimitCustomMode: computedHours > 0,
+            runCount: runs,
+          };
+          userEditedQtyRef.current.add(type);
+        });
+      }
       return updated;
     });
     prefillAppliedRef.current = true;
+
+    if (missingWarnings.length > 0) {
+      toast({
+        title: '⚠️ Some options unavailable',
+        description: `The original order used: ${missingWarnings.join(', ')} — these are no longer offered. All other settings were restored.`,
+      });
+    }
     toast({
-      title: '✅ Order restored',
+      title: '✅ Order fully restored',
       description: `Repeating Order #${repeatSource.order_number}. Just replace the link and click Place Order.`,
     });
   }, [repeatSource, bundles, engagements, servicePrices, toast]);
@@ -700,6 +745,33 @@ export default function EngagementOrder() {
 
     const bundle = bundles?.[0];
 
+    // Full snapshot of the user's configuration — persisted so Repeat Order
+    // can restore 100% of the original settings later, not just guessed values.
+    const configSnapshot = {
+      version: 1,
+      platform,
+      bundle_id: bundle?.id ?? null,
+      base_quantity: baseQuantity,
+      is_organic_mode: isOrganicMode,
+      is_auto_ratios: isAutoRatios,
+      total_price: totalPrice,
+      user_saved_ratios: userSavedRatios ?? null,
+      engagements: Object.fromEntries(
+        Object.entries(engagements).map(([type, config]) => [type, {
+          enabled: config.enabled,
+          quantity: config.quantity,
+          price: config.price,
+          service_id: config.serviceId,
+          time_limit_hours: config.timeLimitHours,
+          time_limit_custom_mode: config.timeLimitCustomMode ?? false,
+          variance_percent: config.variancePercent,
+          peak_hours_enabled: config.peakHoursEnabled,
+          run_count: config.runCount ?? null,
+        }])
+      ),
+      created_at: new Date().toISOString(),
+    };
+
     const { data, error } = await supabase.functions.invoke('process-engagement-order', {
       body: {
         user_id: user.id,
@@ -708,6 +780,7 @@ export default function EngagementOrder() {
         base_quantity: baseQuantity,
         total_price: totalPrice,
         is_organic_mode: isOrganicMode,
+        config_snapshot: configSnapshot,
         engagements: Object.entries(engagements)
           .filter(([_, config]) => config.enabled)
           .map(([type, config]) => {
@@ -748,7 +821,7 @@ export default function EngagementOrder() {
     }
     if ((data as any)?.error) throw new Error((data as any).error);
     return data as { order_number: number };
-  }, [user, totalPrice, engagements, bundles, baseQuantity, isOrganicMode, previewSchedules]);
+  }, [user, totalPrice, engagements, bundles, baseQuantity, isOrganicMode, previewSchedules, platform, isAutoRatios, userSavedRatios]);
 
   // Single-order mutation
   const placeOrderMutation = useMutation({

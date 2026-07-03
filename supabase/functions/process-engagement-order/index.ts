@@ -398,9 +398,11 @@ serve(async (req) => {
       if (bundle) aiOrganicEnabled = bundle.ai_organic_enabled ?? true
     }
 
-    // Create order
+    // Create order (persist full config_snapshot for Repeat Order restore)
+    const config_snapshot = (body as any).config_snapshot ?? null
     const { data: order, error: orderError } = await supabase.from('engagement_orders').insert({
-      user_id, bundle_id, link, total_price: safeTotalPrice, base_quantity, is_organic_mode: true, status: 'processing'
+      user_id, bundle_id, link, total_price: safeTotalPrice, base_quantity, is_organic_mode: true, status: 'processing',
+      config_snapshot,
     }).select().single()
 
     if (orderError || !order) return new Response(JSON.stringify({ error: `Failed to create order: ${orderError?.message || 'Unknown error'}` }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })

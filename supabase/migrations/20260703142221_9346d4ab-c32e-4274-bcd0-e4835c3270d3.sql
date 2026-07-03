@@ -1,0 +1,2 @@
+ALTER TABLE public.engagement_orders ADD COLUMN IF NOT EXISTS config_snapshot jsonb;
+COMMENT ON COLUMN public.engagement_orders.config_snapshot IS 'Full order configuration snapshot captured at creation time so Repeat Order can restore 100% of the original settings.';
