@@ -1231,8 +1231,8 @@ export default function EngagementOrder() {
                   placeholder={`Paste one link per line\nhttps://${platform}.com/abc\nhttps://${platform}.com/xyz`}
                   value={massLinksText}
                   onChange={(e) => setMassLinksText(e.target.value)}
-                  rows={8}
-                  className="min-h-[180px] text-sm sm:text-base rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-mono placeholder:text-muted-foreground transition-all"
+                  rows={4}
+                  className="min-h-[96px] max-h-[160px] text-sm rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-mono placeholder:text-muted-foreground transition-all"
                 />
                 {/* Live counter */}
                 <div className="grid grid-cols-3 gap-2 sm:gap-3">
@@ -1451,7 +1451,7 @@ export default function EngagementOrder() {
                 <Button
                   size="lg"
                   onClick={handlePlaceOrder}
-                  disabled={!link.trim() || placeOrderMutation.isPending || bundlesLoading}
+                  disabled={(orderMode === 'mass' ? parsedMassLinks.valid.length === 0 : !link.trim()) || placeOrderMutation.isPending || bundlesLoading}
                   className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25 transition-all duration-300"
                 >
                   {placeOrderMutation.isPending ? (
@@ -1467,7 +1467,7 @@ export default function EngagementOrder() {
                   ) : (
                     <>
                       <Rocket className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                      Place Order — {formatPrice(totalPrice)}
+                      Place Order — {formatPrice(orderMode === 'mass' ? massTotalCost : totalPrice)}
                     </>
                   )}
                 </Button>
