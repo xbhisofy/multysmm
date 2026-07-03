@@ -111,16 +111,8 @@ export default function Auth() {
       />
       <div className="w-full max-w-[400px] relative">
           {/* Logo */}
-          <div className="flex items-center justify-center gap-2.5 mb-10">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-[17px]"
-              style={{ background: GRADIENT, boxShadow: '0 10px 24px rgba(124,58,237,.35)' }}>M</div>
-            <div className="flex flex-col leading-tight">
-              <span className="text-[16px] font-extrabold tracking-tight" style={{ color: '#0B0B16' }}>MultySMM</span>
-              <span className="text-[9px] font-bold uppercase tracking-[0.18em]"
-                style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                ✦ AI-Powered Panel
-              </span>
-            </div>
+          <div className="flex items-center justify-center mb-10">
+            <img src="/logo.png" alt="MultySMM" className="h-16 w-auto object-contain" />
           </div>
 
           <Link to="/" className="inline-flex items-center gap-1.5 text-[12px] font-medium mb-8" style={{ color: '#9b8fb8' }}>
