@@ -467,10 +467,14 @@ export default function EngagementOrder() {
           price: finalPrice,
           serviceId: resolvedServiceId,
           minQuantity: serviceData?.minQuantity ?? prev[type]?.minQuantity,
-          // Per-type organic settings
+          // Per-type organic settings — PRESERVE prior values so Repeat Order
+          // (which restores runCount / timeLimitCustomMode) isn't clobbered by
+          // subsequent re-runs of this seed effect.
           timeLimitHours: prev[type]?.timeLimitHours ?? DEFAULT_ORGANIC_SETTINGS.timeLimitHours,
+          timeLimitCustomMode: prev[type]?.timeLimitCustomMode ?? false,
           variancePercent: prev[type]?.variancePercent ?? DEFAULT_ORGANIC_SETTINGS.variancePercent,
           peakHoursEnabled: prev[type]?.peakHoursEnabled ?? DEFAULT_ORGANIC_SETTINGS.peakHoursEnabled,
+          runCount: prev[type]?.runCount,
         };
       });
       return updated;
