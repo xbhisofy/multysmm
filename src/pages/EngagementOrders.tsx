@@ -364,6 +364,22 @@ function OrderCard({ order, onClick, onRepeat }: { order: any; onClick: () => vo
             );
           })}
         </div>
+
+        {/* Repeat Order Action */}
+        <div className="pt-2 border-t border-border flex justify-end">
+          <Button
+            size="sm"
+            onClick={handleRepeat}
+            disabled={isRepeating}
+            className="w-full sm:w-auto rounded-full h-9 px-4 gap-1.5 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+          >
+            {isRepeating ? (
+              <><Loader2 className="h-4 w-4 animate-spin" />Loading...</>
+            ) : (
+              <><RefreshCw className="h-4 w-4" />Repeat Order</>
+            )}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
