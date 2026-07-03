@@ -89,7 +89,16 @@ export function Sidebar({ onClose }: SidebarProps) {
       <nav className="flex-1 overflow-y-auto px-3 pb-3 scrollbar-thin">
         <p className="px-3 mb-2 text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: '#b8a8d0' }}>Menu</p>
         {userNavItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const currentFull = location.pathname + location.search;
+          const isMassLink = item.path.includes('mode=mass');
+          const isEngagementBase = item.path === '/engagement-order';
+          const onEngagement = location.pathname === '/engagement-order';
+          const isMassActive = onEngagement && location.search.includes('mode=mass');
+          const isActive = isMassLink
+            ? isMassActive
+            : isEngagementBase
+              ? onEngagement && !isMassActive
+              : location.pathname === item.path;
           return (
             <Link key={item.path} to={item.path} onClick={onClose}
               className={cn('flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium mb-0.5 transition-all duration-150',
