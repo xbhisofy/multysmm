@@ -1451,7 +1451,7 @@ export default function EngagementOrder() {
                 <Button
                   size="lg"
                   onClick={handlePlaceOrder}
-                  disabled={!link.trim() || placeOrderMutation.isPending || bundlesLoading}
+                  disabled={(orderMode === 'mass' ? parsedMassLinks.valid.length === 0 : !link.trim()) || placeOrderMutation.isPending || bundlesLoading}
                   className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25 transition-all duration-300"
                 >
                   {placeOrderMutation.isPending ? (
