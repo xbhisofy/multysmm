@@ -170,7 +170,7 @@ export default function EngagementOrder() {
         .from('engagement_orders')
         .select(`
           id, order_number, bundle_id, base_quantity, is_organic_mode,
-          variance_percent, peak_hours_enabled,
+          variance_percent, peak_hours_enabled, config_snapshot,
           items:engagement_order_items(engagement_type, quantity, drip_qty_per_run, drip_interval, drip_interval_unit, speed_preset),
           bundle:engagement_bundles(platform, is_active)
         `)
@@ -188,11 +188,12 @@ export default function EngagementOrder() {
         setRepeatError('This bundle is no longer available. Please choose a similar service.');
         return;
       }
+      const snap: any = (data as any).config_snapshot || null;
       setRepeatSource(data);
-      setPlatform(bundle.platform);
-      setBaseQuantity(data.base_quantity || 10000);
-      setIsOrganicMode(!!data.is_organic_mode);
-      setIsAutoRatios(false);
+      setPlatform(snap?.platform || bundle.platform);
+      setBaseQuantity(snap?.base_quantity ?? data.base_quantity ?? 10000);
+      setIsOrganicMode(snap?.is_organic_mode ?? !!data.is_organic_mode);
+      setIsAutoRatios(snap?.is_auto_ratios ?? false);
       setLink('');
     })();
     return () => { cancelled = true; };
