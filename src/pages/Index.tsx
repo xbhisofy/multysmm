@@ -98,14 +98,14 @@ const Index = () => {
             </span>
           </div>
 
-          <h1 className="text-[2.8rem] sm:text-[4.6rem] lg:text-[6.2rem] font-black leading-[1.02] tracking-[-0.04em] mb-8">
+          <h1 className="text-[2.8rem] sm:text-[4.6rem] lg:text-[6.2rem] font-black leading-[1.02] tracking-[-0.04em] mb-8" style={{ fontFamily: C.sans }}>
             Grow{' '}
-            <span style={{ fontFamily: C.serif, fontWeight: 400, fontStyle: 'italic', background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            <span style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               Smarter Accounts
             </span>
             <br className="hidden sm:block" />
             Instantly With{' '}
-            <span style={{ fontFamily: C.serif, fontWeight: 400, fontStyle: 'italic', color: '#CBD5E1' }}>AI</span>
+            <span style={{ color: '#CBD5E1' }}>AI</span>
           </h1>
 
           <p className="text-[15px] sm:text-[18px] leading-[1.65] mb-14 sm:mb-16 max-w-2xl mx-auto" style={{ color: C.ink2 }}>
