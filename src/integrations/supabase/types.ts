@@ -627,6 +627,90 @@ export type Database = {
           },
         ]
       }
+      oxapay_deposits: {
+        Row: {
+          amount_inr: number
+          amount_usd: number
+          created_at: string
+          credited: boolean
+          id: string
+          order_id: string
+          pay_currency: string | null
+          payment_url: string | null
+          raw_payload: Json | null
+          status: string
+          track_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_inr: number
+          amount_usd: number
+          created_at?: string
+          credited?: boolean
+          id?: string
+          order_id: string
+          pay_currency?: string | null
+          payment_url?: string | null
+          raw_payload?: Json | null
+          status?: string
+          track_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_inr?: number
+          amount_usd?: number
+          created_at?: string
+          credited?: boolean
+          id?: string
+          order_id?: string
+          pay_currency?: string | null
+          payment_url?: string | null
+          raw_payload?: Json | null
+          status?: string
+          track_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      oxapay_webhook_events: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          headers: Json | null
+          hmac_valid: boolean
+          id: string
+          order_id: string | null
+          processed: boolean
+          raw_payload: Json | null
+          track_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          headers?: Json | null
+          hmac_valid?: boolean
+          id?: string
+          order_id?: string | null
+          processed?: boolean
+          raw_payload?: Json | null
+          track_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          headers?: Json | null
+          hmac_valid?: boolean
+          id?: string
+          order_id?: string | null
+          processed?: boolean
+          raw_payload?: Json | null
+          track_id?: string | null
+        }
+        Relationships: []
+      }
       platform_settings: {
         Row: {
           created_at: string | null
@@ -1408,6 +1492,7 @@ export type Database = {
         Returns: Json
       }
       cleanup_old_completed_engagement_orders: { Args: never; Returns: Json }
+      credit_wallet_oxapay: { Args: { p_order_id: string }; Returns: Json }
       credit_wallet_zapupi: {
         Args: {
           p_gateway_response?: Json
