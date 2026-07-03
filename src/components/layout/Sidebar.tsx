@@ -31,7 +31,7 @@ export function Sidebar({ onClose }: SidebarProps) {
       {/* Brand */}
       <div className="flex items-center justify-between px-5 pt-4 pb-3">
         <Link to="/" className="flex items-center">
-          <img src="/logo.png" alt="MultySMM" className="h-11 w-auto object-contain" />
+          <img src="/__l5e/assets-v1/629907e8-d337-4ae6-907a-d50fec419bdb/organicsmm-logo.jpg" alt="MultySMM" className="h-11 w-auto object-contain" />
         </Link>
         <button onClick={onClose} aria-label="Close navigation menu" className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>
           <X className="w-4 h-4" />
