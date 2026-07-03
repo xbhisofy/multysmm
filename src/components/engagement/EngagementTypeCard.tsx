@@ -74,13 +74,26 @@ export function EngagementTypeCard({
   pricePerK = 0,
 }: EngagementTypeCardProps) {
   const { formatPrice } = useCurrency();
-  const [customHoursInput, setCustomHoursInput] = useState('24');
+  const [customHoursInput, setCustomHoursInput] = useState(
+    config.timeLimitCustomMode && config.timeLimitHours ? String(config.timeLimitHours) : '24'
+  );
   const [isTimelineOpen, setIsTimelineOpen] = useState(false);
   const [editingRunIndex, setEditingRunIndex] = useState<number | null>(null);
   const [customRunQuantities, setCustomRunQuantities] = useState<Record<number, number>>({});
   const [customRunsInput, setCustomRunsInput] = useState<string>(
     config.runCount ? String(config.runCount) : ''
   );
+
+  // Sync local inputs when config changes externally (e.g. Repeat Order prefill)
+  useEffect(() => {
+    if (config.timeLimitCustomMode && config.timeLimitHours) {
+      setCustomHoursInput(String(config.timeLimitHours));
+    }
+  }, [config.timeLimitCustomMode, config.timeLimitHours]);
+  useEffect(() => {
+    setCustomRunsInput(config.runCount ? String(config.runCount) : '');
+  }, [config.runCount]);
+
 
   // Local quantity input state for smooth typing
   const [localQtyValue, setLocalQtyValue] = useState(config.quantity.toString());
