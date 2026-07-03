@@ -55,6 +55,8 @@ const formatPriceRaw = (price: number): string => {
 
 export default function EngagementOrder() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const repeatFrom = (location.state as { repeatFrom?: number } | null)?.repeatFrom;
   const { user, profile, isLoading: authLoading, isAdmin, wallet, refreshWallet } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
