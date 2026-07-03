@@ -5,6 +5,7 @@ import { useTransactions, type TransactionFilter } from '@/hooks/useTransactions
 import { useCurrency } from '@/hooks/useCurrency';
 import ZapUpiDepositCard from '@/components/wallet/ZapUpiDepositCard';
 import OxaPayAddFunds from '@/components/wallet/OxaPayAddFunds';
+import ManualFundCard from '@/components/wallet/ManualFundCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
