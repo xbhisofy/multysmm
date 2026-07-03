@@ -25,45 +25,22 @@ export default function ZapUpiDepositCard() {
     return () => { cancelled = true; void cancelled; };
   }, []);
 
+  const PROD_ORIGIN = 'https://multysmm.com';
+
   const buildReturnUrl = () => {
-    const current = new URL(window.location.href);
-    const returnUrl = new URL('/wallet', window.location.origin);
-
-    current.searchParams.forEach((value, key) => {
-      if (key.startsWith('__lovable_')) {
-        returnUrl.searchParams.set(key, value);
-      }
-    });
-
-    return returnUrl.toString();
+    // Always return to production domain after payment
+    return `${PROD_ORIGIN}/wallet`;
   };
 
   const openPaymentPage = (payUrl: string) => {
-    const isEmbedded = (() => {
-      try {
-        return window.self !== window.top;
-      } catch {
-        return true;
-      }
-    })();
-
+    // Always open in the same tab (break out of iframe if embedded)
     try {
-      if (isEmbedded) {
-        const opened = window.open(payUrl, '_blank');
-        if (opened) {
-          opened.opener = null;
-          setLoading(false);
-          toast.info('Payment opened in a secure tab. Complete it to return to wallet.');
-          return;
-        }
-      }
-
-      if (window.top && window.top !== window) {
+      if (window.top && window.top !== window.self) {
         window.top.location.href = payUrl;
         return;
       }
     } catch {
-      // If iframe top navigation is blocked, fall back to same-frame navigation.
+      // top navigation blocked by cross-origin iframe — fall through
     }
     window.location.href = payUrl;
   };
@@ -83,7 +60,7 @@ export default function ZapUpiDepositCard() {
       const { data, error } = await supabase.functions.invoke('zapupi-create-order', {
         body: {
           amount_inr: amt,
-          origin: window.location.origin,
+          origin: PROD_ORIGIN,
           return_url: buildReturnUrl(),
         },
       });
