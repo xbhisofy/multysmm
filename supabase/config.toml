@@ -1,1 +1,4 @@
 project_id = "bcowzxvrjcyqwdkufoeu"
+
+[functions.oxapay-webhook]
+verify_jwt = false
