@@ -1472,29 +1472,54 @@ export default function EngagementOrder() {
                   )}
                 </div>
 
-                <Button
-                  size="lg"
-                  onClick={handlePlaceOrder}
-                  disabled={(orderMode === 'mass' ? parsedMassLinks.valid.length === 0 : !link.trim()) || placeOrderMutation.isPending || bundlesLoading}
-                  className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25 transition-all duration-300"
-                >
-                  {placeOrderMutation.isPending ? (
-                    <>
-                      <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin mr-2" />
-                      Processing...
-                    </>
-                  ) : bundlesLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin mr-2" />
-                      Loading...
-                    </>
-                  ) : (
-                    <>
-                      <Rocket className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                      Place Order — {formatPrice(orderMode === 'mass' ? massTotalCost : totalPrice)}
-                    </>
-                  )}
-                </Button>
+                {(() => {
+                  // Hard link-validity gate: hide the button until link(s) match the platform.
+                  const singleLinkValid =
+                    orderMode === 'single' &&
+                    link.trim().length > 0 &&
+                    detectPlatformFromUrl(link.trim()) === platform;
+                  const massLinksValid =
+                    orderMode === 'mass' &&
+                    parsedMassLinks.valid.length > 0 &&
+                    parsedMassLinks.invalid.length === 0;
+                  const canShowButton = singleLinkValid || massLinksValid;
+
+                  if (!canShowButton) {
+                    return (
+                      <div className="h-12 sm:h-14 px-6 sm:px-8 rounded-xl border-2 border-dashed border-border bg-secondary/40 flex items-center justify-center text-xs sm:text-sm text-muted-foreground font-medium">
+                        {orderMode === 'mass'
+                          ? 'Add valid links to enable Place Order'
+                          : `Enter a valid ${platform.toUpperCase()} link to enable Place Order`}
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <Button
+                      size="lg"
+                      onClick={handlePlaceOrder}
+                      disabled={placeOrderMutation.isPending || bundlesLoading}
+                      className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25 transition-all duration-300"
+                    >
+                      {placeOrderMutation.isPending ? (
+                        <>
+                          <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin mr-2" />
+                          Processing...
+                        </>
+                      ) : bundlesLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin mr-2" />
+                          Loading...
+                        </>
+                      ) : (
+                        <>
+                          <Rocket className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                          Place Order — {formatPrice(orderMode === 'mass' ? massTotalCost : totalPrice)}
+                        </>
+                      )}
+                    </Button>
+                  );
+                })()}
               </div>
             </div>
           </CardContent>
