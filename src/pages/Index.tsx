@@ -57,12 +57,8 @@ const Index = () => {
       <nav className="sticky top-4 z-50 w-full px-3 sm:px-4">
         <div className="max-w-6xl mx-auto rounded-full flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6"
           style={{ background: 'rgba(255,255,255,.85)', backdropFilter: 'blur(20px) saturate(180%)', border: `1px solid ${C.line}`, boxShadow: '0 8px 32px rgba(11,11,22,.06)' }}>
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-white font-black text-[15px]"
-              style={{ background: GRADIENT, boxShadow: '0 6px 18px rgba(124,58,237,.35)' }}>
-              M
-            </div>
-            <span className="text-[15px] sm:text-[16px] font-extrabold tracking-tight">MultySMM</span>
+          <Link to="/" className="flex items-center">
+            <img src="/logo.png" alt="MultySMM" className="h-9 sm:h-10 w-auto object-contain" />
           </Link>
           <div className="hidden md:flex items-center gap-8">
             {[['Features','#features'],['How it works','#how'],['Why us','#why'],['FAQ','#faq']].map(([t,h]) => (
@@ -466,10 +462,8 @@ const Index = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             <div className="col-span-2 sm:col-span-1">
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black"
-                  style={{ background: GRADIENT }}>M</div>
-                <span className="text-[16px] font-extrabold">MultySMM</span>
+              <div className="flex items-center mb-4">
+                <img src="/logo.png" alt="MultySMM" className="h-10 w-auto object-contain" />
               </div>
               <p className="text-[13px] leading-relaxed" style={{ color: C.muted }}>
                 The AI-powered SMM panel for creators who want real growth without risking their accounts.

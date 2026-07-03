@@ -30,18 +30,8 @@ export function Sidebar({ onClose }: SidebarProps) {
     <div className="h-full w-full overflow-hidden flex flex-col" style={{ background: '#fff', borderRight: '1px solid #efeaf7' }}>
       {/* Brand */}
       <div className="flex items-center justify-between px-5 pt-4 pb-3">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-[15px]"
-            style={{ background: GRADIENT, boxShadow: '0 6px 18px rgba(124,58,237,.35)' }}>
-            M
-          </div>
-          <div className="flex flex-col leading-tight">
-            <span className="text-[15px] font-extrabold tracking-tight" style={{ color: '#0B0B16' }}>MultySMM</span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.18em]"
-              style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              ✦ AI-Powered
-            </span>
-          </div>
+        <Link to="/" className="flex items-center">
+          <img src="/logo.png" alt="MultySMM" className="h-11 w-auto object-contain" />
         </Link>
         <button onClick={onClose} aria-label="Close navigation menu" className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>
           <X className="w-4 h-4" />

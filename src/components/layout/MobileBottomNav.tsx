@@ -15,9 +15,8 @@ export function MobileBottomNav() {
           <button onClick={() => setSidebarOpen(true)} aria-label="Open navigation menu" className="flex items-center justify-center w-9 h-9 rounded-lg" style={{ border: '1px solid #efeaf7' }}>
             <Menu className="w-4 h-4" style={{ color: '#6D28D9' }} />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-black text-[12px]" style={{ background: GRADIENT }}>M</div>
-            <span className="text-[14px] font-extrabold tracking-tight" style={{ color: '#0B0B16' }}>MultySMM</span>
+          <div className="flex items-center">
+            <img src="/logo.png" alt="MultySMM" className="h-8 w-auto object-contain" />
           </div>
           <div className="w-9" />
         </div>
