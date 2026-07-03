@@ -493,9 +493,13 @@ export default function EngagementOrder() {
     const hasSnap = snap && Object.keys(snapEngagements).length > 0;
     if (!hasSnap && items.length === 0) return;
 
-    const typesToApply = hasSnap ? Object.keys(snapEngagements) : items.map((i) => i.engagement_type);
-    const ready = typesToApply.every((t) => engagements[t]);
-    if (!ready) return;
+    // Only apply to types that BOTH exist in snapshot/items AND in the current bundle.
+    // Skip types no longer offered — otherwise `ready` stays false forever and the
+    // prefill (quantity / runCount / timeLimitHours) never fires, leaving defaults.
+    const rawTypes = hasSnap ? Object.keys(snapEngagements) : items.map((i) => i.engagement_type);
+    const typesToApply = rawTypes.filter((t) => !!engagements[t]);
+    const missingTypes = rawTypes.filter((t) => !engagements[t]);
+    if (typesToApply.length === 0) return;
 
     const missingWarnings: string[] = [];
 
