@@ -614,6 +614,43 @@ export default function EngagementOrder() {
       .reduce((sum, e) => sum + e.quantity, 0);
   }, [engagements]);
 
+  // Parse mass links: dedupe, trim, validate per platform
+  const parsedMassLinks = useMemo(() => {
+    const raw = massLinksText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const seen = new Set<string>();
+    const dedup: string[] = [];
+    for (const l of raw) { if (!seen.has(l)) { seen.add(l); dedup.push(l); } }
+    const analyzed = dedup.map(l => {
+      let reason: string | null = null;
+      let valid = false;
+      try {
+        const u = new URL(l);
+        if (!['http:', 'https:'].includes(u.protocol)) {
+          reason = 'Invalid URL';
+        } else {
+          const detected = detectPlatformFromUrl(l);
+          if (!detected) reason = 'Unsupported platform';
+          else if (detected !== platform) reason = `Not ${platform}`;
+          else valid = true;
+        }
+      } catch { reason = 'Invalid URL'; }
+      return { link: l, valid, reason };
+    });
+    return {
+      all: analyzed,
+      valid: analyzed.filter(a => a.valid),
+      invalid: analyzed.filter(a => !a.valid),
+      totalRaw: raw.length,
+    };
+  }, [massLinksText, platform]);
+
+  const massTotalCost = useMemo(
+    () => parsedMassLinks.valid.length * totalPrice,
+    [parsedMassLinks.valid.length, totalPrice]
+  );
+
+
+
   // Place order mutation
   const placeOrderMutation = useMutation({
     mutationFn: async () => {
