@@ -4,6 +4,7 @@ import { useWallet } from '@/hooks/useWallet';
 import { useTransactions, type TransactionFilter } from '@/hooks/useTransactions';
 import { useCurrency } from '@/hooks/useCurrency';
 import ZapUpiDepositCard from '@/components/wallet/ZapUpiDepositCard';
+import OxaPayAddFunds from '@/components/wallet/OxaPayAddFunds';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -124,6 +125,67 @@ export default function Wallet() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Handle OxaPay return — verify order and credit wallet
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('oxapay') !== 'success') return;
+    const orderId = url.searchParams.get('oxapay_order_id');
+    if (!orderId) return;
+
+    const cleanUrl = () => {
+      url.searchParams.delete('oxapay');
+      url.searchParams.delete('oxapay_order_id');
+      window.history.replaceState({}, '', url.pathname + (url.search ? `?${url.searchParams}` : ''));
+    };
+
+    const claimedKey = `oxapay_claimed_${orderId}`;
+    if (localStorage.getItem(claimedKey) === 'done') {
+      toast.success('This crypto payment is already credited.');
+      cleanUrl();
+      return;
+    }
+
+    let cancelled = false;
+    let attempts = 0;
+    const maxAttempts = 24; // ~2 min at 5s
+    const pendingToast = toast.loading('Verifying crypto payment…');
+
+    const poll = async () => {
+      if (cancelled) return;
+      attempts++;
+      try {
+        const { data, error } = await supabase.functions.invoke('oxapay-sync-deposit', {
+          body: { order_id: orderId },
+        });
+        if (error) throw new Error(error.message);
+        const res = data as any;
+        if (res?.credited || res?.duplicate) {
+          localStorage.setItem(claimedKey, 'done');
+          toast.success(
+            res.duplicate ? 'Already credited to your wallet.' : 'Crypto payment received — wallet credited',
+            { id: pendingToast },
+          );
+          qc.invalidateQueries({ queryKey: ['wallet'] });
+          qc.invalidateQueries({ queryKey: ['transactions'] });
+          cleanUrl();
+          return;
+        }
+      } catch { /* retry */ }
+
+      if (attempts >= maxAttempts) {
+        toast.info('Payment not confirmed yet. Wallet will update once the network confirms.', { id: pendingToast });
+        qc.invalidateQueries({ queryKey: ['wallet'] });
+        cleanUrl();
+        return;
+      }
+      setTimeout(poll, 5000);
+    };
+
+    poll();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const getIcon = (type: string) => {
     switch (type) {
       case 'deposit': return <ArrowDownLeft className="h-4 w-4" style={{ color: '#10b981' }} />;
@@ -226,8 +288,12 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* UPI Add Funds */}
-        <ZapUpiDepositCard />
+        {/* Add Funds — UPI + Crypto side by side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <ZapUpiDepositCard />
+          <OxaPayAddFunds />
+        </div>
+
 
         {/* Transactions */}
         <div className="rounded-2xl border border-border bg-card overflow-hidden">
