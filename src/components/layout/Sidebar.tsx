@@ -11,6 +11,7 @@ const GRADIENT = 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)';
 const userNavItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
   { icon: Rocket, label: 'Full Engagement', path: '/engagement-order', highlight: true },
+  { icon: Layers, label: 'Mass Order', path: '/engagement-order?mode=mass' },
   { icon: Sparkles, label: 'Engagement Orders', path: '/engagement-orders' },
   { icon: Wallet, label: 'Wallet', path: '/wallet' },
   { icon: Code2, label: 'API Access', path: '/api-access' },
