@@ -438,6 +438,60 @@ export type Database = {
           },
         ]
       }
+      order_health_alerts: {
+        Row: {
+          created_at: string
+          first_alerted_at: string
+          id: string
+          issue_code: string
+          last_alerted_at: string
+          last_details: Json | null
+          next_reminder_at: string | null
+          notification_count: number
+          order_kind: string
+          order_ref: string
+          priority: string
+          reminder_step: number
+          resolved: boolean
+          resolved_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          first_alerted_at?: string
+          id?: string
+          issue_code: string
+          last_alerted_at?: string
+          last_details?: Json | null
+          next_reminder_at?: string | null
+          notification_count?: number
+          order_kind: string
+          order_ref: string
+          priority?: string
+          reminder_step?: number
+          resolved?: boolean
+          resolved_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          first_alerted_at?: string
+          id?: string
+          issue_code?: string
+          last_alerted_at?: string
+          last_details?: Json | null
+          next_reminder_at?: string | null
+          notification_count?: number
+          order_kind?: string
+          order_ref?: string
+          priority?: string
+          reminder_step?: number
+          resolved?: boolean
+          resolved_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string | null
