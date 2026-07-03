@@ -8,7 +8,14 @@ const corsHeaders = {
 
 // In-memory cooldown tracking (resets when function cold starts)
 const lastAlertTimes: { [key: string]: number } = {}
-const COOLDOWN_MS = 5 * 60 * 1000 // 5 minutes cooldown
+const COOLDOWN_MS = 65 * 60 * 1000 // 65 minutes cooldown (user requested)
+const MIN_FAILED_THRESHOLD = 26 // Only alert when failures >= this (user requested)
+// Job names considered critical — always alerted (subject to cooldown)
+const CRITICAL_JOBS = new Set<string>([
+  'system_down',
+  'database_error',
+  'edge_function_crash',
+])
 
 interface AlertPayload {
   job_name: string
