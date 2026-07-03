@@ -858,36 +858,67 @@ export default function EngagementOrder() {
       return;
     }
 
+    const requiredTotal = orderMode === 'mass' ? massTotalCost : totalPrice;
+
     // Admin gets free access - no subscription or balance required
-    if (isAdmin) {
-      placeOrderMutation.mutate();
-      return;
+    if (!isAdmin) {
+      if (!wallet || wallet.balance <= 0) {
+        toast({
+          title: "🚫 No Balance",
+          description: "Your account has no balance. Please add funds first!",
+          variant: "destructive",
+        });
+        navigate('/wallet');
+        return;
+      }
+
+      if (wallet.balance < requiredTotal) {
+        toast({
+          title: "💰 Insufficient Balance",
+          description: `Your wallet has ${formatPrice(wallet?.balance || 0)}. This order requires ${formatPrice(requiredTotal)}. Please add funds!`,
+          variant: "destructive",
+        });
+        if (orderMode === 'single') navigate('/wallet');
+        return;
+      }
     }
 
-
-    // STEP 2: After subscription is confirmed, check balance
-    if (!wallet || wallet.balance <= 0) {
-      toast({
-        title: "🚫 No Balance",
-        description: "Your account has no balance. Please add funds first!",
-        variant: "destructive",
-      });
-      navigate('/wallet');
-      return;
-    }
-
-    if (!canAfford) {
-      toast({
-        title: "💰 Insufficient Balance",
-        description: `Your wallet has ${formatPrice(wallet?.balance || 0)}. This order requires ${formatPrice(totalPrice)}. Please add funds!`,
-        variant: "destructive",
-      });
-      navigate('/wallet');
+    if (orderMode === 'mass') {
+      setMassConfirmOpen(true);
       return;
     }
 
     placeOrderMutation.mutate();
   };
+
+  // Sequential mass-order runner
+  const runMassOrders = async () => {
+    setMassConfirmOpen(false);
+    const links = parsedMassLinks.valid.map(v => v.link);
+    setMassProgress({ running: true, current: 0, total: links.length, success: 0, failed: [], done: false });
+    const failed: { link: string; error: string }[] = [];
+    let success = 0;
+    for (let i = 0; i < links.length; i++) {
+      setMassProgress(p => ({ ...p, current: i + 1 }));
+      try {
+        await submitEngagementOrder(links[i]);
+        success += 1;
+        setMassProgress(p => ({ ...p, success }));
+      } catch (e: any) {
+        failed.push({ link: links[i], error: e?.message || 'Failed' });
+        setMassProgress(p => ({ ...p, failed: [...failed] }));
+      }
+    }
+    setMassProgress(p => ({ ...p, running: false, done: true }));
+    refreshWallet();
+    queryClient.invalidateQueries({ queryKey: ['engagement-orders'] });
+    toast({
+      title: failed.length === 0 ? `✅ Placed ${success} orders` : `⚠️ ${success} placed, ${failed.length} failed`,
+      description: failed.length === 0 ? 'All orders created successfully.' : `${failed.length} link(s) failed. See details below.`,
+      variant: failed.length === 0 ? 'default' : 'destructive',
+    });
+  };
+
 
   return (
     <DashboardLayout>
