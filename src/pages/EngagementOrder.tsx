@@ -1231,8 +1231,8 @@ export default function EngagementOrder() {
                   placeholder={`Paste one link per line\nhttps://${platform}.com/abc\nhttps://${platform}.com/xyz`}
                   value={massLinksText}
                   onChange={(e) => setMassLinksText(e.target.value)}
-                  rows={8}
-                  className="min-h-[180px] text-sm sm:text-base rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-mono placeholder:text-muted-foreground transition-all"
+                  rows={4}
+                  className="min-h-[96px] max-h-[160px] text-sm rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-mono placeholder:text-muted-foreground transition-all"
                 />
                 {/* Live counter */}
                 <div className="grid grid-cols-3 gap-2 sm:gap-3">
