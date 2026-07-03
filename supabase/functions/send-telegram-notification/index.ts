@@ -7,8 +7,30 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// In-memory cooldown per alert-kind (resets on cold start)
+const lastSent: Record<string, number> = {};
+const COOLDOWN_MS = 65 * 60 * 1000; // 65 minutes between similar alerts
+
+// If message body contains any of these keywords, treat as low-priority and rate-limit.
+// Critical (system down, DB error, edge crash) messages bypass this filter.
+const LOW_PRIORITY_KEYWORDS = [
+  "low balance",
+  "balance low",
+  "provider balance",
+  "top up",
+  "top-up",
+  "topup needed",
+  "order stuck",
+  "pending order",
+  "stuck run",
+  "cron warning",
+  "partial failure",
+];
+const CRITICAL_KEYWORDS = ["system down", "database error", "edge function crash", "critical"];
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
 
   try {
     // Auth: signed-in user OR service-role key
