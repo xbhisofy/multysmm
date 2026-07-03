@@ -183,8 +183,14 @@ export default function EngagementOrders() {
   );
 }
 
-function OrderCard({ order, onClick }: { order: any; onClick: () => void }) {
+function OrderCard({ order, onClick, onRepeat }: { order: any; onClick: () => void; onRepeat: () => void }) {
   const { formatPrice } = useCurrency();
+  const [isRepeating, setIsRepeating] = useState(false);
+  const handleRepeat = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsRepeating(true);
+    onRepeat();
+  };
   // Calculate progress
   const allRuns = order.items?.flatMap((item: any) => item.runs || []) || [];
   // Auto-cancelled-because-target-met runs should display as completed.
