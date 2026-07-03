@@ -776,7 +776,7 @@ export default function EngagementOrder() {
     }
     if ((data as any)?.error) throw new Error((data as any).error);
     return data as { order_number: number };
-  }, [user, totalPrice, engagements, bundles, baseQuantity, isOrganicMode, previewSchedules]);
+  }, [user, totalPrice, engagements, bundles, baseQuantity, isOrganicMode, previewSchedules, platform, isAutoRatios, userSavedRatios]);
 
   // Single-order mutation
   const placeOrderMutation = useMutation({
