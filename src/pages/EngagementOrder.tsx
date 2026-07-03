@@ -53,6 +53,17 @@ const formatPriceRaw = (price: number): string => {
   return price.toFixed(8);
 };
 
+// Detect platform from a URL (module scope so it can be used in memos)
+const detectPlatformFromUrl = (url: string): string | null => {
+  const lower = url.toLowerCase();
+  if (lower.includes('instagram.com') || lower.includes('instagr.am')) return 'instagram';
+  if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'youtube';
+  if (lower.includes('tiktok.com')) return 'tiktok';
+  if (lower.includes('twitter.com') || lower.includes('x.com')) return 'twitter';
+  if (lower.includes('facebook.com') || lower.includes('fb.com')) return 'facebook';
+  return null;
+};
+
 export default function EngagementOrder() {
   const navigate = useNavigate();
   const location = useLocation();
