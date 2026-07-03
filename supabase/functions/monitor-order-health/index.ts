@@ -96,21 +96,39 @@ Deno.serve(async (req) => {
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const admin = createClient(supabaseUrl, serviceKey);
 
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  let lastSendAt = 0;
+  const MIN_GAP_MS = 1200; // ≥1.2s between sends to respect Telegram + edge rate limits
+  let sendBudget = 20;     // hard cap per run to avoid floods after backlogs
+
   const sendTelegram = async (message: string) => {
-    try {
-      const res = await fetch(`${supabaseUrl}/functions/v1/send-telegram-notification`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${serviceKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message, parse_mode: "HTML" }),
-      });
-      return res.ok;
-    } catch (e) {
-      console.error("telegram send failed", e);
-      return false;
+    if (sendBudget <= 0) return false;
+    const gap = Date.now() - lastSendAt;
+    if (gap < MIN_GAP_MS) await sleep(MIN_GAP_MS - gap);
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await fetch(`${supabaseUrl}/functions/v1/send-telegram-notification`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${serviceKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message, parse_mode: "HTML" }),
+        });
+        lastSendAt = Date.now();
+        if (res.ok) { sendBudget--; return true; }
+        if (res.status === 429) {
+          const retry = Number(res.headers.get("retry-after")) || 2;
+          await sleep(Math.min(retry * 1000, 5000));
+          continue;
+        }
+        return false;
+      } catch (e) {
+        console.error("telegram send failed", e);
+        await sleep(1500);
+      }
     }
+    return false;
   };
 
   const cutoff = new Date(Date.now() - STUCK_THRESHOLD_MIN * 60_000).toISOString();
