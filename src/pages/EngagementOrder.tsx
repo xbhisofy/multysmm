@@ -569,10 +569,11 @@ export default function EngagementOrder() {
     });
     prefillAppliedRef.current = true;
 
-    if (missingWarnings.length > 0) {
+    const allMissing = [...new Set([...missingWarnings, ...missingTypes])];
+    if (allMissing.length > 0) {
       toast({
         title: '⚠️ Some options unavailable',
-        description: `The original order used: ${missingWarnings.join(', ')} — these are no longer offered. All other settings were restored.`,
+        description: `The original order used: ${allMissing.join(', ')} — these are no longer offered. All other settings were restored.`,
       });
     }
     toast({
