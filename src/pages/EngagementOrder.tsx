@@ -700,6 +700,33 @@ export default function EngagementOrder() {
 
     const bundle = bundles?.[0];
 
+    // Full snapshot of the user's configuration — persisted so Repeat Order
+    // can restore 100% of the original settings later, not just guessed values.
+    const configSnapshot = {
+      version: 1,
+      platform,
+      bundle_id: bundle?.id ?? null,
+      base_quantity: baseQuantity,
+      is_organic_mode: isOrganicMode,
+      is_auto_ratios: isAutoRatios,
+      total_price: totalPrice,
+      user_saved_ratios: userSavedRatios ?? null,
+      engagements: Object.fromEntries(
+        Object.entries(engagements).map(([type, config]) => [type, {
+          enabled: config.enabled,
+          quantity: config.quantity,
+          price: config.price,
+          service_id: config.serviceId,
+          time_limit_hours: config.timeLimitHours,
+          time_limit_custom_mode: config.timeLimitCustomMode ?? false,
+          variance_percent: config.variancePercent,
+          peak_hours_enabled: config.peakHoursEnabled,
+          run_count: config.runCount ?? null,
+        }])
+      ),
+      created_at: new Date().toISOString(),
+    };
+
     const { data, error } = await supabase.functions.invoke('process-engagement-order', {
       body: {
         user_id: user.id,
@@ -708,6 +735,7 @@ export default function EngagementOrder() {
         base_quantity: baseQuantity,
         total_price: totalPrice,
         is_organic_mode: isOrganicMode,
+        config_snapshot: configSnapshot,
         engagements: Object.entries(engagements)
           .filter(([_, config]) => config.enabled)
           .map(([type, config]) => {
