@@ -125,6 +125,49 @@ export default function EngagementOrder() {
     } catch { /* ignore */ }
   }, []);
 
+  // ============ REPEAT ORDER (prefill from previous order) ============
+  const [repeatSource, setRepeatSource] = useState<any>(null);
+  const [repeatError, setRepeatError] = useState<string | null>(null);
+  const prefillAppliedRef = useRef(false);
+
+  useEffect(() => {
+    if (!repeatFrom || !user?.id) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from('engagement_orders')
+        .select(`
+          id, order_number, bundle_id, base_quantity, is_organic_mode,
+          variance_percent, peak_hours_enabled,
+          items:engagement_order_items(engagement_type, quantity),
+          bundle:engagement_bundles(platform, is_active)
+        `)
+        .eq('user_id', user.id)
+        .eq('order_number', repeatFrom)
+        .maybeSingle();
+
+      if (cancelled) return;
+      if (error || !data) {
+        setRepeatError('Original order not found or you do not have access.');
+        return;
+      }
+      const bundle: any = data.bundle;
+      if (!bundle || !bundle.platform || bundle.is_active === false) {
+        setRepeatError('This bundle is no longer available. Please choose a similar service.');
+        return;
+      }
+      setRepeatSource(data);
+      setPlatform(bundle.platform);
+      setBaseQuantity(data.base_quantity || 10000);
+      setIsOrganicMode(!!data.is_organic_mode);
+      setIsAutoRatios(false);
+      setLink('');
+    })();
+    return () => { cancelled = true; };
+  }, [repeatFrom, user?.id]);
+
+
+
 
   // Fetch ALL active bundles WITH items to know which platforms are available
   const { data: allBundles } = useQuery({
