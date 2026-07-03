@@ -787,25 +787,37 @@ export default function EngagementOrder() {
       return;
     }
 
-    // Basic validation first
-    if (!link.trim()) {
-      toast({
-        title: "Link Required",
-        description: "Please enter a valid link.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Mass Order mode: validate multi-link + open confirm dialog
+    if (orderMode === 'mass') {
+      if (parsedMassLinks.valid.length === 0) {
+        toast({
+          title: "No valid links",
+          description: "Paste at least one valid link that matches the selected platform.",
+          variant: "destructive",
+        });
+        return;
+      }
+    } else {
+      // Single mode: basic validation first
+      if (!link.trim()) {
+        toast({
+          title: "Link Required",
+          description: "Please enter a valid link.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    // NEW: Detect platform from link and validate it matches selected platform
-    const detectedPlatform = detectPlatformFromLink(link);
-    if (detectedPlatform && detectedPlatform !== platform) {
-      toast({
-        title: "⚠️ Platform Mismatch",
-        description: `You selected ${platform.toUpperCase()}, but the link is for ${detectedPlatform.toUpperCase()}. Please select the correct platform.`,
-        variant: "destructive",
-      });
-      return;
+      // Detect platform from link and validate it matches selected platform
+      const detectedPlatform = detectPlatformFromLink(link);
+      if (detectedPlatform && detectedPlatform !== platform) {
+        toast({
+          title: "⚠️ Platform Mismatch",
+          description: `You selected ${platform.toUpperCase()}, but the link is for ${detectedPlatform.toUpperCase()}. Please select the correct platform.`,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     // NEW: Check if the selected platform has services configured
