@@ -103,6 +103,14 @@ export default function EngagementOrder() {
   // Form State
   const [platform, setPlatform] = useState('instagram');
   const [link, setLink] = useState('');
+  // Mass Order mode state
+  const [orderMode, setOrderMode] = useState<'single' | 'mass'>('single');
+  const [massLinksText, setMassLinksText] = useState('');
+  const [massConfirmOpen, setMassConfirmOpen] = useState(false);
+  const [massProgress, setMassProgress] = useState<{
+    running: boolean; current: number; total: number; success: number;
+    failed: { link: string; error: string }[]; done: boolean;
+  }>({ running: false, current: 0, total: 0, success: 0, failed: [], done: false });
   const [baseQuantity, setBaseQuantity] = useState(10000);
   // Debounce base quantity for expensive recalculations
   const debouncedBaseQuantity = useDebounce(baseQuantity, 200);
