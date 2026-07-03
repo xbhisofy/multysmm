@@ -1219,12 +1219,36 @@ export default function EngagementOrder() {
             </div>
 
             {orderMode === 'single' ? (
-              <Input
-                placeholder={`https://${platform}.com/...`}
-                value={link}
-                onChange={(e) => setLink(e.target.value)}
-                className="h-12 sm:h-14 text-base sm:text-lg rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-medium placeholder:text-muted-foreground transition-all"
-              />
+              <>
+                <Input
+                  placeholder={`https://${platform}.com/...`}
+                  value={link}
+                  onChange={(e) => setLink(e.target.value)}
+                  className="h-12 sm:h-14 text-base sm:text-lg rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-medium placeholder:text-muted-foreground transition-all"
+                />
+                {link.trim() && (() => {
+                  const detected = detectPlatformFromUrl(link.trim());
+                  if (!detected) {
+                    return (
+                      <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
+                        <span>⚠️</span> Invalid link — please paste a valid {platform.toUpperCase()} URL.
+                      </p>
+                    );
+                  }
+                  if (detected !== platform) {
+                    return (
+                      <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
+                        <span>⚠️</span> This is a {detected.toUpperCase()} link, but you selected {platform.toUpperCase()}.
+                      </p>
+                    );
+                  }
+                  return (
+                    <p className="mt-2 text-xs text-success flex items-center gap-1.5">
+                      <span>✓</span> Valid {platform.toUpperCase()} link
+                    </p>
+                  );
+                })()}
+              </>
             ) : (
               <div className="space-y-3">
                 <Textarea
