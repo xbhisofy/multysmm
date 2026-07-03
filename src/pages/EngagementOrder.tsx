@@ -171,7 +171,7 @@ export default function EngagementOrder() {
         .select(`
           id, order_number, bundle_id, base_quantity, is_organic_mode,
           variance_percent, peak_hours_enabled,
-          items:engagement_order_items(engagement_type, quantity),
+          items:engagement_order_items(engagement_type, quantity, drip_qty_per_run, drip_interval, drip_interval_unit, speed_preset),
           bundle:engagement_bundles(platform, is_active)
         `)
         .eq('user_id', user.id)
