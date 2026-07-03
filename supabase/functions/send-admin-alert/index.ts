@@ -8,7 +8,14 @@ const corsHeaders = {
 
 // In-memory cooldown tracking (resets when function cold starts)
 const lastAlertTimes: { [key: string]: number } = {}
-const COOLDOWN_MS = 5 * 60 * 1000 // 5 minutes cooldown
+const COOLDOWN_MS = 65 * 60 * 1000 // 65 minutes cooldown (user requested)
+const MIN_FAILED_THRESHOLD = 26 // Only alert when failures >= this (user requested)
+// Job names considered critical — always alerted (subject to cooldown)
+const CRITICAL_JOBS = new Set<string>([
+  'system_down',
+  'database_error',
+  'edge_function_crash',
+])
 
 interface AlertPayload {
   job_name: string
@@ -76,6 +83,19 @@ Deno.serve(async (req) => {
     console.log(`Job: ${payload.job_name}`)
     console.log(`Execution ID: ${payload.execution_id}`)
     console.log(`Failed: ${payload.failed_count}`)
+
+    const isCritical = CRITICAL_JOBS.has(payload.job_name)
+
+    // Threshold gate — skip small failure counts unless it's a critical job or test mode
+    if (!isCritical && !payload.test_mode && (payload.failed_count ?? 0) < MIN_FAILED_THRESHOLD) {
+      console.log(`Below threshold (${payload.failed_count} < ${MIN_FAILED_THRESHOLD}) for ${payload.job_name}, skipping`)
+      return new Response(JSON.stringify({
+        skipped: true,
+        reason: 'below_threshold',
+        failed_count: payload.failed_count,
+        threshold: MIN_FAILED_THRESHOLD,
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
 
     // Check cooldown to prevent spam
     const cooldownKey = `${payload.job_name}`

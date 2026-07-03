@@ -7,8 +7,30 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// In-memory cooldown per alert-kind (resets on cold start)
+const lastSent: Record<string, number> = {};
+const COOLDOWN_MS = 65 * 60 * 1000; // 65 minutes between similar alerts
+
+// If message body contains any of these keywords, treat as low-priority and rate-limit.
+// Critical (system down, DB error, edge crash) messages bypass this filter.
+const LOW_PRIORITY_KEYWORDS = [
+  "low balance",
+  "balance low",
+  "provider balance",
+  "top up",
+  "top-up",
+  "topup needed",
+  "order stuck",
+  "pending order",
+  "stuck run",
+  "cron warning",
+  "partial failure",
+];
+const CRITICAL_KEYWORDS = ["system down", "database error", "edge function crash", "critical"];
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
 
   try {
     // Auth: signed-in user OR service-role key
@@ -64,12 +86,35 @@ serve(async (req) => {
       );
     }
 
-    const { message, photo_url, parse_mode = "HTML" } = await req.json();
+    const { message, photo_url, parse_mode = "HTML", alert_kind, force } = await req.json();
     if (!message) {
       return new Response(JSON.stringify({ error: "No message provided" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Priority filter — suppress noisy warnings unless critical / forced
+    const lower = String(message).toLowerCase();
+    const isCritical = force === true || CRITICAL_KEYWORDS.some((k) => lower.includes(k));
+    const isLowPriority = !isCritical && LOW_PRIORITY_KEYWORDS.some((k) => lower.includes(k));
+
+    if (isLowPriority) {
+      const key = alert_kind || LOW_PRIORITY_KEYWORDS.find((k) => lower.includes(k)) || "low";
+      const last = lastSent[key] || 0;
+      const now = Date.now();
+      if (now - last < COOLDOWN_MS) {
+        return new Response(
+          JSON.stringify({
+            skipped: true,
+            reason: "cooldown_active",
+            alert_kind: key,
+            remaining_seconds: Math.round((COOLDOWN_MS - (now - last)) / 1000),
+          }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      lastSent[key] = now;
     }
 
     const api = (method: string, body: Record<string, unknown>) =>
