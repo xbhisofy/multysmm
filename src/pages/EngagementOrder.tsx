@@ -651,112 +651,95 @@ export default function EngagementOrder() {
 
 
 
-  // Place order mutation
+  // Shared: submit a single engagement order for a given link URL.
+  // Used by both Single mode (via mutation) and Mass mode (sequential loop).
+  const submitEngagementOrder = useCallback(async (linkUrl: string) => {
+    if (!user) throw new Error('Not authenticated');
+    const trimmed = (linkUrl || '').trim();
+    if (!trimmed) throw new Error('Please enter a valid link');
+
+    if (totalPrice <= 0) {
+      throw new Error('Invalid order total. Please select engagement types.');
+    }
+
+    // Provider min-quantity check
+    const belowMin = Object.entries(engagements)
+      .filter(([_, config]) => config.enabled)
+      .filter(([_, config]) => (config.minQuantity ?? 0) > 0)
+      .filter(([_, config]) => config.quantity < (config.minQuantity ?? 0))
+      .map(([type, config]) => ({
+        type, quantity: config.quantity, min: config.minQuantity as number,
+      }));
+
+    if (belowMin.length > 0) {
+      const first = belowMin[0];
+      throw new Error(
+        `${first.type} quantity ${first.quantity} is below minimum ${first.min}. Increase Base Quantity or edit that type.`
+      );
+    }
+
+    const bundle = bundles?.[0];
+
+    const { data, error } = await supabase.functions.invoke('process-engagement-order', {
+      body: {
+        user_id: user.id,
+        bundle_id: bundle?.id,
+        link: trimmed,
+        base_quantity: baseQuantity,
+        total_price: totalPrice,
+        is_organic_mode: isOrganicMode,
+        engagements: Object.entries(engagements)
+          .filter(([_, config]) => config.enabled)
+          .map(([type, config]) => {
+            let effectiveTimeLimit = config.timeLimitHours;
+            if (effectiveTimeLimit === -1) effectiveTimeLimit = 0;
+            const scheduledRuns = previewSchedules[type]?.map((run, index) => ({
+              ...run, run_number: index + 1,
+            }));
+            return {
+              type,
+              quantity: config.quantity,
+              price: config.price,
+              service_id: config.serviceId,
+              time_limit_hours: effectiveTimeLimit,
+              variance_percent: config.variancePercent,
+              peak_hours_enabled: config.peakHoursEnabled,
+              scheduled_runs: scheduledRuns,
+            };
+          }),
+      },
+    });
+
+    if (error) {
+      let message = (error as any)?.message || 'Order failed';
+      const ctx = (error as any)?.context;
+      if (ctx && typeof ctx.text === 'function') {
+        try {
+          const text = await ctx.text();
+          if (text) {
+            try {
+              const parsed = JSON.parse(text);
+              message = parsed?.error || parsed?.message || text;
+            } catch { message = text; }
+          }
+        } catch { /* ignore */ }
+      }
+      throw new Error(message);
+    }
+    if ((data as any)?.error) throw new Error((data as any).error);
+    return data as { order_number: number };
+  }, [user, totalPrice, engagements, bundles, baseQuantity, isOrganicMode, previewSchedules]);
+
+  // Single-order mutation
   const placeOrderMutation = useMutation({
     mutationFn: async () => {
-      if (!user) throw new Error('Not authenticated');
-      if (!link.trim()) throw new Error('Please enter a valid link');
-
-      // Strong client-side validation
-      if (!wallet) {
-        throw new Error('Wallet not found. Please refresh the page.');
-      }
-
+      if (!wallet) throw new Error('Wallet not found. Please refresh the page.');
       if (wallet.balance < totalPrice) {
         throw new Error(
           `Insufficient balance! You need ${formatPrice(totalPrice)} but only have ${formatPrice(wallet.balance)}. Please add funds.`
         );
       }
-
-      if (totalPrice <= 0) {
-        throw new Error('Invalid order total. Please select engagement types.');
-      }
-
-      // Prevent non-2xx failures from provider min-quantity rules
-      const belowMin = Object.entries(engagements)
-        .filter(([_, config]) => config.enabled)
-        .filter(([_, config]) => (config.minQuantity ?? 0) > 0)
-        .filter(([_, config]) => config.quantity < (config.minQuantity ?? 0))
-        .map(([type, config]) => ({
-          type,
-          quantity: config.quantity,
-          min: config.minQuantity as number,
-        }));
-
-      if (belowMin.length > 0) {
-        const first = belowMin[0];
-        throw new Error(
-          `${first.type} quantity ${first.quantity} is below minimum ${first.min}. Increase Base Quantity or edit that type.`
-        );
-      }
-
-      const bundle = bundles?.[0];
-
-      // Call edge function to process engagement order with per-type organic settings
-      const { data, error } = await supabase.functions.invoke('process-engagement-order', {
-        body: {
-          user_id: user.id,
-          bundle_id: bundle?.id,
-          link: link.trim(),
-          base_quantity: baseQuantity,
-          total_price: totalPrice,
-          is_organic_mode: isOrganicMode,
-          // Per-type settings will be in each engagement object
-          engagements: Object.entries(engagements)
-            .filter(([_, config]) => config.enabled)
-            .map(([type, config]) => {
-              // CRITICAL: Resolve time limit - if -1 (custom), the actual value should be stored
-              // The EngagementTypeCard should store actual hours, but if it sends -1, treat as Auto (0)
-              let effectiveTimeLimit = config.timeLimitHours;
-              if (effectiveTimeLimit === -1) {
-                // -1 means "Custom" was selected but no value stored - treat as Auto
-                effectiveTimeLimit = 0;
-              }
-
-              const scheduledRuns = previewSchedules[type]?.map((run, index) => ({
-                ...run,
-                run_number: index + 1,
-              }));
-
-              return {
-                type,
-                quantity: config.quantity,
-                price: config.price,
-                service_id: config.serviceId,
-                // Per-type organic settings - always send resolved hours value
-                time_limit_hours: effectiveTimeLimit,
-                variance_percent: config.variancePercent,
-                peak_hours_enabled: config.peakHoursEnabled,
-                scheduled_runs: scheduledRuns,
-              };
-            }),
-        },
-      });
-
-      if (error) {
-        // Supabase often returns a generic message ("non-2xx") — try to extract the real server error
-        let message = (error as any)?.message || 'Order failed';
-        const ctx = (error as any)?.context;
-        if (ctx && typeof ctx.text === 'function') {
-          try {
-            const text = await ctx.text();
-            if (text) {
-              try {
-                const parsed = JSON.parse(text);
-                message = parsed?.error || parsed?.message || text;
-              } catch {
-                message = text;
-              }
-            }
-          } catch {
-            // ignore
-          }
-        }
-        throw new Error(message);
-      }
-
-      if ((data as any)?.error) throw new Error((data as any).error);
-      return data;
+      return submitEngagementOrder(link);
     },
     onSuccess: (data) => {
       toast({
