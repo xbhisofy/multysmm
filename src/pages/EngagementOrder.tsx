@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useRef, memo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -55,6 +55,8 @@ const formatPriceRaw = (price: number): string => {
 
 export default function EngagementOrder() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const repeatFrom = (location.state as { repeatFrom?: number } | null)?.repeatFrom;
   const { user, profile, isLoading: authLoading, isAdmin, wallet, refreshWallet } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -122,6 +124,49 @@ export default function EngagementOrder() {
       }
     } catch { /* ignore */ }
   }, []);
+
+  // ============ REPEAT ORDER (prefill from previous order) ============
+  const [repeatSource, setRepeatSource] = useState<any>(null);
+  const [repeatError, setRepeatError] = useState<string | null>(null);
+  const prefillAppliedRef = useRef(false);
+
+  useEffect(() => {
+    if (!repeatFrom || !user?.id) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from('engagement_orders')
+        .select(`
+          id, order_number, bundle_id, base_quantity, is_organic_mode,
+          variance_percent, peak_hours_enabled,
+          items:engagement_order_items(engagement_type, quantity),
+          bundle:engagement_bundles(platform, is_active)
+        `)
+        .eq('user_id', user.id)
+        .eq('order_number', repeatFrom)
+        .maybeSingle();
+
+      if (cancelled) return;
+      if (error || !data) {
+        setRepeatError('Original order not found or you do not have access.');
+        return;
+      }
+      const bundle: any = data.bundle;
+      if (!bundle || !bundle.platform || bundle.is_active === false) {
+        setRepeatError('This bundle is no longer available. Please choose a similar service.');
+        return;
+      }
+      setRepeatSource(data);
+      setPlatform(bundle.platform);
+      setBaseQuantity(data.base_quantity || 10000);
+      setIsOrganicMode(!!data.is_organic_mode);
+      setIsAutoRatios(false);
+      setLink('');
+    })();
+    return () => { cancelled = true; };
+  }, [repeatFrom, user?.id]);
+
+
 
 
   // Fetch ALL active bundles WITH items to know which platforms are available
@@ -398,6 +443,47 @@ export default function EngagementOrder() {
       return updated;
     });
   }, [debouncedBaseQuantity, bundles, servicePrices, userSavedRatios, isAutoRatios]);
+
+  // Apply repeat-order per-type overrides once engagements are seeded from the bundle
+  useEffect(() => {
+    if (!repeatSource || prefillAppliedRef.current) return;
+    if (!bundles || bundles.length === 0) return;
+    const items: any[] = repeatSource.items || [];
+    if (items.length === 0) return;
+    const ready = items.every((i) => engagements[i.engagement_type]);
+    if (!ready) return;
+
+    setEngagements((prev) => {
+      const updated: EngagementConfigs = { ...prev };
+      Object.keys(updated).forEach((k) => {
+        updated[k] = { ...updated[k], enabled: false };
+      });
+      items.forEach((item) => {
+        const type = item.engagement_type as EngagementType;
+        if (!updated[type]) return;
+        const svc = servicePrices[type];
+        const pricePerK = svc?.pricePerK ?? 0;
+        const qty = Math.max(1, Number(item.quantity) || 0);
+        updated[type] = {
+          ...updated[type],
+          enabled: true,
+          quantity: qty,
+          price: (qty / 1000) * pricePerK,
+          variancePercent: repeatSource.variance_percent ?? updated[type].variancePercent,
+          peakHoursEnabled: repeatSource.peak_hours_enabled ?? updated[type].peakHoursEnabled,
+        };
+        userEditedQtyRef.current.add(type);
+      });
+      return updated;
+    });
+    prefillAppliedRef.current = true;
+    toast({
+      title: '✅ Order restored',
+      description: `Repeating Order #${repeatSource.order_number}. Just replace the link and click Place Order.`,
+    });
+  }, [repeatSource, bundles, engagements, servicePrices, toast]);
+
+
 
   const handleEngagementChange = useCallback((type: EngagementType, config: EngagementConfig) => {
     setEngagements(prev => {
@@ -883,6 +969,36 @@ export default function EngagementOrder() {
             />
           </CardContent>
         </Card>
+
+        {/* Repeat Order Banner */}
+        {(repeatSource || repeatError) && (
+          <Card className={cn(
+            "glass-card border-2",
+            repeatError ? "border-destructive/40 bg-destructive/5" : "border-primary/40 bg-primary/5"
+          )}>
+            <CardContent className="p-3 sm:p-4 flex items-center gap-3">
+              <RefreshCw className={cn("h-5 w-5 shrink-0", repeatError ? "text-destructive" : "text-primary")} />
+              <div className="flex-1 min-w-0">
+                {repeatError ? (
+                  <>
+                    <p className="text-sm font-semibold text-destructive">This service is no longer available.</p>
+                    <p className="text-xs text-muted-foreground">{repeatError}</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm font-semibold text-foreground">Repeating Order #{repeatSource.order_number}</p>
+                    <p className="text-xs text-muted-foreground">Everything has been restored. Just replace your old link with a new one and click Place Order.</p>
+                  </>
+                )}
+              </div>
+              {repeatError && (
+                <Button size="sm" variant="outline" onClick={() => { setRepeatError(null); navigate('/engagement-order', { replace: true, state: null }); }}>
+                  Choose Similar Service
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Link Input */}
         <Card className="glass-card border-2 border-border">
