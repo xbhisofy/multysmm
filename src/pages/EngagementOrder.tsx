@@ -8,8 +8,14 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
+} from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { PlatformSelector } from "@/components/engagement/PlatformSelector";
@@ -53,6 +59,17 @@ const formatPriceRaw = (price: number): string => {
   return price.toFixed(8);
 };
 
+// Detect platform from a URL (module scope so it can be used in memos)
+const detectPlatformFromUrl = (url: string): string | null => {
+  const lower = url.toLowerCase();
+  if (lower.includes('instagram.com') || lower.includes('instagr.am')) return 'instagram';
+  if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'youtube';
+  if (lower.includes('tiktok.com')) return 'tiktok';
+  if (lower.includes('twitter.com') || lower.includes('x.com')) return 'twitter';
+  if (lower.includes('facebook.com') || lower.includes('fb.com')) return 'facebook';
+  return null;
+};
+
 export default function EngagementOrder() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -86,6 +103,14 @@ export default function EngagementOrder() {
   // Form State
   const [platform, setPlatform] = useState('instagram');
   const [link, setLink] = useState('');
+  // Mass Order mode state
+  const [orderMode, setOrderMode] = useState<'single' | 'mass'>('single');
+  const [massLinksText, setMassLinksText] = useState('');
+  const [massConfirmOpen, setMassConfirmOpen] = useState(false);
+  const [massProgress, setMassProgress] = useState<{
+    running: boolean; current: number; total: number; success: number;
+    failed: { link: string; error: string }[]; done: boolean;
+  }>({ running: false, current: 0, total: 0, success: 0, failed: [], done: false });
   const [baseQuantity, setBaseQuantity] = useState(10000);
   // Debounce base quantity for expensive recalculations
   const debouncedBaseQuantity = useDebounce(baseQuantity, 200);
@@ -589,112 +614,132 @@ export default function EngagementOrder() {
       .reduce((sum, e) => sum + e.quantity, 0);
   }, [engagements]);
 
-  // Place order mutation
+  // Parse mass links: dedupe, trim, validate per platform
+  const parsedMassLinks = useMemo(() => {
+    const raw = massLinksText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const seen = new Set<string>();
+    const dedup: string[] = [];
+    for (const l of raw) { if (!seen.has(l)) { seen.add(l); dedup.push(l); } }
+    const analyzed = dedup.map(l => {
+      let reason: string | null = null;
+      let valid = false;
+      try {
+        const u = new URL(l);
+        if (!['http:', 'https:'].includes(u.protocol)) {
+          reason = 'Invalid URL';
+        } else {
+          const detected = detectPlatformFromUrl(l);
+          if (!detected) reason = 'Unsupported platform';
+          else if (detected !== platform) reason = `Not ${platform}`;
+          else valid = true;
+        }
+      } catch { reason = 'Invalid URL'; }
+      return { link: l, valid, reason };
+    });
+    return {
+      all: analyzed,
+      valid: analyzed.filter(a => a.valid),
+      invalid: analyzed.filter(a => !a.valid),
+      totalRaw: raw.length,
+    };
+  }, [massLinksText, platform]);
+
+  const massTotalCost = useMemo(
+    () => parsedMassLinks.valid.length * totalPrice,
+    [parsedMassLinks.valid.length, totalPrice]
+  );
+
+
+
+  // Shared: submit a single engagement order for a given link URL.
+  // Used by both Single mode (via mutation) and Mass mode (sequential loop).
+  const submitEngagementOrder = useCallback(async (linkUrl: string) => {
+    if (!user) throw new Error('Not authenticated');
+    const trimmed = (linkUrl || '').trim();
+    if (!trimmed) throw new Error('Please enter a valid link');
+
+    if (totalPrice <= 0) {
+      throw new Error('Invalid order total. Please select engagement types.');
+    }
+
+    // Provider min-quantity check
+    const belowMin = Object.entries(engagements)
+      .filter(([_, config]) => config.enabled)
+      .filter(([_, config]) => (config.minQuantity ?? 0) > 0)
+      .filter(([_, config]) => config.quantity < (config.minQuantity ?? 0))
+      .map(([type, config]) => ({
+        type, quantity: config.quantity, min: config.minQuantity as number,
+      }));
+
+    if (belowMin.length > 0) {
+      const first = belowMin[0];
+      throw new Error(
+        `${first.type} quantity ${first.quantity} is below minimum ${first.min}. Increase Base Quantity or edit that type.`
+      );
+    }
+
+    const bundle = bundles?.[0];
+
+    const { data, error } = await supabase.functions.invoke('process-engagement-order', {
+      body: {
+        user_id: user.id,
+        bundle_id: bundle?.id,
+        link: trimmed,
+        base_quantity: baseQuantity,
+        total_price: totalPrice,
+        is_organic_mode: isOrganicMode,
+        engagements: Object.entries(engagements)
+          .filter(([_, config]) => config.enabled)
+          .map(([type, config]) => {
+            let effectiveTimeLimit = config.timeLimitHours;
+            if (effectiveTimeLimit === -1) effectiveTimeLimit = 0;
+            const scheduledRuns = previewSchedules[type]?.map((run, index) => ({
+              ...run, run_number: index + 1,
+            }));
+            return {
+              type,
+              quantity: config.quantity,
+              price: config.price,
+              service_id: config.serviceId,
+              time_limit_hours: effectiveTimeLimit,
+              variance_percent: config.variancePercent,
+              peak_hours_enabled: config.peakHoursEnabled,
+              scheduled_runs: scheduledRuns,
+            };
+          }),
+      },
+    });
+
+    if (error) {
+      let message = (error as any)?.message || 'Order failed';
+      const ctx = (error as any)?.context;
+      if (ctx && typeof ctx.text === 'function') {
+        try {
+          const text = await ctx.text();
+          if (text) {
+            try {
+              const parsed = JSON.parse(text);
+              message = parsed?.error || parsed?.message || text;
+            } catch { message = text; }
+          }
+        } catch { /* ignore */ }
+      }
+      throw new Error(message);
+    }
+    if ((data as any)?.error) throw new Error((data as any).error);
+    return data as { order_number: number };
+  }, [user, totalPrice, engagements, bundles, baseQuantity, isOrganicMode, previewSchedules]);
+
+  // Single-order mutation
   const placeOrderMutation = useMutation({
     mutationFn: async () => {
-      if (!user) throw new Error('Not authenticated');
-      if (!link.trim()) throw new Error('Please enter a valid link');
-
-      // Strong client-side validation
-      if (!wallet) {
-        throw new Error('Wallet not found. Please refresh the page.');
-      }
-
+      if (!wallet) throw new Error('Wallet not found. Please refresh the page.');
       if (wallet.balance < totalPrice) {
         throw new Error(
           `Insufficient balance! You need ${formatPrice(totalPrice)} but only have ${formatPrice(wallet.balance)}. Please add funds.`
         );
       }
-
-      if (totalPrice <= 0) {
-        throw new Error('Invalid order total. Please select engagement types.');
-      }
-
-      // Prevent non-2xx failures from provider min-quantity rules
-      const belowMin = Object.entries(engagements)
-        .filter(([_, config]) => config.enabled)
-        .filter(([_, config]) => (config.minQuantity ?? 0) > 0)
-        .filter(([_, config]) => config.quantity < (config.minQuantity ?? 0))
-        .map(([type, config]) => ({
-          type,
-          quantity: config.quantity,
-          min: config.minQuantity as number,
-        }));
-
-      if (belowMin.length > 0) {
-        const first = belowMin[0];
-        throw new Error(
-          `${first.type} quantity ${first.quantity} is below minimum ${first.min}. Increase Base Quantity or edit that type.`
-        );
-      }
-
-      const bundle = bundles?.[0];
-
-      // Call edge function to process engagement order with per-type organic settings
-      const { data, error } = await supabase.functions.invoke('process-engagement-order', {
-        body: {
-          user_id: user.id,
-          bundle_id: bundle?.id,
-          link: link.trim(),
-          base_quantity: baseQuantity,
-          total_price: totalPrice,
-          is_organic_mode: isOrganicMode,
-          // Per-type settings will be in each engagement object
-          engagements: Object.entries(engagements)
-            .filter(([_, config]) => config.enabled)
-            .map(([type, config]) => {
-              // CRITICAL: Resolve time limit - if -1 (custom), the actual value should be stored
-              // The EngagementTypeCard should store actual hours, but if it sends -1, treat as Auto (0)
-              let effectiveTimeLimit = config.timeLimitHours;
-              if (effectiveTimeLimit === -1) {
-                // -1 means "Custom" was selected but no value stored - treat as Auto
-                effectiveTimeLimit = 0;
-              }
-
-              const scheduledRuns = previewSchedules[type]?.map((run, index) => ({
-                ...run,
-                run_number: index + 1,
-              }));
-
-              return {
-                type,
-                quantity: config.quantity,
-                price: config.price,
-                service_id: config.serviceId,
-                // Per-type organic settings - always send resolved hours value
-                time_limit_hours: effectiveTimeLimit,
-                variance_percent: config.variancePercent,
-                peak_hours_enabled: config.peakHoursEnabled,
-                scheduled_runs: scheduledRuns,
-              };
-            }),
-        },
-      });
-
-      if (error) {
-        // Supabase often returns a generic message ("non-2xx") — try to extract the real server error
-        let message = (error as any)?.message || 'Order failed';
-        const ctx = (error as any)?.context;
-        if (ctx && typeof ctx.text === 'function') {
-          try {
-            const text = await ctx.text();
-            if (text) {
-              try {
-                const parsed = JSON.parse(text);
-                message = parsed?.error || parsed?.message || text;
-              } catch {
-                message = text;
-              }
-            }
-          } catch {
-            // ignore
-          }
-        }
-        throw new Error(message);
-      }
-
-      if ((data as any)?.error) throw new Error((data as any).error);
-      return data;
+      return submitEngagementOrder(link);
     },
     onSuccess: (data) => {
       toast({
@@ -729,15 +774,7 @@ export default function EngagementOrder() {
   const canAfford = wallet && wallet.balance > 0 && wallet.balance >= totalPrice;
 
   // Detect platform from link for validation
-  const detectPlatformFromLink = (url: string): string | null => {
-    const lower = url.toLowerCase();
-    if (lower.includes('instagram.com') || lower.includes('instagr.am')) return 'instagram';
-    if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'youtube';
-    if (lower.includes('tiktok.com')) return 'tiktok';
-    if (lower.includes('twitter.com') || lower.includes('x.com')) return 'twitter';
-    if (lower.includes('facebook.com') || lower.includes('fb.com')) return 'facebook';
-    return null;
-  };
+  const detectPlatformFromLink = detectPlatformFromUrl;
 
   // Handle order button click - SUBSCRIPTION FIRST, then BALANCE
   const handlePlaceOrder = () => {
@@ -750,25 +787,37 @@ export default function EngagementOrder() {
       return;
     }
 
-    // Basic validation first
-    if (!link.trim()) {
-      toast({
-        title: "Link Required",
-        description: "Please enter a valid link.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Mass Order mode: validate multi-link + open confirm dialog
+    if (orderMode === 'mass') {
+      if (parsedMassLinks.valid.length === 0) {
+        toast({
+          title: "No valid links",
+          description: "Paste at least one valid link that matches the selected platform.",
+          variant: "destructive",
+        });
+        return;
+      }
+    } else {
+      // Single mode: basic validation first
+      if (!link.trim()) {
+        toast({
+          title: "Link Required",
+          description: "Please enter a valid link.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    // NEW: Detect platform from link and validate it matches selected platform
-    const detectedPlatform = detectPlatformFromLink(link);
-    if (detectedPlatform && detectedPlatform !== platform) {
-      toast({
-        title: "⚠️ Platform Mismatch",
-        description: `You selected ${platform.toUpperCase()}, but the link is for ${detectedPlatform.toUpperCase()}. Please select the correct platform.`,
-        variant: "destructive",
-      });
-      return;
+      // Detect platform from link and validate it matches selected platform
+      const detectedPlatform = detectPlatformFromLink(link);
+      if (detectedPlatform && detectedPlatform !== platform) {
+        toast({
+          title: "⚠️ Platform Mismatch",
+          description: `You selected ${platform.toUpperCase()}, but the link is for ${detectedPlatform.toUpperCase()}. Please select the correct platform.`,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     // NEW: Check if the selected platform has services configured
@@ -809,36 +858,67 @@ export default function EngagementOrder() {
       return;
     }
 
+    const requiredTotal = orderMode === 'mass' ? massTotalCost : totalPrice;
+
     // Admin gets free access - no subscription or balance required
-    if (isAdmin) {
-      placeOrderMutation.mutate();
-      return;
+    if (!isAdmin) {
+      if (!wallet || wallet.balance <= 0) {
+        toast({
+          title: "🚫 No Balance",
+          description: "Your account has no balance. Please add funds first!",
+          variant: "destructive",
+        });
+        navigate('/wallet');
+        return;
+      }
+
+      if (wallet.balance < requiredTotal) {
+        toast({
+          title: "💰 Insufficient Balance",
+          description: `Your wallet has ${formatPrice(wallet?.balance || 0)}. This order requires ${formatPrice(requiredTotal)}. Please add funds!`,
+          variant: "destructive",
+        });
+        if (orderMode === 'single') navigate('/wallet');
+        return;
+      }
     }
 
-
-    // STEP 2: After subscription is confirmed, check balance
-    if (!wallet || wallet.balance <= 0) {
-      toast({
-        title: "🚫 No Balance",
-        description: "Your account has no balance. Please add funds first!",
-        variant: "destructive",
-      });
-      navigate('/wallet');
-      return;
-    }
-
-    if (!canAfford) {
-      toast({
-        title: "💰 Insufficient Balance",
-        description: `Your wallet has ${formatPrice(wallet?.balance || 0)}. This order requires ${formatPrice(totalPrice)}. Please add funds!`,
-        variant: "destructive",
-      });
-      navigate('/wallet');
+    if (orderMode === 'mass') {
+      setMassConfirmOpen(true);
       return;
     }
 
     placeOrderMutation.mutate();
   };
+
+  // Sequential mass-order runner
+  const runMassOrders = async () => {
+    setMassConfirmOpen(false);
+    const links = parsedMassLinks.valid.map(v => v.link);
+    setMassProgress({ running: true, current: 0, total: links.length, success: 0, failed: [], done: false });
+    const failed: { link: string; error: string }[] = [];
+    let success = 0;
+    for (let i = 0; i < links.length; i++) {
+      setMassProgress(p => ({ ...p, current: i + 1 }));
+      try {
+        await submitEngagementOrder(links[i]);
+        success += 1;
+        setMassProgress(p => ({ ...p, success }));
+      } catch (e: any) {
+        failed.push({ link: links[i], error: e?.message || 'Failed' });
+        setMassProgress(p => ({ ...p, failed: [...failed] }));
+      }
+    }
+    setMassProgress(p => ({ ...p, running: false, done: true }));
+    refreshWallet();
+    queryClient.invalidateQueries({ queryKey: ['engagement-orders'] });
+    toast({
+      title: failed.length === 0 ? `✅ Placed ${success} orders` : `⚠️ ${success} placed, ${failed.length} failed`,
+      description: failed.length === 0 ? 'All orders created successfully.' : `${failed.length} link(s) failed. See details below.`,
+      variant: failed.length === 0 ? 'default' : 'destructive',
+    });
+  };
+
 
   return (
     <DashboardLayout>
@@ -1003,20 +1083,108 @@ export default function EngagementOrder() {
         {/* Link Input */}
         <Card className="glass-card border-2 border-border">
           <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-foreground/10 flex items-center justify-center">
                 <LinkIcon className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
               </div>
               <Label className="text-base sm:text-lg font-bold tracking-tight text-foreground">Video/Post Link</Label>
+              {/* Single / Mass segmented toggle */}
+              <div className="ml-auto inline-flex p-1 rounded-full bg-secondary border border-border" role="tablist">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={orderMode === 'single'}
+                  onClick={() => setOrderMode('single')}
+                  className={cn(
+                    "px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full transition-all",
+                    orderMode === 'single'
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  Single Order
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={orderMode === 'mass'}
+                  onClick={() => setOrderMode('mass')}
+                  className={cn(
+                    "px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full transition-all",
+                    orderMode === 'mass'
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  Mass Order
+                </button>
+              </div>
             </div>
-            <Input
-              placeholder={`https://${platform}.com/...`}
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              className="h-12 sm:h-14 text-base sm:text-lg rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-medium placeholder:text-muted-foreground transition-all"
-            />
+
+            {orderMode === 'single' ? (
+              <Input
+                placeholder={`https://${platform}.com/...`}
+                value={link}
+                onChange={(e) => setLink(e.target.value)}
+                className="h-12 sm:h-14 text-base sm:text-lg rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-medium placeholder:text-muted-foreground transition-all"
+              />
+            ) : (
+              <div className="space-y-3">
+                <Textarea
+                  placeholder={`Paste one link per line\nhttps://${platform}.com/abc\nhttps://${platform}.com/xyz`}
+                  value={massLinksText}
+                  onChange={(e) => setMassLinksText(e.target.value)}
+                  rows={8}
+                  className="min-h-[180px] text-sm sm:text-base rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-mono placeholder:text-muted-foreground transition-all"
+                />
+                {/* Live counter */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                  <div className="p-2.5 sm:p-3 rounded-xl bg-secondary border border-border text-center">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Total Links</p>
+                    <p className="text-lg sm:text-xl font-bold text-foreground">{parsedMassLinks.all.length}</p>
+                  </div>
+                  <div className="p-2.5 sm:p-3 rounded-xl bg-success/10 border border-success/30 text-center">
+                    <p className="text-[10px] uppercase tracking-wider text-success">Valid</p>
+                    <p className="text-lg sm:text-xl font-bold text-success">{parsedMassLinks.valid.length}</p>
+                  </div>
+                  <div className="p-2.5 sm:p-3 rounded-xl bg-destructive/10 border border-destructive/30 text-center">
+                    <p className="text-[10px] uppercase tracking-wider text-destructive">Invalid</p>
+                    <p className="text-lg sm:text-xl font-bold text-destructive">{parsedMassLinks.invalid.length}</p>
+                  </div>
+                </div>
+                {parsedMassLinks.invalid.length > 0 && (
+                  <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-2.5 sm:p-3 max-h-40 overflow-auto">
+                    <p className="text-xs font-semibold text-destructive mb-1.5">Invalid links:</p>
+                    <ul className="space-y-1">
+                      {parsedMassLinks.invalid.slice(0, 20).map((it, i) => (
+                        <li key={i} className="text-xs text-muted-foreground flex items-center gap-2">
+                          <span className="text-destructive">✗</span>
+                          <span className="truncate flex-1">{it.link}</span>
+                          <span className="text-destructive shrink-0">{it.reason}</span>
+                        </li>
+                      ))}
+                      {parsedMassLinks.invalid.length > 20 && (
+                        <li className="text-xs text-muted-foreground italic">…and {parsedMassLinks.invalid.length - 20} more</li>
+                      )}
+                    </ul>
+                  </div>
+                )}
+                {parsedMassLinks.valid.length > 0 && totalPrice > 0 && (
+                  <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Total for {parsedMassLinks.valid.length} order{parsedMassLinks.valid.length === 1 ? '' : 's'}</p>
+                      <p className="text-lg font-bold text-foreground">{formatPrice(massTotalCost)}</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground text-right">
+                      {formatPrice(totalPrice)} × {parsedMassLinks.valid.length}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
+
 
         {/* Base Quantity */}
         <Card className="glass-card border-2 border-border">
@@ -1212,6 +1380,90 @@ export default function EngagementOrder() {
         </Card>
       </div>
 
+      {/* Mass Order Confirmation */}
+      <AlertDialog open={massConfirmOpen} onOpenChange={setMassConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Mass Order Summary</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2 pt-2 text-sm">
+                <div className="flex justify-between"><span className="text-muted-foreground">Total Links</span><strong className="text-foreground">{parsedMassLinks.all.length}</strong></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Valid Links</span><strong className="text-success">{parsedMassLinks.valid.length}</strong></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Invalid Links</span><strong className="text-destructive">{parsedMassLinks.invalid.length}</strong></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Price Per Order</span><strong className="text-foreground">{formatPrice(totalPrice)}</strong></div>
+                <div className="flex justify-between pt-2 border-t border-border"><span className="font-semibold">Total Amount</span><strong className="text-lg text-primary">{formatPrice(massTotalCost)}</strong></div>
+                <p className="text-xs text-muted-foreground pt-1">Each valid link becomes a separate order with its own tracking.</p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={runMassOrders}>Place {parsedMassLinks.valid.length} Orders</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Mass Order Progress Overlay */}
+      {(massProgress.running || massProgress.done) && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
+          <Card className="w-full max-w-md glass-card border-2 border-primary/40">
+            <CardContent className="p-5 space-y-4">
+              <div className="flex items-center gap-3">
+                {massProgress.running ? (
+                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                ) : (
+                  <div className="h-5 w-5 rounded-full bg-success flex items-center justify-center text-white text-xs">✓</div>
+                )}
+                <div>
+                  <h3 className="font-bold text-foreground">
+                    {massProgress.running ? 'Creating Orders...' : 'Done'}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Order {massProgress.current} / {massProgress.total}
+                  </p>
+                </div>
+              </div>
+              <Progress value={(massProgress.current / Math.max(1, massProgress.total)) * 100} />
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="p-2 rounded-lg bg-success/10 border border-success/30 text-center">
+                  <p className="text-xs text-muted-foreground">Success</p>
+                  <p className="font-bold text-success">{massProgress.success}</p>
+                </div>
+                <div className="p-2 rounded-lg bg-destructive/10 border border-destructive/30 text-center">
+                  <p className="text-xs text-muted-foreground">Failed</p>
+                  <p className="font-bold text-destructive">{massProgress.failed.length}</p>
+                </div>
+              </div>
+              {massProgress.failed.length > 0 && (
+                <div className="max-h-32 overflow-auto rounded-lg border border-destructive/30 bg-destructive/5 p-2">
+                  <p className="text-xs font-semibold text-destructive mb-1">Failed:</p>
+                  <ul className="space-y-1">
+                    {massProgress.failed.map((f, i) => (
+                      <li key={i} className="text-[11px] text-muted-foreground">
+                        <span className="truncate block">{f.link}</span>
+                        <span className="text-destructive">{f.error}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {massProgress.done && (
+                <div className="flex gap-2 justify-end pt-1">
+                  <Button
+                    variant="outline"
+                    onClick={() => setMassProgress(p => ({ ...p, done: false, running: false }))}
+                  >
+                    Close
+                  </Button>
+                  <Button onClick={() => navigate('/engagement-orders')}>
+                    View Orders
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </DashboardLayout>
   );
 }
