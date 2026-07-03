@@ -203,36 +203,88 @@ export default function Wallet() {
 
   return (
     <DashboardLayout>
-      <div className="min-h-[calc(100vh-120px)] flex items-center justify-center px-4">
-        <div className="relative w-full max-w-2xl text-center rounded-3xl p-10 md:p-14 overflow-hidden border border-border bg-card shadow-[0_10px_40px_-12px_rgba(0,0,0,0.08)]">
-          {/* decorative gradient blobs */}
-          <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-20 -right-20 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-
-          <div className="relative z-10">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mx-auto mb-6 bg-primary/10 border border-primary/20">
-              <WalletIcon className="h-10 w-10 text-primary" />
+      <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
+        {/* Balance header */}
+        <div className="relative overflow-hidden rounded-3xl p-6 md:p-8 border border-border bg-card shadow-[0_10px_40px_-12px_rgba(0,0,0,0.08)]">
+          <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20">
+                <WalletIcon className="h-7 w-7 text-primary" />
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold">Wallet Balance</p>
+                <p className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
+                  {formatPrice(wallet?.balance || 0)}
+                </p>
+              </div>
             </div>
-
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight text-foreground">
-              Contact Admin to
-              <br />
-              <span className="gradient-text">Add Funds</span>
-            </h1>
-
-            <p className="mt-5 text-[15px] md:text-base max-w-md mx-auto leading-relaxed text-muted-foreground">
-              To add funds to your wallet, please contact the admin.
-              You will receive assistance shortly.
-            </p>
-
-            <div className="mt-8 flex items-center justify-center gap-2 text-sm text-muted-foreground/80">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse" />
-              Wallet balance updates in real-time
+              Updates in real-time
             </div>
+          </div>
+        </div>
+
+        {/* UPI Add Funds */}
+        <ZapUpiDepositCard />
+
+        {/* Transactions */}
+        <div className="rounded-2xl border border-border bg-card overflow-hidden">
+          <div className="p-4 md:p-5 border-b border-border flex items-center justify-between gap-3 flex-wrap">
+            <h2 className="text-base font-bold text-foreground">Transactions</h2>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {(['all','deposit','order','refund'] as TransactionFilter[]).map(f => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={cn(
+                    'h-7 px-3 text-[11px] font-semibold rounded-md capitalize transition-colors',
+                    filter === f
+                      ? 'bg-foreground text-background'
+                      : 'bg-secondary text-foreground hover:bg-muted'
+                  )}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="divide-y divide-border">
+            {displayTransactions.length === 0 && (
+              <div className="p-8 text-center text-sm text-muted-foreground">No transactions yet.</div>
+            )}
+            {displayTransactions.map((tx) => (
+              <div key={tx.id} className="p-4 flex items-center gap-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                  style={{ background: getIconBg(tx.type) }}
+                >
+                  {getIcon(tx.type)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-foreground truncate">
+                    {tx.displayDescription}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">{fmtDate(tx.created_at)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-bold" style={{ color: getAmountColor(tx.type) }}>
+                    {tx.type === 'order' ? '-' : '+'}{formatPrice(Math.abs(Number(tx.displayAmount || 0)))}
+                  </p>
+                  {tx.displayBalanceAfter != null && (
+                    <p className="text-[10px] text-muted-foreground">
+                      Bal: {formatPrice(Number(tx.displayBalanceAfter))}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
     </DashboardLayout>
   );
 }
+
 
