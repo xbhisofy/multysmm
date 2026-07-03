@@ -1083,20 +1083,108 @@ export default function EngagementOrder() {
         {/* Link Input */}
         <Card className="glass-card border-2 border-border">
           <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-foreground/10 flex items-center justify-center">
                 <LinkIcon className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
               </div>
               <Label className="text-base sm:text-lg font-bold tracking-tight text-foreground">Video/Post Link</Label>
+              {/* Single / Mass segmented toggle */}
+              <div className="ml-auto inline-flex p-1 rounded-full bg-secondary border border-border" role="tablist">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={orderMode === 'single'}
+                  onClick={() => setOrderMode('single')}
+                  className={cn(
+                    "px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full transition-all",
+                    orderMode === 'single'
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  Single Order
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={orderMode === 'mass'}
+                  onClick={() => setOrderMode('mass')}
+                  className={cn(
+                    "px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full transition-all",
+                    orderMode === 'mass'
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  Mass Order
+                </button>
+              </div>
             </div>
-            <Input
-              placeholder={`https://${platform}.com/...`}
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              className="h-12 sm:h-14 text-base sm:text-lg rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-medium placeholder:text-muted-foreground transition-all"
-            />
+
+            {orderMode === 'single' ? (
+              <Input
+                placeholder={`https://${platform}.com/...`}
+                value={link}
+                onChange={(e) => setLink(e.target.value)}
+                className="h-12 sm:h-14 text-base sm:text-lg rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-medium placeholder:text-muted-foreground transition-all"
+              />
+            ) : (
+              <div className="space-y-3">
+                <Textarea
+                  placeholder={`Paste one link per line\nhttps://${platform}.com/abc\nhttps://${platform}.com/xyz`}
+                  value={massLinksText}
+                  onChange={(e) => setMassLinksText(e.target.value)}
+                  rows={8}
+                  className="min-h-[180px] text-sm sm:text-base rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-mono placeholder:text-muted-foreground transition-all"
+                />
+                {/* Live counter */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                  <div className="p-2.5 sm:p-3 rounded-xl bg-secondary border border-border text-center">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Total Links</p>
+                    <p className="text-lg sm:text-xl font-bold text-foreground">{parsedMassLinks.all.length}</p>
+                  </div>
+                  <div className="p-2.5 sm:p-3 rounded-xl bg-success/10 border border-success/30 text-center">
+                    <p className="text-[10px] uppercase tracking-wider text-success">Valid</p>
+                    <p className="text-lg sm:text-xl font-bold text-success">{parsedMassLinks.valid.length}</p>
+                  </div>
+                  <div className="p-2.5 sm:p-3 rounded-xl bg-destructive/10 border border-destructive/30 text-center">
+                    <p className="text-[10px] uppercase tracking-wider text-destructive">Invalid</p>
+                    <p className="text-lg sm:text-xl font-bold text-destructive">{parsedMassLinks.invalid.length}</p>
+                  </div>
+                </div>
+                {parsedMassLinks.invalid.length > 0 && (
+                  <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-2.5 sm:p-3 max-h-40 overflow-auto">
+                    <p className="text-xs font-semibold text-destructive mb-1.5">Invalid links:</p>
+                    <ul className="space-y-1">
+                      {parsedMassLinks.invalid.slice(0, 20).map((it, i) => (
+                        <li key={i} className="text-xs text-muted-foreground flex items-center gap-2">
+                          <span className="text-destructive">✗</span>
+                          <span className="truncate flex-1">{it.link}</span>
+                          <span className="text-destructive shrink-0">{it.reason}</span>
+                        </li>
+                      ))}
+                      {parsedMassLinks.invalid.length > 20 && (
+                        <li className="text-xs text-muted-foreground italic">…and {parsedMassLinks.invalid.length - 20} more</li>
+                      )}
+                    </ul>
+                  </div>
+                )}
+                {parsedMassLinks.valid.length > 0 && totalPrice > 0 && (
+                  <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Total for {parsedMassLinks.valid.length} order{parsedMassLinks.valid.length === 1 ? '' : 's'}</p>
+                      <p className="text-lg font-bold text-foreground">{formatPrice(massTotalCost)}</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground text-right">
+                      {formatPrice(totalPrice)} × {parsedMassLinks.valid.length}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
+
 
         {/* Base Quantity */}
         <Card className="glass-card border-2 border-border">
