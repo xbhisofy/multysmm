@@ -754,15 +754,7 @@ export default function EngagementOrder() {
   const canAfford = wallet && wallet.balance > 0 && wallet.balance >= totalPrice;
 
   // Detect platform from link for validation
-  const detectPlatformFromLink = (url: string): string | null => {
-    const lower = url.toLowerCase();
-    if (lower.includes('instagram.com') || lower.includes('instagr.am')) return 'instagram';
-    if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'youtube';
-    if (lower.includes('tiktok.com')) return 'tiktok';
-    if (lower.includes('twitter.com') || lower.includes('x.com')) return 'twitter';
-    if (lower.includes('facebook.com') || lower.includes('fb.com')) return 'facebook';
-    return null;
-  };
+  const detectPlatformFromLink = detectPlatformFromUrl;
 
   // Handle order button click - SUBSCRIPTION FIRST, then BALANCE
   const handlePlaceOrder = () => {
