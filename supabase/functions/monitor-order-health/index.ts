@@ -247,6 +247,7 @@ Deno.serve(async (req) => {
     .from("engagement_orders")
     .select("id, order_number, user_id, link, status, total_price, base_quantity, created_at, updated_at")
     .in("status", ["pending", "processing", "in_progress"])
+    .gt("created_at", maxAgeCutoff)
     .lt("updated_at", cutoff);
 
   const engUserIds = [...new Set((engOrders || []).map((e: any) => e.user_id).filter(Boolean))];
