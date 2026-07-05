@@ -43,7 +43,20 @@ export default function ManualFundCard() {
       accent={ACCENT}
       tag="MANUAL"
       title="Talk to Admin"
-      subtitle="Custom / bulk top-ups on Telegram"
+      subtitle={
+        <span>
+          Custom / bulk top-ups on Telegram{' '}
+          <a
+            href={`https://t.me/${TG_USERNAME}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:no-underline font-semibold"
+            style={{ color: ACCENT }}
+          >
+            @{TG_USERNAME}
+          </a>
+        </span>
+      }
       icon={<MessageCircle className="h-4 w-4" fill="white" strokeWidth={0} />}
     >
       <AmountBlock value={amount} onChange={setAmount} min={MIN_AMOUNT} max={MAX_AMOUNT} accent={ACCENT} id="manual-amount" />
