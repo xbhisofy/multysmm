@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useAuth } from '@/hooks/useAuth';
@@ -23,11 +23,8 @@ import {
   ArrowLeft,
   Wallet,
   Shield,
-  Plus,
-  Minus,
   Mail,
   Calendar,
-  DollarSign,
   Crown,
   Zap,
   XCircle,
@@ -38,10 +35,19 @@ import {
   ShoppingCart,
   Ban,
   AlertTriangle,
+  Download,
+  ArrowDownCircle,
+  LogIn,
 } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { format, formatDistanceToNow } from 'date-fns';
+import { UserFiltersSheet } from '@/components/admin/UserFiltersSheet';
+import { UserSortSelect } from '@/components/admin/UserSortSelect';
+import {
+  DEFAULT_FILTERS, applyFilters, applySort, rowsToCsv, downloadCsv, indicatorFor,
+  type AdminFilters, type SortKey, type Row,
+} from '@/lib/admin-users-filters';
 
 interface Subscription {
   id: string;
@@ -64,8 +70,12 @@ interface UserProfile {
   user_id: string;
   email: string;
   full_name: string | null;
+  telegram_username?: string | null;
   currency: string;
   created_at: string;
+  updated_at?: string | null;
+  is_banned?: boolean;
+  banned_reason?: string | null;
   wallet?: {
     balance: number;
     total_deposited: number;
@@ -74,6 +84,17 @@ interface UserProfile {
   role?: string;
   subscription?: Subscription;
   orderCounts?: OrderCounts;
+  // extended
+  balance: number;
+  total_deposited: number;
+  total_spent: number;
+  last_deposit_at?: string | null;
+  deposit_count?: number;
+  total_orders_count?: number;
+  single_orders_count?: number;
+  engagement_orders_count?: number;
+  last_active_at?: string | null;
+  last_sign_in_at?: string | null;
 }
 
 type UserTab = 'all' | 'normal' | 'monthly' | 'lifetime';
@@ -85,6 +106,8 @@ export default function AdminUsers() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<UserTab>('all');
+  const [sortKey, setSortKey] = useState<SortKey>('last_fund');
+  const [filters, setFilters] = useState<AdminFilters>(DEFAULT_FILTERS);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [balanceAmount, setBalanceAmount] = useState('');
   const [balanceAction, setBalanceAction] = useState<'subtract' | 'add'>('add');
@@ -455,39 +478,31 @@ export default function AdminUsers() {
     return (u.orderCounts?.singleActive || 0) + (u.orderCounts?.engagementActive || 0);
   };
 
-  // Filter users based on tab
-  const getFilteredUsers = () => {
-    let filtered = users || [];
-
-    // Search filter
-    if (searchQuery) {
-      filtered = filtered.filter(
-        (u) =>
-          u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          u.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    // Tab filter
+  // Tab filter first, then advanced filters + search + sort
+  const filteredUsers = useMemo(() => {
+    let base: UserProfile[] = users || [];
     switch (activeTab) {
       case 'normal':
-        return filtered.filter(
-          (u) => !u.subscription || u.subscription.status !== 'active'
-        );
+        base = base.filter((u) => !u.subscription || u.subscription.status !== 'active');
+        break;
       case 'monthly':
-        return filtered.filter(
-          (u) => u.subscription?.status === 'active' && u.subscription?.plan_type === 'monthly'
-        );
+        base = base.filter((u) => u.subscription?.status === 'active' && u.subscription?.plan_type === 'monthly');
+        break;
       case 'lifetime':
-        return filtered.filter(
-          (u) => u.subscription?.status === 'active' && u.subscription?.plan_type === 'lifetime'
-        );
-      default:
-        return filtered;
+        base = base.filter((u) => u.subscription?.status === 'active' && u.subscription?.plan_type === 'lifetime');
+        break;
     }
+    const filtered = applyFilters(base as unknown as Row[], filters, searchQuery);
+    const sorted = applySort(filtered, sortKey);
+    return sorted as unknown as UserProfile[];
+  }, [users, activeTab, filters, searchQuery, sortKey]);
+
+  const handleExport = () => {
+    const csv = rowsToCsv(filteredUsers as unknown as Row[]);
+    downloadCsv(`users-${new Date().toISOString().slice(0,10)}.csv`, csv);
+    toast.success(`Exported ${filteredUsers.length} users`);
   };
 
-  const filteredUsers = getFilteredUsers();
   const selectedBalanceInr = selectedUser ? (selectedUser.wallet?.balance || 0) * INR_RATE : 0;
   const parsedBalanceAmount = parseFloat(balanceAmount || '0') || 0;
   const isSubtractTooMuch =
@@ -614,38 +629,52 @@ export default function AdminUsers() {
           </Card>
         </div>
 
-        {/* Tabs & Search */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as UserTab)} className="flex-1">
-            <TabsList className="h-10">
-              <TabsTrigger value="all" className="gap-1">
-                <Users className="h-3 w-3" />
-                All
-              </TabsTrigger>
-              <TabsTrigger value="normal" className="gap-1">
-                <UserX className="h-3 w-3" />
-                No Plan
-              </TabsTrigger>
-              <TabsTrigger value="monthly" className="gap-1">
-                <Zap className="h-3 w-3" />
-                Monthly
-              </TabsTrigger>
-              <TabsTrigger value="lifetime" className="gap-1">
-                <Crown className="h-3 w-3" />
-                Lifetime
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="relative max-w-xs">
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as UserTab)}>
+          <TabsList className="h-10">
+            <TabsTrigger value="all" className="gap-1">
+              <Users className="h-3 w-3" />
+              All
+            </TabsTrigger>
+            <TabsTrigger value="normal" className="gap-1">
+              <UserX className="h-3 w-3" />
+              No Plan
+            </TabsTrigger>
+            <TabsTrigger value="monthly" className="gap-1">
+              <Zap className="h-3 w-3" />
+              Monthly
+            </TabsTrigger>
+            <TabsTrigger value="lifetime" className="gap-1">
+              <Crown className="h-3 w-3" />
+              Lifetime
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        {/* Search + Sort + Filters + Export */}
+        <div className="flex flex-col md:flex-row gap-3 md:items-center">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search..."
+              placeholder="Search email, name, user ID, telegram…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 h-10 rounded-xl"
             />
           </div>
+          <div className="flex flex-wrap gap-2 md:ml-auto">
+            <UserSortSelect value={sortKey} onChange={setSortKey} />
+            <UserFiltersSheet value={filters} onChange={setFilters} />
+            <Button variant="outline" className="h-10 rounded-xl gap-2" onClick={handleExport} disabled={!filteredUsers.length}>
+              <Download className="h-4 w-4" /> CSV
+            </Button>
+          </div>
         </div>
+
+        <p className="text-xs text-muted-foreground -mt-2">
+          Showing <span className="font-semibold text-foreground">{filteredUsers.length}</span> of {users?.length || 0} users
+        </p>
+
 
         {/* Users Grid */}
         {isLoading ? (
@@ -654,15 +683,29 @@ export default function AdminUsers() {
           </div>
         ) : filteredUsers && filteredUsers.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredUsers.map((u) => (
+            {filteredUsers.map((u) => {
+              const ind = indicatorFor(u as unknown as Row);
+              const dotClass =
+                ind === 'green'  ? 'bg-emerald-500' :
+                ind === 'blue'   ? 'bg-blue-500' :
+                ind === 'red'    ? 'bg-red-500' :
+                ind === 'orange' ? 'bg-orange-500' :
+                ind === 'gray'   ? 'bg-slate-400' : 'bg-transparent';
+              const ringClass =
+                ind === 'red' ? 'ring-1 ring-red-500/30' :
+                ind === 'blue' ? 'ring-1 ring-blue-500/30' : '';
+              return (
               <Card
                 key={u.id}
-                className="glass-card hover:border-primary/30 transition-all group"
+                className={`glass-card hover:border-primary/30 transition-all group ${ringClass}`}
               >
                 <CardContent className="p-5">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-lg font-bold text-primary">
-                      {u.email.charAt(0).toUpperCase()}
+                    <div className="relative">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-lg font-bold text-primary">
+                        {u.email.charAt(0).toUpperCase()}
+                      </div>
+                      {ind && <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-background ${dotClass}`} />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
@@ -675,13 +718,22 @@ export default function AdminUsers() {
                             Admin
                           </Badge>
                         )}
+                        {u.is_banned && (
+                          <Badge className="bg-red-500/20 text-red-500 text-[10px] h-5 border-red-500/30">
+                            <Ban className="h-3 w-3 mr-1" /> Banned
+                          </Badge>
+                        )}
                       </div>
                       <p className="text-xs text-muted-foreground truncate flex items-center gap-1">
                         <Mail className="h-3 w-3" />
                         {u.email}
                       </p>
+                      <p className="text-[10px] text-muted-foreground font-mono truncate mt-0.5">
+                        ID: {u.user_id.slice(0, 8)}…
+                      </p>
                     </div>
                   </div>
+
 
                   {/* Subscription Status */}
                   <div className="mt-3 p-2.5 rounded-lg bg-muted/50 flex items-center justify-between">
@@ -737,6 +789,31 @@ export default function AdminUsers() {
                       </div>
                     </div>
                   )}
+
+                  {/* Activity meta */}
+                  <div className="mt-3 grid grid-cols-3 gap-2 text-[10px]">
+                    <div className="p-2 rounded-lg bg-muted/40 text-center">
+                      <p className="text-muted-foreground uppercase tracking-wide">Last Fund</p>
+                      <p className="font-semibold text-foreground mt-0.5 flex items-center justify-center gap-1">
+                        <ArrowDownCircle className="h-3 w-3 text-emerald-500" />
+                        {u.last_deposit_at ? formatDistanceToNow(new Date(u.last_deposit_at), { addSuffix: true }) : 'Never'}
+                      </p>
+                    </div>
+                    <div className="p-2 rounded-lg bg-muted/40 text-center">
+                      <p className="text-muted-foreground uppercase tracking-wide">Orders</p>
+                      <p className="font-semibold text-foreground mt-0.5 flex items-center justify-center gap-1">
+                        <ShoppingCart className="h-3 w-3" />
+                        {u.total_orders_count || 0}
+                      </p>
+                    </div>
+                    <div className="p-2 rounded-lg bg-muted/40 text-center">
+                      <p className="text-muted-foreground uppercase tracking-wide">Last Login</p>
+                      <p className="font-semibold text-foreground mt-0.5 flex items-center justify-center gap-1">
+                        <LogIn className="h-3 w-3" />
+                        {u.last_sign_in_at ? formatDistanceToNow(new Date(u.last_sign_in_at), { addSuffix: true }) : 'Never'}
+                      </p>
+                    </div>
+                  </div>
 
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                     <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -816,7 +893,8 @@ export default function AdminUsers() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <Card className="glass-card p-12 text-center">
