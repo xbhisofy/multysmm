@@ -122,6 +122,8 @@ export default function AdminUsers() {
   const [pauseUser, setPauseUser] = useState<UserProfile | null>(null);
   const [cancelUser, setCancelUser] = useState<UserProfile | null>(null);
   const [refundOnCancel, setRefundOnCancel] = useState(false);
+  const [banUser, setBanUser] = useState<UserProfile | null>(null);
+  const [banReason, setBanReason] = useState('');
 
   const { data: users, isLoading } = useQuery({
     queryKey: ['admin-all-users-with-subs'],
