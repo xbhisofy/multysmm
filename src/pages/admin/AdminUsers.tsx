@@ -629,38 +629,52 @@ export default function AdminUsers() {
           </Card>
         </div>
 
-        {/* Tabs & Search */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as UserTab)} className="flex-1">
-            <TabsList className="h-10">
-              <TabsTrigger value="all" className="gap-1">
-                <Users className="h-3 w-3" />
-                All
-              </TabsTrigger>
-              <TabsTrigger value="normal" className="gap-1">
-                <UserX className="h-3 w-3" />
-                No Plan
-              </TabsTrigger>
-              <TabsTrigger value="monthly" className="gap-1">
-                <Zap className="h-3 w-3" />
-                Monthly
-              </TabsTrigger>
-              <TabsTrigger value="lifetime" className="gap-1">
-                <Crown className="h-3 w-3" />
-                Lifetime
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="relative max-w-xs">
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as UserTab)}>
+          <TabsList className="h-10">
+            <TabsTrigger value="all" className="gap-1">
+              <Users className="h-3 w-3" />
+              All
+            </TabsTrigger>
+            <TabsTrigger value="normal" className="gap-1">
+              <UserX className="h-3 w-3" />
+              No Plan
+            </TabsTrigger>
+            <TabsTrigger value="monthly" className="gap-1">
+              <Zap className="h-3 w-3" />
+              Monthly
+            </TabsTrigger>
+            <TabsTrigger value="lifetime" className="gap-1">
+              <Crown className="h-3 w-3" />
+              Lifetime
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        {/* Search + Sort + Filters + Export */}
+        <div className="flex flex-col md:flex-row gap-3 md:items-center">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search..."
+              placeholder="Search email, name, user ID, telegram…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 h-10 rounded-xl"
             />
           </div>
+          <div className="flex flex-wrap gap-2 md:ml-auto">
+            <UserSortSelect value={sortKey} onChange={setSortKey} />
+            <UserFiltersSheet value={filters} onChange={setFilters} />
+            <Button variant="outline" className="h-10 rounded-xl gap-2" onClick={handleExport} disabled={!filteredUsers.length}>
+              <Download className="h-4 w-4" /> CSV
+            </Button>
+          </div>
         </div>
+
+        <p className="text-xs text-muted-foreground -mt-2">
+          Showing <span className="font-semibold text-foreground">{filteredUsers.length}</span> of {users?.length || 0} users
+        </p>
+
 
         {/* Users Grid */}
         {isLoading ? (
