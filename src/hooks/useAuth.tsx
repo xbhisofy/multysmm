@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext, ReactNode, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { User, Session } from '@supabase/supabase-js';
+import { toast } from 'sonner';
 import type { Profile, Wallet, AppRole } from '@/lib/supabase';
 
 interface AuthContextType {
@@ -46,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Set up realtime subscription for wallet updates
+  // Set up realtime subscription for wallet updates + ban enforcement
   useEffect(() => {
     if (!user) return;
 
@@ -68,8 +69,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       )
       .subscribe();
 
+    // Watch profile for ban flag — force sign-out immediately if admin bans this user
+    const profileChannel = supabase
+      .channel(`profile-ban-${user.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+          filter: `user_id=eq.${user.id}`,
+        },
+        async (payload) => {
+          const next = payload.new as any;
+          if (next?.is_banned) {
+            toast.error('You have been banned. Please contact admin.');
+            try { await supabase.auth.signOut(); } catch {}
+            setProfile(null);
+            setWallet(null);
+            setRole(null);
+          } else if (next) {
+            setProfile(next as unknown as Profile);
+          }
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(walletChannel);
+      supabase.removeChannel(profileChannel);
     };
   }, [user?.id]);
 
@@ -155,6 +183,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) {
         console.error('--- useAuth: signIn error ---', error.message);
         return { error: error as Error };
+      }
+
+      // Ban check — reject login if profile is banned
+      if (data?.user) {
+        const { data: prof } = await supabase
+          .from('profiles')
+          .select('is_banned')
+          .eq('user_id', data.user.id)
+          .single();
+        if (prof && (prof as any).is_banned) {
+          await supabase.auth.signOut();
+          return { error: new Error('You are banned, please contact admin.') };
+        }
       }
 
       console.log('--- useAuth: signIn success ---');
