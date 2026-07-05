@@ -19,6 +19,8 @@ import {
   ExternalLink,
   IndianRupee,
   Zap,
+  Bitcoin,
+  MessageCircle,
 } from 'lucide-react';
 
 type PayMethod = 'upi' | 'crypto' | 'manual';
