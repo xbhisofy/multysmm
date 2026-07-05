@@ -28,12 +28,9 @@ export function Sidebar({ onClose }: SidebarProps) {
 
   return (
     <div className="h-full w-full overflow-hidden flex flex-col" style={{ background: '#fff', borderRight: '1px solid #efeaf7' }}>
-      {/* Brand */}
-      <div className="flex items-center justify-between px-5 pt-4 pb-3">
-        <Link to="/" className="flex items-center">
-          <img src="/logo.png" alt="MultySMM" className="h-11 w-auto object-contain" />
-        </Link>
-        <button onClick={onClose} aria-label="Close navigation menu" className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>
+      {/* Close button (mobile) */}
+      <div className="flex items-center justify-end px-3 pt-2 lg:hidden">
+        <button onClick={onClose} aria-label="Close navigation menu" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>
           <X className="w-4 h-4" />
         </button>
       </div>
