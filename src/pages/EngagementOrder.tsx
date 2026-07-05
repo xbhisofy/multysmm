@@ -1648,8 +1648,7 @@ export default function EngagementOrder() {
                     detectPlatformFromUrl(link.trim()) === platform;
                   const massLinksValid =
                     orderMode === 'mass' &&
-                    parsedMassLinks.valid.length > 0 &&
-                    parsedMassLinks.invalid.length === 0;
+                    parsedMassLinks.valid.length > 0;
                   const canShowButton = singleLinkValid || massLinksValid;
 
                   if (!canShowButton) {
