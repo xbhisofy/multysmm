@@ -189,7 +189,7 @@ export default function Wallet() {
         duration: 12000,
         action: {
           label: 'Contact support',
-          onClick: () => window.open('https://t.me/Hkasdfgkl', '_blank'),
+          onClick: () => window.open('https://t.me/multysmm', '_blank'),
         },
       });
       cleanUrl();

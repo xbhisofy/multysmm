@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { SimpleCard, AmountBlock, ChipRow, PayCta } from './ZapUpiDepositCard';
 
 const QUICK = [100, 500, 1000, 2000, 5000, 10000];
-const TG_USERNAME = 'Hkasdfgkl';
+const TG_USERNAME = 'multysmm';
 const MIN_AMOUNT = 100;
 const MAX_AMOUNT = 540000;
 const ACCENT = '#0088CC';

@@ -33,8 +33,8 @@ export default function ContactUs() {
                 </div>
                 <h3 className="font-semibold">Email Support</h3>
               </div>
-              <a href="mailto:support@multysmm.site" className="text-sm text-orange-500 hover:underline break-all">
-                support@multysmm.site
+              <a href="mailto:support@multysmm.com" className="text-sm text-orange-500 hover:underline break-all">
+                support@multysmm.com
               </a>
               <p className="text-xs text-muted-foreground mt-2">For all general queries, billing & technical support.</p>
             </div>
@@ -46,8 +46,8 @@ export default function ContactUs() {
                 </div>
                 <h3 className="font-semibold">Telegram Support</h3>
               </div>
-              <a href="https://t.me/Hkasdfgkl" target="_blank" rel="noreferrer" className="text-sm text-sky-500 hover:underline">
-                @Hkasdfgkl
+              <a href="https://t.me/multysmm" target="_blank" rel="noreferrer" className="text-sm text-sky-500 hover:underline">
+                @multysmm
               </a>
               <p className="text-xs text-muted-foreground mt-2">Fastest way to reach us. Available 7 days a week.</p>
             </div>
@@ -59,7 +59,7 @@ export default function ContactUs() {
                 </div>
                 <h3 className="font-semibold">Live Chat</h3>
               </div>
-              <a href="https://t.me/Hkasdfgkl" target="_blank" rel="noreferrer" className="text-sm text-blue-500 hover:underline">
+              <a href="https://t.me/multysmm" target="_blank" rel="noreferrer" className="text-sm text-blue-500 hover:underline">
                 Start chat on Telegram
               </a>
               <p className="text-xs text-muted-foreground mt-2">Chat with our support team for urgent issues.</p>
@@ -98,7 +98,7 @@ export default function ContactUs() {
 
           <div className="mt-10 text-sm text-muted-foreground">
             <p>
-              For grievances, please email <a className="text-orange-500 hover:underline" href="mailto:support@multysmm.site">support@multysmm.site</a> with subject line "Grievance" — our grievance officer will respond within 48 hours.
+              For grievances, please email <a className="text-orange-500 hover:underline" href="mailto:support@multysmm.com">support@multysmm.com</a> with subject line "Grievance" — our grievance officer will respond within 48 hours.
             </p>
           </div>
         </div>
