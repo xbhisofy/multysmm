@@ -106,6 +106,8 @@ export default function AdminUsers() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<UserTab>('all');
+  const [sortKey, setSortKey] = useState<SortKey>('last_fund');
+  const [filters, setFilters] = useState<AdminFilters>(DEFAULT_FILTERS);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [balanceAmount, setBalanceAmount] = useState('');
   const [balanceAction, setBalanceAction] = useState<'subtract' | 'add'>('add');
