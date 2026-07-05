@@ -8,7 +8,7 @@ export default function ContactUs() {
     <>
       <PageMeta
         title="Contact Us | MultySMM"
-        description="Get in touch with MultySMM support team. Email, WhatsApp and business address for customer support."
+        description="Get in touch with MultySMM support team. Email, Telegram and business address for customer support."
         canonicalPath="/contact"
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Contact Us", path: "/contact" }]}
       />
