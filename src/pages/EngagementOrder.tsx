@@ -19,6 +19,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { PlatformSelector } from "@/components/engagement/PlatformSelector";
+import { AiGrowthEngine, type AiGrowthResult } from "@/components/engagement/AiGrowthEngine";
 import { QuantitySelector } from "@/components/engagement/QuantitySelector";
 import { EngagementTypeCard } from "@/components/engagement/EngagementTypeCard";
 import { DeliveryPreview } from "@/components/engagement/DeliveryPreview";
