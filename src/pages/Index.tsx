@@ -16,15 +16,17 @@ const C = {
   muted: '#8A8A9E',
   line: 'rgba(11,11,22,.08)',
   card: '#FFFFFF',
-  purple: '#F97316',
-  purpleDeep: '#EA580C',
-  pink: '#6366F1',
-  lilac: '#FFF3E5',
+  purple: '#A855F7',
+  purpleDeep: '#7C3AED',
+  pink: '#EC4899',
+  orange: '#F97316',
+  lilac: '#FDF4FF',
   serif: "'Instrument Serif', 'Times New Roman', serif",
   sans: "'Inter', system-ui, sans-serif",
 };
 
-const GRADIENT = `linear-gradient(135deg, ${C.purple} 0%, ${C.pink} 100%)`;
+const GRADIENT = `linear-gradient(135deg, #F97316 0%, #EC4899 55%, #A855F7 100%)`;
+
 
 const Eyebrow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="inline-flex items-center gap-2 text-[11px] sm:text-[12px] font-bold uppercase tracking-[0.18em]"
@@ -58,7 +60,7 @@ const Index = () => {
         <div className="max-w-6xl mx-auto rounded-full flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6"
           style={{ background: 'rgba(255,255,255,.85)', backdropFilter: 'blur(20px) saturate(180%)', border: `1px solid ${C.line}`, boxShadow: '0 8px 32px rgba(11,11,22,.06)' }}>
           <Link to="/" className="flex items-center">
-            <img src="/logo.png" alt="MultySMM" className="h-9 sm:h-10 w-auto object-contain" />
+            <img src="/logo.png" alt="MultySMM" className="h-12 sm:h-14 w-auto object-contain" />
           </Link>
           <div className="hidden md:flex items-center gap-8">
             {[['Features','#features'],['How it works','#how'],['Why us','#why'],['FAQ','#faq']].map(([t,h]) => (
@@ -70,10 +72,11 @@ const Index = () => {
               Log in
             </Link>
             <Link to="/auth" className="h-10 px-5 rounded-full text-[13px] font-bold text-white inline-flex items-center gap-1.5"
-              style={{ background: GRADIENT, boxShadow: '0 10px 24px rgba(236,72,153,.35)' }}>
+              style={{ background: GRADIENT, boxShadow: '0 10px 24px rgba(168,85,247,.35)' }}>
               Get Started <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
+
         </div>
       </nav>
 
