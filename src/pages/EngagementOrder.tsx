@@ -1414,32 +1414,49 @@ export default function EngagementOrder() {
 
             {orderMode === 'single' ? (
               <>
-                <Input
-                  placeholder={`https://${platform}.com/...`}
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                  className="h-12 sm:h-14 text-base sm:text-lg rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-medium placeholder:text-muted-foreground transition-all"
-                />
-                {link.trim() && (() => {
-                  const detected = detectPlatformFromUrl(link.trim());
-                  if (!detected) {
-                    return (
-                      <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
-                        <span>⚠️</span> Invalid link — please paste a valid {platform.toUpperCase()} URL.
-                      </p>
-                    );
-                  }
-                  if (detected !== platform) {
-                    return (
-                      <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
-                        <span>⚠️</span> This is a {detected.toUpperCase()} link, but you selected {platform.toUpperCase()}.
-                      </p>
-                    );
-                  }
+                {(() => {
+                  const trimmed = link.trim();
+                  const detected = trimmed ? detectPlatformFromUrl(trimmed) : null;
+                  const state: 'empty' | 'valid' | 'invalid' | 'wrong' =
+                    !trimmed ? 'empty'
+                    : !detected ? 'invalid'
+                    : detected !== platform ? 'wrong'
+                    : 'valid';
+                  const borderClass =
+                    state === 'valid' ? 'border-success focus:border-success'
+                    : state === 'empty' ? 'border-border focus:border-foreground'
+                    : 'border-destructive focus:border-destructive';
                   return (
-                    <p className="mt-2 text-xs text-success flex items-center gap-1.5">
-                      <span>✓</span> Valid {platform.toUpperCase()} link
-                    </p>
+                    <>
+                      <Input
+                        placeholder={`https://${platform}.com/...`}
+                        value={link}
+                        onChange={(e) => setLink(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && state !== 'valid') e.preventDefault();
+                        }}
+                        aria-invalid={state === 'invalid' || state === 'wrong'}
+                        className={cn(
+                          "h-12 sm:h-14 text-base sm:text-lg rounded-xl border-2 bg-secondary text-foreground font-medium placeholder:text-muted-foreground transition-all",
+                          borderClass
+                        )}
+                      />
+                      {state === 'invalid' && (
+                        <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
+                          <span>⚠️</span> Please enter a valid {platform.toUpperCase()} URL (e.g. https://{platform}.com/…). Random text, usernames or unsupported links are not allowed.
+                        </p>
+                      )}
+                      {state === 'wrong' && (
+                        <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
+                          <span>⚠️</span> This is a {detected!.toUpperCase()} link, but you selected {platform.toUpperCase()}. Only {platform.toUpperCase()} links are accepted for this service.
+                        </p>
+                      )}
+                      {state === 'valid' && (
+                        <p className="mt-2 text-xs text-success flex items-center gap-1.5">
+                          <span>✓</span> Valid {platform.toUpperCase()} link
+                        </p>
+                      )}
+                    </>
                   );
                 })()}
               </>
