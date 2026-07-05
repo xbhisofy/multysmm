@@ -75,7 +75,7 @@ export default function AboutUs() {
                 
                 <strong className="text-foreground">Registered Address:</strong> 8 The Green, Suite #14490, Dover, DE 19901, United States<br />
                 <strong className="text-foreground">Email:</strong> support@multysmm.site<br />
-                <strong className="text-foreground">WhatsApp / Phone:</strong> +1 (367) 828-8027<br />
+                <strong className="text-foreground">Telegram Support:</strong> <a href="https://t.me/Hkasdfgkl" target="_blank" rel="noreferrer" className="text-orange-500 hover:underline">@Hkasdfgkl</a><br />
                 <strong className="text-foreground">Website:</strong> https://multysmm.site
               </p>
             </section>
