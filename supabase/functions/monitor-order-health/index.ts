@@ -143,6 +143,7 @@ Deno.serve(async (req) => {
       "id, order_number, user_id, service_id, provider_order_id, status, quantity, remains, link, price, created_at, updated_at",
     )
     .in("status", ["pending", "processing", "in_progress"])
+    .gt("created_at", maxAgeCutoff)
     .lt("updated_at", cutoff);
 
   const orderList = orders || [];
