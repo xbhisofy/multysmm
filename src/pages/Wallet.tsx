@@ -21,10 +21,13 @@ import {
   Zap,
 } from 'lucide-react';
 
+type PayMethod = 'upi' | 'crypto' | 'manual';
+
 export default function Wallet() {
   const { wallet } = useWallet();
   const { formatPrice, rates } = useCurrency();
   const [filter, setFilter] = useState<TransactionFilter>('all');
+  const [payMethod, setPayMethod] = useState<PayMethod>('upi');
   const { data: transactions } = useTransactions(filter);
   const qc = useQueryClient();
 
