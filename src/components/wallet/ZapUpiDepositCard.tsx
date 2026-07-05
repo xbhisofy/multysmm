@@ -1,68 +1,47 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Loader2, Zap, IndianRupee, ShieldCheck, ArrowRight, Send, MessageCircle, Lock } from 'lucide-react';
+import { Loader2, Zap, IndianRupee, ArrowRight, ShieldCheck } from 'lucide-react';
 
 const QUICK = [100, 500, 1000, 2000, 5000];
+const ACCENT = '#7C3AED';
+const ACCENT_SOFT = '#F3ECFF';
 
 export default function ZapUpiDepositCard() {
   const [amount, setAmount] = useState<string>('500');
   const [loading, setLoading] = useState(false);
 
-  // Warm up the edge function on mount so the cold start doesn't happen on Pay click.
   useEffect(() => {
-    let cancelled = false;
     const warm = async () => {
       try {
         const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/zapupi-create-order`;
         await fetch(url, { method: 'OPTIONS', mode: 'cors' });
-      } catch { /* ignore */ }
+      } catch {}
     };
     warm();
-    return () => { cancelled = true; void cancelled; };
   }, []);
 
   const PROD_ORIGIN = 'https://multysmm.com';
-
-  const buildReturnUrl = () => {
-    // Always return to production domain after payment
-    return `${PROD_ORIGIN}/wallet`;
-  };
+  const buildReturnUrl = () => `${PROD_ORIGIN}/wallet`;
 
   const openPaymentPage = (payUrl: string) => {
-    // Always open in the same tab (break out of iframe if embedded)
     try {
       if (window.top && window.top !== window.self) {
         window.top.location.href = payUrl;
         return;
       }
-    } catch {
-      // top navigation blocked by cross-origin iframe — fall through
-    }
+    } catch {}
     window.location.href = payUrl;
   };
 
   const handlePay = async () => {
     const amt = Number(amount);
-    if (!Number.isFinite(amt) || amt < 50) {
-      toast.error('Minimum ₹50');
-      return;
-    }
-    if (amt > 100000) {
-      toast.error('Maximum ₹1,00,000 per transaction');
-      return;
-    }
+    if (!Number.isFinite(amt) || amt < 50) return toast.error('Minimum ₹50');
+    if (amt > 100000) return toast.error('Maximum ₹1,00,000 per transaction');
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('zapupi-create-order', {
-        body: {
-          amount_inr: amt,
-          origin: PROD_ORIGIN,
-          return_url: buildReturnUrl(),
-        },
+        body: { amount_inr: amt, origin: PROD_ORIGIN, return_url: buildReturnUrl() },
       });
       if (error) throw new Error(error.message || 'Failed to create order');
       const payUrl = (data as any)?.payment_url;
@@ -75,138 +54,240 @@ export default function ZapUpiDepositCard() {
   };
 
   return (
-    <div
-      className="relative overflow-hidden rounded-3xl p-7"
-      style={{
-        background: 'white',
-        border: '1px solid #EDE4FE',
-        boxShadow: '0 4px 24px -8px rgba(124,58,237,.12), 0 1px 2px rgba(15,23,42,.04)',
-      }}
-    >
-      {/* accent orb */}
-      <div
-        className="absolute -top-16 -right-16 w-56 h-56 rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.16), transparent 70%)' }}
-      />
-      <div
-        className="absolute -bottom-20 -left-16 w-48 h-48 rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.14), transparent 70%)' }}
+    <TicketCard accent={ACCENT} accentSoft={ACCENT_SOFT} tag="INSTANT UPI" method="UPI · GPAY · PHONEPE · PAYTM">
+      <TicketHeader
+        accent={ACCENT}
+        icon={<Zap className="h-5 w-5" fill="white" strokeWidth={2.5} />}
+        title="UPI TOP-UP"
+        subtitle="Auto-credit in seconds"
+        badge="SECURE"
       />
 
-      <div className="relative flex items-start justify-between mb-5">
-        <div className="flex items-center gap-3">
-          <div
-            className="w-11 h-11 rounded-2xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #7C3AED, #EC4899)', boxShadow: '0 10px 22px -6px rgba(124,58,237,.5)' }}
-          >
-            <Zap className="h-5 w-5 text-white" strokeWidth={2.5} />
-          </div>
-          <div>
-            <h2 className="text-[17px] font-extrabold tracking-tight" style={{ color: '#0B0B16' }}>
-              Add Funds
-            </h2>
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] mt-0.5"
-              style={{ background: 'linear-gradient(135deg, #7C3AED, #EC4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              Instant UPI · Auto-credit
-            </p>
-          </div>
-        </div>
-        <div
-          className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold"
-          style={{ background: '#F5EEFF', color: '#6D28D9', border: '1px solid #E5D7FA' }}
-        >
-          <ShieldCheck className="h-3 w-3" /> SECURE
-        </div>
-      </div>
-
-      <p className="relative text-[13px] leading-relaxed mb-6" style={{ color: '#7d6f97' }}>
-        Pay via UPI · GPay · PhonePe · Paytm — your wallet is credited instantly after payment.
-      </p>
-
-      <Label htmlFor="zap-amount" className="text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: '#7d6f97' }}>
-        Enter Amount
-      </Label>
-      <div className="relative mt-2">
-        <div
-          className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded-lg z-10"
-          style={{ background: '#F5EEFF' }}
-        >
-          <IndianRupee className="h-3.5 w-3.5" style={{ color: '#7C3AED' }} strokeWidth={2.5} />
-        </div>
-        <Input
+      <div className="px-5 sm:px-6 pt-5 pb-6">
+        <AmountField
           id="zap-amount"
-          type="number"
-          inputMode="decimal"
+          value={amount}
+          onChange={setAmount}
           min={50}
           max={100000}
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          accent={ACCENT}
+          accentSoft={ACCENT_SOFT}
+        />
+
+        <QuickChips values={QUICK} value={amount} onPick={setAmount} accent={ACCENT} cols={5} />
+
+        <PayButton
+          accent={ACCENT}
+          gradient={`linear-gradient(135deg, ${ACCENT} 0%, #A855F7 55%, #EC4899 100%)`}
+          onClick={handlePay}
+          loading={loading}
+          disabled={!amount}
+          loadingLabel="Redirecting to UPI…"
+          label={`Pay ₹${Number(amount || 0).toLocaleString('en-IN')} Now`}
+          icon={<Zap className="h-5 w-5" fill="white" strokeWidth={2.5} />}
+        />
+
+        <FootNote text="Auto-verified by server · No refresh needed" />
+      </div>
+    </TicketCard>
+  );
+}
+
+/* ---------- Shared ticket primitives (used by all 3 cards) ---------- */
+
+export function TicketCard({
+  accent, accentSoft, tag, method, children,
+}: { accent: string; accentSoft: string; tag: string; method: string; children: React.ReactNode }) {
+  return (
+    <div className="relative">
+      {/* hard offset shadow layer */}
+      <div
+        className="absolute inset-0 rounded-[22px] translate-x-[5px] translate-y-[5px] sm:translate-x-[6px] sm:translate-y-[6px]"
+        style={{ background: '#0B0B16' }}
+      />
+      <div
+        className="relative rounded-[22px] overflow-hidden bg-white"
+        style={{ border: '2.5px solid #0B0B16' }}
+      >
+        {/* top ticket meta strip */}
+        <div
+          className="flex items-center justify-between px-4 sm:px-5 py-2 text-[10px] font-black uppercase tracking-[0.2em]"
+          style={{ background: accentSoft, color: '#0B0B16', borderBottom: '2px dashed #0B0B16' }}
+        >
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
+            {tag}
+          </span>
+          <span className="truncate max-w-[55%] text-right opacity-70">{method}</span>
+        </div>
+
+        {children}
+
+        {/* perforation footer */}
+        <div className="relative h-3" style={{ background: '#0B0B16' }}>
+          <div
+            className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0"
+            style={{
+              backgroundImage: 'radial-gradient(circle, white 3px, transparent 3.5px)',
+              backgroundSize: '14px 6px',
+              backgroundRepeat: 'repeat-x',
+              height: '6px',
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function TicketHeader({
+  accent, icon, title, subtitle, badge,
+}: { accent: string; icon: React.ReactNode; title: string; subtitle: string; badge: string }) {
+  return (
+    <div
+      className="relative flex items-center justify-between gap-3 px-5 sm:px-6 py-5"
+      style={{ borderBottom: '2px solid #0B0B16', background: 'white' }}
+    >
+      <div className="flex items-center gap-3 min-w-0">
+        <div
+          className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-white"
+          style={{ background: accent, border: '2.5px solid #0B0B16', boxShadow: '3px 3px 0 #0B0B16' }}
+        >
+          {icon}
+        </div>
+        <div className="min-w-0">
+          <h2 className="text-[18px] sm:text-[19px] font-black tracking-tight leading-tight" style={{ color: '#0B0B16' }}>
+            {title}
+          </h2>
+          <p className="text-[12px] font-semibold mt-0.5" style={{ color: '#5a5a72' }}>
+            {subtitle}
+          </p>
+        </div>
+      </div>
+      <div
+        className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-black tracking-wider"
+        style={{ background: '#0B0B16', color: 'white' }}
+      >
+        <ShieldCheck className="h-3 w-3" /> {badge}
+      </div>
+    </div>
+  );
+}
+
+export function AmountField({
+  id, value, onChange, min, max, accent, accentSoft,
+}: { id: string; value: string; onChange: (v: string) => void; min: number; max: number; accent: string; accentSoft: string }) {
+  return (
+    <>
+      <div className="flex items-center justify-between mb-2">
+        <label htmlFor={id} className="text-[10px] font-black uppercase tracking-[0.18em]" style={{ color: '#0B0B16' }}>
+          Enter Amount
+        </label>
+        <span className="text-[10px] font-bold" style={{ color: '#94a3b8' }}>
+          MIN ₹{min} · MAX ₹{max.toLocaleString('en-IN')}
+        </span>
+      </div>
+      <div
+        className="relative flex items-center rounded-xl overflow-hidden"
+        style={{ border: '2px solid #0B0B16', background: accentSoft }}
+      >
+        <div
+          className="w-12 h-14 flex items-center justify-center shrink-0"
+          style={{ background: accent, borderRight: '2px solid #0B0B16' }}
+        >
+          <IndianRupee className="h-4.5 w-4.5 text-white" strokeWidth={3} />
+        </div>
+        <input
+          id={id}
+          type="number"
+          inputMode="decimal"
+          min={min}
+          max={max}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           placeholder="500"
-          className="pl-14 pr-4 h-14 text-2xl font-bold border-2 rounded-xl relative"
-          style={{
-            color: '#0B0B16',
-            borderColor: '#EDE4FE',
-            background: '#FBF8FF',
-          }}
+          className="flex-1 h-14 bg-transparent border-0 outline-none px-4 text-2xl font-black tracking-tight"
+          style={{ color: '#0B0B16' }}
         />
       </div>
+    </>
+  );
+}
 
+export function QuickChips({
+  values, value, onPick, accent, cols,
+}: { values: number[]; value: string; onPick: (v: string) => void; accent: string; cols: 5 | 6 }) {
+  return (
+    <div className={`grid gap-1.5 mt-3 ${cols === 6 ? 'grid-cols-3 sm:grid-cols-6' : 'grid-cols-5'}`}>
+      {values.map((v) => {
+        const active = value === String(v);
+        return (
+          <button
+            key={v}
+            type="button"
+            onClick={() => onPick(String(v))}
+            className="py-2.5 rounded-lg text-[12px] font-black transition-all active:translate-y-[1px]"
+            style={{
+              background: active ? '#0B0B16' : 'white',
+              color: active ? 'white' : '#0B0B16',
+              border: '2px solid #0B0B16',
+              boxShadow: active ? `inset 0 0 0 2px ${accent}` : '2px 2px 0 #0B0B16',
+            }}
+          >
+            ₹{v >= 1000 ? `${v / 1000}k` : v}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
-      <div className="grid grid-cols-5 gap-2 mt-3">
-        {QUICK.map((v) => {
-          const active = amount === String(v);
-          return (
-            <button
-              key={v}
-              type="button"
-              onClick={() => setAmount(String(v))}
-              className="py-2.5 rounded-xl text-[12px] font-bold transition-all active:scale-95"
-              style={{
-                background: active ? 'linear-gradient(135deg, #7C3AED, #EC4899)' : 'white',
-                color: active ? 'white' : '#4A4A5E',
-                border: active ? '1px solid transparent' : '1.5px solid #EDE4FE',
-                boxShadow: active ? '0 4px 12px -4px rgba(124,58,237,.45)' : 'none',
-              }}
-            >
-              ₹{v >= 1000 ? `${v / 1000}k` : v}
-            </button>
-          );
-        })}
-      </div>
-
-      <button
-        onClick={handlePay}
-        disabled={loading || !amount}
-        className="w-full mt-6 h-14 rounded-2xl font-bold text-[15px] flex items-center justify-center gap-2 transition-all active:scale-[.98] disabled:opacity-60 disabled:cursor-not-allowed"
+export function PayButton({
+  accent, gradient, onClick, loading, disabled, loadingLabel, label, icon,
+}: {
+  accent: string; gradient: string; onClick: () => void; loading: boolean; disabled: boolean;
+  loadingLabel: string; label: string; icon: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={loading || disabled}
+      className="group relative w-full mt-5 h-[56px] rounded-xl font-black text-[15px] flex items-center justify-center gap-2 overflow-hidden transition-all active:translate-y-[2px] disabled:opacity-60 disabled:cursor-not-allowed"
+      style={{
+        background: gradient,
+        color: 'white',
+        border: '2.5px solid #0B0B16',
+        boxShadow: '4px 4px 0 #0B0B16',
+        letterSpacing: '0.01em',
+      }}
+    >
+      <span
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
         style={{
-          background: 'linear-gradient(135deg, #7C3AED 0%, #A855F7 45%, #EC4899 100%)',
-          color: 'white',
-          boxShadow: '0 14px 30px -10px rgba(124,58,237,.6), inset 0 1px 0 rgba(255,255,255,.25)',
-          letterSpacing: '-0.01em',
+          background: 'linear-gradient(120deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%)',
+          animation: 'ticket-shimmer 1.4s linear infinite',
         }}
-      >
-        {loading ? (
-          <>
-            <Loader2 className="h-5 w-5 animate-spin" /> Redirecting to UPI…
-          </>
-        ) : (
-          <>
-            <Zap className="h-5 w-5" fill="white" strokeWidth={2.5} />
-            Pay ₹{Number(amount || 0).toLocaleString('en-IN')} Now
-            <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
-          </>
-        )}
-      </button>
+      />
+      {loading ? (
+        <><Loader2 className="h-5 w-5 animate-spin relative" /> <span className="relative">{loadingLabel}</span></>
+      ) : (
+        <>
+          <span className="relative">{icon}</span>
+          <span className="relative uppercase tracking-wide">{label}</span>
+          <ArrowRight className="h-5 w-5 relative" strokeWidth={3} />
+        </>
+      )}
+      <style>{`@keyframes ticket-shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}`}</style>
+      <span className="sr-only">{accent}</span>
+    </button>
+  );
+}
 
-
-      <div className="flex items-center justify-center gap-1.5 mt-4">
-        <ShieldCheck className="h-3 w-3" style={{ color: '#94a3b8' }} />
-        <p className="text-[11px]" style={{ color: '#94a3b8' }}>
-          Auto-verified by server · No refresh needed
-        </p>
-      </div>
-
-      {/* Support links hidden temporarily — will re-enable after subscription is taken */}
+export function FootNote({ text }: { text: string }) {
+  return (
+    <div className="flex items-center justify-center gap-1.5 mt-4">
+      <ShieldCheck className="h-3 w-3" style={{ color: '#94a3b8' }} />
+      <p className="text-[11px] font-semibold" style={{ color: '#94a3b8' }}>{text}</p>
     </div>
   );
 }
