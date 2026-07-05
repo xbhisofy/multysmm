@@ -478,39 +478,31 @@ export default function AdminUsers() {
     return (u.orderCounts?.singleActive || 0) + (u.orderCounts?.engagementActive || 0);
   };
 
-  // Filter users based on tab
-  const getFilteredUsers = () => {
-    let filtered = users || [];
-
-    // Search filter
-    if (searchQuery) {
-      filtered = filtered.filter(
-        (u) =>
-          u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          u.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    // Tab filter
+  // Tab filter first, then advanced filters + search + sort
+  const filteredUsers = useMemo(() => {
+    let base: UserProfile[] = users || [];
     switch (activeTab) {
       case 'normal':
-        return filtered.filter(
-          (u) => !u.subscription || u.subscription.status !== 'active'
-        );
+        base = base.filter((u) => !u.subscription || u.subscription.status !== 'active');
+        break;
       case 'monthly':
-        return filtered.filter(
-          (u) => u.subscription?.status === 'active' && u.subscription?.plan_type === 'monthly'
-        );
+        base = base.filter((u) => u.subscription?.status === 'active' && u.subscription?.plan_type === 'monthly');
+        break;
       case 'lifetime':
-        return filtered.filter(
-          (u) => u.subscription?.status === 'active' && u.subscription?.plan_type === 'lifetime'
-        );
-      default:
-        return filtered;
+        base = base.filter((u) => u.subscription?.status === 'active' && u.subscription?.plan_type === 'lifetime');
+        break;
     }
+    const filtered = applyFilters(base as unknown as Row[], filters, searchQuery);
+    const sorted = applySort(filtered, sortKey);
+    return sorted as unknown as UserProfile[];
+  }, [users, activeTab, filters, searchQuery, sortKey]);
+
+  const handleExport = () => {
+    const csv = rowsToCsv(filteredUsers as unknown as Row[]);
+    downloadCsv(`users-${new Date().toISOString().slice(0,10)}.csv`, csv);
+    toast.success(`Exported ${filteredUsers.length} users`);
   };
 
-  const filteredUsers = getFilteredUsers();
   const selectedBalanceInr = selectedUser ? (selectedUser.wallet?.balance || 0) * INR_RATE : 0;
   const parsedBalanceAmount = parseFloat(balanceAmount || '0') || 0;
   const isSubtractTooMuch =
