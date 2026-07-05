@@ -1201,67 +1201,65 @@ export default function EngagementOrder() {
   return (
     <DashboardLayout>
       <div className="max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 space-y-3 sm:space-y-6 pb-8">
-        {/* Mission-console: hero + AI toggles combined into one unique panel */}
+        {/* Mission-console: hero + AI toggles combined into one unique panel (light) */}
         <div
-          className="relative overflow-hidden rounded-2xl"
+          className="relative overflow-hidden rounded-2xl bg-white"
           style={{
-            background:
-              'radial-gradient(120% 80% at 0% 0%, #0f2b1f 0%, #0a1a13 50%, #06110c 100%)',
-            border: '1px solid rgba(34,197,94,.22)',
-            boxShadow: '0 20px 60px -20px rgba(22,163,74,.35), inset 0 1px 0 rgba(255,255,255,.05)',
+            border: '1px solid #FFE4CC',
+            boxShadow: '0 20px 60px -24px rgba(249,115,22,.22), 0 1px 2px rgba(15,23,42,.04)',
           }}
         >
           {/* subtle grid texture */}
           <div
-            className="absolute inset-0 opacity-[.06] pointer-events-none"
+            className="absolute inset-0 opacity-[.35] pointer-events-none"
             style={{
               backgroundImage:
-                'linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px)',
+                'linear-gradient(rgba(15,23,42,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(15,23,42,.04) 1px, transparent 1px)',
               backgroundSize: '24px 24px',
             }}
           />
-          {/* ambient glow */}
+          {/* ambient warm glow */}
           <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(closest-side, rgba(34,197,94,.35), transparent 70%)' }} />
+            style={{ background: 'radial-gradient(closest-side, rgba(249,115,22,.22), transparent 70%)' }} />
           <div className="absolute -bottom-28 -left-16 w-64 h-64 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(closest-side, rgba(190,24,93,.28), transparent 70%)' }} />
+            style={{ background: 'radial-gradient(closest-side, rgba(99,102,241,.16), transparent 70%)' }} />
 
           {/* top rail — mission title */}
-          <div className="relative flex items-center justify-between gap-3 px-3 sm:px-5 py-3 sm:py-4 border-b border-white/[.06]">
+          <div className="relative flex items-center justify-between gap-3 px-3 sm:px-5 py-3 sm:py-4 border-b border-slate-100">
             <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <div
                 className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0"
                 style={{
-                  background: 'linear-gradient(135deg, #22c55e, #15803d)',
-                  boxShadow: '0 8px 20px -6px rgba(34,197,94,.6), inset 0 1px 0 rgba(255,255,255,.25)',
+                  background: 'linear-gradient(135deg, #F97316, #EA580C)',
+                  boxShadow: '0 8px 20px -6px rgba(249,115,22,.55), inset 0 1px 0 rgba(255,255,255,.3)',
                 }}
               >
                 <Rocket className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300/70">
+                <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: '#EA580C' }}>
                   Engagement · Console
                 </p>
-                <h1 className="text-[15px] sm:text-lg lg:text-xl font-black text-white tracking-tight leading-tight">
+                <h1 className="text-[15px] sm:text-lg lg:text-xl font-black text-slate-900 tracking-tight leading-tight">
                   Organic Full Engagement
                 </h1>
               </div>
             </div>
             <div
               className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold"
-              style={{ background: 'rgba(34,197,94,.14)', color: '#86efac', border: '1px solid rgba(34,197,94,.3)' }}
+              style={{ background: '#FFF3E5', color: '#C2410C', border: '1px solid #FFE0B8' }}
             >
               <span className="relative flex h-2 w-2">
-                <span className="absolute inset-0 rounded-full bg-emerald-400 opacity-75 animate-ping" />
-                <span className="relative rounded-full h-2 w-2 bg-emerald-400" />
+                <span className="absolute inset-0 rounded-full opacity-75 animate-ping" style={{ background: '#F97316' }} />
+                <span className="relative rounded-full h-2 w-2" style={{ background: '#F97316' }} />
               </span>
               SYSTEM ACTIVE
             </div>
           </div>
 
           {/* body — two AI modules side by side */}
-          <div className="relative grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-white/[.06]">
-            {/* Module 1 — AI Organic Algorithm */}
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+            {/* Module 1 — AI Organic Algorithm (Orange) */}
             <button
               type="button"
               onClick={() => {
@@ -1272,31 +1270,30 @@ export default function EngagementOrder() {
               className="text-left p-3 sm:p-4 transition-all group relative"
               style={{
                 background: isOrganicMode
-                  ? 'linear-gradient(180deg, rgba(34,197,94,.10), rgba(34,197,94,.02))'
+                  ? 'linear-gradient(180deg, rgba(249,115,22,.08), rgba(249,115,22,.01))'
                   : 'transparent',
               }}
             >
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2 min-w-0">
                   <div
-                    className={cn(
-                      'w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shrink-0 transition-all',
-                      isOrganicMode ? 'text-white' : 'text-emerald-200/70'
-                    )}
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shrink-0 transition-all"
                     style={{
                       background: isOrganicMode
-                        ? 'linear-gradient(135deg, #22c55e, #15803d)'
-                        : 'rgba(255,255,255,.04)',
-                      border: '1px solid rgba(34,197,94,.25)',
+                        ? 'linear-gradient(135deg, #F97316, #EA580C)'
+                        : '#FFF7ED',
+                      border: `1px solid ${isOrganicMode ? 'transparent' : '#FFE4CC'}`,
+                      color: isOrganicMode ? 'white' : '#EA580C',
+                      boxShadow: isOrganicMode ? '0 6px 14px -4px rgba(249,115,22,.45)' : 'none',
                     }}
                   >
                     <Brain className="h-4 w-4" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-[13px] sm:text-sm font-black text-white tracking-tight leading-tight">
+                    <h3 className="text-[13px] sm:text-sm font-black text-slate-900 tracking-tight leading-tight">
                       AI Organic Algorithm
                     </h3>
-                    <p className="text-[10px] sm:text-[11px] text-emerald-100/50 mt-0.5">
+                    <p className="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">
                       Unique organic pattern per order
                     </p>
                   </div>
@@ -1308,7 +1305,7 @@ export default function EngagementOrder() {
                     if (val) setIsAutoRatios(false);
                   }}
                   onClick={(e) => e.stopPropagation()}
-                  className="data-[state=checked]:bg-emerald-500 shrink-0"
+                  className="data-[state=checked]:bg-orange-500 shrink-0"
                 />
               </div>
               <div className="flex flex-wrap gap-1">
@@ -1317,9 +1314,9 @@ export default function EngagementOrder() {
                     key={t}
                     className="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded"
                     style={{
-                      background: isOrganicMode ? 'rgba(34,197,94,.15)' : 'rgba(255,255,255,.04)',
-                      color: isOrganicMode ? '#86efac' : 'rgba(255,255,255,.4)',
-                      border: `1px solid ${isOrganicMode ? 'rgba(34,197,94,.3)' : 'rgba(255,255,255,.08)'}`,
+                      background: isOrganicMode ? '#FFF3E5' : '#F8FAFC',
+                      color: isOrganicMode ? '#C2410C' : '#94a3b8',
+                      border: `1px solid ${isOrganicMode ? '#FFE0B8' : '#EEF0F4'}`,
                     }}
                   >
                     · {t}
@@ -1328,7 +1325,7 @@ export default function EngagementOrder() {
               </div>
             </button>
 
-            {/* Module 2 — AI Smart Ratios */}
+            {/* Module 2 — AI Smart Ratios (Indigo) */}
             <button
               type="button"
               onClick={() => {
@@ -1339,31 +1336,30 @@ export default function EngagementOrder() {
               className="text-left p-3 sm:p-4 transition-all group relative"
               style={{
                 background: isAutoRatios
-                  ? 'linear-gradient(180deg, rgba(236,72,153,.10), rgba(236,72,153,.02))'
+                  ? 'linear-gradient(180deg, rgba(99,102,241,.08), rgba(99,102,241,.01))'
                   : 'transparent',
               }}
             >
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2 min-w-0">
                   <div
-                    className={cn(
-                      'w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shrink-0 transition-all',
-                      isAutoRatios ? 'text-white' : 'text-pink-200/70'
-                    )}
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shrink-0 transition-all"
                     style={{
                       background: isAutoRatios
-                        ? 'linear-gradient(135deg, #ec4899, #be185d)'
-                        : 'rgba(255,255,255,.04)',
-                      border: '1px solid rgba(236,72,153,.25)',
+                        ? 'linear-gradient(135deg, #6366F1, #4F46E5)'
+                        : '#EEF0FF',
+                      border: `1px solid ${isAutoRatios ? 'transparent' : '#DDE1FF'}`,
+                      color: isAutoRatios ? 'white' : '#4F46E5',
+                      boxShadow: isAutoRatios ? '0 6px 14px -4px rgba(99,102,241,.45)' : 'none',
                     }}
                   >
                     <Percent className="h-4 w-4" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-[13px] sm:text-sm font-black text-white tracking-tight leading-tight">
+                    <h3 className="text-[13px] sm:text-sm font-black text-slate-900 tracking-tight leading-tight">
                       AI Smart Ratios
                     </h3>
-                    <p className="text-[10px] sm:text-[11px] text-pink-100/50 mt-0.5">
+                    <p className="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">
                       Auto-calibrated engagement mix
                     </p>
                   </div>
@@ -1375,16 +1371,16 @@ export default function EngagementOrder() {
                     if (val) setIsOrganicMode(false);
                   }}
                   onClick={(e) => e.stopPropagation()}
-                  className="data-[state=checked]:bg-pink-500 shrink-0"
+                  className="data-[state=checked]:bg-indigo-500 shrink-0"
                 />
               </div>
               <div className="flex flex-wrap gap-1">
                 <span
                   className="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded italic"
                   style={{
-                    background: isAutoRatios ? 'rgba(236,72,153,.15)' : 'rgba(255,255,255,.04)',
-                    color: isAutoRatios ? '#f9a8d4' : 'rgba(255,255,255,.4)',
-                    border: `1px solid ${isAutoRatios ? 'rgba(236,72,153,.3)' : 'rgba(255,255,255,.08)'}`,
+                    background: isAutoRatios ? '#EEF0FF' : '#F8FAFC',
+                    color: isAutoRatios ? '#4338CA' : '#94a3b8',
+                    border: `1px solid ${isAutoRatios ? '#DDE1FF' : '#EEF0F4'}`,
                   }}
                 >
                   {isAutoRatios ? 'Optimized for algorithms' : 'Customized by user'}
@@ -1394,11 +1390,11 @@ export default function EngagementOrder() {
           </div>
 
           {/* status footer */}
-          <div className="relative flex items-center justify-between gap-2 px-3 sm:px-5 py-2 border-t border-white/[.06] bg-black/20">
-            <p className="text-[10px] sm:text-[11px] text-white/50 font-medium">
+          <div className="relative flex items-center justify-between gap-2 px-3 sm:px-5 py-2 border-t border-slate-100 bg-slate-50/70">
+            <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium">
               One link → all engagement types with organic settings
             </p>
-            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-widest text-emerald-300/60">
+            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-widest" style={{ color: '#EA580C' }}>
               {isOrganicMode ? 'MODE · ORGANIC' : isAutoRatios ? 'MODE · AUTO' : 'MODE · MANUAL'}
             </span>
           </div>
