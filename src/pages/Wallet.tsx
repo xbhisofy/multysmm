@@ -464,13 +464,51 @@ export default function Wallet() {
           </div>
         </div>
 
-
-
+        {/* Summary cards — respect selected date range */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <SummaryCard
+            label="Deposit"
+            value={formatPrice(summary?.deposit ?? 0)}
+            icon={<TrendingUp className="h-4 w-4" />}
+            tone="success"
+          />
+          <SummaryCard
+            label="Spent"
+            value={formatPrice(summary?.spent ?? 0)}
+            icon={<TrendingDown className="h-4 w-4" />}
+            tone="danger"
+          />
+          <SummaryCard
+            label="Current Balance"
+            value={formatPrice(wallet?.balance || 0)}
+            icon={<WalletIcon className="h-4 w-4" />}
+            tone="primary"
+            hint="Live · not filtered"
+          />
+          <SummaryCard
+            label="Transactions"
+            value={String(summary?.count ?? 0)}
+            icon={<Activity className="h-4 w-4" />}
+            tone="muted"
+            hint={rangeKey === 'lifetime' ? 'Lifetime' : 'In range'}
+          />
+        </div>
 
         {/* Transactions */}
         <div className="rounded-2xl border border-border bg-card overflow-hidden">
           <div className="p-4 md:p-5 border-b border-border flex items-center justify-between gap-3 flex-wrap">
-            <h2 className="text-base font-bold text-foreground">Transactions</h2>
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="text-base font-bold text-foreground">Transactions</h2>
+              <WalletDateFilter
+                value={rangeKey}
+                custom={customRange}
+                onChange={(k, c) => {
+                  setRangeKey(k);
+                  if (c) setCustomRange(c);
+                  setPageSize(100);
+                }}
+              />
+            </div>
             <div className="flex items-center gap-1.5 flex-wrap">
               {(['all','deposit','order','refund'] as TransactionFilter[]).map(f => (
                 <button
@@ -490,7 +528,15 @@ export default function Wallet() {
           </div>
           <div className="divide-y divide-border">
             {displayTransactions.length === 0 && (
-              <div className="p-8 text-center text-sm text-muted-foreground">No transactions yet.</div>
+              <div className="p-10 text-center">
+                <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
+                  <WalletIcon className="h-5 w-5 text-muted-foreground" />
+                </div>
+                <p className="text-sm font-medium text-foreground">No wallet activity found</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Nothing here for the selected date range.
+                </p>
+              </div>
             )}
             {displayTransactions.map((tx) => (
               <div key={tx.id} className="p-4 flex items-center gap-3">
@@ -508,7 +554,8 @@ export default function Wallet() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-bold" style={{ color: getAmountColor(tx.type) }}>
-                    {tx.type === 'order' ? '-' : '+'}{formatPrice(Math.abs(Number(tx.displayAmount || 0)))}
+                    {tx.type === 'order' || tx.type === 'order_payment' ? '-' : '+'}
+                    {formatPrice(Math.abs(Number(tx.displayAmount || 0)))}
                   </p>
                   {tx.displayBalanceAfter != null && (
                     <p className="text-[10px] text-muted-foreground">
@@ -519,7 +566,18 @@ export default function Wallet() {
               </div>
             ))}
           </div>
+          {displayTransactions.length >= pageSize && (
+            <div className="p-3 border-t border-border flex justify-center">
+              <button
+                onClick={() => setPageSize((n) => n + 100)}
+                className="h-8 px-4 text-xs font-semibold rounded-md bg-secondary text-foreground hover:bg-muted transition-colors"
+              >
+                Load more
+              </button>
+            </div>
+          )}
         </div>
+
       </div>
     </DashboardLayout>
   );
