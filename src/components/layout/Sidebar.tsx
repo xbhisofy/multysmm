@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 interface SidebarProps { onClose?: () => void; }
 
-const GRADIENT = 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)';
+const GRADIENT = 'linear-gradient(135deg, #F97316 0%, #6366F1 100%)';
 
 const userNavItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
@@ -40,7 +40,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
       {/* User chip */}
       {profile && (
-        <div className="mx-4 mb-3 flex items-center gap-2.5 px-3 py-2.5 rounded-xl" style={{ background: '#FAF5FF', border: '1px solid #EDE4FE' }}>
+        <div className="mx-4 mb-3 flex items-center gap-2.5 px-3 py-2.5 rounded-xl" style={{ background: '#FAF5FF', border: '1px solid #FFE4CC' }}>
           <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
             style={{ background: GRADIENT }}>
             {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || 'U'}
@@ -68,7 +68,7 @@ export function Sidebar({ onClose }: SidebarProps) {
             </p>
             <Link to="/wallet" onClick={onClose}
               className="flex items-center justify-center gap-1.5 w-full h-9 rounded-xl text-[12px] font-bold"
-              style={{ background: 'rgba(255,255,255,.95)', color: '#7C3AED' }}>
+              style={{ background: 'rgba(255,255,255,.95)', color: '#F97316' }}>
               <Wallet className="w-3.5 h-3.5" /> Add Funds
             </Link>
           </div>
@@ -92,16 +92,16 @@ export function Sidebar({ onClose }: SidebarProps) {
           return (
             <Link key={item.path} to={item.path} onClick={onClose}
               className={cn('flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium mb-0.5 transition-all duration-150',
-                !isActive && 'hover:bg-purple-50/70'
+                !isActive && 'hover:bg-orange-50/70'
               )}
               style={{
                 background: isActive ? '#F5EEFF' : 'transparent',
-                color: isActive ? '#6D28D9' : '#4A4A5E',
+                color: isActive ? '#EA580C' : '#4A4A5E',
                 border: isActive ? '1px solid #E5D7FA' : '1px solid transparent',
                 fontWeight: isActive ? 600 : 500,
               }}
             >
-              <item.icon className="w-4 h-4" style={{ color: isActive ? '#7C3AED' : '#a99dc1' }} />
+              <item.icon className="w-4 h-4" style={{ color: isActive ? '#F97316' : '#a99dc1' }} />
               <span className="flex-1">{item.label}</span>
               {(item as any).highlight && !isActive && (
                 <span className="text-[8px] px-1.5 py-0.5 rounded-full font-bold text-white" style={{ background: GRADIENT }}>HOT</span>
@@ -125,7 +125,7 @@ export function Sidebar({ onClose }: SidebarProps) {
                     border: isActive ? '1px solid #FBCFE8' : '1px solid transparent',
                   }}
                 >
-                  <item.icon className="w-4 h-4" style={{ color: isActive ? '#EC4899' : '#a99dc1' }} />
+                  <item.icon className="w-4 h-4" style={{ color: isActive ? '#6366F1' : '#a99dc1' }} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -150,7 +150,7 @@ export function Sidebar({ onClose }: SidebarProps) {
       {/* Sign out */}
       <div className="p-3" style={{ borderTop: '1px solid #f3eefa' }}>
         <button onClick={() => signOut()} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12px] font-medium transition-colors hover:bg-red-50" style={{ color: '#9b8fb8' }}>
-          <LogOut className="w-3.5 h-3.5" style={{ color: '#EC4899' }} />
+          <LogOut className="w-3.5 h-3.5" style={{ color: '#6366F1' }} />
           <span>Sign out</span>
         </button>
       </div>
