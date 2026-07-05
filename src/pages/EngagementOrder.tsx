@@ -60,15 +60,41 @@ const formatPriceRaw = (price: number): string => {
 };
 
 // Detect platform from a URL (module scope so it can be used in memos)
-const detectPlatformFromUrl = (url: string): string | null => {
-  const lower = url.toLowerCase();
-  if (lower.includes('instagram.com') || lower.includes('instagr.am')) return 'instagram';
-  if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'youtube';
-  if (lower.includes('tiktok.com')) return 'tiktok';
-  if (lower.includes('twitter.com') || lower.includes('x.com')) return 'twitter';
-  if (lower.includes('facebook.com') || lower.includes('fb.com')) return 'facebook';
+// Strict platform detection: requires a proper http(s) URL with a recognized
+// hostname AND a non-empty path (post/profile/reel). Random text, plain
+// usernames, emails, phone numbers, or bare domains all return null.
+const PLATFORM_HOSTS: Record<string, string[]> = {
+  instagram: ['instagram.com', 'www.instagram.com', 'instagr.am', 'www.instagr.am'],
+  youtube: ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'youtu.be', 'www.youtu.be'],
+  tiktok: ['tiktok.com', 'www.tiktok.com', 'm.tiktok.com', 'vm.tiktok.com', 'vt.tiktok.com'],
+  twitter: ['twitter.com', 'www.twitter.com', 'x.com', 'www.x.com', 'mobile.twitter.com'],
+  facebook: ['facebook.com', 'www.facebook.com', 'm.facebook.com', 'fb.com', 'www.fb.com', 'fb.watch'],
+  telegram: ['t.me', 'telegram.me', 'www.t.me', 'www.telegram.me'],
+};
+
+const detectPlatformFromUrl = (raw: string): string | null => {
+  if (!raw) return null;
+  const trimmed = raw.trim();
+  if (!trimmed || trimmed.length > 2048) return null;
+  // Must start with http(s) — reject random text, usernames, emails, phones.
+  if (!/^https?:\/\//i.test(trimmed)) return null;
+  let u: URL;
+  try {
+    u = new URL(trimmed);
+  } catch {
+    return null;
+  }
+  if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+  const host = u.hostname.toLowerCase();
+  // Path must have something after the leading slash (post/profile/reel/etc).
+  const pathOk = u.pathname.replace(/\/+$/, '').length > 1;
+  if (!pathOk) return null;
+  for (const [platform, hosts] of Object.entries(PLATFORM_HOSTS)) {
+    if (hosts.includes(host)) return platform;
+  }
   return null;
 };
+
 
 type IntervalUnit = 'minutes' | 'hours' | 'days';
 
@@ -1388,32 +1414,49 @@ export default function EngagementOrder() {
 
             {orderMode === 'single' ? (
               <>
-                <Input
-                  placeholder={`https://${platform}.com/...`}
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                  className="h-12 sm:h-14 text-base sm:text-lg rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-medium placeholder:text-muted-foreground transition-all"
-                />
-                {link.trim() && (() => {
-                  const detected = detectPlatformFromUrl(link.trim());
-                  if (!detected) {
-                    return (
-                      <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
-                        <span>⚠️</span> Invalid link — please paste a valid {platform.toUpperCase()} URL.
-                      </p>
-                    );
-                  }
-                  if (detected !== platform) {
-                    return (
-                      <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
-                        <span>⚠️</span> This is a {detected.toUpperCase()} link, but you selected {platform.toUpperCase()}.
-                      </p>
-                    );
-                  }
+                {(() => {
+                  const trimmed = link.trim();
+                  const detected = trimmed ? detectPlatformFromUrl(trimmed) : null;
+                  const state: 'empty' | 'valid' | 'invalid' | 'wrong' =
+                    !trimmed ? 'empty'
+                    : !detected ? 'invalid'
+                    : detected !== platform ? 'wrong'
+                    : 'valid';
+                  const borderClass =
+                    state === 'valid' ? 'border-success focus:border-success'
+                    : state === 'empty' ? 'border-border focus:border-foreground'
+                    : 'border-destructive focus:border-destructive';
                   return (
-                    <p className="mt-2 text-xs text-success flex items-center gap-1.5">
-                      <span>✓</span> Valid {platform.toUpperCase()} link
-                    </p>
+                    <>
+                      <Input
+                        placeholder={`https://${platform}.com/...`}
+                        value={link}
+                        onChange={(e) => setLink(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && state !== 'valid') e.preventDefault();
+                        }}
+                        aria-invalid={state === 'invalid' || state === 'wrong'}
+                        className={cn(
+                          "h-12 sm:h-14 text-base sm:text-lg rounded-xl border-2 bg-secondary text-foreground font-medium placeholder:text-muted-foreground transition-all",
+                          borderClass
+                        )}
+                      />
+                      {state === 'invalid' && (
+                        <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
+                          <span>⚠️</span> Please enter a valid {platform.toUpperCase()} URL (e.g. https://{platform}.com/…). Random text, usernames or unsupported links are not allowed.
+                        </p>
+                      )}
+                      {state === 'wrong' && (
+                        <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
+                          <span>⚠️</span> This is a {detected!.toUpperCase()} link, but you selected {platform.toUpperCase()}. Only {platform.toUpperCase()} links are accepted for this service.
+                        </p>
+                      )}
+                      {state === 'valid' && (
+                        <p className="mt-2 text-xs text-success flex items-center gap-1.5">
+                          <span>✓</span> Valid {platform.toUpperCase()} link
+                        </p>
+                      )}
+                    </>
                   );
                 })()}
               </>
