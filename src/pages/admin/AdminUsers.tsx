@@ -103,6 +103,16 @@ type UserTab = 'all' | 'normal' | 'monthly' | 'lifetime';
 
 const INR_RATE = 83.5;
 
+// Compact INR: 999 -> ₹999, 1.2k, 12.4k, 1.05L, 1.2Cr
+function formatInrCompact(n: number): string {
+  if (!isFinite(n)) return '₹0';
+  const abs = Math.abs(n);
+  if (abs < 1000) return `₹${n.toFixed(abs < 10 && abs > 0 ? 2 : 0)}`;
+  if (abs < 100_000) return `₹${(n / 1000).toFixed(abs < 10_000 ? 2 : 1)}K`;
+  if (abs < 10_000_000) return `₹${(n / 100_000).toFixed(2)}L`;
+  return `₹${(n / 10_000_000).toFixed(2)}Cr`;
+}
+
 export default function AdminUsers() {
   const { user, isAdmin, isLoading: authLoading } = useAuth();
   const queryClient = useQueryClient();
