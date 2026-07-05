@@ -1,10 +1,12 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
+/**
+ * Poll maintenance mode every 60s. Realtime channel removed — at 100k
+ * concurrent users, that was 100k WebSocket subscriptions to a single row.
+ * A 60s poll on a cached RPC is cheap and enough for a rare admin toggle.
+ */
 export function useMaintenanceMode() {
-  const queryClient = useQueryClient();
-
   const { data: isMaintenanceMode = false } = useQuery({
     queryKey: ['maintenance-mode'],
     queryFn: async () => {
@@ -12,34 +14,12 @@ export function useMaintenanceMode() {
       if (error) return false;
       return data ?? false;
     },
-    staleTime: 60000, // Cache for 60s - realtime handles instant updates
-    gcTime: 5 * 60 * 1000,
-    refetchOnMount: false, // Don't refetch on every component mount
+    staleTime: 60_000,
+    gcTime: 5 * 60_000,
+    refetchInterval: 60_000,
+    refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
-
-  // Realtime subscription for INSTANT updates - no polling needed
-  useEffect(() => {
-    const channel = supabase
-      .channel('maintenance-mode-realtime')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'platform_settings',
-        },
-        (payload) => {
-          const newMode = (payload.new as any)?.maintenance_mode ?? false;
-          queryClient.setQueryData(['maintenance-mode'], newMode);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient]);
 
   return { isMaintenanceMode };
 }

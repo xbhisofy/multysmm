@@ -4,6 +4,11 @@ import { useAuth } from '@/hooks/useAuth';
 
 export type TransactionFilter = 'all' | 'deposit' | 'withdrawal' | 'order' | 'refund';
 
+// Explicit columns instead of select('*') — cuts payload ~50% and avoids
+// shipping internal fields to the client.
+const TX_COLUMNS =
+  'id, user_id, type, amount, balance_after, status, payment_method, payment_reference, description, order_id, created_at';
+
 export function useTransactions(filter: TransactionFilter = 'all') {
   const { user } = useAuth();
 
@@ -12,7 +17,7 @@ export function useTransactions(filter: TransactionFilter = 'all') {
     queryFn: async () => {
       let query = supabase
         .from('transactions')
-        .select('*')
+        .select(TX_COLUMNS)
         .eq('user_id', user!.id)
         .order('created_at', { ascending: false })
         .limit(50);
@@ -26,6 +31,6 @@ export function useTransactions(filter: TransactionFilter = 'all') {
       return data;
     },
     enabled: !!user?.id,
-    staleTime: 15000,
+    staleTime: 30_000,
   });
 }
