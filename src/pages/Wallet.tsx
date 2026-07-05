@@ -1,26 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useWallet } from '@/hooks/useWallet';
-import { useTransactions, type TransactionFilter } from '@/hooks/useTransactions';
+import { useTransactions, useWalletSummary, type TransactionFilter } from '@/hooks/useTransactions';
 import { useCurrency } from '@/hooks/useCurrency';
 import ZapUpiDepositCard from '@/components/wallet/ZapUpiDepositCard';
 import OxaPayAddFunds from '@/components/wallet/OxaPayAddFunds';
 import ManualFundCard from '@/components/wallet/ManualFundCard';
+import {
+  WalletDateFilter,
+  resolveWalletRange,
+  type WalletRangeKey,
+} from '@/components/wallet/WalletDateFilter';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import {
   Wallet as WalletIcon,
   ArrowUpRight,
   ArrowDownLeft,
   RefreshCw,
-  ExternalLink,
   IndianRupee,
   Zap,
   Bitcoin,
   MessageCircle,
+  TrendingUp,
+  TrendingDown,
+  Activity,
 } from 'lucide-react';
 
 type PayMethod = 'upi' | 'crypto' | 'manual';
@@ -30,8 +36,25 @@ export default function Wallet() {
   const { formatPrice, rates } = useCurrency();
   const [filter, setFilter] = useState<TransactionFilter>('all');
   const [payMethod, setPayMethod] = useState<PayMethod>('upi');
-  const { data: transactions } = useTransactions(filter);
+  const [rangeKey, setRangeKey] = useState<WalletRangeKey>('lifetime');
+  const [customRange, setCustomRange] = useState<{ from: Date; to: Date } | undefined>();
+  const [pageSize, setPageSize] = useState(100);
+
+  const { from, to } = useMemo(
+    () => resolveWalletRange(rangeKey, customRange),
+    [rangeKey, customRange]
+  );
+  const fromISO = from?.toISOString();
+  const toISO = to?.toISOString();
+
+  const { data: transactions } = useTransactions(filter, {
+    from: fromISO,
+    to: toISO,
+    limit: pageSize,
+  });
+  const { data: summary } = useWalletSummary(fromISO, toISO);
   const qc = useQueryClient();
+
 
   // Handle ZapUPI return — poll server-verify until the order is credited (or give up after ~3 min).
   useEffect(() => {
