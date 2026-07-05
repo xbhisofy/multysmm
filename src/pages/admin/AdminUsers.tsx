@@ -790,6 +790,31 @@ export default function AdminUsers() {
                     </div>
                   )}
 
+                  {/* Activity meta */}
+                  <div className="mt-3 grid grid-cols-3 gap-2 text-[10px]">
+                    <div className="p-2 rounded-lg bg-muted/40 text-center">
+                      <p className="text-muted-foreground uppercase tracking-wide">Last Fund</p>
+                      <p className="font-semibold text-foreground mt-0.5 flex items-center justify-center gap-1">
+                        <ArrowDownCircle className="h-3 w-3 text-emerald-500" />
+                        {u.last_deposit_at ? formatDistanceToNow(new Date(u.last_deposit_at), { addSuffix: true }) : 'Never'}
+                      </p>
+                    </div>
+                    <div className="p-2 rounded-lg bg-muted/40 text-center">
+                      <p className="text-muted-foreground uppercase tracking-wide">Orders</p>
+                      <p className="font-semibold text-foreground mt-0.5 flex items-center justify-center gap-1">
+                        <ShoppingCart className="h-3 w-3" />
+                        {u.total_orders_count || 0}
+                      </p>
+                    </div>
+                    <div className="p-2 rounded-lg bg-muted/40 text-center">
+                      <p className="text-muted-foreground uppercase tracking-wide">Last Login</p>
+                      <p className="font-semibold text-foreground mt-0.5 flex items-center justify-center gap-1">
+                        <LogIn className="h-3 w-3" />
+                        {u.last_sign_in_at ? formatDistanceToNow(new Date(u.last_sign_in_at), { addSuffix: true }) : 'Never'}
+                      </p>
+                    </div>
+                  </div>
+
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                     <p className="text-xs text-muted-foreground flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
