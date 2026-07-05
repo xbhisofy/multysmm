@@ -1201,114 +1201,208 @@ export default function EngagementOrder() {
   return (
     <DashboardLayout>
       <div className="max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 space-y-3 sm:space-y-6 pb-8">
-        {/* Header with gradient - Compact on mobile */}
-        <div className="relative overflow-hidden rounded-xl sm:rounded-2xl p-2.5 sm:p-4 lg:p-5" style={{ background: 'linear-gradient(135deg, #831843, #166534, #16a34a)', boxShadow: '0 8px 32px rgba(190,24,93,.25)' }}>
-          <div className="relative z-10 text-center">
-            <div className="inline-flex items-center gap-2 mb-1.5">
-              <div className="w-7 h-7 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,.2)', backdropFilter: 'blur(8px)' }}>
-                <Rocket className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-white" />
+        {/* Mission-console: hero + AI toggles combined into one unique panel */}
+        <div
+          className="relative overflow-hidden rounded-2xl"
+          style={{
+            background:
+              'radial-gradient(120% 80% at 0% 0%, #0f2b1f 0%, #0a1a13 50%, #06110c 100%)',
+            border: '1px solid rgba(34,197,94,.22)',
+            boxShadow: '0 20px 60px -20px rgba(22,163,74,.35), inset 0 1px 0 rgba(255,255,255,.05)',
+          }}
+        >
+          {/* subtle grid texture */}
+          <div
+            className="absolute inset-0 opacity-[.06] pointer-events-none"
+            style={{
+              backgroundImage:
+                'linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px)',
+              backgroundSize: '24px 24px',
+            }}
+          />
+          {/* ambient glow */}
+          <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(closest-side, rgba(34,197,94,.35), transparent 70%)' }} />
+          <div className="absolute -bottom-28 -left-16 w-64 h-64 rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(closest-side, rgba(190,24,93,.28), transparent 70%)' }} />
+
+          {/* top rail — mission title */}
+          <div className="relative flex items-center justify-between gap-3 px-3 sm:px-5 py-3 sm:py-4 border-b border-white/[.06]">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+              <div
+                className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0"
+                style={{
+                  background: 'linear-gradient(135deg, #22c55e, #15803d)',
+                  boxShadow: '0 8px 20px -6px rgba(34,197,94,.6), inset 0 1px 0 rgba(255,255,255,.25)',
+                }}
+              >
+                <Rocket className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300/70">
+                  Engagement · Console
+                </p>
+                <h1 className="text-[15px] sm:text-lg lg:text-xl font-black text-white tracking-tight leading-tight">
+                  Organic Full Engagement
+                </h1>
               </div>
             </div>
-            <h1 className="text-sm sm:text-xl lg:text-2xl font-bold text-white mb-0.5 tracking-tight">
-              Organic Full Engagement
-            </h1>
-            <p className="text-[10px] sm:text-sm max-w-lg mx-auto leading-snug" style={{ color: 'rgba(255,255,255,.7)' }}>
-              One link → All engagement types with organic settings
-            </p>
+            <div
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold"
+              style={{ background: 'rgba(34,197,94,.14)', color: '#86efac', border: '1px solid rgba(34,197,94,.3)' }}
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inset-0 rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                <span className="relative rounded-full h-2 w-2 bg-emerald-400" />
+              </span>
+              SYSTEM ACTIVE
+            </div>
           </div>
-          <div className="absolute top-0 right-0 w-32 sm:w-48 h-32 sm:h-48 bg-gradient-to-bl from-white/10 to-transparent rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-24 sm:w-36 h-24 sm:h-36 bg-gradient-to-tr from-white/10 to-transparent rounded-full blur-3xl" />
-        </div>
 
-        {/* AI Automation Toggles */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-6">
-          <Card className={cn(
-            "glass-card border-2 transition-all duration-300 relative overflow-hidden",
-            isOrganicMode ? "border-success/40 bg-success/5 shadow-[0_0_30px_rgba(34,197,94,0.1)]" : "border-border"
-          )}>
-            <CardContent className="p-2.5 sm:p-4 flex items-center justify-between gap-2 sm:gap-3">
-              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div className={cn(
-                  "w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center transition-all shadow-inner shrink-0",
-                  isOrganicMode ? "bg-success text-white" : "bg-secondary text-muted-foreground"
-                )}>
-                  <Brain className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
-                    <h3 className="text-[13px] sm:text-sm font-black text-foreground tracking-tight">AI Organic Algorithm</h3>
-                    <Badge variant="outline" className={cn(
-                      "text-[8px] sm:text-[9px] font-black uppercase tracking-wider border-none px-1.5 py-0 whitespace-nowrap",
-                      isOrganicMode ? "bg-success text-white" : "bg-muted text-muted-foreground"
-                    )}>
-                      {isOrganicMode ? "ON" : "OFF"}
-                    </Badge>
+          {/* body — two AI modules side by side */}
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-white/[.06]">
+            {/* Module 1 — AI Organic Algorithm */}
+            <button
+              type="button"
+              onClick={() => {
+                const val = !isOrganicMode;
+                setIsOrganicMode(val);
+                if (val) setIsAutoRatios(false);
+              }}
+              className="text-left p-3 sm:p-4 transition-all group relative"
+              style={{
+                background: isOrganicMode
+                  ? 'linear-gradient(180deg, rgba(34,197,94,.10), rgba(34,197,94,.02))'
+                  : 'transparent',
+              }}
+            >
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div
+                    className={cn(
+                      'w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shrink-0 transition-all',
+                      isOrganicMode ? 'text-white' : 'text-emerald-200/70'
+                    )}
+                    style={{
+                      background: isOrganicMode
+                        ? 'linear-gradient(135deg, #22c55e, #15803d)'
+                        : 'rgba(255,255,255,.04)',
+                      border: '1px solid rgba(34,197,94,.25)',
+                    }}
+                  >
+                    <Brain className="h-4 w-4" />
                   </div>
-                  <p className="text-[10px] sm:text-[11px] text-muted-foreground font-medium mb-1.5">AI generates UNIQUE organic patterns for each order automatically</p>
-                  <div className="flex flex-wrap gap-1">
-                    <Badge variant="outline" className="bg-success/10 text-[8px] sm:text-[9px] text-success border-success/20 font-bold py-0 px-1.5">✓ Unique S-curve</Badge>
-                    <Badge variant="outline" className="bg-success/10 text-[8px] sm:text-[9px] text-success border-success/20 font-bold py-0 px-1.5">✓ Random variance</Badge>
-                    <Badge variant="outline" className="bg-success/10 text-[8px] sm:text-[9px] text-success border-success/20 font-bold py-0 px-1.5">✓ Anti-bot</Badge>
+                  <div className="min-w-0">
+                    <h3 className="text-[13px] sm:text-sm font-black text-white tracking-tight leading-tight">
+                      AI Organic Algorithm
+                    </h3>
+                    <p className="text-[10px] sm:text-[11px] text-emerald-100/50 mt-0.5">
+                      Unique organic pattern per order
+                    </p>
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col items-center gap-2 shrink-0 scale-90 sm:scale-100">
                 <Switch
                   checked={isOrganicMode}
                   onCheckedChange={(val) => {
                     setIsOrganicMode(val);
-                    if (val) setIsAutoRatios(false); // turn off the other
+                    if (val) setIsAutoRatios(false);
                   }}
-                  className="data-[state=checked]:bg-success"
+                  onClick={(e) => e.stopPropagation()}
+                  className="data-[state=checked]:bg-emerald-500 shrink-0"
                 />
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className={cn(
-            "glass-card border-2 transition-all duration-300 relative overflow-hidden",
-            isAutoRatios ? "border-primary/40 bg-primary/5 shadow-[0_0_30px_rgba(155,135,245,0.1)]" : "border-border"
-          )}>
-            <CardContent className="p-2.5 sm:p-4 flex items-center justify-between gap-2 sm:gap-3">
-              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div className={cn(
-                  "w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center transition-all shadow-inner shrink-0",
-                  isAutoRatios ? "bg-primary text-white" : "bg-secondary text-muted-foreground"
-                )}>
-                  <Percent className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
-                    <h3 className="text-[13px] sm:text-sm font-black text-foreground tracking-tight">AI Smart Ratios</h3>
-                    <Badge variant="outline" className={cn(
-                      "text-[8px] sm:text-[9px] font-black uppercase tracking-wider border-none px-1.5 py-0 whitespace-nowrap",
-                      isAutoRatios ? "bg-primary text-white" : "bg-muted text-muted-foreground"
-                    )}>
-                      {isAutoRatios ? "AUTO" : "MANUAL"}
-                    </Badge>
-                  </div>
-                  <p className="text-[10px] sm:text-[11px] text-muted-foreground font-medium mb-1.5">AI automatically calculates organic engagement ratios</p>
-                  <div className="flex flex-wrap gap-1">
-                    {isAutoRatios ? (
-                      <Badge variant="outline" className="bg-primary/10 text-[8px] sm:text-[9px] text-primary border-primary/20 font-bold py-0 px-1.5 italic">Optimized for algorithms</Badge>
-                    ) : (
-                      <Badge variant="outline" className="bg-amber-500/10 text-[8px] sm:text-[9px] text-amber-500 border-amber-500/20 font-bold py-0 px-1.5">Customized by User</Badge>
-                    )}
-                  </div>
-                </div>
+              <div className="flex flex-wrap gap-1">
+                {['S-curve', 'Random variance', 'Anti-bot'].map((t) => (
+                  <span
+                    key={t}
+                    className="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded"
+                    style={{
+                      background: isOrganicMode ? 'rgba(34,197,94,.15)' : 'rgba(255,255,255,.04)',
+                      color: isOrganicMode ? '#86efac' : 'rgba(255,255,255,.4)',
+                      border: `1px solid ${isOrganicMode ? 'rgba(34,197,94,.3)' : 'rgba(255,255,255,.08)'}`,
+                    }}
+                  >
+                    · {t}
+                  </span>
+                ))}
               </div>
-              <div className="flex flex-col items-center gap-2 shrink-0 scale-90 sm:scale-100">
+            </button>
+
+            {/* Module 2 — AI Smart Ratios */}
+            <button
+              type="button"
+              onClick={() => {
+                const val = !isAutoRatios;
+                setIsAutoRatios(val);
+                if (val) setIsOrganicMode(false);
+              }}
+              className="text-left p-3 sm:p-4 transition-all group relative"
+              style={{
+                background: isAutoRatios
+                  ? 'linear-gradient(180deg, rgba(236,72,153,.10), rgba(236,72,153,.02))'
+                  : 'transparent',
+              }}
+            >
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div
+                    className={cn(
+                      'w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shrink-0 transition-all',
+                      isAutoRatios ? 'text-white' : 'text-pink-200/70'
+                    )}
+                    style={{
+                      background: isAutoRatios
+                        ? 'linear-gradient(135deg, #ec4899, #be185d)'
+                        : 'rgba(255,255,255,.04)',
+                      border: '1px solid rgba(236,72,153,.25)',
+                    }}
+                  >
+                    <Percent className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-[13px] sm:text-sm font-black text-white tracking-tight leading-tight">
+                      AI Smart Ratios
+                    </h3>
+                    <p className="text-[10px] sm:text-[11px] text-pink-100/50 mt-0.5">
+                      Auto-calibrated engagement mix
+                    </p>
+                  </div>
+                </div>
                 <Switch
                   checked={isAutoRatios}
                   onCheckedChange={(val) => {
                     setIsAutoRatios(val);
-                    if (val) setIsOrganicMode(false); // turn off the other
+                    if (val) setIsOrganicMode(false);
                   }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="data-[state=checked]:bg-pink-500 shrink-0"
                 />
               </div>
-            </CardContent>
-          </Card>
-        </div>{/* end AI Automation Toggles grid */}
+              <div className="flex flex-wrap gap-1">
+                <span
+                  className="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded italic"
+                  style={{
+                    background: isAutoRatios ? 'rgba(236,72,153,.15)' : 'rgba(255,255,255,.04)',
+                    color: isAutoRatios ? '#f9a8d4' : 'rgba(255,255,255,.4)',
+                    border: `1px solid ${isAutoRatios ? 'rgba(236,72,153,.3)' : 'rgba(255,255,255,.08)'}`,
+                  }}
+                >
+                  {isAutoRatios ? 'Optimized for algorithms' : 'Customized by user'}
+                </span>
+              </div>
+            </button>
+          </div>
+
+          {/* status footer */}
+          <div className="relative flex items-center justify-between gap-2 px-3 sm:px-5 py-2 border-t border-white/[.06] bg-black/20">
+            <p className="text-[10px] sm:text-[11px] text-white/50 font-medium">
+              One link → all engagement types with organic settings
+            </p>
+            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-widest text-emerald-300/60">
+              {isOrganicMode ? 'MODE · ORGANIC' : isAutoRatios ? 'MODE · AUTO' : 'MODE · MANUAL'}
+            </span>
+          </div>
+        </div>
 
         {/* Platform Selector */}
         <Card className="glass-card border-2 border-border">
