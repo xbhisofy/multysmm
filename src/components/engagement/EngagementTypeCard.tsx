@@ -120,7 +120,7 @@ export function EngagementTypeCard({
 
   // Get provider limits
   const providerMin = minQuantity ?? PROVIDER_MINIMUMS[type] ?? 10;
-  const providerMax = PROVIDER_MAXIMUMS[type] || 1000000;
+  const providerMax = config.maxQuantity ?? PROVIDER_MAXIMUMS[type] ?? 1000000;
 
   // Use per-type settings or defaults
   const timeLimitHours = config.timeLimitHours ?? DEFAULT_ORGANIC_SETTINGS.timeLimitHours;
@@ -132,9 +132,13 @@ export function EngagementTypeCard({
   const scheduleData = useMemo(() => {
     if (!config.enabled || config.quantity < providerMin) return null;
 
-    // For custom mode, use the actual timeLimitHours value (already stored in config)
-    // For preset modes, use timeLimitHours directly
-    const effectiveTimeLimit = timeLimitHours;
+    // Repeat Order can restore an exact run interval; convert it to the same
+    // scheduling window so quantity, runs and interval stay identical.
+    const restoredIntervalWindowHours =
+      config.runIntervalMinutes && config.runCount && config.runCount > 1
+        ? (config.runIntervalMinutes * (config.runCount - 1)) / 60
+        : undefined;
+    const effectiveTimeLimit = restoredIntervalWindowHours ?? timeLimitHours;
     const durationHoursForCurve = effectiveTimeLimit > 0 ? effectiveTimeLimit : 24;
     const timeLimitArg = effectiveTimeLimit > 0 ? effectiveTimeLimit : undefined;
     const startTime = new Date();
@@ -273,16 +277,16 @@ export function EngagementTypeCard({
   const handleTimeLimitChange = (value: number) => {
     // -1 means "Custom" button was clicked - enter custom mode
     if (value === -1) {
-      onChange({ ...config, timeLimitCustomMode: true });
+      onChange({ ...config, timeLimitCustomMode: true, runIntervalMinutes: undefined });
     } else {
       // Preset value selected - store actual hours, exit custom mode
-      onChange({ ...config, timeLimitHours: value, timeLimitCustomMode: false });
+      onChange({ ...config, timeLimitHours: value, timeLimitCustomMode: false, runIntervalMinutes: undefined });
     }
   };
 
   const handleCustomHoursChange = (hours: number) => {
     // Store actual hours value when user enters custom hours
-    onChange({ ...config, timeLimitHours: hours, timeLimitCustomMode: true });
+    onChange({ ...config, timeLimitHours: hours, timeLimitCustomMode: true, runIntervalMinutes: undefined });
   };
 
   const handleVarianceChange = (value: number[]) => {
@@ -297,12 +301,12 @@ export function EngagementTypeCard({
   const maxAllowedRuns = Math.max(1, Math.floor((config.quantity || 0) / providerMin));
   const handleRunCountChange = (value: number | undefined) => {
     if (!value || value <= 0) {
-      onChange({ ...config, runCount: undefined });
+      onChange({ ...config, runCount: undefined, runIntervalMinutes: undefined });
       setCustomRunsInput('');
       return;
     }
     const clamped = Math.max(1, Math.min(value, maxAllowedRuns));
-    onChange({ ...config, runCount: clamped });
+    onChange({ ...config, runCount: clamped, runIntervalMinutes: undefined });
     setCustomRunsInput(String(clamped));
   };
 
@@ -602,6 +606,21 @@ export function EngagementTypeCard({
                       </span>
                       <span className="text-[11px] font-bold text-foreground font-mono">
                         ~{Math.round(config.quantity / config.runCount).toLocaleString()} {engagementConfig?.label.toLowerCase()}
+                      </span>
+                    </div>
+                  )}
+
+                  {config.runIntervalMinutes && config.runCount && config.runCount > 1 && (
+                    <div className="flex items-center justify-between gap-2 px-2 py-1.5 rounded-md bg-primary/10 border border-primary/30">
+                      <span className="text-[10px] text-primary font-medium uppercase tracking-wider">
+                        Restored interval
+                      </span>
+                      <span className="text-[11px] font-bold text-foreground font-mono">
+                        {config.runIntervalMinutes >= 1440 && config.runIntervalMinutes % 1440 === 0
+                          ? `${config.runIntervalMinutes / 1440} day${config.runIntervalMinutes / 1440 === 1 ? '' : 's'}`
+                          : config.runIntervalMinutes >= 60 && config.runIntervalMinutes % 60 === 0
+                            ? `${config.runIntervalMinutes / 60} hour${config.runIntervalMinutes / 60 === 1 ? '' : 's'}`
+                            : `${config.runIntervalMinutes} minute${config.runIntervalMinutes === 1 ? '' : 's'}`}
                       </span>
                     </div>
                   )}

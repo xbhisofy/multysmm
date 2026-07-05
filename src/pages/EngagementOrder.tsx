@@ -39,7 +39,7 @@ import {
   curveToSchedule,
   calculateQuantitiesFromCurve,
 } from "@/lib/curve-to-schedule";
-import { Loader2, Rocket, Link as LinkIcon, Wallet, RefreshCw, Brain, Percent, HelpCircle, ArrowDown, Sparkles, Clock, Shuffle, Shield, TrendingUp, Eye, Heart, MessageCircle, Bookmark, Share2 } from "lucide-react";
+import { Loader2, Rocket, Link as LinkIcon, Wallet, RefreshCw, Brain, Percent, HelpCircle, ArrowDown, Sparkles, Clock, Shuffle, Shield, TrendingUp, Eye, Heart, MessageCircle, Bookmark, Share2, AlertTriangle } from "lucide-react";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -68,6 +68,39 @@ const detectPlatformFromUrl = (url: string): string | null => {
   if (lower.includes('twitter.com') || lower.includes('x.com')) return 'twitter';
   if (lower.includes('facebook.com') || lower.includes('fb.com')) return 'facebook';
   return null;
+};
+
+type IntervalUnit = 'minutes' | 'hours' | 'days';
+
+const normalizeRunCount = (value: unknown): number | undefined => {
+  const n = Math.floor(Number(value));
+  return Number.isFinite(n) && n > 0 ? n : undefined;
+};
+
+const intervalToMinutes = (value: unknown, unit: unknown): number | undefined => {
+  const n = Number(value);
+  if (!Number.isFinite(n) || n <= 0) return undefined;
+  const normalizedUnit = String(unit || 'minutes').toLowerCase() as IntervalUnit;
+  if (normalizedUnit === 'days') return Math.round(n * 1440);
+  if (normalizedUnit === 'hours') return Math.round(n * 60);
+  return Math.round(n);
+};
+
+const minutesToIntervalParts = (minutes: number): { value: number; unit: IntervalUnit } => {
+  if (minutes >= 1440 && minutes % 1440 === 0) return { value: minutes / 1440, unit: 'days' };
+  if (minutes >= 60 && minutes % 60 === 0) return { value: minutes / 60, unit: 'hours' };
+  return { value: minutes, unit: 'minutes' };
+};
+
+const averageIntervalFromRuns = (runs?: { scheduled_at?: string }[]): number | undefined => {
+  if (!runs || runs.length < 2) return undefined;
+  const times = runs
+    .map((run) => new Date(run.scheduled_at || '').getTime())
+    .filter((time) => Number.isFinite(time))
+    .sort((a, b) => a - b);
+  if (times.length < 2) return undefined;
+  const gaps = times.slice(1).map((time, index) => time - times[index]);
+  return Math.max(1, Math.round((gaps.reduce((sum, gap) => sum + gap, 0) / gaps.length) / 60000));
 };
 
 export default function EngagementOrder() {
@@ -160,6 +193,7 @@ export default function EngagementOrder() {
   // ============ REPEAT ORDER (prefill from previous order) ============
   const [repeatSource, setRepeatSource] = useState<any>(null);
   const [repeatError, setRepeatError] = useState<string | null>(null);
+  const [repeatWarnings, setRepeatWarnings] = useState<string[]>([]);
   const prefillAppliedRef = useRef(false);
 
   useEffect(() => {
@@ -171,7 +205,10 @@ export default function EngagementOrder() {
         .select(`
           id, order_number, bundle_id, base_quantity, is_organic_mode,
           variance_percent, peak_hours_enabled, config_snapshot,
-          items:engagement_order_items(engagement_type, quantity, drip_qty_per_run, drip_interval, drip_interval_unit, speed_preset),
+          items:engagement_order_items(
+            engagement_type, quantity, drip_qty_per_run, drip_interval, drip_interval_unit, speed_preset,
+            runs:organic_run_schedule(scheduled_at)
+          ),
           bundle:engagement_bundles(platform, is_active)
         `)
         .eq('user_id', user.id)
@@ -336,7 +373,7 @@ export default function EngagementOrder() {
       retweets: ['retweet'],
     };
 
-    const prices: Record<string, { pricePerK: number; serviceId: string | null; minQuantity: number }> = {};
+    const prices: Record<string, { pricePerK: number; serviceId: string | null; minQuantity: number; maxQuantity?: number }> = {};
     bundle.items.forEach(item => {
       const keywords = typeKeywords[item.engagement_type] || [item.engagement_type];
       const platName = platform.toLowerCase();
@@ -361,6 +398,7 @@ export default function EngagementOrder() {
           pricePerK: manualPricePerK ?? item.service.price,
           serviceId: item.service.id,
           minQuantity: lowestMatchedMin ?? item.service.min_quantity,
+          maxQuantity: item.service.max_quantity,
         };
         return;
       }
@@ -378,6 +416,7 @@ export default function EngagementOrder() {
             pricePerK: manualPricePerK ?? match.price,
             serviceId: match.id,
             minQuantity: Number.isFinite(lowestMin) ? lowestMin : match.min_quantity,
+            maxQuantity: match.max_quantity,
           };
           return;
         }
@@ -389,6 +428,7 @@ export default function EngagementOrder() {
           pricePerK: manualPricePerK ?? item.service.price,
           serviceId: item.service.id,
           minQuantity: lowestMatchedMin ?? item.service.min_quantity,
+          maxQuantity: item.service.max_quantity,
         };
         return;
       }
@@ -467,6 +507,7 @@ export default function EngagementOrder() {
           price: finalPrice,
           serviceId: resolvedServiceId,
           minQuantity: serviceData?.minQuantity ?? prev[type]?.minQuantity,
+          maxQuantity: serviceData?.maxQuantity ?? prev[type]?.maxQuantity,
           // Per-type organic settings — PRESERVE prior values so Repeat Order
           // (which restores runCount / timeLimitCustomMode) isn't clobbered by
           // subsequent re-runs of this seed effect.
@@ -475,6 +516,7 @@ export default function EngagementOrder() {
           variancePercent: prev[type]?.variancePercent ?? DEFAULT_ORGANIC_SETTINGS.variancePercent,
           peakHoursEnabled: prev[type]?.peakHoursEnabled ?? DEFAULT_ORGANIC_SETTINGS.peakHoursEnabled,
           runCount: prev[type]?.runCount,
+          runIntervalMinutes: prev[type]?.runIntervalMinutes,
         };
       });
       return updated;
@@ -488,6 +530,7 @@ export default function EngagementOrder() {
     if (!repeatSource || prefillAppliedRef.current) return;
     if (!bundles || bundles.length === 0) return;
     const items: any[] = repeatSource.items || [];
+    const itemByType = new Map(items.map((item) => [String(item.engagement_type), item]));
     const snap: any = (repeatSource as any).config_snapshot || null;
     const snapEngagements: Record<string, any> = snap?.engagements || {};
     const hasSnap = snap && Object.keys(snapEngagements).length > 0;
@@ -519,6 +562,25 @@ export default function EngagementOrder() {
           const svc = servicePrices[type];
           const pricePerK = svc?.pricePerK ?? 0;
           const qty = Math.max(1, Number(cfg.quantity) || 0);
+          const matchingItem = itemByType.get(type);
+          const actualRuns = Array.isArray(matchingItem?.runs) ? matchingItem.runs : [];
+          const restoredRunCount = normalizeRunCount(cfg.run_count) ?? (actualRuns.length > 0 ? actualRuns.length : undefined) ?? updated[type].runCount;
+          const restoredIntervalMinutes =
+            intervalToMinutes(cfg.run_interval_value, cfg.run_interval_unit) ??
+            intervalToMinutes(cfg.interval_value, cfg.interval_unit) ??
+            intervalToMinutes(cfg.drip_interval, cfg.drip_interval_unit) ??
+            averageIntervalFromRuns(actualRuns) ??
+            (Number.isFinite(Number(cfg.run_interval_minutes)) && Number(cfg.run_interval_minutes) > 0
+              ? Math.round(Number(cfg.run_interval_minutes))
+              : undefined) ??
+            (restoredRunCount && restoredRunCount > 1 && Number(cfg.time_limit_hours) > 0
+              ? Math.max(1, Math.round((Number(cfg.time_limit_hours) * 60) / (restoredRunCount - 1)))
+              : undefined);
+          const restoredTimeLimitHours = cfg.time_limit_hours ?? (
+            restoredIntervalMinutes && restoredRunCount && restoredRunCount > 1
+              ? (restoredIntervalMinutes * (restoredRunCount - 1)) / 60
+              : updated[type].timeLimitHours
+          );
           updated[type] = {
             ...updated[type],
             enabled: !!cfg.enabled,
@@ -526,11 +588,12 @@ export default function EngagementOrder() {
             // Recompute price at CURRENT rates so charge reflects latest pricing,
             // while every other setting stays identical to the original order.
             price: (qty / 1000) * pricePerK,
-            timeLimitHours: cfg.time_limit_hours ?? updated[type].timeLimitHours,
-            timeLimitCustomMode: cfg.time_limit_custom_mode ?? (cfg.time_limit_hours > 0),
+            timeLimitHours: restoredTimeLimitHours,
+            timeLimitCustomMode: cfg.time_limit_custom_mode ?? (restoredTimeLimitHours > 0),
             variancePercent: cfg.variance_percent ?? updated[type].variancePercent,
             peakHoursEnabled: cfg.peak_hours_enabled ?? updated[type].peakHoursEnabled,
-            runCount: cfg.run_count ?? updated[type].runCount,
+            runCount: restoredRunCount,
+            runIntervalMinutes: restoredIntervalMinutes,
           };
           userEditedQtyRef.current.add(type as EngagementType);
         });
@@ -544,11 +607,12 @@ export default function EngagementOrder() {
           const qty = Math.max(1, Number(item.quantity) || 0);
 
           const dripQty = Math.max(1, Number(item.drip_qty_per_run) || qty);
-          const runs = Math.max(1, Math.ceil(qty / dripQty));
+          const actualRuns = Array.isArray(item.runs) ? item.runs : [];
+          const runs = actualRuns.length > 0 ? actualRuns.length : Math.max(1, Math.ceil(qty / dripQty));
           const interval = Number(item.drip_interval) || 0;
           const unit = String(item.drip_interval_unit || 'minutes').toLowerCase();
           const unitToHours = unit === 'days' ? 24 : unit === 'hours' ? 1 : unit === 'minutes' ? 1 / 60 : 1 / 60;
-          const computedHours = Math.round(runs * interval * unitToHours);
+          const computedHours = Math.round(Math.max(runs - 1, 1) * interval * unitToHours);
           const timeLimitHours = computedHours > 0 ? computedHours : updated[type].timeLimitHours;
 
           updated[type] = {
@@ -561,6 +625,7 @@ export default function EngagementOrder() {
             timeLimitHours,
             timeLimitCustomMode: computedHours > 0,
             runCount: runs,
+            runIntervalMinutes: interval > 0 ? intervalToMinutes(interval, unit) : averageIntervalFromRuns(actualRuns),
           };
           userEditedQtyRef.current.add(type);
         });
@@ -570,10 +635,36 @@ export default function EngagementOrder() {
     prefillAppliedRef.current = true;
 
     const allMissing = [...new Set([...missingWarnings, ...missingTypes])];
+    const limitWarnings: string[] = [];
+    typesToApply.forEach((type) => {
+      const cfg = hasSnap ? snapEngagements[type] : items.find((item) => item.engagement_type === type);
+      const svc = servicePrices[type];
+      if (!cfg || !svc) return;
+      if (hasSnap && !(cfg as any).enabled) return;
+      const qty = Math.max(1, Number((cfg as any).quantity) || 0);
+      const dripQty = Math.max(1, Number((cfg as any).drip_qty_per_run) || qty);
+      const runCount = normalizeRunCount((cfg as any).run_count) ?? Math.max(1, Math.ceil(qty / dripQty));
+      const maxRunsForCurrentMin = Math.max(1, Math.floor(qty / Math.max(1, svc.minQuantity ?? 1)));
+
+      if (svc.maxQuantity && qty > svc.maxQuantity) {
+        limitWarnings.push(`The original ${type} quantity (${qty.toLocaleString()}) exceeds the current service limit (${svc.maxQuantity.toLocaleString()}). Please adjust it before placing the order.`);
+      }
+      if ((svc.minQuantity ?? 0) > 0 && runCount > maxRunsForCurrentMin) {
+        limitWarnings.push(`The original ${type} runs (${runCount.toLocaleString()}) exceed the current limit (${maxRunsForCurrentMin.toLocaleString()}) for this quantity. Please adjust it before placing the order.`);
+      }
+    });
+    setRepeatWarnings(limitWarnings);
     if (allMissing.length > 0) {
       toast({
         title: '⚠️ Some options unavailable',
         description: `The original order used: ${allMissing.join(', ')} — these are no longer offered. All other settings were restored.`,
+      });
+    }
+    if (limitWarnings.length > 0) {
+      toast({
+        title: '⚠️ Current limits changed',
+        description: limitWarnings[0],
+        variant: 'destructive',
       });
     }
     toast({
@@ -752,6 +843,37 @@ export default function EngagementOrder() {
       );
     }
 
+    const aboveMax = Object.entries(engagements)
+      .filter(([_, config]) => config.enabled)
+      .filter(([_, config]) => (config.maxQuantity ?? 0) > 0)
+      .filter(([_, config]) => config.quantity > (config.maxQuantity ?? 0))
+      .map(([type, config]) => ({
+        type, quantity: config.quantity, max: config.maxQuantity as number,
+      }));
+
+    if (aboveMax.length > 0) {
+      const first = aboveMax[0];
+      throw new Error(
+        `The original ${first.type} quantity (${first.quantity.toLocaleString()}) exceeds the current service limit (${first.max.toLocaleString()}). Please adjust it before placing the order.`
+      );
+    }
+
+    const tooManyRuns = Object.entries(engagements)
+      .filter(([_, config]) => config.enabled && config.runCount && (config.minQuantity ?? 0) > 0)
+      .filter(([_, config]) => (config.runCount as number) > Math.floor(config.quantity / (config.minQuantity as number)))
+      .map(([type, config]) => ({
+        type,
+        runs: config.runCount as number,
+        max: Math.max(1, Math.floor(config.quantity / (config.minQuantity as number))),
+      }));
+
+    if (tooManyRuns.length > 0) {
+      const first = tooManyRuns[0];
+      throw new Error(
+        `The original ${first.type} runs (${first.runs.toLocaleString()}) exceed the current limit (${first.max.toLocaleString()}). Please adjust it before placing the order.`
+      );
+    }
+
     const bundle = bundles?.[0];
 
     // Full snapshot of the user's configuration — persisted so Repeat Order
@@ -766,17 +888,27 @@ export default function EngagementOrder() {
       total_price: totalPrice,
       user_saved_ratios: userSavedRatios ?? null,
       engagements: Object.fromEntries(
-        Object.entries(engagements).map(([type, config]) => [type, {
-          enabled: config.enabled,
-          quantity: config.quantity,
-          price: config.price,
-          service_id: config.serviceId,
-          time_limit_hours: config.timeLimitHours,
-          time_limit_custom_mode: config.timeLimitCustomMode ?? false,
-          variance_percent: config.variancePercent,
-          peak_hours_enabled: config.peakHoursEnabled,
-          run_count: config.runCount ?? null,
-        }])
+        Object.entries(engagements).map(([type, config]) => {
+          const previewRuns = previewSchedules[type];
+          const runCount = config.runCount ?? previewRuns?.length ?? null;
+          const runIntervalMinutes = config.runIntervalMinutes ?? averageIntervalFromRuns(previewRuns);
+          const intervalParts = runIntervalMinutes ? minutesToIntervalParts(runIntervalMinutes) : null;
+
+          return [type, {
+            enabled: config.enabled,
+            quantity: config.quantity,
+            price: config.price,
+            service_id: config.serviceId,
+            time_limit_hours: config.timeLimitHours,
+            time_limit_custom_mode: config.timeLimitCustomMode ?? false,
+            variance_percent: config.variancePercent,
+            peak_hours_enabled: config.peakHoursEnabled,
+            run_count: runCount,
+            run_interval_minutes: runIntervalMinutes ?? null,
+            run_interval_value: intervalParts?.value ?? null,
+            run_interval_unit: intervalParts?.unit ?? null,
+          }];
+        })
       ),
       created_at: new Date().toISOString(),
     };
@@ -795,9 +927,14 @@ export default function EngagementOrder() {
           .map(([type, config]) => {
             let effectiveTimeLimit = config.timeLimitHours;
             if (effectiveTimeLimit === -1) effectiveTimeLimit = 0;
-            const scheduledRuns = previewSchedules[type]?.map((run, index) => ({
-              ...run, run_number: index + 1,
-            }));
+            const configuredIntervalMinutes = config.runIntervalMinutes ?? averageIntervalFromRuns(previewSchedules[type]);
+            const intervalParts = configuredIntervalMinutes ? minutesToIntervalParts(configuredIntervalMinutes) : null;
+            const scheduledRuns = previewSchedules[type]?.map((run, index) => {
+              const scheduledAt = configuredIntervalMinutes && index > 0
+                ? new Date(new Date(previewSchedules[type][0].scheduled_at).getTime() + configuredIntervalMinutes * index * 60000).toISOString()
+                : run.scheduled_at;
+              return { ...run, scheduled_at: scheduledAt, run_number: index + 1 };
+            });
             return {
               type,
               quantity: config.quantity,
@@ -806,6 +943,10 @@ export default function EngagementOrder() {
               time_limit_hours: effectiveTimeLimit,
               variance_percent: config.variancePercent,
               peak_hours_enabled: config.peakHoursEnabled,
+              run_count: config.runCount ?? scheduledRuns?.length ?? null,
+              run_interval_minutes: configuredIntervalMinutes ?? null,
+              drip_interval: intervalParts?.value ?? null,
+              drip_interval_unit: intervalParts?.unit ?? null,
               scheduled_runs: scheduledRuns,
             };
           }),
@@ -880,6 +1021,15 @@ export default function EngagementOrder() {
 
   // Handle order button click - SUBSCRIPTION FIRST, then BALANCE
   const handlePlaceOrder = () => {
+    if (repeatWarnings.length > 0) {
+      toast({
+        title: "Please adjust repeated order",
+        description: repeatWarnings[0],
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Wait for bundles to load
     if (bundlesLoading) {
       toast({
@@ -1156,15 +1306,28 @@ export default function EngagementOrder() {
         {(repeatSource || repeatError) && (
           <Card className={cn(
             "glass-card border-2",
-            repeatError ? "border-destructive/40 bg-destructive/5" : "border-primary/40 bg-primary/5"
+            repeatError || repeatWarnings.length > 0 ? "border-destructive/40 bg-destructive/5" : "border-primary/40 bg-primary/5"
           )}>
             <CardContent className="p-3 sm:p-4 flex items-center gap-3">
-              <RefreshCw className={cn("h-5 w-5 shrink-0", repeatError ? "text-destructive" : "text-primary")} />
+              {repeatWarnings.length > 0 && !repeatError ? (
+                <AlertTriangle className="h-5 w-5 shrink-0 text-destructive" />
+              ) : (
+                <RefreshCw className={cn("h-5 w-5 shrink-0", repeatError ? "text-destructive" : "text-primary")} />
+              )}
               <div className="flex-1 min-w-0">
                 {repeatError ? (
                   <>
                     <p className="text-sm font-semibold text-destructive">This service is no longer available.</p>
                     <p className="text-xs text-muted-foreground">{repeatError}</p>
+                  </>
+                ) : repeatWarnings.length > 0 ? (
+                  <>
+                    <p className="text-sm font-semibold text-destructive">Original settings need review</p>
+                    <div className="mt-1 space-y-1">
+                      {repeatWarnings.map((warning, index) => (
+                        <p key={index} className="text-xs text-muted-foreground">{warning}</p>
+                      ))}
+                    </div>
                   </>
                 ) : (
                   <>

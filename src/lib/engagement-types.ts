@@ -112,12 +112,14 @@ export interface EngagementConfig {
   price: number;
   serviceId: string | null;
   minQuantity?: number;        // Actual service minimum from provider
+  maxQuantity?: number;        // Actual service maximum from provider
   // Per-type organic settings (optional - defaults will be used if not set)
   timeLimitHours: number;      // 0 = Auto, >0 = specific hours (actual value for backend)
   timeLimitCustomMode?: boolean; // UI-only: true when "Custom" button is selected
   variancePercent: number;     // 10-50, default 25
   peakHoursEnabled: boolean;   // default true
   runCount?: number;           // User-forced number of runs (undefined = auto)
+  runIntervalMinutes?: number; // Exact restored/generated interval between runs in minutes
 }
 
 // Default organic settings for each type

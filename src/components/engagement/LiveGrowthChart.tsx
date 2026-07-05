@@ -528,7 +528,7 @@ export function LiveGrowthChart({
         const tl = config.timeLimitHours ?? DEFAULT_ORGANIC_SETTINGS.timeLimitHours;
         const varp = config.variancePercent ?? DEFAULT_ORGANIC_SETTINGS.variancePercent;
         const peak = config.peakHoursEnabled ?? DEFAULT_ORGANIC_SETTINGS.peakHoursEnabled;
-        return `${type}:${config.quantity}:${tl}:${varp}:${peak}:${config.minQuantity ?? 0}`;
+        return `${type}:${config.quantity}:${tl}:${varp}:${peak}:${config.minQuantity ?? 0}:${config.runCount ?? 0}:${config.runIntervalMinutes ?? 0}`;
       })
       .join("|") + `|refresh:${refreshKey}|platform:${platform}|template:${effectiveTemplateId || 0}`;
 
@@ -555,6 +555,10 @@ export function LiveGrowthChart({
 
     enabledVisible.forEach(({ type, config }) => {
       const timeLimitHours = config.timeLimitHours ?? DEFAULT_ORGANIC_SETTINGS.timeLimitHours;
+      const restoredIntervalWindowHours =
+        config.runIntervalMinutes && config.runCount && config.runCount > 1
+          ? (config.runIntervalMinutes * (config.runCount - 1)) / 60
+          : undefined;
       const variancePercent = config.variancePercent ?? DEFAULT_ORGANIC_SETTINGS.variancePercent;
       const peakHoursEnabled = config.peakHoursEnabled ?? DEFAULT_ORGANIC_SETTINGS.peakHoursEnabled;
       const serviceMinimum = config.minQuantity || PROVIDER_MINIMUMS[type] || 10;
@@ -566,7 +570,8 @@ export function LiveGrowthChart({
         peakHoursEnabled,
         startTime,
         serviceMinimum,
-        timeLimitHours > 0 ? timeLimitHours : undefined
+        (restoredIntervalWindowHours ?? timeLimitHours) > 0 ? (restoredIntervalWindowHours ?? timeLimitHours) : undefined,
+        config.runCount && config.runCount > 0 ? config.runCount : undefined
       );
 
       totalRuns += schedule.runs.length;

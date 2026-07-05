@@ -120,9 +120,13 @@ export function DeliveryPreview({ engagements, refreshKey = 0, platform = 'insta
       const peakHoursEnabled = config.peakHoursEnabled ?? DEFAULT_ORGANIC_SETTINGS.peakHoursEnabled;
       const serviceMinimum = config.minQuantity || PROVIDER_MINIMUMS[type] || 10;
       const isViewType = type === 'views';
-      const timeLimitHours = !isViewType && viewsDurationHours > 0
+      const restoredIntervalWindowHours =
+        config.runIntervalMinutes && config.runCount && config.runCount > 1
+          ? (config.runIntervalMinutes * (config.runCount - 1)) / 60
+          : undefined;
+      const timeLimitHours = restoredIntervalWindowHours ?? (!isViewType && viewsDurationHours > 0
         ? Math.max(viewsDurationHours, 0.25)
-        : rawTimeLimitHours;
+        : rawTimeLimitHours);
       
       // Calculate start time based on type priority and views anchor
       let typeStartTime: Date;

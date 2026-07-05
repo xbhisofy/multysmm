@@ -44,6 +44,11 @@ interface ScheduledRunInput {
   peak_multiplier?: number
 }
 
+function normalizePositiveInt(value: unknown): number | null {
+  const n = Math.floor(Number(value))
+  return Number.isFinite(n) && n > 0 ? n : null
+}
+
 function uniquifyScheduledRuns(
   runs: ScheduledRunInput[],
   totalTargetQty: number,
@@ -523,17 +528,23 @@ serve(async (req) => {
             initialDelayMinutes = (priority - 1) * 60 + 20 + Math.random() * stagger.variance
           }
 
+          const requestedRunCount = normalizePositiveInt(engagement.run_count)
+          const requestedIntervalMinutes = normalizePositiveInt(engagement.run_interval_minutes)
+          const hasExplicitRepeatTiming = Boolean(requestedRunCount || requestedIntervalMinutes)
           let timeLimitHours = engagement.time_limit_hours || 0
+          if (!timeLimitHours && requestedIntervalMinutes && requestedRunCount && requestedRunCount > 1) {
+            timeLimitHours = (requestedIntervalMinutes * (requestedRunCount - 1)) / 60
+          }
           let peakHoursEnabled = engagement.peak_hours_enabled ?? false
           
-          if (aiOrganicEnabled && timeLimitHours === 0) {
+          if (!hasExplicitRepeatTiming && aiOrganicEnabled && timeLimitHours === 0) {
             const options = [0, 0, 0, 4, 6, 8, 12]
             timeLimitHours = options[Math.floor(Math.random() * options.length)]
           }
 
           // ORGANIC SYNC: Non-view engagements MUST span the same total window as views.
           // This prevents likes/saves/shares from finishing before views have arrived.
-          if (!isViewType && viewsDurationMinutes > 0) {
+          if (!hasExplicitRepeatTiming && !isViewType && viewsDurationMinutes > 0) {
             const viewsHours = viewsDurationMinutes / 60
             // Always match views window (override any auto time limit)
             timeLimitHours = Math.max(viewsHours, 0.25)
@@ -557,21 +568,26 @@ serve(async (req) => {
             const availableMinutes = Math.max(30, totalMinutes - initialDelayMinutes)
             const maxPosRuns = Math.floor(availableMinutes / 5)
             
-            let initialTarget = Math.min(maxPosRuns, Math.max(config.minRunsPerOrder, Math.min(config.maxRunsPerOrder, idealRuns)))
+            let initialTarget = requestedRunCount ?? Math.min(maxPosRuns, Math.max(config.minRunsPerOrder, Math.min(config.maxRunsPerOrder, idealRuns)))
             // Clamp targetRuns first so baseInterval spans the entire time limit
             targetRuns = Math.min(initialTarget, absoluteMaxRuns)
             if (targetRuns < 2 && engagement.quantity >= providerMin * 2) targetRuns = 2
             
             const avgNeeded = Math.ceil(engagement.quantity / targetRuns)
             maxBatchCap = Math.max(maxBatchCap, Math.min(avgNeeded * 2, providerMin * 4))
-            baseInterval = Math.max(5, availableMinutes / Math.max(targetRuns - 1, 1))
-            intervalRange = baseInterval * 0.15
+            baseInterval = requestedIntervalMinutes ?? Math.max(5, availableMinutes / Math.max(targetRuns - 1, 1))
+            intervalRange = requestedIntervalMinutes ? 0 : baseInterval * 0.15
             timeLimitApplied = true
             console.log(`  ⏱️ ${engType}: ${timeLimitHours}h | Stagger ${Math.round(initialDelayMinutes)}m | Int ${baseInterval.toFixed(1)}m | Runs ${targetRuns}`)
           } else {
-            targetRuns = Math.max(config.minRunsPerOrder, Math.ceil(engagement.quantity / maxBatchCap), Math.min(config.maxRunsPerOrder, idealRuns))
+            targetRuns = requestedRunCount ?? Math.max(config.minRunsPerOrder, Math.ceil(engagement.quantity / maxBatchCap), Math.min(config.maxRunsPerOrder, idealRuns))
             targetRuns = Math.min(targetRuns, absoluteMaxRuns)
             if (targetRuns < 2 && engagement.quantity >= providerMin * 2) targetRuns = 2
+            if (requestedIntervalMinutes) {
+              baseInterval = requestedIntervalMinutes
+              intervalRange = 0
+              timeLimitApplied = Boolean(requestedRunCount)
+            }
           }
 
           const previewRuns = Array.isArray(engagement.scheduled_runs)
