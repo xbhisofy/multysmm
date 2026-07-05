@@ -683,15 +683,29 @@ export default function AdminUsers() {
           </div>
         ) : filteredUsers && filteredUsers.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredUsers.map((u) => (
+            {filteredUsers.map((u) => {
+              const ind = indicatorFor(u as unknown as Row);
+              const dotClass =
+                ind === 'green'  ? 'bg-emerald-500' :
+                ind === 'blue'   ? 'bg-blue-500' :
+                ind === 'red'    ? 'bg-red-500' :
+                ind === 'orange' ? 'bg-orange-500' :
+                ind === 'gray'   ? 'bg-slate-400' : 'bg-transparent';
+              const ringClass =
+                ind === 'red' ? 'ring-1 ring-red-500/30' :
+                ind === 'blue' ? 'ring-1 ring-blue-500/30' : '';
+              return (
               <Card
                 key={u.id}
-                className="glass-card hover:border-primary/30 transition-all group"
+                className={`glass-card hover:border-primary/30 transition-all group ${ringClass}`}
               >
                 <CardContent className="p-5">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-lg font-bold text-primary">
-                      {u.email.charAt(0).toUpperCase()}
+                    <div className="relative">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-lg font-bold text-primary">
+                        {u.email.charAt(0).toUpperCase()}
+                      </div>
+                      {ind && <span className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-background ${dotClass}`} />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
@@ -704,13 +718,22 @@ export default function AdminUsers() {
                             Admin
                           </Badge>
                         )}
+                        {u.is_banned && (
+                          <Badge className="bg-red-500/20 text-red-500 text-[10px] h-5 border-red-500/30">
+                            <Ban className="h-3 w-3 mr-1" /> Banned
+                          </Badge>
+                        )}
                       </div>
                       <p className="text-xs text-muted-foreground truncate flex items-center gap-1">
                         <Mail className="h-3 w-3" />
                         {u.email}
                       </p>
+                      <p className="text-[10px] text-muted-foreground font-mono truncate mt-0.5">
+                        ID: {u.user_id.slice(0, 8)}…
+                      </p>
                     </div>
                   </div>
+
 
                   {/* Subscription Status */}
                   <div className="mt-3 p-2.5 rounded-lg bg-muted/50 flex items-center justify-between">
