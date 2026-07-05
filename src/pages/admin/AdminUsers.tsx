@@ -103,6 +103,16 @@ type UserTab = 'all' | 'normal' | 'monthly' | 'lifetime';
 
 const INR_RATE = 83.5;
 
+// Compact INR: 999 -> ₹999, 1.2k, 12.4k, 1.05L, 1.2Cr
+function formatInrCompact(n: number): string {
+  if (!isFinite(n)) return '₹0';
+  const abs = Math.abs(n);
+  if (abs < 1000) return `₹${n.toFixed(abs < 10 && abs > 0 ? 2 : 0)}`;
+  if (abs < 100_000) return `₹${(n / 1000).toFixed(abs < 10_000 ? 2 : 1)}K`;
+  if (abs < 10_000_000) return `₹${(n / 100_000).toFixed(2)}L`;
+  return `₹${(n / 10_000_000).toFixed(2)}Cr`;
+}
+
 export default function AdminUsers() {
   const { user, isAdmin, isLoading: authLoading } = useAuth();
   const queryClient = useQueryClient();
@@ -785,33 +795,31 @@ export default function AdminUsers() {
                   </div>
 
 
-                  <div className="grid grid-cols-3 gap-2 mt-3 p-3 rounded-xl bg-muted/50">
-                    <div className="text-center">
-                      <p className="text-lg font-bold text-success">
-                        ₹{((u.wallet?.balance || 0) * 83.5).toFixed(2)}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground">Balance</p>
-                    </div>
-                    <div className="text-center border-x border-border">
-                      <p className="text-lg font-bold">
-                        ₹{((u.wallet?.total_spent || 0) * 83.5).toFixed(2)}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground">Spent</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-lg font-bold text-primary">
-                        ₹{((u.wallet?.total_deposited || 0) * 83.5).toFixed(2)}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground">Deposited</p>
-                    </div>
+                  {/* Wallet stats */}
+                  <div className="mt-3 grid grid-cols-3 divide-x divide-border rounded-xl bg-muted/50 overflow-hidden">
+                    {[
+                      { label: 'Balance', value: (u.wallet?.balance || 0) * 83.5, cls: 'text-success' },
+                      { label: 'Spent', value: (u.wallet?.total_spent || 0) * 83.5, cls: 'text-foreground' },
+                      { label: 'Deposited', value: (u.wallet?.total_deposited || 0) * 83.5, cls: 'text-primary' },
+                    ].map((s) => (
+                      <div key={s.label} className="px-1.5 py-2.5 min-w-0 text-center">
+                        <p
+                          className={`text-sm font-bold tabular-nums truncate ${s.cls}`}
+                          title={`₹${s.value.toFixed(2)}`}
+                        >
+                          {formatInrCompact(s.value)}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">{s.label}</p>
+                      </div>
+                    ))}
                   </div>
 
                   {/* Order Count Badge */}
                   {(hasActiveOrders(u) || hasPausedOrders(u)) && (
                     <div className="mt-3 p-2.5 rounded-lg bg-muted/50 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <ShoppingCart className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <span className="text-sm truncate">
                           {getTotalActiveOrders(u) > 0 && (
                             <span className="text-primary font-medium">{getTotalActiveOrders(u)} Active</span>
                           )}
@@ -826,30 +834,32 @@ export default function AdminUsers() {
                     </div>
                   )}
 
-                  {/* Activity meta */}
-                  <div className="mt-3 grid grid-cols-3 gap-2 text-[10px]">
-                    <div className="p-2 rounded-lg bg-muted/40 text-center">
-                      <p className="text-muted-foreground uppercase tracking-wide">Last Fund</p>
-                      <p className="font-semibold text-foreground mt-0.5 flex items-center justify-center gap-1">
-                        <ArrowDownCircle className="h-3 w-3 text-emerald-500" />
+                  {/* Activity meta — compact horizontal rows */}
+                  <div className="mt-3 rounded-xl bg-muted/40 divide-y divide-border/60 text-xs">
+                    <div className="flex items-center justify-between px-3 py-2 gap-2">
+                      <span className="flex items-center gap-1.5 text-muted-foreground shrink-0">
+                        <ArrowDownCircle className="h-3.5 w-3.5 text-emerald-500" /> Last Fund
+                      </span>
+                      <span className="font-medium truncate text-right">
                         {u.last_deposit_at ? formatDistanceToNow(new Date(u.last_deposit_at), { addSuffix: true }) : 'Never'}
-                      </p>
+                      </span>
                     </div>
-                    <div className="p-2 rounded-lg bg-muted/40 text-center">
-                      <p className="text-muted-foreground uppercase tracking-wide">Orders</p>
-                      <p className="font-semibold text-foreground mt-0.5 flex items-center justify-center gap-1">
-                        <ShoppingCart className="h-3 w-3" />
-                        {u.total_orders_count || 0}
-                      </p>
+                    <div className="flex items-center justify-between px-3 py-2 gap-2">
+                      <span className="flex items-center gap-1.5 text-muted-foreground shrink-0">
+                        <ShoppingCart className="h-3.5 w-3.5" /> Orders
+                      </span>
+                      <span className="font-medium tabular-nums">{u.total_orders_count || 0}</span>
                     </div>
-                    <div className="p-2 rounded-lg bg-muted/40 text-center">
-                      <p className="text-muted-foreground uppercase tracking-wide">Last Login</p>
-                      <p className="font-semibold text-foreground mt-0.5 flex items-center justify-center gap-1">
-                        <LogIn className="h-3 w-3" />
+                    <div className="flex items-center justify-between px-3 py-2 gap-2">
+                      <span className="flex items-center gap-1.5 text-muted-foreground shrink-0">
+                        <LogIn className="h-3.5 w-3.5" /> Last Login
+                      </span>
+                      <span className="font-medium truncate text-right">
                         {u.last_sign_in_at ? formatDistanceToNow(new Date(u.last_sign_in_at), { addSuffix: true }) : 'Never'}
-                      </p>
+                      </span>
                     </div>
                   </div>
+
 
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                     <p className="text-xs text-muted-foreground flex items-center gap-1">
