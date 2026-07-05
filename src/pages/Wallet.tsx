@@ -386,33 +386,61 @@ export default function Wallet() {
         </div>
 
         {/* Add Funds — method selector */}
-        <div className="space-y-4">
-          <div className="inline-flex p-1 rounded-xl bg-secondary border border-border">
-            {([
-              { id: 'upi' as const, label: 'Instant UPI', tag: 'UPI' },
-              { id: 'crypto' as const, label: 'Pay with Crypto', tag: 'CRYPTO' },
-              { id: 'manual' as const, label: 'Talk to Admin', tag: 'MANUAL' },
-            ]).map((opt) => (
-              <button
-                key={opt.id}
-                onClick={() => setPayMethod(opt.id)}
-                className={cn(
-                  'h-9 px-4 text-xs md:text-sm font-semibold rounded-lg transition-colors',
-                  payMethod === opt.id
-                    ? 'bg-foreground text-background shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
-                {opt.label}
-              </button>
-            ))}
+        <div className="space-y-5">
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-2 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.08)]">
+            <div className="grid grid-cols-3 gap-1.5 relative">
+              {([
+                { id: 'upi' as const, label: 'Instant UPI', sub: 'GPay · PhonePe · Paytm', icon: Zap, gradient: 'from-violet-500 to-fuchsia-500', ring: 'ring-violet-500/30' },
+                { id: 'crypto' as const, label: 'Pay with Crypto', sub: 'USDT · BTC · TRX · LTC', icon: Bitcoin, gradient: 'from-amber-500 to-orange-500', ring: 'ring-amber-500/30' },
+                { id: 'manual' as const, label: 'Talk to Admin', sub: 'Custom / bulk top-ups', icon: MessageCircle, gradient: 'from-sky-500 to-blue-600', ring: 'ring-sky-500/30' },
+              ]).map((opt) => {
+                const active = payMethod === opt.id;
+                const Icon = opt.icon;
+                return (
+                  <button
+                    key={opt.id}
+                    onClick={() => setPayMethod(opt.id)}
+                    className={cn(
+                      'group relative flex items-center gap-3 rounded-xl px-3 md:px-4 py-3 text-left transition-all duration-300 overflow-hidden',
+                      active
+                        ? `bg-gradient-to-br ${opt.gradient} text-white shadow-lg ring-2 ${opt.ring} scale-[1.02]`
+                        : 'bg-secondary/50 text-foreground hover:bg-secondary hover:scale-[1.01]'
+                    )}
+                  >
+                    {active && (
+                      <span className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-white/20 blur-2xl pointer-events-none" />
+                    )}
+                    <span
+                      className={cn(
+                        'relative flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-lg shrink-0 transition-colors',
+                        active ? 'bg-white/20 backdrop-blur-sm' : `bg-gradient-to-br ${opt.gradient} text-white`
+                      )}
+                    >
+                      <Icon className="h-4 w-4 md:h-5 md:w-5" />
+                    </span>
+                    <span className="relative flex-1 min-w-0">
+                      <span className={cn('block text-xs md:text-sm font-bold leading-tight truncate', active ? 'text-white' : 'text-foreground')}>
+                        {opt.label}
+                      </span>
+                      <span className={cn('hidden md:block text-[10px] mt-0.5 truncate', active ? 'text-white/80' : 'text-muted-foreground')}>
+                        {opt.sub}
+                      </span>
+                    </span>
+                    {active && (
+                      <span className="hidden md:block absolute bottom-1.5 left-1/2 -translate-x-1/2 h-1 w-8 rounded-full bg-white/60" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <div className="grid grid-cols-1 gap-5">
+          <div className="grid grid-cols-1 gap-5 animate-in fade-in slide-in-from-bottom-2 duration-300" key={payMethod}>
             {payMethod === 'upi' && <ZapUpiDepositCard />}
             {payMethod === 'crypto' && <OxaPayAddFunds />}
             {payMethod === 'manual' && <ManualFundCard />}
           </div>
         </div>
+
 
 
 
