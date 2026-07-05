@@ -106,7 +106,7 @@ export default function Orders() {
       if (!expandedOrder) return [];
       const { data, error } = await supabase
         .from('organic_run_schedule')
-        .select('id, user_id, order_number, service_id, link, quantity, price, status, start_count, remains, provider_order_id, provider_status, created_at, updated_at')
+        .select('*')
         .eq('order_id', expandedOrder)
         .order('run_number', { ascending: true });
       
