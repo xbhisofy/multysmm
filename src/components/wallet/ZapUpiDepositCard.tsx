@@ -71,7 +71,7 @@ export default function ZapUpiDepositCard() {
 export function SimpleCard({
   accent, tag, title, subtitle, icon, children,
 }: {
-  accent: string; tag: string; title: string; subtitle: string;
+  accent: string; tag: string; title: string; subtitle: React.ReactNode;
   icon: React.ReactNode; children: React.ReactNode;
 }) {
   return (
