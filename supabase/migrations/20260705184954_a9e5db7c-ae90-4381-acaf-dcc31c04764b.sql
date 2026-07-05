@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.get_admin_users_summary() TO authenticated;
