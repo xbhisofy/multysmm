@@ -16,7 +16,7 @@ export function MobileBottomNav() {
             <Menu className="w-4 h-4" style={{ color: '#6D28D9' }} />
           </button>
           <div className="flex items-center">
-            <img src="/__l5e/assets-v1/629907e8-d337-4ae6-907a-d50fec419bdb/organicsmm-logo.jpg" alt="MultySMM" className="h-8 w-auto object-contain" />
+            <img src="/logo.png" alt="MultySMM" className="h-8 w-auto object-contain" />
           </div>
           <div className="w-9" />
         </div>
