@@ -55,7 +55,8 @@ export default function EngagementOrders() {
   const { formatPrice } = useCurrency();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Instant load with cache + moderate refresh
+  // Instant load with cache. Polling reduced 15s → 60s (was hitting DB every 15s
+  // per user with a nested items→runs embed = the #2 slowest query platform-wide).
   const { data: orders, refetch } = useQuery({
     queryKey: ['engagement-orders', user?.id],
     queryFn: async () => {
@@ -71,14 +72,14 @@ export default function EngagementOrders() {
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(100);
+        .limit(50);
       if (error) throw error;
       return data;
     },
     enabled: !!user,
-    staleTime: 15000, // Cache for 15s
+    staleTime: 60_000,
     refetchOnWindowFocus: false,
-    refetchInterval: 15000, // Refresh every 15s (was 5s)
+    refetchInterval: 60_000,
   });
 
   // Filter orders based on search query

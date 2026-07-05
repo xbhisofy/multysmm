@@ -34,9 +34,9 @@ export function useSubscription() {
 
       const { data, error } = await supabase
         .from('subscriptions')
-        .select('*')
+        .select('id, user_id, plan_type, status, activated_at, expires_at, created_at')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching subscription:', error);
@@ -46,6 +46,7 @@ export function useSubscription() {
       return data as Subscription | null;
     },
     enabled: !!user,
+    staleTime: 60_000,
   });
 
   const { data: pendingRequest, isLoading: isLoadingRequest } = useQuery({
@@ -55,7 +56,7 @@ export function useSubscription() {
 
       const { data, error } = await supabase
         .from('subscription_requests')
-        .select('*')
+        .select('id, user_id, full_name, email, phone, plan_type, message, status, created_at')
         .eq('user_id', user.id)
         .eq('status', 'pending')
         .order('created_at', { ascending: false })
@@ -70,6 +71,7 @@ export function useSubscription() {
       return data as SubscriptionRequest | null;
     },
     enabled: !!user,
+    staleTime: 60_000,
   });
 
   const hasActiveSubscription = subscription?.status === 'active' && subscription?.plan_type !== 'trial';
