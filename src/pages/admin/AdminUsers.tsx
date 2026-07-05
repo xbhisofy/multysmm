@@ -99,7 +99,7 @@ interface UserProfile {
   last_sign_in_at?: string | null;
 }
 
-type UserTab = 'all' | 'normal' | 'monthly' | 'lifetime';
+type UserTab = 'all' | 'normal' | 'monthly' | 'lifetime' | 'banned';
 
 const INR_RATE = 83.5;
 
@@ -512,6 +512,9 @@ export default function AdminUsers() {
       case 'lifetime':
         base = base.filter((u) => u.subscription?.status === 'active' && u.subscription?.plan_type === 'lifetime');
         break;
+      case 'banned':
+        base = base.filter((u) => !!u.is_banned);
+        break;
     }
     const filtered = applyFilters(base as unknown as Row[], filters, searchQuery);
     const sorted = applySort(filtered, sortKey);
@@ -534,6 +537,7 @@ export default function AdminUsers() {
   const normalCount = users?.filter((u) => !u.subscription || u.subscription.status !== 'active').length || 0;
   const monthlyCount = users?.filter((u) => u.subscription?.status === 'active' && u.subscription?.plan_type === 'monthly').length || 0;
   const lifetimeCount = users?.filter((u) => u.subscription?.status === 'active' && u.subscription?.plan_type === 'lifetime').length || 0;
+  const bannedCount = users?.filter((u) => !!u.is_banned).length || 0;
 
   // Wait for auth to load before checking admin status
   if (authLoading) {
@@ -595,7 +599,7 @@ export default function AdminUsers() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
           <Card className="glass-card">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -648,6 +652,19 @@ export default function AdminUsers() {
               </div>
             </CardContent>
           </Card>
+          <Card className="glass-card">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
+                  <Ban className="h-5 w-5 text-red-500" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{bannedCount}</p>
+                  <p className="text-xs text-muted-foreground">Banned Users</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Tabs */}
@@ -668,6 +685,10 @@ export default function AdminUsers() {
             <TabsTrigger value="lifetime" className="gap-1">
               <Crown className="h-3 w-3" />
               Lifetime
+            </TabsTrigger>
+            <TabsTrigger value="banned" className="gap-1">
+              <Ban className="h-3 w-3" />
+              Banned
             </TabsTrigger>
           </TabsList>
         </Tabs>
