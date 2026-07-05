@@ -179,6 +179,12 @@ Deno.serve(async (req) => {
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
+      const d: any = result.data;
+      if (d?.credited && !d?.duplicate) {
+        telegramOxapayCreditAlert(admin, orderId, "sync").catch((e) =>
+          console.error("tg oxapay alert", e)
+        );
+      }
       return new Response(
         JSON.stringify({
           ...result.data,
