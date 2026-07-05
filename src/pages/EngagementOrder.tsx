@@ -1423,8 +1423,8 @@ export default function EngagementOrder() {
                   placeholder={`Paste one link per line\nhttps://${platform}.com/abc\nhttps://${platform}.com/xyz`}
                   value={massLinksText}
                   onChange={(e) => setMassLinksText(e.target.value)}
-                  rows={4}
-                  className="min-h-[96px] max-h-[160px] text-sm rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-mono placeholder:text-muted-foreground transition-all"
+                  rows={6}
+                  className="min-h-[160px] max-h-[350px] overflow-y-auto text-sm rounded-xl border-2 border-border focus:border-foreground bg-secondary text-foreground font-mono placeholder:text-muted-foreground transition-all"
                 />
                 {/* Live counter */}
                 <div className="grid grid-cols-3 gap-2 sm:gap-3">
@@ -1648,8 +1648,7 @@ export default function EngagementOrder() {
                     detectPlatformFromUrl(link.trim()) === platform;
                   const massLinksValid =
                     orderMode === 'mass' &&
-                    parsedMassLinks.valid.length > 0 &&
-                    parsedMassLinks.invalid.length === 0;
+                    parsedMassLinks.valid.length > 0;
                   const canShowButton = singleLinkValid || massLinksValid;
 
                   if (!canShowButton) {
