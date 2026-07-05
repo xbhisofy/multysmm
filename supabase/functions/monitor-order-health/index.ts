@@ -132,6 +132,8 @@ Deno.serve(async (req) => {
   };
 
   const cutoff = new Date(Date.now() - STUCK_THRESHOLD_MIN * 60_000).toISOString();
+  // Only alert for orders placed within the last 24h — older ones are ignored.
+  const maxAgeCutoff = new Date(Date.now() - 24 * 60 * 60_000).toISOString();
   const issues: Issue[] = [];
 
   // 1. Regular orders — stuck / provider issues
@@ -141,6 +143,7 @@ Deno.serve(async (req) => {
       "id, order_number, user_id, service_id, provider_order_id, status, quantity, remains, link, price, created_at, updated_at",
     )
     .in("status", ["pending", "processing", "in_progress"])
+    .gt("created_at", maxAgeCutoff)
     .lt("updated_at", cutoff);
 
   const orderList = orders || [];
@@ -244,6 +247,7 @@ Deno.serve(async (req) => {
     .from("engagement_orders")
     .select("id, order_number, user_id, link, status, total_price, base_quantity, created_at, updated_at")
     .in("status", ["pending", "processing", "in_progress"])
+    .gt("created_at", maxAgeCutoff)
     .lt("updated_at", cutoff);
 
   const engUserIds = [...new Set((engOrders || []).map((e: any) => e.user_id).filter(Boolean))];
@@ -277,6 +281,7 @@ Deno.serve(async (req) => {
     .from("organic_run_schedule")
     .select("id, run_number, scheduled_at, quantity_to_send, engagement_order_item_id, order_id")
     .eq("status", "pending")
+    .gt("scheduled_at", maxAgeCutoff)
     .lt("scheduled_at", cutoff);
   for (const r of overdueRuns || []) {
     issues.push({
