@@ -467,7 +467,29 @@ export default function AdminUsers() {
     },
   });
 
+  // Ban / Unban mutation
+  const toggleBanMutation = useMutation({
+    mutationFn: async ({ targetUser, ban, reason }: { targetUser: UserProfile; ban: boolean; reason?: string }) => {
+      const { error } = await supabase.rpc('admin_set_user_ban' as any, {
+        target_user_id: targetUser.user_id,
+        ban,
+        reason: reason || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: (_data, vars) => {
+      toast.success(vars.ban ? 'User banned. They will be logged out.' : 'User unbanned. They can log in again.');
+      setBanUser(null);
+      setBanReason('');
+      queryClient.invalidateQueries({ queryKey: ['admin-all-users-with-subs'] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+
   // Helper to check if user has paused orders
+
   const hasPausedOrders = (u: UserProfile) => {
     return (u.orderCounts?.singlePaused || 0) + (u.orderCounts?.engagementPaused || 0) > 0;
   };
