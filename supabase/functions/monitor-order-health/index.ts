@@ -281,6 +281,7 @@ Deno.serve(async (req) => {
     .from("organic_run_schedule")
     .select("id, run_number, scheduled_at, quantity_to_send, engagement_order_item_id, order_id")
     .eq("status", "pending")
+    .gt("scheduled_at", maxAgeCutoff)
     .lt("scheduled_at", cutoff);
   for (const r of overdueRuns || []) {
     issues.push({
