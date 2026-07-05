@@ -198,23 +198,8 @@ export default function AdminUsers() {
     },
   });
 
-  const toggleAdminMutation = useMutation({
-    mutationFn: async (targetUser: UserProfile) => {
-      const newRole = targetUser.role === 'admin' ? 'user' : 'admin';
-      const { error } = await supabase
-        .from('user_roles')
-        .update({ role: newRole })
-        .eq('user_id', targetUser.user_id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast.success('User role updated!');
-      queryClient.invalidateQueries({ queryKey: ['admin-all-users-with-subs'] });
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
-  });
+
+
 
   const removeSubscriptionMutation = useMutation({
     mutationFn: async (targetUser: UserProfile) => {
@@ -880,15 +865,6 @@ export default function AdminUsers() {
                         title="Manage Balance"
                       >
                         <Wallet className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => toggleAdminMutation.mutate(u)}
-                        className={`h-8 w-8 rounded-lg ${u.role === 'admin' ? 'text-foreground' : ''}`}
-                        title="Toggle Admin"
-                      >
-                        <Shield className="h-4 w-4" />
                       </Button>
                       {/* Pause/Resume Button */}
                       {hasPausedOrders(u) ? (
