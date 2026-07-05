@@ -3,36 +3,53 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Send, IndianRupee, MessageCircle, ArrowRight, ShieldCheck } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const QUICK = [100, 500, 1000, 2000, 5000, 10000];
 
 // Admin Telegram handle (without @)
 const TG_USERNAME = 'Hkasdfgkl';
+const MIN_AMOUNT = 100;
+const MAX_AMOUNT = 540000;
 
 export default function ManualFundCard() {
   const [amount, setAmount] = useState<string>('500');
+  const { user, profile } = useAuth();
 
   const handleOpenTelegram = () => {
     const amt = Number(amount);
-    if (!Number.isFinite(amt) || amt < 100) {
-      toast.error('Minimum ₹100');
+    if (!amount || !Number.isFinite(amt)) {
+      toast.error('Please enter an amount');
       return;
     }
-    if (amt > 540000) {
-      toast.error('Maximum ₹5,40,000 per request');
+    if (amt < MIN_AMOUNT) {
+      toast.error(`Minimum amount is ₹${MIN_AMOUNT}`);
+      return;
+    }
+    if (amt > MAX_AMOUNT) {
+      toast.error(`Maximum amount is ₹${MAX_AMOUNT.toLocaleString('en-IN')}`);
       return;
     }
 
+    const username = profile?.full_name || (user?.email ? user.email.split('@')[0] : 'N/A');
+    const email = user?.email || 'N/A';
+    const userId = user?.id || 'N/A';
+
     const message =
-      `Hi 👋, I want to add ₹${amt.toLocaleString('en-IN')} to my MultySMM wallet manually.\n\n` +
-      `Amount: ₹${amt.toLocaleString('en-IN')}\n` +
-      `Method: Manual Fund Add\n\n` +
-      `Please share payment details. Thank you!`;
+      `Hello MultySMM Team,\n\n` +
+      `I would like to manually add funds to my MultySMM wallet.\n\n` +
+      `Requested Amount:\n₹${amt.toLocaleString('en-IN')}\n\n` +
+      `Username:\n${username}\n\n` +
+      `Email:\n${email}\n\n` +
+      `User ID:\n${userId}\n\n` +
+      `Please send me the payment details.\n\n` +
+      `Thank you.`;
 
     const url = `https://t.me/${TG_USERNAME}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
     toast.success('Opening Telegram…');
   };
+
 
   return (
     <div
