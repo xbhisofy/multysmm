@@ -2,16 +2,13 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { Send, MessageCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import {
-  TicketCard, TicketHeader, AmountField, QuickChips, PayButton, FootNote,
-} from './ZapUpiDepositCard';
+import { SimpleCard, AmountBlock, ChipRow, PayCta } from './ZapUpiDepositCard';
 
 const QUICK = [100, 500, 1000, 2000, 5000, 10000];
 const TG_USERNAME = 'Hkasdfgkl';
 const MIN_AMOUNT = 100;
 const MAX_AMOUNT = 540000;
 const ACCENT = '#0088CC';
-const ACCENT_SOFT = '#E3F2FD';
 
 export default function ManualFundCard() {
   const [amount, setAmount] = useState<string>('500');
@@ -42,41 +39,25 @@ export default function ManualFundCard() {
   };
 
   return (
-    <TicketCard accent={ACCENT} accentSoft={ACCENT_SOFT} tag="MANUAL · TELEGRAM" method="ADMIN CREDITS AFTER PAYMENT">
-      <TicketHeader
+    <SimpleCard
+      accent={ACCENT}
+      tag="MANUAL"
+      title="Talk to Admin"
+      subtitle="Custom / bulk top-ups on Telegram"
+      icon={<MessageCircle className="h-4 w-4" fill="white" strokeWidth={0} />}
+    >
+      <AmountBlock value={amount} onChange={setAmount} min={MIN_AMOUNT} max={MAX_AMOUNT} accent={ACCENT} id="manual-amount" />
+      <ChipRow values={QUICK} value={amount} onPick={setAmount} accent={ACCENT} />
+      <PayCta
         accent={ACCENT}
-        icon={<MessageCircle className="h-5 w-5" fill="white" strokeWidth={2.5} />}
-        title="TALK TO ADMIN"
-        subtitle="For custom / bulk top-ups"
-        badge="LIVE"
+        onClick={handleOpenTelegram}
+        loading={false}
+        label="Open Telegram"
+        loadingLabel=""
       />
-
-      <div className="px-5 sm:px-6 pt-5 pb-6">
-        <AmountField
-          id="manual-amount"
-          value={amount}
-          onChange={setAmount}
-          min={MIN_AMOUNT}
-          max={MAX_AMOUNT}
-          accent={ACCENT}
-          accentSoft={ACCENT_SOFT}
-        />
-
-        <QuickChips values={QUICK} value={amount} onPick={setAmount} accent={ACCENT} cols={6} />
-
-        <PayButton
-          accent={ACCENT}
-          gradient={`linear-gradient(135deg, ${ACCENT} 0%, #229ED9 50%, #38BDF8 100%)`}
-          onClick={handleOpenTelegram}
-          loading={false}
-          disabled={!amount}
-          loadingLabel=""
-          label="Open Telegram"
-          icon={<Send className="h-5 w-5" strokeWidth={2.5} />}
-        />
-
-        <FootNote text="Message pre-filled · Admin replies in minutes" />
-      </div>
-    </TicketCard>
+      <p className="mt-3 text-[11px] text-center text-slate-400 flex items-center justify-center gap-1">
+        <Send className="h-3 w-3" /> Message pre-filled · replies in minutes
+      </p>
+    </SimpleCard>
   );
 }
