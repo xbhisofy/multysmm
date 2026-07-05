@@ -9,7 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { z } from 'zod';
 import { PageMeta } from '@/components/seo/PageMeta';
 
-const GRADIENT = 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)';
+const GRADIENT = 'linear-gradient(135deg, #F97316 0%, #6366F1 100%)';
 
 
 
