@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useAuth } from '@/hooks/useAuth';
@@ -23,11 +23,8 @@ import {
   ArrowLeft,
   Wallet,
   Shield,
-  Plus,
-  Minus,
   Mail,
   Calendar,
-  DollarSign,
   Crown,
   Zap,
   XCircle,
@@ -38,10 +35,19 @@ import {
   ShoppingCart,
   Ban,
   AlertTriangle,
+  Download,
+  ArrowDownCircle,
+  LogIn,
 } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { format, formatDistanceToNow } from 'date-fns';
+import { UserFiltersSheet } from '@/components/admin/UserFiltersSheet';
+import { UserSortSelect } from '@/components/admin/UserSortSelect';
+import {
+  DEFAULT_FILTERS, applyFilters, applySort, rowsToCsv, downloadCsv, indicatorFor,
+  type AdminFilters, type SortKey, type Row,
+} from '@/lib/admin-users-filters';
 
 interface Subscription {
   id: string;
