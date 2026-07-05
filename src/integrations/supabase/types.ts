@@ -1544,6 +1544,10 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_set_user_ban: {
+        Args: { ban: boolean; reason?: string; target_user_id: string }
+        Returns: undefined
+      }
       cancel_order_with_refund: {
         Args: { p_actor: string; p_is_admin: boolean; p_order_id: string }
         Returns: Json
