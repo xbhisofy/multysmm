@@ -70,8 +70,12 @@ interface UserProfile {
   user_id: string;
   email: string;
   full_name: string | null;
+  telegram_username?: string | null;
   currency: string;
   created_at: string;
+  updated_at?: string | null;
+  is_banned?: boolean;
+  banned_reason?: string | null;
   wallet?: {
     balance: number;
     total_deposited: number;
@@ -80,6 +84,17 @@ interface UserProfile {
   role?: string;
   subscription?: Subscription;
   orderCounts?: OrderCounts;
+  // extended
+  balance: number;
+  total_deposited: number;
+  total_spent: number;
+  last_deposit_at?: string | null;
+  deposit_count?: number;
+  total_orders_count?: number;
+  single_orders_count?: number;
+  engagement_orders_count?: number;
+  last_active_at?: string | null;
+  last_sign_in_at?: string | null;
 }
 
 type UserTab = 'all' | 'normal' | 'monthly' | 'lifetime';
