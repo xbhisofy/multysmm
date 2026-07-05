@@ -126,7 +126,7 @@ export default function Wallet() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Handle OxaPay return — verify order and credit wallet
+  // Handle OxaPay return — verify order and credit wallet (with retry + specific errors)
   useEffect(() => {
     const url = new URL(window.location.href);
     if (url.searchParams.get('oxapay') !== 'success') return;
@@ -146,37 +146,100 @@ export default function Wallet() {
       return;
     }
 
+    // Track unresolved orders so user can retry manually later
+    const pendingKey = 'oxapay_pending_orders';
+    const addPending = () => {
+      try {
+        const list: string[] = JSON.parse(localStorage.getItem(pendingKey) || '[]');
+        if (!list.includes(orderId)) list.push(orderId);
+        localStorage.setItem(pendingKey, JSON.stringify(list));
+      } catch {}
+    };
+    const removePending = () => {
+      try {
+        const list: string[] = JSON.parse(localStorage.getItem(pendingKey) || '[]');
+        localStorage.setItem(pendingKey, JSON.stringify(list.filter((x) => x !== orderId)));
+      } catch {}
+    };
+
     let cancelled = false;
     let attempts = 0;
-    const maxAttempts = 24; // ~2 min at 5s
-    const pendingToast = toast.loading('Verifying crypto payment…');
+    const maxAttempts = 30; // ~2.5 min at 5s
+    let lastUserMessage = 'Verifying crypto payment…';
+    const pendingToast = toast.loading(lastUserMessage);
+
+    const succeed = (msg: string) => {
+      localStorage.setItem(claimedKey, 'done');
+      removePending();
+      toast.success(msg, { id: pendingToast });
+      qc.invalidateQueries({ queryKey: ['wallet'] });
+      qc.invalidateQueries({ queryKey: ['transactions'] });
+      cleanUrl();
+    };
+
+    const failHard = (msg: string) => {
+      removePending();
+      toast.error(msg, {
+        id: pendingToast,
+        duration: 12000,
+        action: {
+          label: 'Contact support',
+          onClick: () => window.open('https://t.me/Hkasdfgkl', '_blank'),
+        },
+      });
+      cleanUrl();
+    };
+
+    const failSoft = (msg: string) => {
+      addPending();
+      toast.warning(msg, {
+        id: pendingToast,
+        duration: 15000,
+        description: 'Order ID: ' + orderId,
+        action: {
+          label: 'Retry now',
+          onClick: () => {
+            attempts = 0;
+            poll();
+          },
+        },
+      });
+      qc.invalidateQueries({ queryKey: ['wallet'] });
+      cleanUrl();
+    };
 
     const poll = async () => {
       if (cancelled) return;
       attempts++;
+      let transient = false;
       try {
         const { data, error } = await supabase.functions.invoke('oxapay-sync-deposit', {
           body: { order_id: orderId },
         });
-        if (error) throw new Error(error.message);
-        const res = data as any;
-        if (res?.credited || res?.duplicate) {
-          localStorage.setItem(claimedKey, 'done');
-          toast.success(
-            res.duplicate ? 'Already credited to your wallet.' : 'Crypto payment received — wallet credited',
-            { id: pendingToast },
-          );
-          qc.invalidateQueries({ queryKey: ['wallet'] });
-          qc.invalidateQueries({ queryKey: ['transactions'] });
-          cleanUrl();
+        const res = (data ?? {}) as any;
+
+        if (error && !res?.code) {
+          transient = true;
+        } else if (res?.credited || res?.duplicate) {
+          succeed(res.duplicate ? 'Already credited to your wallet.' : 'Crypto payment received — wallet credited.');
           return;
+        } else if (res?.code === 'CURRENCY_MISMATCH' || res?.code === 'NOT_FOUND' || res?.code === 'FORBIDDEN') {
+          failHard(res.user_message || 'Payment could not be verified.');
+          return;
+        } else if (res?.user_message) {
+          lastUserMessage = res.user_message;
+          toast.loading(lastUserMessage + ` (${attempts}/${maxAttempts})`, { id: pendingToast });
         }
-      } catch { /* retry */ }
+      } catch {
+        transient = true;
+      }
 
       if (attempts >= maxAttempts) {
-        toast.info('Payment not confirmed yet. Wallet will update once the network confirms.', { id: pendingToast });
-        qc.invalidateQueries({ queryKey: ['wallet'] });
-        cleanUrl();
+        failSoft(
+          transient
+            ? 'Network issue verifying payment. Tap Retry when you have connection.'
+            : 'Payment not confirmed yet. You can retry — funds auto-credit when the network confirms.',
+        );
         return;
       }
       setTimeout(poll, 5000);
@@ -184,6 +247,34 @@ export default function Wallet() {
 
     poll();
     return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // On mount, offer to re-verify any previously-pending orders
+  useEffect(() => {
+    let list: string[] = [];
+    try { list = JSON.parse(localStorage.getItem('oxapay_pending_orders') || '[]'); } catch {}
+    if (!list.length) return;
+
+    const runOne = async (orderId: string) => {
+      try {
+        const { data } = await supabase.functions.invoke('oxapay-sync-deposit', {
+          body: { order_id: orderId },
+        });
+        const res = (data ?? {}) as any;
+        if (res?.credited || res?.duplicate) {
+          localStorage.setItem(`oxapay_claimed_${orderId}`, 'done');
+          try {
+            const now: string[] = JSON.parse(localStorage.getItem('oxapay_pending_orders') || '[]');
+            localStorage.setItem('oxapay_pending_orders', JSON.stringify(now.filter((x) => x !== orderId)));
+          } catch {}
+          toast.success('Previous crypto payment credited to your wallet.');
+          qc.invalidateQueries({ queryKey: ['wallet'] });
+          qc.invalidateQueries({ queryKey: ['transactions'] });
+        }
+      } catch {}
+    };
+    list.forEach(runOne);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -21,6 +21,38 @@ async function hmacSha512Hex(secret: string, message: string): Promise<string> {
     .join("");
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+// Retry credit RPC with exponential backoff on transient errors only.
+// Idempotent: credit_wallet_oxapay returns `duplicate:true` if already credited.
+async function creditWithRetry(admin: any, orderId: string) {
+  const delays = [0, 1500, 4000, 9000]; // up to 4 tries (~14.5s)
+  const attempts: Array<{ attempt: number; ok: boolean; error?: string }> = [];
+  let lastErr: any = null;
+  for (let i = 0; i < delays.length; i++) {
+    if (delays[i] > 0) await sleep(delays[i]);
+    try {
+      const { data, error } = await admin.rpc("credit_wallet_oxapay", { p_order_id: orderId });
+      if (error) throw error;
+      attempts.push({ attempt: i + 1, ok: true });
+      return { ok: true, data, attempts };
+    } catch (e: any) {
+      lastErr = e;
+      const msg = String(e?.message ?? e ?? "");
+      attempts.push({ attempt: i + 1, ok: false, error: msg });
+      // Non-retryable business errors — bail immediately
+      if (
+        msg.includes("Deposit order not found") ||
+        msg.includes("currency mismatch") ||
+        msg.includes("Deposit not in payable status")
+      ) {
+        return { ok: false, error: msg, attempts };
+      }
+    }
+  }
+  return { ok: false, error: String(lastErr?.message ?? lastErr ?? "unknown"), attempts };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -66,6 +98,7 @@ Deno.serve(async (req) => {
 
   const logId = logRow?.id;
 
+  // Always ACK OxaPay so it doesn't hammer retries; we handle our own retries here.
   const okResp = () =>
     new Response(JSON.stringify({ received: true }), {
       status: 200,
@@ -84,42 +117,42 @@ Deno.serve(async (req) => {
 
   if (!orderId) return okResp();
 
-  // Update deposit row
-  try {
-    await admin
-      .from("oxapay_deposits")
-      .update({
-        status: status || "waiting",
-        pay_currency: payload?.pay_currency || payload?.data?.pay_currency || null,
-        raw_payload: payload,
-        track_id: trackId ? String(trackId) : undefined,
-      })
-      .eq("order_id", orderId);
-  } catch (e) {
-    console.error("update deposit failed", e);
+  // Update deposit row (best-effort, retry once on failure)
+  for (let i = 0; i < 2; i++) {
+    try {
+      await admin
+        .from("oxapay_deposits")
+        .update({
+          status: status || "waiting",
+          pay_currency: payload?.pay_currency || payload?.data?.pay_currency || null,
+          raw_payload: payload,
+          track_id: trackId ? String(trackId) : undefined,
+        })
+        .eq("order_id", orderId);
+      break;
+    } catch (e) {
+      if (i === 1) console.error("update deposit failed", e);
+      else await sleep(500);
+    }
   }
 
   if (["paid", "confirmed", "completed", "success"].includes(status)) {
-    try {
-      const { data: creditRes, error: creditErr } = await admin.rpc("credit_wallet_oxapay", {
-        p_order_id: orderId,
-      });
-      if (creditErr) throw creditErr;
-      if (logId) {
-        await admin
-          .from("oxapay_webhook_events")
-          .update({ processed: true })
-          .eq("id", logId);
-      }
-      console.log("oxapay credited", orderId, creditRes);
-    } catch (e) {
-      console.error("credit failed", orderId, e);
-      if (logId) {
-        await admin
-          .from("oxapay_webhook_events")
-          .update({ error_message: String(e?.message ?? e) })
-          .eq("id", logId);
-      }
+    const result = await creditWithRetry(admin, orderId);
+    if (logId) {
+      await admin
+        .from("oxapay_webhook_events")
+        .update({
+          processed: result.ok,
+          error_message: result.ok
+            ? null
+            : `credit failed after ${result.attempts.length} attempts: ${result.error}`,
+        })
+        .eq("id", logId);
+    }
+    if (result.ok) {
+      console.log("oxapay credited", orderId, result.data);
+    } else {
+      console.error("oxapay credit permanently failed", orderId, result.error, result.attempts);
     }
   }
 
