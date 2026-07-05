@@ -391,7 +391,7 @@ export function TypeHistoryCard({
                     key={run.id}
                     className={`p-4 transition-colors ${isActive ? 'bg-amber-500/10' :
                       isFailed ? 'bg-green-500/5' :
-                        isPending ? 'hover:bg-violet-500/5 cursor-pointer' :
+                        isPending ? 'hover:bg-purple-500/5 cursor-pointer' :
                           isCompleted ? 'bg-emerald-500/5' : ''
                       }`}
                     onClick={() => isPending && onEditRun(run)}
@@ -401,7 +401,7 @@ export function TypeHistoryCard({
                       <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm ${isCompleted ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white' :
                         isActive ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white animate-pulse' :
                           isFailed ? 'bg-gradient-to-br from-green-500 to-red-500 text-white' :
-                            'bg-gradient-to-br from-violet-500 to-purple-500 text-white'
+                            'bg-gradient-to-br from-purple-500 to-purple-500 text-white'
                         }`}>
                         #{run.run_number}
                       </div>
@@ -414,7 +414,7 @@ export function TypeHistoryCard({
                             isActive ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' :
                               isFailed ? 'bg-green-500/20 text-green-400 border border-green-500/40' :
                                 isUpcoming ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40' :
-                                  'bg-violet-500/20 text-violet-400 border border-violet-500/40'
+                                  'bg-purple-500/20 text-purple-400 border border-purple-500/40'
                             }`}>
                             {isCompleted && <CheckCircle2 className="h-3 w-3 mr-1" />}
                             {isActive && <Play className="h-3 w-3 mr-1" />}

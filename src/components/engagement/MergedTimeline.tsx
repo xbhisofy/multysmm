@@ -15,8 +15,8 @@ const ENGAGEMENT_CONFIG: Record<string, { icon: typeof Eye; label: string; emoji
   likes: { icon: Heart, label: "likes", emoji: "❤️", color: "text-green-400", bg: "bg-green-500/20", border: "border-green-500/40" },
   comments: { icon: MessageCircle, label: "comments", emoji: "💬", color: "text-emerald-400", bg: "bg-emerald-500/20", border: "border-emerald-500/40" },
   saves: { icon: Bookmark, label: "saves", emoji: "📥", color: "text-amber-400", bg: "bg-amber-500/20", border: "border-amber-500/40" },
-  shares: { icon: Share2, label: "shares", emoji: "🔄", color: "text-violet-400", bg: "bg-violet-500/20", border: "border-violet-500/40" },
-  reposts: { icon: Share2, label: "reposts", emoji: "🔁", color: "text-indigo-400", bg: "bg-indigo-500/20", border: "border-indigo-500/40" },
+  shares: { icon: Share2, label: "shares", emoji: "🔄", color: "text-purple-400", bg: "bg-purple-500/20", border: "border-purple-500/40" },
+  reposts: { icon: Share2, label: "reposts", emoji: "🔁", color: "text-purple-400", bg: "bg-purple-500/20", border: "border-purple-500/40" },
 };
 
 // All engagement types to always show
@@ -293,7 +293,7 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
                     ? 'bg-emerald-500/10 border border-emerald-500/30'
                     : isFailed
                       ? 'bg-green-500/10 border border-green-500/30'
-                      : 'bg-violet-500/5 border border-violet-500/20 hover:bg-violet-500/10 cursor-pointer'
+                      : 'bg-purple-500/5 border border-purple-500/20 hover:bg-purple-500/10 cursor-pointer'
                   }`}
                 onClick={() => isPending && onEditRun(run)}
               >
@@ -303,7 +303,7 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
                   <div className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full font-bold text-sm sm:text-base shrink-0 ${isCompleted ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white' :
                     isActive ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white animate-pulse' :
                       isFailed ? 'bg-gradient-to-br from-green-500 to-red-500 text-white' :
-                        'bg-gradient-to-br from-violet-500 to-purple-500 text-white'
+                        'bg-gradient-to-br from-purple-500 to-purple-500 text-white'
                     }`}>
                     #{index + 1}
                   </div>
@@ -316,7 +316,7 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
                         isActive ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' :
                           isFailed ? 'bg-green-500/20 text-green-400 border border-green-500/40' :
                             isUpcoming ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40' :
-                              'bg-violet-500/20 text-violet-400 border border-violet-500/40'
+                              'bg-purple-500/20 text-purple-400 border border-purple-500/40'
                         }`}>
                         {isCompleted && <CheckCircle2 className="h-4 w-4 mr-1.5" />}
                         {isActive && <Play className="h-4 w-4 mr-1.5" />}

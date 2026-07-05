@@ -1357,7 +1357,7 @@ export default function EngagementOrder() {
                     if (val) setIsOrganicMode(false);
                   }}
                   onClick={(e) => e.stopPropagation()}
-                  className="data-[state=checked]:bg-indigo-500 shrink-0"
+                  className="data-[state=checked]:bg-purple-500 shrink-0"
                 />
               </div>
               <div className="flex flex-wrap gap-1">

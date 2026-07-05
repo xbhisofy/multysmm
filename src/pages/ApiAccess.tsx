@@ -77,9 +77,9 @@ export default function ApiAccess() {
         <DashboardLayout>
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 pb-10">
                 {/* Header */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-950/80 via-zinc-900 to-zinc-950 border border-white/[0.07] p-6 sm:p-8">
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-950/80 via-zinc-900 to-zinc-950 border border-white/[0.07] p-6 sm:p-8">
                     <div className="relative z-10 flex items-start gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-violet-900 flex items-center justify-center shadow-lg shrink-0">
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-600 to-purple-900 flex items-center justify-center shadow-lg shrink-0">
                             <Code2 className="h-7 w-7 text-white" />
                         </div>
                         <div>
@@ -89,20 +89,20 @@ export default function ApiAccess() {
                             </p>
                         </div>
                     </div>
-                    <div className="absolute top-0 right-0 w-56 h-56 bg-violet-600/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4" />
+                    <div className="absolute top-0 right-0 w-56 h-56 bg-purple-600/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4" />
                 </div>
 
                 {/* API Key Card */}
                 <div className="rounded-2xl bg-zinc-950 border border-white/[0.07] p-6 space-y-5">
                     <div className="flex items-center gap-2">
-                        <Key className="h-4 w-4 text-violet-400" />
+                        <Key className="h-4 w-4 text-purple-400" />
                         <h2 className="text-base font-semibold text-white">Your API Key</h2>
                     </div>
 
                     {apiKey ? (
                         <div className="space-y-3">
                             <div className="flex items-center gap-2 p-4 rounded-xl bg-zinc-900 border border-white/[0.05] group">
-                                <code className="flex-1 text-[13px] font-mono text-violet-300 truncate select-all">
+                                <code className="flex-1 text-[13px] font-mono text-purple-300 truncate select-all">
                                     {showKey ? apiKey : maskedKey}
                                 </code>
                                 <button
@@ -114,7 +114,7 @@ export default function ApiAccess() {
                                 </button>
                                 <button
                                     onClick={() => handleCopy(apiKey)}
-                                    className="shrink-0 text-zinc-500 hover:text-violet-400 transition-colors p-1.5 rounded-lg hover:bg-violet-500/10"
+                                    className="shrink-0 text-zinc-500 hover:text-purple-400 transition-colors p-1.5 rounded-lg hover:bg-purple-500/10"
                                     title="Copy"
                                 >
                                     {copied ? <CheckCircle2 className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
@@ -153,7 +153,7 @@ export default function ApiAccess() {
                             <Button
                                 onClick={handleGenerateKey}
                                 disabled={isGenerating}
-                                className="bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-600/20"
+                                className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-600/20"
                             >
                                 {isGenerating ? (
                                     <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
@@ -215,7 +215,7 @@ export default function ApiAccess() {
 
                         {/* add */}
                         <EndpointCard
-                            icon={<ShoppingCart className="h-4 w-4 text-violet-400" />}
+                            icon={<ShoppingCart className="h-4 w-4 text-purple-400" />}
                             method="POST"
                             action="add"
                             label="Place Order"
@@ -309,7 +309,7 @@ function EndpointCard({
             <div className="flex border-b border-white/[0.05] bg-zinc-950">
                 <button
                     onClick={() => setTab('request')}
-                    className={`flex-1 py-2 text-[12px] font-medium transition-colors ${tab === 'request' ? 'text-white border-b-2 border-violet-500 bg-violet-500/5' : 'text-zinc-600 hover:text-zinc-400'
+                    className={`flex-1 py-2 text-[12px] font-medium transition-colors ${tab === 'request' ? 'text-white border-b-2 border-purple-500 bg-purple-500/5' : 'text-zinc-600 hover:text-zinc-400'
                         }`}
                 >
                     Request
