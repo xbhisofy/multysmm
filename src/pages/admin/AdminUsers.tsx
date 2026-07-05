@@ -762,18 +762,43 @@ export default function AdminUsers() {
 
 
                   {/* Subscription Status */}
-                  <div className="mt-3 p-2.5 rounded-lg bg-muted/50 flex items-center justify-between">
-                    {getSubscriptionBadge(u.subscription)}
-                    {u.subscription?.status === 'active' && u.subscription?.plan_type === 'monthly' && u.subscription?.expires_at && (
-                      <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {formatDistanceToNow(new Date(u.subscription.expires_at), { addSuffix: true })}
-                      </span>
-                    )}
-                    {u.subscription?.status === 'active' && u.subscription?.plan_type === 'lifetime' && (
-                      <span className="text-[10px] text-amber-500">Forever</span>
+                  <div className="mt-3 p-2.5 rounded-lg bg-muted/50 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      {getSubscriptionBadge(u.subscription)}
+                      {u.subscription?.status === 'active' && u.subscription?.plan_type === 'monthly' && u.subscription?.expires_at && (
+                        <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {formatDistanceToNow(new Date(u.subscription.expires_at), { addSuffix: true })}
+                        </span>
+                      )}
+                      {u.subscription?.status === 'active' && u.subscription?.plan_type === 'lifetime' && (
+                        <span className="text-[10px] text-amber-500">Forever</span>
+                      )}
+                    </div>
+                    {u.is_banned ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => toggleBanMutation.mutate({ targetUser: u, ban: false })}
+                        disabled={toggleBanMutation.isPending}
+                        className="h-7 px-2 rounded-lg text-[11px] gap-1 border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10"
+                        title="Unban user"
+                      >
+                        <ShieldOff className="h-3 w-3" /> Unban
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => { setBanUser(u); setBanReason(''); }}
+                        className="h-7 px-2 rounded-lg text-[11px] gap-1 border-red-500/40 text-red-600 hover:bg-red-500/10"
+                        title="Ban user"
+                      >
+                        <Ban className="h-3 w-3" /> Ban
+                      </Button>
                     )}
                   </div>
+
 
                   <div className="grid grid-cols-3 gap-2 mt-3 p-3 rounded-xl bg-muted/50">
                     <div className="text-center">
