@@ -1,4 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { telegramOxapayCreditAlert } from "../_shared/oxapay-alerts.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -151,6 +152,12 @@ Deno.serve(async (req) => {
     }
     if (result.ok) {
       console.log("oxapay credited", orderId, result.data);
+      const d: any = result.data;
+      if (d?.credited && !d?.duplicate) {
+        await telegramOxapayCreditAlert(admin, orderId, "webhook").catch((e) =>
+          console.error("tg oxapay alert", e)
+        );
+      }
     } else {
       console.error("oxapay credit permanently failed", orderId, result.error, result.attempts);
     }
