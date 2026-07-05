@@ -132,6 +132,8 @@ Deno.serve(async (req) => {
   };
 
   const cutoff = new Date(Date.now() - STUCK_THRESHOLD_MIN * 60_000).toISOString();
+  // Only alert for orders placed within the last 24h — older ones are ignored.
+  const maxAgeCutoff = new Date(Date.now() - 24 * 60 * 60_000).toISOString();
   const issues: Issue[] = [];
 
   // 1. Regular orders — stuck / provider issues
