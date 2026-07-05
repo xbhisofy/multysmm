@@ -6,10 +6,10 @@
   --landing-stroke: 26 28% 87%;
   --landing-text: 234 28% 16%;
   --landing-muted: 228 13% 45%;
-  --landing-pink: 331 83% 62%;
-  --landing-purple: 271 82% 63%;
-  --landing-mint: 164 72% 57%;
-  --landing-gold: 46 96% 61%;
+  --landing-pink: 239 84% 67%;
+  --landing-purple: 24 95% 53%;
+  --landing-mint: 24 95% 60%;
+  --landing-gold: 239 84% 72%;
   min-height: 100vh;
   color: hsl(var(--landing-text));
   background:
