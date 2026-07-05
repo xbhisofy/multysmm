@@ -112,7 +112,7 @@ export default function Auth() {
       <div className="w-full max-w-[400px] relative">
           {/* Logo */}
           <div className="flex items-center justify-center mb-10">
-            <img src="/logo.png" alt="MultySMM" className="h-16 w-auto object-contain" />
+            <img src="/logo.png" alt="MultySMM" className="h-16 w-16 rounded-full object-cover bg-white ring-2 ring-orange-100 shadow-md" />
           </div>
 
           <Link to="/" className="inline-flex items-center gap-1.5 text-[12px] font-medium mb-8" style={{ color: '#9b8fb8' }}>
