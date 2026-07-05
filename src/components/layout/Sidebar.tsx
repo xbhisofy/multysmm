@@ -38,42 +38,78 @@ export function Sidebar({ onClose }: SidebarProps) {
         </button>
       </div>
 
-      {/* User chip */}
+      {/* Mission Control Card — user + wallet unified */}
       {profile && (
-        <div className="mx-4 mb-3 flex items-center gap-2.5 px-3 py-2.5 rounded-xl" style={{ background: '#FAF5FF', border: '1px solid #FFE4CC' }}>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
-            style={{ background: GRADIENT }}>
-            {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || 'U'}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[12px] font-semibold truncate" style={{ color: '#0B0B16' }}>{profile.full_name || 'User'}</p>
-            <p className="text-[10px] truncate" style={{ color: '#9b8fb8' }}>{profile.email}</p>
-          </div>
-        </div>
-      )}
+        <div className="mx-4 mb-4 relative rounded-[22px] overflow-hidden"
+          style={{
+            background: 'linear-gradient(160deg, #fff 0%, #FFF7EF 55%, #FFE8D2 100%)',
+            border: '1px solid #FFD9B5',
+            boxShadow: '0 18px 40px -18px rgba(249,115,22,.35), 0 2px 0 #fff inset',
+          }}>
+          {/* decorative dot grid */}
+          <div aria-hidden className="absolute inset-0 opacity-[0.09] pointer-events-none"
+            style={{ backgroundImage: 'radial-gradient(#F97316 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
+          {/* corner glow */}
+          <div aria-hidden className="absolute -top-14 -right-14 w-40 h-40 rounded-full"
+            style={{ background: 'radial-gradient(closest-side, rgba(249,115,22,.35), transparent 70%)' }} />
 
-      {/* Wallet card */}
-      <div className="mx-4 mb-4">
-        <div className="rounded-2xl p-4 relative overflow-hidden text-white"
-          style={{ background: GRADIENT, boxShadow: '0 14px 30px -10px rgba(124,58,237,.45)' }}>
-          <div aria-hidden className="absolute -top-10 -right-10 w-32 h-32 rounded-full"
-            style={{ background: 'radial-gradient(closest-side, rgba(255,255,255,.25), transparent 70%)' }} />
-          <div className="relative">
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <Wallet className="w-3 h-3" />
-              <span className="text-[9px] font-bold uppercase tracking-[0.16em] opacity-90">Wallet Balance</span>
+          {/* Header strip — avatar + identity + status dot */}
+          <div className="relative px-4 pt-3.5 pb-3 flex items-center gap-3">
+            <div className="relative shrink-0">
+              <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-[14px] font-black text-white rotate-[-6deg]"
+                style={{ background: GRADIENT, boxShadow: '0 8px 18px -6px rgba(249,115,22,.55)' }}>
+                {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || 'U'}
+              </div>
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white" style={{ background: '#22c55e' }} />
             </div>
-            <p className="text-[24px] font-extrabold tracking-tight mb-3">
-              {formatPrice(wallet?.balance || 0)}
-            </p>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5">
+                <p className="text-[13px] font-extrabold truncate leading-tight" style={{ color: '#0B0B16' }}>
+                  {profile.full_name || 'User'}
+                </p>
+                <span className="text-[8px] font-black px-1.5 py-[1px] rounded-full tracking-wider"
+                  style={{ background: '#0B0B16', color: '#FFB27A' }}>PRO</span>
+              </div>
+              <p className="text-[10px] truncate mt-0.5" style={{ color: '#8a7a6a' }}>{profile.email}</p>
+            </div>
+          </div>
+
+          {/* Ticket-style dashed divider with punch holes */}
+          <div className="relative h-3 mx-1">
+            <span className="absolute -left-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full" style={{ background: '#F3EBFB' }} />
+            <span className="absolute -right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full" style={{ background: '#F3EBFB' }} />
+            <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 border-t border-dashed" style={{ borderColor: '#F7B37B' }} />
+          </div>
+
+          {/* Wallet section */}
+          <div className="relative px-4 pt-2 pb-4">
+            <div className="flex items-end justify-between mb-2.5">
+              <div>
+                <p className="text-[8.5px] font-black uppercase tracking-[0.22em]" style={{ color: '#B4632A' }}>
+                  Available Balance
+                </p>
+                <p className="text-[26px] font-black leading-none mt-1 tracking-tight"
+                  style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                  {formatPrice(wallet?.balance || 0)}
+                </p>
+              </div>
+              <div className="flex flex-col items-end gap-0.5 pb-0.5">
+                <Wallet className="w-4 h-4" style={{ color: '#F97316' }} />
+                <span className="text-[8px] font-bold" style={{ color: '#B4632A' }}>INR</span>
+              </div>
+            </div>
             <Link to="/wallet" onClick={onClose}
-              className="flex items-center justify-center gap-1.5 w-full h-9 rounded-xl text-[12px] font-bold"
-              style={{ background: 'rgba(255,255,255,.95)', color: '#F97316' }}>
-              <Wallet className="w-3.5 h-3.5" /> Add Funds
+              className="group flex items-center justify-between w-full h-10 pl-4 pr-1.5 rounded-full text-[12px] font-black text-white transition-transform active:scale-[.98]"
+              style={{ background: GRADIENT, boxShadow: '0 10px 22px -10px rgba(249,115,22,.7)' }}>
+              <span className="tracking-wide">Add Funds</span>
+              <span className="w-7 h-7 rounded-full flex items-center justify-center bg-white transition-transform group-hover:translate-x-0.5"
+                style={{ color: '#F97316' }}>
+                <Rocket className="w-3.5 h-3.5 -rotate-45" />
+              </span>
             </Link>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 pb-3 scrollbar-thin">
