@@ -60,15 +60,41 @@ const formatPriceRaw = (price: number): string => {
 };
 
 // Detect platform from a URL (module scope so it can be used in memos)
-const detectPlatformFromUrl = (url: string): string | null => {
-  const lower = url.toLowerCase();
-  if (lower.includes('instagram.com') || lower.includes('instagr.am')) return 'instagram';
-  if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'youtube';
-  if (lower.includes('tiktok.com')) return 'tiktok';
-  if (lower.includes('twitter.com') || lower.includes('x.com')) return 'twitter';
-  if (lower.includes('facebook.com') || lower.includes('fb.com')) return 'facebook';
+// Strict platform detection: requires a proper http(s) URL with a recognized
+// hostname AND a non-empty path (post/profile/reel). Random text, plain
+// usernames, emails, phone numbers, or bare domains all return null.
+const PLATFORM_HOSTS: Record<string, string[]> = {
+  instagram: ['instagram.com', 'www.instagram.com', 'instagr.am', 'www.instagr.am'],
+  youtube: ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'youtu.be', 'www.youtu.be'],
+  tiktok: ['tiktok.com', 'www.tiktok.com', 'm.tiktok.com', 'vm.tiktok.com', 'vt.tiktok.com'],
+  twitter: ['twitter.com', 'www.twitter.com', 'x.com', 'www.x.com', 'mobile.twitter.com'],
+  facebook: ['facebook.com', 'www.facebook.com', 'm.facebook.com', 'fb.com', 'www.fb.com', 'fb.watch'],
+  telegram: ['t.me', 'telegram.me', 'www.t.me', 'www.telegram.me'],
+};
+
+const detectPlatformFromUrl = (raw: string): string | null => {
+  if (!raw) return null;
+  const trimmed = raw.trim();
+  if (!trimmed || trimmed.length > 2048) return null;
+  // Must start with http(s) — reject random text, usernames, emails, phones.
+  if (!/^https?:\/\//i.test(trimmed)) return null;
+  let u: URL;
+  try {
+    u = new URL(trimmed);
+  } catch {
+    return null;
+  }
+  if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+  const host = u.hostname.toLowerCase();
+  // Path must have something after the leading slash (post/profile/reel/etc).
+  const pathOk = u.pathname.replace(/\/+$/, '').length > 1;
+  if (!pathOk) return null;
+  for (const [platform, hosts] of Object.entries(PLATFORM_HOSTS)) {
+    if (hosts.includes(host)) return platform;
+  }
   return null;
 };
+
 
 type IntervalUnit = 'minutes' | 'hours' | 'days';
 
