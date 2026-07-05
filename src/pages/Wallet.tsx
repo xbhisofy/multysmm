@@ -383,12 +383,35 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Add Funds — UPI + Crypto + Manual */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <ZapUpiDepositCard />
-          <OxaPayAddFunds />
-          <ManualFundCard />
+        {/* Add Funds — method selector */}
+        <div className="space-y-4">
+          <div className="inline-flex p-1 rounded-xl bg-secondary border border-border">
+            {([
+              { id: 'upi' as const, label: 'Instant UPI', tag: 'UPI' },
+              { id: 'crypto' as const, label: 'Pay with Crypto', tag: 'CRYPTO' },
+              { id: 'manual' as const, label: 'Talk to Admin', tag: 'MANUAL' },
+            ]).map((opt) => (
+              <button
+                key={opt.id}
+                onClick={() => setPayMethod(opt.id)}
+                className={cn(
+                  'h-9 px-4 text-xs md:text-sm font-semibold rounded-lg transition-colors',
+                  payMethod === opt.id
+                    ? 'bg-foreground text-background shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          <div className="grid grid-cols-1 gap-5">
+            {payMethod === 'upi' && <ZapUpiDepositCard />}
+            {payMethod === 'crypto' && <OxaPayAddFunds />}
+            {payMethod === 'manual' && <ManualFundCard />}
+          </div>
         </div>
+
 
 
         {/* Transactions */}
