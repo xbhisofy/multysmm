@@ -41,13 +41,13 @@ export default function ContactUs() {
 
             <div className="rounded-xl border border-border p-5 bg-card">
               <div className="flex items-center gap-3 mb-2">
-                <div className="h-10 w-10 rounded-lg bg-green-500/10 flex items-center justify-center">
-                  <MessageCircle className="h-5 w-5 text-green-500" />
+                <div className="h-10 w-10 rounded-lg bg-sky-500/10 flex items-center justify-center">
+                  <MessageCircle className="h-5 w-5 text-sky-500" />
                 </div>
-                <h3 className="font-semibold">WhatsApp</h3>
+                <h3 className="font-semibold">Telegram Support</h3>
               </div>
-              <a href="https://wa.me/13678288027" target="_blank" rel="noreferrer" className="text-sm text-green-500 hover:underline">
-                +1 (367) 828-8027
+              <a href="https://t.me/Hkasdfgkl" target="_blank" rel="noreferrer" className="text-sm text-sky-500 hover:underline">
+                @Hkasdfgkl
               </a>
               <p className="text-xs text-muted-foreground mt-2">Fastest way to reach us. Available 7 days a week.</p>
             </div>
@@ -55,15 +55,16 @@ export default function ContactUs() {
             <div className="rounded-xl border border-border p-5 bg-card">
               <div className="flex items-center gap-3 mb-2">
                 <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                  <Phone className="h-5 w-5 text-blue-500" />
+                  <MessageCircle className="h-5 w-5 text-blue-500" />
                 </div>
-                <h3 className="font-semibold">Phone</h3>
+                <h3 className="font-semibold">Live Chat</h3>
               </div>
-              <a href="tel:+13678288027" className="text-sm text-blue-500 hover:underline">
-                +1 (367) 828-8027
+              <a href="https://t.me/Hkasdfgkl" target="_blank" rel="noreferrer" className="text-sm text-blue-500 hover:underline">
+                Start chat on Telegram
               </a>
-              <p className="text-xs text-muted-foreground mt-2">Call between business hours for urgent issues.</p>
+              <p className="text-xs text-muted-foreground mt-2">Chat with our support team for urgent issues.</p>
             </div>
+
 
             <div className="rounded-xl border border-border p-5 bg-card">
               <div className="flex items-center gap-3 mb-2">
