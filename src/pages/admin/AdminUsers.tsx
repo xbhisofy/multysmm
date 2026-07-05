@@ -1190,6 +1190,58 @@ export default function AdminUsers() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Ban User Dialog */}
+        <Dialog
+          open={!!banUser}
+          onOpenChange={(open) => { if (!open) { setBanUser(null); setBanReason(''); } }}
+        >
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-destructive">
+                <Ban className="h-5 w-5" />
+                Ban User
+              </DialogTitle>
+            </DialogHeader>
+            {banUser && (
+              <div className="space-y-4 py-4">
+                <div className="p-4 rounded-xl bg-muted/50 text-center">
+                  <p className="font-medium">{banUser.full_name || banUser.email}</p>
+                  <p className="text-xs text-muted-foreground">{banUser.email}</p>
+                </div>
+                <div className="space-y-2">
+                  <Label>Reason (optional)</Label>
+                  <Textarea
+                    placeholder="Why is this user being banned?"
+                    value={banReason}
+                    onChange={(e) => setBanReason(e.target.value)}
+                    className="rounded-xl min-h-[80px]"
+                  />
+                </div>
+                <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-sm text-destructive flex items-start gap-2">
+                  <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium">This user will be logged out immediately.</p>
+                    <p className="text-destructive/80">On next login attempt they'll see: "You are banned, please contact admin." Unban anytime to restore access.</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4">
+              <Button variant="outline" onClick={() => { setBanUser(null); setBanReason(''); }}>
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => banUser && toggleBanMutation.mutate({ targetUser: banUser, ban: true, reason: banReason.trim() })}
+                disabled={toggleBanMutation.isPending}
+              >
+                {toggleBanMutation.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+                Ban User
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
