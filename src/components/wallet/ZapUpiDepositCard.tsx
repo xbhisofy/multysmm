@@ -1,37 +1,28 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Loader2, Zap, IndianRupee, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Loader2, Zap, IndianRupee, ArrowUpRight } from 'lucide-react';
 
 const QUICK = [100, 500, 1000, 2000, 5000];
 const ACCENT = '#7C3AED';
-const ACCENT_SOFT = '#F3ECFF';
 
 export default function ZapUpiDepositCard() {
   const [amount, setAmount] = useState<string>('500');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const warm = async () => {
+    (async () => {
       try {
         const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/zapupi-create-order`;
         await fetch(url, { method: 'OPTIONS', mode: 'cors' });
       } catch {}
-    };
-    warm();
+    })();
   }, []);
 
   const PROD_ORIGIN = 'https://multysmm.com';
-  const buildReturnUrl = () => `${PROD_ORIGIN}/wallet`;
-
-  const openPaymentPage = (payUrl: string) => {
-    try {
-      if (window.top && window.top !== window.self) {
-        window.top.location.href = payUrl;
-        return;
-      }
-    } catch {}
-    window.location.href = payUrl;
+  const openPage = (u: string) => {
+    try { if (window.top && window.top !== window.self) { window.top.location.href = u; return; } } catch {}
+    window.location.href = u;
   };
 
   const handlePay = async () => {
@@ -41,12 +32,12 @@ export default function ZapUpiDepositCard() {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('zapupi-create-order', {
-        body: { amount_inr: amt, origin: PROD_ORIGIN, return_url: buildReturnUrl() },
+        body: { amount_inr: amt, origin: PROD_ORIGIN, return_url: `${PROD_ORIGIN}/wallet` },
       });
-      if (error) throw new Error(error.message || 'Failed to create order');
+      if (error) throw new Error(error.message);
       const payUrl = (data as any)?.payment_url;
       if (!payUrl) throw new Error('Gateway did not return a payment URL');
-      openPaymentPage(payUrl);
+      openPage(payUrl);
     } catch (e: any) {
       toast.error(e?.message || 'Could not start payment');
       setLoading(false);
@@ -54,149 +45,91 @@ export default function ZapUpiDepositCard() {
   };
 
   return (
-    <TicketCard accent={ACCENT} accentSoft={ACCENT_SOFT} tag="INSTANT UPI" method="UPI · GPAY · PHONEPE · PAYTM">
-      <TicketHeader
+    <SimpleCard
+      accent={ACCENT}
+      tag="UPI"
+      title="Instant UPI"
+      subtitle="GPay · PhonePe · Paytm"
+      icon={<Zap className="h-4 w-4" fill="currentColor" strokeWidth={0} />}
+    >
+      <AmountBlock value={amount} onChange={setAmount} min={50} max={100000} accent={ACCENT} id="zap-amount" />
+      <ChipRow values={QUICK} value={amount} onPick={setAmount} accent={ACCENT} />
+      <PayCta
         accent={ACCENT}
-        icon={<Zap className="h-5 w-5" fill="white" strokeWidth={2.5} />}
-        title="UPI TOP-UP"
-        subtitle="Auto-credit in seconds"
-        badge="SECURE"
+        onClick={handlePay}
+        loading={loading}
+        label={`Pay ₹${Number(amount || 0).toLocaleString('en-IN')}`}
+        loadingLabel="Redirecting…"
       />
-
-      <div className="px-5 sm:px-6 pt-5 pb-6">
-        <AmountField
-          id="zap-amount"
-          value={amount}
-          onChange={setAmount}
-          min={50}
-          max={100000}
-          accent={ACCENT}
-          accentSoft={ACCENT_SOFT}
-        />
-
-        <QuickChips values={QUICK} value={amount} onPick={setAmount} accent={ACCENT} cols={5} />
-
-        <PayButton
-          accent={ACCENT}
-          gradient={`linear-gradient(135deg, ${ACCENT} 0%, #A855F7 55%, #EC4899 100%)`}
-          onClick={handlePay}
-          loading={loading}
-          disabled={!amount}
-          loadingLabel="Redirecting to UPI…"
-          label={`Pay ₹${Number(amount || 0).toLocaleString('en-IN')} Now`}
-          icon={<Zap className="h-5 w-5" fill="white" strokeWidth={2.5} />}
-        />
-
-        <FootNote text="Auto-verified by server · No refresh needed" />
-      </div>
-    </TicketCard>
+      <p className="mt-3 text-[11px] text-center text-slate-400">Auto-credit after payment · no refresh</p>
+    </SimpleCard>
   );
 }
 
-/* ---------- Shared ticket primitives (used by all 3 cards) ---------- */
+/* ---------- Shared minimal primitives ---------- */
 
-export function TicketCard({
-  accent, accentSoft, tag, method, children,
-}: { accent: string; accentSoft: string; tag: string; method: string; children: React.ReactNode }) {
+export function SimpleCard({
+  accent, tag, title, subtitle, icon, children,
+}: {
+  accent: string; tag: string; title: string; subtitle: string;
+  icon: React.ReactNode; children: React.ReactNode;
+}) {
   return (
-    <div className="relative">
-      {/* hard offset shadow layer */}
-      <div
-        className="absolute inset-0 rounded-[22px] translate-x-[5px] translate-y-[5px] sm:translate-x-[6px] sm:translate-y-[6px]"
-        style={{ background: '#0B0B16' }}
-      />
-      <div
-        className="relative rounded-[22px] overflow-hidden bg-white"
-        style={{ border: '2.5px solid #0B0B16' }}
-      >
-        {/* top ticket meta strip */}
-        <div
-          className="flex items-center justify-between px-4 sm:px-5 py-2 text-[10px] font-black uppercase tracking-[0.2em]"
-          style={{ background: accentSoft, color: '#0B0B16', borderBottom: '2px dashed #0B0B16' }}
-        >
-          <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
+    <div
+      className="relative rounded-2xl bg-white overflow-hidden"
+      style={{ border: '1px solid #EEF0F4', boxShadow: '0 1px 2px rgba(15,23,42,.04), 0 8px 24px -12px rgba(15,23,42,.08)' }}
+    >
+      {/* thin accent bar on the left */}
+      <div className="absolute left-0 top-6 bottom-6 w-[3px] rounded-r-full" style={{ background: accent }} />
+
+      <div className="p-5 sm:p-6">
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-white shrink-0"
+              style={{ background: accent }}
+            >
+              {icon}
+            </div>
+            <div className="min-w-0">
+              <h2 className="text-[15px] font-semibold text-slate-900 leading-tight tracking-tight truncate">
+                {title}
+              </h2>
+              <p className="text-[11.5px] text-slate-500 mt-0.5 truncate">{subtitle}</p>
+            </div>
+          </div>
+          <span
+            className="shrink-0 text-[10px] font-semibold tracking-[0.14em] px-2 py-1 rounded-md"
+            style={{ background: `${accent}12`, color: accent }}
+          >
             {tag}
           </span>
-          <span className="truncate max-w-[55%] text-right opacity-70">{method}</span>
         </div>
 
         {children}
-
-        {/* perforation footer */}
-        <div className="relative h-3" style={{ background: '#0B0B16' }}>
-          <div
-            className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0"
-            style={{
-              backgroundImage: 'radial-gradient(circle, white 3px, transparent 3.5px)',
-              backgroundSize: '14px 6px',
-              backgroundRepeat: 'repeat-x',
-              height: '6px',
-            }}
-          />
-        </div>
       </div>
     </div>
   );
 }
 
-export function TicketHeader({
-  accent, icon, title, subtitle, badge,
-}: { accent: string; icon: React.ReactNode; title: string; subtitle: string; badge: string }) {
+export function AmountBlock({
+  id, value, onChange, min, max, accent,
+}: { id: string; value: string; onChange: (v: string) => void; min: number; max: number; accent: string }) {
+  const [focused, setFocused] = useState(false);
   return (
     <div
-      className="relative flex items-center justify-between gap-3 px-5 sm:px-6 py-5"
-      style={{ borderBottom: '2px solid #0B0B16', background: 'white' }}
+      className="rounded-xl px-4 py-3.5 transition-all"
+      style={{
+        background: '#FAFBFC',
+        border: `1px solid ${focused ? accent : '#EEF0F4'}`,
+        boxShadow: focused ? `0 0 0 4px ${accent}18` : 'none',
+      }}
     >
-      <div className="flex items-center gap-3 min-w-0">
-        <div
-          className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-white"
-          style={{ background: accent, border: '2.5px solid #0B0B16', boxShadow: '3px 3px 0 #0B0B16' }}
-        >
-          {icon}
-        </div>
-        <div className="min-w-0">
-          <h2 className="text-[18px] sm:text-[19px] font-black tracking-tight leading-tight" style={{ color: '#0B0B16' }}>
-            {title}
-          </h2>
-          <p className="text-[12px] font-semibold mt-0.5" style={{ color: '#5a5a72' }}>
-            {subtitle}
-          </p>
-        </div>
-      </div>
-      <div
-        className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-black tracking-wider"
-        style={{ background: '#0B0B16', color: 'white' }}
-      >
-        <ShieldCheck className="h-3 w-3" /> {badge}
-      </div>
-    </div>
-  );
-}
-
-export function AmountField({
-  id, value, onChange, min, max, accent, accentSoft,
-}: { id: string; value: string; onChange: (v: string) => void; min: number; max: number; accent: string; accentSoft: string }) {
-  return (
-    <>
-      <div className="flex items-center justify-between mb-2">
-        <label htmlFor={id} className="text-[10px] font-black uppercase tracking-[0.18em]" style={{ color: '#0B0B16' }}>
-          Enter Amount
-        </label>
-        <span className="text-[10px] font-bold" style={{ color: '#94a3b8' }}>
-          MIN ₹{min} · MAX ₹{max.toLocaleString('en-IN')}
-        </span>
-      </div>
-      <div
-        className="relative flex items-center rounded-xl overflow-hidden"
-        style={{ border: '2px solid #0B0B16', background: accentSoft }}
-      >
-        <div
-          className="w-12 h-14 flex items-center justify-center shrink-0"
-          style={{ background: accent, borderRight: '2px solid #0B0B16' }}
-        >
-          <IndianRupee className="h-4.5 w-4.5 text-white" strokeWidth={3} />
-        </div>
+      <label htmlFor={id} className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+        Amount
+      </label>
+      <div className="flex items-center gap-2 mt-1">
+        <IndianRupee className="h-5 w-5 text-slate-400" strokeWidth={2.5} />
         <input
           id={id}
           type="number"
@@ -205,20 +138,24 @@ export function AmountField({
           max={max}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           placeholder="500"
-          className="flex-1 h-14 bg-transparent border-0 outline-none px-4 text-2xl font-black tracking-tight"
-          style={{ color: '#0B0B16' }}
+          className="flex-1 bg-transparent border-0 outline-none text-slate-900 text-[26px] font-semibold tracking-tight placeholder:text-slate-300"
         />
+        <span className="text-[10.5px] font-medium text-slate-400 tracking-wider">
+          ₹{min}–{max >= 100000 ? `${Math.round(max / 1000)}k` : max.toLocaleString('en-IN')}
+        </span>
       </div>
-    </>
+    </div>
   );
 }
 
-export function QuickChips({
-  values, value, onPick, accent, cols,
-}: { values: number[]; value: string; onPick: (v: string) => void; accent: string; cols: 5 | 6 }) {
+export function ChipRow({
+  values, value, onPick, accent,
+}: { values: number[]; value: string; onPick: (v: string) => void; accent: string }) {
   return (
-    <div className={`grid gap-1.5 mt-3 ${cols === 6 ? 'grid-cols-3 sm:grid-cols-6' : 'grid-cols-5'}`}>
+    <div className="flex flex-wrap gap-1.5 mt-3">
       {values.map((v) => {
         const active = value === String(v);
         return (
@@ -226,12 +163,11 @@ export function QuickChips({
             key={v}
             type="button"
             onClick={() => onPick(String(v))}
-            className="py-2.5 rounded-lg text-[12px] font-black transition-all active:translate-y-[1px]"
+            className="flex-1 min-w-[52px] py-2 rounded-lg text-[12px] font-semibold transition-all active:scale-95"
             style={{
-              background: active ? '#0B0B16' : 'white',
-              color: active ? 'white' : '#0B0B16',
-              border: '2px solid #0B0B16',
-              boxShadow: active ? `inset 0 0 0 2px ${accent}` : '2px 2px 0 #0B0B16',
+              background: active ? accent : 'white',
+              color: active ? 'white' : '#475569',
+              border: `1px solid ${active ? accent : '#EEF0F4'}`,
             }}
           >
             ₹{v >= 1000 ? `${v / 1000}k` : v}
@@ -242,52 +178,21 @@ export function QuickChips({
   );
 }
 
-export function PayButton({
-  accent, gradient, onClick, loading, disabled, loadingLabel, label, icon,
-}: {
-  accent: string; gradient: string; onClick: () => void; loading: boolean; disabled: boolean;
-  loadingLabel: string; label: string; icon: React.ReactNode;
-}) {
+export function PayCta({
+  accent, onClick, loading, label, loadingLabel,
+}: { accent: string; onClick: () => void; loading: boolean; label: string; loadingLabel: string }) {
   return (
     <button
       onClick={onClick}
-      disabled={loading || disabled}
-      className="group relative w-full mt-5 h-[56px] rounded-xl font-black text-[15px] flex items-center justify-center gap-2 overflow-hidden transition-all active:translate-y-[2px] disabled:opacity-60 disabled:cursor-not-allowed"
-      style={{
-        background: gradient,
-        color: 'white',
-        border: '2.5px solid #0B0B16',
-        boxShadow: '4px 4px 0 #0B0B16',
-        letterSpacing: '0.01em',
-      }}
+      disabled={loading}
+      className="w-full mt-4 h-12 rounded-xl text-[14px] font-semibold text-white flex items-center justify-center gap-2 transition-all active:scale-[.99] disabled:opacity-60"
+      style={{ background: accent, boxShadow: `0 8px 20px -8px ${accent}80` }}
     >
-      <span
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-        style={{
-          background: 'linear-gradient(120deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%)',
-          animation: 'ticket-shimmer 1.4s linear infinite',
-        }}
-      />
       {loading ? (
-        <><Loader2 className="h-5 w-5 animate-spin relative" /> <span className="relative">{loadingLabel}</span></>
+        <><Loader2 className="h-4 w-4 animate-spin" /> {loadingLabel}</>
       ) : (
-        <>
-          <span className="relative">{icon}</span>
-          <span className="relative uppercase tracking-wide">{label}</span>
-          <ArrowRight className="h-5 w-5 relative" strokeWidth={3} />
-        </>
+        <>{label} <ArrowUpRight className="h-4 w-4" strokeWidth={2.5} /></>
       )}
-      <style>{`@keyframes ticket-shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}`}</style>
-      <span className="sr-only">{accent}</span>
     </button>
-  );
-}
-
-export function FootNote({ text }: { text: string }) {
-  return (
-    <div className="flex items-center justify-center gap-1.5 mt-4">
-      <ShieldCheck className="h-3 w-3" style={{ color: '#94a3b8' }} />
-      <p className="text-[11px] font-semibold" style={{ color: '#94a3b8' }}>{text}</p>
-    </div>
   );
 }
