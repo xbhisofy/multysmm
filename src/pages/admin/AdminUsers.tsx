@@ -868,7 +868,8 @@ export default function AdminUsers() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <Card className="glass-card p-12 text-center">
