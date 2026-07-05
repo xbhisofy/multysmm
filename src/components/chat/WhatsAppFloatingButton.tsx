@@ -1,7 +1,7 @@
 import { useAuth } from '@/hooks/useAuth';
 
 // Direct Telegram support — replaces the previous WhatsApp/live chat widget.
-const TELEGRAM_USERNAME = 'Hkasdfgkl';
+const TELEGRAM_USERNAME = 'multysmm';
 
 function buildMessage(email?: string, name?: string | null) {
   return (
