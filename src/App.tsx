@@ -41,6 +41,7 @@ import AdminAuditLog from "./pages/admin/AdminAuditLog";
 import AdminPopupAd from "./pages/admin/AdminPopupAd";
 import AdminTopupPlan from "./pages/admin/AdminTopupPlan";
 import AdminChat from "./pages/admin/AdminChat";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
 
 import { GlobalSubscriptionGuard } from "@/components/subscription/GlobalSubscriptionGuard";
 import { LiveChatWidget } from "@/components/chat/LiveChatWidget";
@@ -123,6 +124,7 @@ const App = () => {
                     <Route path="/admin/services" element={<NotFound />} />
                     <Route path="/admin/users" element={<AdminGuard><AdminUsers /></AdminGuard>} />
                     <Route path="/admin/bundles" element={<AdminGuard><AdminBundles /></AdminGuard>} />
+                    <Route path="/admin/analytics" element={<AdminGuard><AdminAnalytics /></AdminGuard>} />
                     <Route path="/admin/cron-monitor" element={<AdminGuard><AdminCronMonitor /></AdminGuard>} />
                     <Route path="/admin/chat" element={<AdminGuard><AdminChat /></AdminGuard>} />
                     <Route path="/admin/deposits" element={<AdminGuard><AdminDeposits /></AdminGuard>} />
