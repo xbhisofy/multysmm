@@ -1573,6 +1573,10 @@ export type Database = {
         }
         Returns: Json
       }
+      get_admin_analytics: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
       get_admin_dashboard_stats: { Args: never; Returns: Json }
       get_admin_users_summary: { Args: never; Returns: Json }
       get_provider_topup_breakdown: {

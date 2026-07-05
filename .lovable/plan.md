@@ -1,93 +1,58 @@
-## Admin Users – Filters, Sorting & Search Upgrade
+# Admin Dashboard — Advanced Analytics & Time-Based Filters
 
-Ye large feature hai — realistically 2 phases mein deliver karunga. Phase 1 default sort + core sorts + high-value filters + search + column upgrades cover karega (jo aapki daily need hai). Phase 2 mein optional cheezein (saved presets, PDF/Excel export, country, login-as-user, some "platform usage" filters) baad mein add karunge — kyunki inke liye backend mein naya data track karna padega.
+This is a large, multi-week feature. To ship something useful fast without breaking the current dashboard, I'll split it into **Phase 1 (build now)** and **Phase 2 (later)**. Please confirm the split before I start.
 
----
+## Phase 1 — build now
 
-### Scope – Phase 1 (build now)
+### Filter bar (top of `/admin`)
+- Presets: Today, Yesterday, Last 7 Days, Last 30 Days, This Month, Last Month, This Year, Lifetime, Custom (start + end date)
+- Stored in URL query (`?range=last7`) so refresh keeps the view
+- Instant refresh via a single RPC call — no page reload
 
-**Default sort**
-- "Last Fund Added" ho — sabse recent depositor top par.
-- Users jo kabhi fund add nahi kiye, list ke end mein.
+### Analytics cards (period-aware)
+Every card recomputes for the selected range. Compared vs previous equal-length window for the growth arrow (green ↑ / red ↓ / gray –).
 
-**Sort dropdown** (instant, no reload):
-- Last Fund Added (default), Highest/Lowest Wallet, Highest/Lowest Deposits, Highest/Lowest Spending, Highest/Lowest Orders, Newest/Oldest Registered, Most/Least Recently Active, Highest LTV (deposits+spending), A→Z, Z→A.
+- **Financial:** Total Deposits, Gross Revenue (order value), Net Revenue (deposits − refunds), Total Profit (revenue − provider cost), Average / Largest / Smallest Deposit, Pending Deposits, Failed Deposits, Refunded Amount
+- **Orders:** Total, Completed, Processing, Pending, Cancelled, Failed, Refunded, Avg/Highest/Lowest Order Value (single + engagement orders combined, plus a small breakdown)
+- **Users:** New Registrations, Users Who Added Funds (in range), First-Time Depositors (in range), VIP Users (LTV ≥ ₹10k), Banned Users, Active Users (signed in during range), Inactive Users
+- **Wallet:** Current Total Wallet Balance (live), Total Wallet Credits (in range), Total Wallet Debits (in range)
+- **Platform breakdown:** Order counts per platform — Instagram, TikTok, YouTube, Facebook, Telegram, X/Twitter, Other (from `services.category`)
+- **Top lists (in range):** Top 10 Depositors, Top 10 Spenders, Top 10 by Order Count, Top 10 by Profit (LTV proxy)
 
-**Filters button (side sheet / drawer)**
-- Registration Date: Today / Yesterday / 7d / 30d / Custom
-- Last Fund Date: Today / 7d / 30d / Custom / Never
-- Wallet Balance: 0 / ₹1–500 / ₹500–5000 / ₹5000+ / Custom
-- Total Deposits: 0 / ₹1–1000 / ₹1000–10000 / ₹10000+ / Custom
-- Total Spending: same buckets / Custom
-- Total Orders: 0 / 1–10 / 10–100 / 100+ / Custom
-- User Status: Active / Banned / Suspended (jo hum actually track karte hain)
-- Last Login: Today / 7d / 30d / Never (auth.last_sign_in_at)
-- Reset all + active filter count badge.
+### UX
+- Cards grouped in collapsible sections (Financial / Orders / Users / Wallet / Platform / Top lists)
+- Growth chip on each stat card
+- CSV export of the current range's stats + top lists
+- Mobile: filter collapses into a bottom-sheet, cards stack 1-col → 2-col → 3-col
 
-**Search bar** (partial match, instant):
-- Username, Email, User ID, Order ID (agar match kare to us user ko dikhaye), Wallet ID.
+### Backend
+- Single new RPC `get_admin_analytics(from_ts, to_ts)` returning one JSON payload with every card + previous-period counterparts. Security-definer + admin check, same pattern as `get_admin_dashboard_stats`.
+- Uses existing tables — no schema change beyond one or two helper indexes on `transactions(type, status, created_at)` and `orders(status, created_at)` if missing.
+- Frontend caches per `(from, to)` key via React Query for 30 s.
 
-**Table columns**:
-- Username / Email, User ID (short), Wallet, Deposits, Spending, Orders, Last Fund Date, Last Login, Reg Date, Status, LTV.
+### Files
+```text
+supabase/migrations/<ts>_admin_analytics_rpc.sql   -- new RPC + indexes
+src/lib/admin-analytics.ts                          -- range presets, formatting, CSV
+src/components/admin/AnalyticsRangeBar.tsx          -- filter bar + custom range
+src/components/admin/AnalyticsStatCard.tsx          -- card w/ growth chip
+src/pages/admin/Admin.tsx                           -- wire filter + new sections
+```
 
-**Color indicators** (small dot / row accent):
-- Green = fund added in last 7d
-- Blue = LTV ≥ ₹10,000
-- Red = banned/suspended
-- Orange = inactive 30+ days
-- Gray = never deposited
+## Phase 2 — later (on request)
+- **Withdrawals** — no withdrawal system exists yet in the DB, so "Total Withdrawals" is skipped in Phase 1
+- **Suspended Users** — no `suspended` state exists, only `banned`; treated same as banned in Phase 1
+- **Returning Customers** — needs a stricter definition; will confirm later
+- **Provider analytics** (success/failure rate, provider revenue) — needs an `order → provider_account_id` join not yet stored on `orders`; will add tracking first
+- **Excel / PDF export** — CSV covers 95% of needs; add later if wanted
+- **Charts** — Phase 1 is numeric cards only; line/bar charts come next
+- **Super-admin permission gating** for financial analytics — currently every admin sees everything; will add a role split later
+- **Caching layer** beyond React Query (e.g. materialised view) — only if queries get slow at scale
 
-**CSV export** of currently filtered/sorted list.
+## Technical notes (safe to skip)
+- All order rows counted = `orders` + `engagement_orders` unioned.
+- "Profit" = Σ(order price − Σ(run cost via `services.price` × qty / 1000)). Same math as existing top-up plan RPC.
+- Growth = `((current − previous) / previous) * 100`, previous window = same length immediately before `from_ts`.
+- Custom range max 366 days to keep queries fast.
 
-**Mobile**: filters as bottom drawer, table becomes card list.
-
----
-
-### Scope – Phase 2 (later, on request)
-
-- Saved filter presets (needs a new `admin_filter_presets` table).
-- Excel/PDF export (needs extra libraries).
-- Country filter (needs to start capturing country on signup).
-- Platform usage filter (Instagram/YT/etc. per user aggregate).
-- "Login as user" (impersonation — security-sensitive, alag design).
-- Telegram username / phone search (currently profile pe stored nahi hain).
-
----
-
-### Technical details
-
-**Backend – `get_admin_users_summary` upgrade**
-Function ko rewrite karunga taaki ek hi call mein sab data aaye:
-
-- `last_deposit_at` — max `created_at` from `transactions` where `type='deposit' AND status='completed'`.
-- `total_orders` — `orders` + `engagement_orders` count.
-- `last_active_at` — max of last order/deposit/`profile.updated_at`.
-- `last_sign_in_at` — from `auth.users` (SECURITY DEFINER so allowed).
-- `is_banned`, `banned_reason` — already on profiles.
-- Return existing fields + all above as JSON array.
-
-Indexes add karunga performance ke liye:
-- `transactions(user_id, type, status, created_at desc)`
-- `orders(user_id)`, `engagement_orders(user_id)`
-
-Function admin-only rahega (`has_role` check + only `authenticated` execute grant).
-
-**Frontend – `src/pages/admin/AdminUsers.tsx`**
-- Query fetches full list once (100k users tak client-side sort/filter fine hai for admin panel; agar aage scale kare to server-side pagination Phase 2).
-- Sort state + filter state + search state → `useMemo` derived list.
-- New `<UserFiltersSheet>` component using shadcn `Sheet`.
-- New `<SortDropdown>` using shadcn `Select`.
-- CSV export via client-side blob download.
-- Existing tabs (All / No Plan / Monthly / Lifetime) preserved.
-- All existing admin actions (add/subtract balance, ban, pause orders, cancel etc.) preserved as row-level buttons in a compact dropdown.
-
-**Files touched**
-- `supabase/migrations/*` – rewrite `get_admin_users_summary`, add indexes.
-- `src/pages/admin/AdminUsers.tsx` – major refactor.
-- `src/components/admin/UserFiltersSheet.tsx` (new).
-- `src/components/admin/UserSortSelect.tsx` (new).
-- `src/lib/admin-users-filters.ts` (new — pure filter/sort logic).
-
----
-
-Confirm karo to Phase 1 start karta hoon.
+Reply **"go"** to build Phase 1, or tell me what to add/remove first.
