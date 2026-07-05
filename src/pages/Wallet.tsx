@@ -583,4 +583,51 @@ export default function Wallet() {
   );
 }
 
+function SummaryCard({
+  label,
+  value,
+  icon,
+  tone,
+  hint,
+}: {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+  tone: 'success' | 'danger' | 'primary' | 'muted';
+  hint?: string;
+}) {
+  const toneClasses: Record<typeof tone, string> = {
+    success: 'text-success bg-success/10',
+    danger: 'text-destructive bg-destructive/10',
+    primary: 'text-primary bg-primary/10',
+    muted: 'text-muted-foreground bg-muted',
+  } as const;
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
+            {label}
+          </p>
+          <p className="text-lg md:text-xl font-extrabold tabular-nums mt-1 truncate text-foreground">
+            {value}
+          </p>
+          {hint && (
+            <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{hint}</p>
+          )}
+        </div>
+        <div
+          className={cn(
+            'w-8 h-8 rounded-lg flex items-center justify-center shrink-0',
+            toneClasses[tone]
+          )}
+        >
+          {icon}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 
