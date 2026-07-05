@@ -73,7 +73,7 @@ export function AiGrowthEngine({ availablePlatforms, selectedPlatform, onPlatfor
   return (
     <div className="relative mb-6">
       {/* Ambient glow */}
-      <div className="pointer-events-none absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-r from-orange-200/40 via-fuchsia-200/30 to-indigo-200/40 blur-2xl" />
+      <div className="pointer-events-none absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-r from-orange-200/40 via-pink-200/30 to-purple-200/40 blur-2xl" />
 
       <div className="rounded-3xl border border-slate-200/70 bg-white/90 backdrop-blur-xl p-4 sm:p-5 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.15)]">
         {/* Header */}
@@ -86,7 +86,7 @@ export function AiGrowthEngine({ availablePlatforms, selectedPlatform, onPlatfor
               AI GROWTH ENGINE
             </span>
           </div>
-          <div className="hidden sm:flex items-center gap-1.5 text-[12px] font-semibold text-indigo-600">
+          <div className="hidden sm:flex items-center gap-1.5 text-[12px] font-semibold text-purple-600">
             <Sparkles className="w-3.5 h-3.5" />
             Powered by MultySMM
           </div>
@@ -162,7 +162,7 @@ export function AiGrowthEngine({ availablePlatforms, selectedPlatform, onPlatfor
             disabled={loading || prompt.trim().length < 3}
             className={cn(
               "relative group flex items-center gap-2 h-11 px-5 rounded-full font-semibold text-white text-[14px]",
-              "bg-gradient-to-r from-orange-500 via-rose-500 to-indigo-500",
+              "bg-gradient-to-r from-orange-500 via-rose-500 to-purple-500",
               "shadow-[0_8px_25px_-8px_rgba(244,63,94,0.6)]",
               "hover:shadow-[0_10px_30px_-8px_rgba(244,63,94,0.75)]",
               "hover:scale-[1.02] active:scale-[0.98] transition-all",

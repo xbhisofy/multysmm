@@ -14,7 +14,7 @@ const ENGAGEMENT_CONFIG: Record<string, { icon: typeof Eye; color: string; bg: s
   comments: { icon: MessageCircle, color: "text-green-500", bg: "bg-green-100", border: "border-green-500", label: "Comments", emoji: "💬" },
   saves: { icon: Bookmark, color: "text-amber-500", bg: "bg-amber-100", border: "border-amber-500", label: "Saves", emoji: "📥" },
   shares: { icon: Share2, color: "text-purple-500", bg: "bg-purple-100", border: "border-purple-500", label: "Shares", emoji: "🔄" },
-  reposts: { icon: Share2, color: "text-indigo-500", bg: "bg-indigo-100", border: "border-indigo-500", label: "Reposts", emoji: "🔁" },
+  reposts: { icon: Share2, color: "text-purple-500", bg: "bg-purple-100", border: "border-purple-500", label: "Reposts", emoji: "🔁" },
 };
 
 const STATUS_CONFIG = {
