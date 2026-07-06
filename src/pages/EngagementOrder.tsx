@@ -1732,6 +1732,19 @@ export default function EngagementOrder() {
                   </Button>
                 );
               })()}
+              {templateSettings.enabled && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="default"
+                  onClick={() => setTemplateSaveOpen(true)}
+                  className="h-10 sm:h-11 px-4 text-sm font-semibold rounded-lg"
+                  title="Save current settings as a reusable template"
+                >
+                  <Bookmark className="h-4 w-4 mr-1.5" />
+                  Save as Template
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
