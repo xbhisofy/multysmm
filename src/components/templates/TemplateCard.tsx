@@ -16,7 +16,6 @@ export function TemplateCard({ template: t, onEdit, allowDuplicate = true, allow
   const navigate = useNavigate();
 
   const c = t.config || {};
-  const qty = c.base_quantity ?? c.quantity ?? '—';
   const firstEng: any = Object.values(c.engagements || {})[0] || {};
   const qty = c.base_quantity ?? c.quantity ?? '—';
   const runs = c.runs ?? firstEng.runs ?? '—';
