@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 interface SidebarProps { onClose?: () => void; }
 
-const GRADIENT = 'linear-gradient(135deg, #F97316 0%, #6366F1 100%)';
+const GRADIENT = 'linear-gradient(135deg, #F97316 0%, #EC4899 55%, #8B5CF6 100%)';
 
 const userNavItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
