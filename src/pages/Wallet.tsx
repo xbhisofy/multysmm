@@ -424,7 +424,7 @@ export default function Wallet() {
                     key={opt.id}
                     onClick={() => setPayMethod(opt.id)}
                     className={cn(
-                      'group relative flex items-center gap-3 rounded-xl px-3 md:px-4 py-3 text-left transition-all duration-300 overflow-hidden',
+                      'group relative flex flex-col md:flex-row items-center md:items-center gap-1.5 md:gap-3 rounded-xl px-2 md:px-4 py-2.5 md:py-3 text-center md:text-left transition-all duration-300 overflow-hidden',
                       active
                         ? `bg-gradient-to-br ${opt.gradient} text-white shadow-lg ring-2 ${opt.ring} scale-[1.02]`
                         : 'bg-secondary/50 text-foreground hover:bg-secondary hover:scale-[1.01]'
@@ -435,14 +435,14 @@ export default function Wallet() {
                     )}
                     <span
                       className={cn(
-                        'relative flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-lg shrink-0 transition-colors',
+                        'relative flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg shrink-0 transition-colors',
                         active ? 'bg-white/20 backdrop-blur-sm' : `bg-gradient-to-br ${opt.gradient} text-white`
                       )}
                     >
                       <Icon className="h-4 w-4 md:h-5 md:w-5" />
                     </span>
-                    <span className="relative flex-1 min-w-0">
-                      <span className={cn('block text-xs md:text-sm font-bold leading-tight truncate', active ? 'text-white' : 'text-foreground')}>
+                    <span className="relative flex-1 min-w-0 w-full">
+                      <span className={cn('block text-[11px] leading-tight md:text-sm font-bold md:truncate', active ? 'text-white' : 'text-foreground')}>
                         {opt.label}
                       </span>
                       <span className={cn('hidden md:block text-[10px] mt-0.5 truncate', active ? 'text-white/80' : 'text-muted-foreground')}>
