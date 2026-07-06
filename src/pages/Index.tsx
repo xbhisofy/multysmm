@@ -457,7 +457,7 @@ const Index = () => {
           <div className="relative">
             <Eyebrow>Start Today</Eyebrow>
             <h2 className="mt-4 text-[1.6rem] sm:text-[2.4rem] font-black leading-[1.02] tracking-[-0.035em] mb-5">
-              Ready to grow <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>smarter?</span>
+              Ready to grow <span style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>smarter?</span>
             </h2>
             <p className="text-[15px] sm:text-[16.5px] mb-9 max-w-md mx-auto" style={{ color: C.ink2 }}>
               Join 2,400+ creators using MultySMM's AI engine. No credit card required.
