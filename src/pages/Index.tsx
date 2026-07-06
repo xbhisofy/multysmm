@@ -219,11 +219,11 @@ const Index = () => {
                 { n: '01', t: 'Paste your post link', d: 'Drop any Instagram, YouTube or TikTok URL — that is all we need to begin.' },
                 { n: '02', t: 'Pick what to grow', d: 'Choose views, likes, comments, saves and shares. Set quantity for each.' },
                 { n: '03', t: 'Watch it deliver', d: 'AI plans the curve, jitters timing, and delivers naturally over hours.' },
-              ].map((s) => (
+              ].map((s, i) => (
                 <div key={s.n} className="rounded-2xl p-5 transition-all hover:-translate-y-0.5"
                   style={{ background: C.card, border: `1px solid ${C.line}`, boxShadow: '0 4px 20px rgba(11,11,22,.04)' }}>
                   <div className="flex items-baseline gap-4">
-                    <span className="text-[14px] font-bold" style={{ color: C.purple }}>{s.n}</span>
+                    <span className="text-[14px] font-bold" style={{ color: TRI[i % 3] }}>{s.n}</span>
                     <div className="flex-1">
                       <h3 className="text-[16px] font-bold mb-1.5">{s.t}</h3>
                       <p className="text-[13.5px] leading-relaxed" style={{ color: C.ink2 }}>{s.d}</p>
