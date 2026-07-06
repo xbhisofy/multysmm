@@ -234,6 +234,23 @@ export function AnalyticsPanel() {
         )}
       </Section>
 
+      {/* Spend by Platform */}
+      <Section title="Spend by Platform" icon={<CreditCard className="h-4 w-4" />}>
+        {(data?.platforms_spent ?? []).map((p) => (
+          <AnalyticsStatCard
+            key={p.platform}
+            label={p.platform}
+            value={inr(p.spent)}
+            icon={<Layers className="h-4 w-4" />}
+            accent="warning"
+            hint={`${num(p.count)} orders`}
+          />
+        ))}
+        {(!data?.platforms_spent || data.platforms_spent.length === 0) && (
+          <p className="text-sm text-muted-foreground col-span-full">No spending in this range.</p>
+        )}
+      </Section>
+
       {/* Top lists */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <TopList
