@@ -418,7 +418,7 @@ export default function AdminTopupPlan() {
                       {b.pending_quantity.toLocaleString()}
                     </p>
                     <p className="text-[11px] text-muted-foreground mt-1">
-                      {b.pending_runs.toLocaleString()} pending runs · ${b.pending_user_usd.toFixed(2)} user value
+                      {b.pending_runs.toLocaleString()} pending runs · ₹{(b.pending_user_usd * usdToInr).toFixed(2)} user value
                     </p>
                   </div>
                 ))}
