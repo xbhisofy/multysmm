@@ -40,7 +40,7 @@ import {
   curveToSchedule,
   calculateQuantitiesFromCurve,
 } from "@/lib/curve-to-schedule";
-import { Loader2, Rocket, Link as LinkIcon, Wallet, RefreshCw, Brain, Percent, HelpCircle, Eye, Heart, MessageCircle, Bookmark, Share2, AlertTriangle } from "lucide-react";
+import { Loader2, Rocket, Link as LinkIcon, Wallet, RefreshCw, Brain, Percent, Eye, Heart, MessageCircle, Bookmark, Share2, AlertTriangle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useDebounce } from "@/hooks/useDebounce";
 import { FullOrganicConfig } from "@/lib/organic-algorithm";
@@ -1522,14 +1522,6 @@ export default function EngagementOrder() {
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-medium px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-border bg-muted/40 text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="How organic engagement works"
-              >
-                <HelpCircle className="h-3.5 w-3.5" />
-                <span>Guide</span>
-              </button>
               <span className="text-xs sm:text-sm bg-primary/10 text-primary px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-medium">
                 {bundlesLoading ? (
                   <span className="flex items-center gap-1.5"><Loader2 className="h-3 w-3 animate-spin" /> ...</span>
