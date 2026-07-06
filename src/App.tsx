@@ -28,7 +28,7 @@ import AiAssistant from "./pages/AiAssistant";
 import EngagementOrder from "./pages/EngagementOrder";
 import EngagementOrders from "./pages/EngagementOrders";
 import EngagementOrderDetail from "./pages/EngagementOrderDetail";
-import Templates from "./pages/Templates";
+
 
 // Admin pages
 import Admin from "./pages/admin/Admin";
@@ -44,7 +44,7 @@ import AdminPopupAd from "./pages/admin/AdminPopupAd";
 import AdminTopupPlan from "./pages/admin/AdminTopupPlan";
 import AdminChat from "./pages/admin/AdminChat";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
-import AdminTemplateSettings from "./pages/admin/AdminTemplateSettings";
+
 
 import { GlobalSubscriptionGuard } from "@/components/subscription/GlobalSubscriptionGuard";
 import { LiveChatWidget } from "@/components/chat/LiveChatWidget";
@@ -122,7 +122,7 @@ const App = () => {
                     <Route path="/engagement-order" element={<EngagementOrder />} />
                     <Route path="/engagement-orders" element={<EngagementOrders />} />
                     <Route path="/engagement-orders/:orderNumber" element={<EngagementOrderDetail />} />
-                    <Route path="/templates" element={<Templates />} />
+                    
 
                     {/* Admin — server-verified guard */}
                     <Route path="/admin" element={<AdminGuard><Admin /></AdminGuard>} />
@@ -138,7 +138,7 @@ const App = () => {
                     <Route path="/admin/audit-log" element={<AdminGuard><AdminAuditLog /></AdminGuard>} />
                     <Route path="/admin/popup-ad" element={<AdminGuard><AdminPopupAd /></AdminGuard>} />
                     <Route path="/admin/topup-plan" element={<AdminGuard><AdminTopupPlan /></AdminGuard>} />
-                    <Route path="/admin/template-settings" element={<AdminGuard><AdminTemplateSettings /></AdminGuard>} />
+                    
 
                     {/* Legal */}
                     <Route path="/terms" element={<TermsOfService />} />
