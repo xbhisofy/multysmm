@@ -267,7 +267,10 @@ export default function EngagementOrder() {
       if (error) throw error;
       return data;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     placeholderData: keepPreviousData,
   });
 
@@ -311,7 +314,8 @@ export default function EngagementOrder() {
       return data as (EngagementBundle & { items: (BundleItem & { service: any })[] })[];
     },
     enabled: !!platform && availablePlatforms.includes(platform),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
     placeholderData: keepPreviousData,
     refetchOnWindowFocus: false,
     refetchOnMount: false,

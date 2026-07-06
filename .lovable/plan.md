@@ -1,94 +1,40 @@
-# Smart Order Templates
+# High-Level Performance Optimization Plan
 
-A reusable "personal order profile" system. User saves every order setting (except the link) once, then future orders = open template → paste link → place order.
+Goal: sustain lakhs of users and orders without slowdowns. Backend is healthy (6% mem, 22/240 conns, 40 MB DB) — real bottlenecks are heavy nested reads and aggressive polling from the frontend. Fixes focus on cutting DB work per user, not adding hardware.
 
----
+## Findings (from slow-query + pg_stat scan)
 
-## 1. Database (single migration)
+1. `EngagementOrders` list query = **#1 slowest** platform-wide (2655 calls, 163ms avg, 433s total). It embeds `items → runs` returning ~2500 rows per poll per user just to compute a progress bar.
+2. `organic_run_schedule` polling for rotation state = **#2 slowest** (174k calls, 2ms avg, 363s total).
+3. Static tables (`services`, `provider_accounts`, `bundles`) hit with hundreds of thousands of seq_scans — being re-fetched instead of cached.
+4. `EngagementOrderDetail` polls every 5s even though realtime is already subscribed and debounces invalidations.
 
-**Table `public.order_templates`**
-- `user_id` (owner, RLS-scoped)
-- `name`, `description`, `category` (Instagram/TikTok/YouTube/Facebook/Telegram/X/Other)
-- `is_favorite` (bool), `color_label` (blue/orange/green/purple/red/yellow)
-- `platform`, `service_id` (nullable — service may later be deleted)
-- `service_snapshot` jsonb (name/category cached for display if service removed)
-- `config` jsonb — the full snapshot: quantity, runs, interval, interval_unit, drip_feed, AI organic flags, delivery settings, advanced options, filters (country/gender/language/keywords/hashtags), and any engagement-order sub-items
-- `usage_count` int, `last_used_at`, `created_at`, `updated_at`
-- `is_archived` bool
+## Changes
 
-RLS: user can CRUD only own rows; service_role full access.
-Trigger: `updated_at` auto-refresh.
+### 1. Aggregate orders list via a single RPC (biggest win)
+Add `public.get_user_engagement_orders_summary(p_user_id uuid, p_limit int)` (SECURITY DEFINER, indexed lookups) returning per order:
+`id, order_number, status, total_price, link, base_quantity, created_at, updated_at, is_organic_mode, items_json` — where `items_json` is a compact jsonb array of `{id, engagement_type, quantity, status, total_runs, completed_runs, cancelled_runs, delivered_qty}` (aggregates only, no run rows).
 
-**Table `public.template_settings`** (single row, admin-managed)
-- `enabled`, `max_per_user` (default 50)
-- allow_categories / allow_favorites / allow_color_labels / allow_descriptions / allow_duplicate / allow_archive / allow_dashboard_widget / allow_save_after_order / allow_save_from_repeat
-- `max_name_length` (default 60), `max_description_length` (default 300)
+Update `EngagementOrders.tsx` to call the RPC and derive progress from the aggregates instead of scanning `item.runs`. Response payload drops ~95%; query time expected < 20ms.
 
-Public SELECT on settings (needed by client to hide/show features); UPDATE only for admin.
+### 2. Slow the detail poll, trust realtime
+`EngagementOrderDetail.tsx` already has a realtime subscription with 800ms debounce. Change the poll ladder from 5s / 10s / 15s → **20s / 30s / 60s**, and stop polling entirely once realtime has fired within the last 45s. Same UX, ~4× fewer DB hits.
 
----
+### 3. Long-lived cache for static reference data
+Bump per-query `staleTime` to 10 min and add `gcTime: 30 min` on the queries that read `services`, `engagement_bundles`, `providers`, `provider_accounts`, `platform_settings`, `template_settings` (if any left), and `subscription` plan lists. These change rarely; today they're re-fetched on every screen mount despite the global 5-min default (individual queries override it).
 
-## 2. Frontend — new files
+### 4. Targeted indexes only where a plan proves them missing
+Existing indexes already cover the hot paths (user_id+created_at, status partial indexes, run scheduling). Skip speculative index adds. If EXPLAIN on the new RPC shows a seq scan we don't expect, add one composite index in a follow-up migration.
 
-**Pages**
-- `src/pages/Templates.tsx` — list page: search bar, filter chips (platform/category/favorites/recent/most-used), sort dropdown, grid of template cards, "Create Template" button. Favorites pinned first.
-- `src/pages/TemplateEditor.tsx` — create/edit form (name required; description, category, color, favorite optional). Also embeds the existing engagement-order config panel so user can define the full snapshot.
+## Files touched
+- `supabase/migrations/*` — one migration adding the RPC + grants to `authenticated`.
+- `src/pages/EngagementOrders.tsx` — switch to `supabase.rpc(...)`, adjust progress calc to use aggregates.
+- `src/pages/EngagementOrderDetail.tsx` — new poll ladder + realtime-aware pause.
+- 2–3 hooks reading static tables — add `staleTime: 10*60*1000, gcTime: 30*60*1000`.
 
-**Components**
-- `src/components/templates/TemplateCard.tsx` — preview card (icon, name, service, qty, runs, interval, live estimated price via current service pricing, usage count, last used, note, color strip). Buttons: Use / Edit / Duplicate / Favorite / Delete.
-- `src/components/templates/SaveAsTemplateDialog.tsx` — reusable dialog to save current config; used from EngagementOrder after successful order and from Repeat Order.
-- `src/components/dashboard/QuickTemplatesWidget.tsx` — dashboard card with top 4 favorites/recent + "View All →".
+## Out of scope
+- Compute upgrade (not needed at current load; Cloud instance is idle).
+- Schema/table redesign, denormalization, or partitioning (premature at 40 MB DB size).
+- Rewriting edge functions (none flagged in slow-query output).
 
-**Hooks / lib**
-- `src/hooks/useTemplates.tsx` — CRUD, search, filter, sort, favorite toggle, duplicate, archive, usage tracking (increments `usage_count`, sets `last_used_at` on use).
-- `src/lib/template-config.ts` — helpers to serialize the current engagement-order form state into `config` snapshot and to hydrate the form back from a snapshot.
-
----
-
-## 3. Integration points (edits to existing files)
-
-- `src/components/layout/Sidebar.tsx` — add "Templates" nav item (Bookmark icon) between Engagement Orders and AI Assistant.
-- `src/App.tsx` — register `/templates` and `/templates/new`, `/templates/:id/edit` routes.
-- `src/pages/EngagementOrder.tsx`:
-  - Read `?template=<id>` query param → load template config, hydrate form, clear link field only.
-  - After successful order placement → show "Save as Template" button (respects `allow_save_after_order`).
-- `src/pages/Dashboard.tsx` — mount `<QuickTemplatesWidget />` when `allow_dashboard_widget` is on.
-- Repeat-order flow → add "Save Configuration as Template" action (respects `allow_save_from_repeat`).
-
----
-
-## 4. Behaviour rules
-
-- **Price is never stored.** Card always recomputes from current service price × quantity.
-- **Discontinued service:** if `service_id` no longer exists / inactive, card shows "Discontinued service" banner with `Choose Replacement` or `Delete`. Use button disabled.
-- **Only link is empty on use.** Every other saved field is restored exactly.
-- **Validation:** name required (respect max length), service must exist + active, quantity/runs/interval > 0, enforce `max_per_user` limit server-side (via trigger) and client-side.
-- **Server-side ownership check** on every mutation via RLS.
-
----
-
-## 5. Admin
-
-- `src/pages/admin/AdminTemplateSettings.tsx` — form bound to `template_settings` singleton with all toggles + limits.
-- Add to admin nav.
-
----
-
-## 6. Out of scope (future, DB shape already supports)
-
-Public marketplace, share/export/import, QR, AI-generated, team/agency templates. No code now, but jsonb `config` + separate settings row leave room.
-
----
-
-## Build order
-
-1. Migration (tables + RLS + settings singleton).
-2. Hook + lib helpers.
-3. Templates list page + card + editor.
-4. Sidebar entry + routes.
-5. EngagementOrder `?template=` hydration + "Save as Template" post-order.
-6. Dashboard widget.
-7. Repeat-order "Save as Template" entry.
-8. Admin settings page.
-
-Approve karo toh migration se shuru karta hun.
+Approve and I'll implement in one pass.
