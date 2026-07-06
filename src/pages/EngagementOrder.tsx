@@ -44,6 +44,8 @@ import { Loader2, Rocket, Link as LinkIcon, Wallet, RefreshCw, Brain, Percent, E
 import { Switch } from "@/components/ui/switch";
 import { useDebounce } from "@/hooks/useDebounce";
 import { FullOrganicConfig } from "@/lib/organic-algorithm";
+import { TemplateEditorDialog } from "@/components/templates/TemplateEditorDialog";
+import { useTemplateMutations, useTemplateSettings, DEFAULT_TEMPLATE_SETTINGS } from "@/hooks/useTemplates";
 
 type EngagementConfigs = Record<string, EngagementConfig>;
 
