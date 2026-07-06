@@ -3,14 +3,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 
 const DEFAULT_RATES: Record<CurrencyCode, number> = {
-  USD: 1,
   INR: 83.5,
-  EUR: 0.92,
-  GBP: 0.79,
-  AED: 3.67,
 };
 
-export type CurrencyCode = 'USD' | 'INR' | 'EUR' | 'GBP' | 'AED';
+export type CurrencyCode = 'INR';
 
 interface CurrencyInfo {
   code: CurrencyCode;
@@ -20,12 +16,9 @@ interface CurrencyInfo {
 }
 
 export const CURRENCIES: CurrencyInfo[] = [
-  { code: 'USD', symbol: '$', name: 'US Dollar', flag: '🇺🇸' },
   { code: 'INR', symbol: '₹', name: 'Indian Rupee', flag: '🇮🇳' },
-  { code: 'EUR', symbol: '€', name: 'Euro', flag: '🇪🇺' },
-  { code: 'GBP', symbol: '£', name: 'British Pound', flag: '🇬🇧' },
-  { code: 'AED', symbol: 'د.إ', name: 'UAE Dirham', flag: '🇦🇪' },
 ];
+
 
 interface CurrencyContextType {
   currency: CurrencyCode;
