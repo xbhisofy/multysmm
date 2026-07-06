@@ -1234,14 +1234,14 @@ export default function EngagementOrder() {
               }}
               className={`group relative text-left rounded-xl p-3.5 sm:p-4 transition-all border ${
                 isOrganicMode
-                  ? 'border-primary/50 bg-gradient-to-br from-primary/[0.09] to-primary/[0.03] shadow-[0_6px_20px_-12px_rgba(249,115,22,0.5)]'
-                  : 'border-border bg-background hover:border-primary/30 hover:bg-muted/40'
+                  ? 'border-violet-500/50 bg-gradient-to-br from-violet-500/[0.10] to-violet-500/[0.03] shadow-[0_6px_20px_-12px_rgba(124,58,237,0.55)]'
+                  : 'border-border bg-background hover:border-violet-400/40 hover:bg-violet-50/40 dark:hover:bg-violet-500/5'
               }`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    isOrganicMode ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'
+                    isOrganicMode ? 'bg-violet-600 text-white' : 'bg-violet-500/10 text-violet-600 dark:text-violet-400'
                   }`}>
                     <Brain className="h-4 w-4" />
                   </div>
@@ -1261,12 +1261,12 @@ export default function EngagementOrder() {
                     if (val) setIsAutoRatios(false);
                   }}
                   onClick={(e) => e.stopPropagation()}
-                  className="data-[state=checked]:bg-primary shrink-0"
+                  className="data-[state=checked]:bg-violet-600 shrink-0"
                 />
               </div>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {['Drip speed', 'Random variance', 'Algo-safe'].map((t) => (
-                  <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-muted/70 text-muted-foreground border border-border/60">
+                  <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/20">
                     {t}
                   </span>
                 ))}
