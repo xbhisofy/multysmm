@@ -317,12 +317,12 @@ export function EngagementTypeCard({
 
   return (
     <Card className={cn(
-      "three-d-card border-2",
+      "three-d-card border",
       hasError
-        ? "border-white/20"
+        ? "border-destructive/40"
         : config.enabled
-          ? "border-primary/30"
-          : "border-white/5 opacity-60"
+          ? "border-primary/25"
+          : "border-border/60 opacity-70"
     )}>
       <CardContent className="p-2 sm:p-3 overflow-hidden">
         {/* Header Row - compact single line */}
@@ -340,14 +340,14 @@ export function EngagementTypeCard({
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
-                <span className={cn(
-                  "text-sm sm:text-[15px] font-semibold tracking-tight truncate",
+                  <span className={cn(
+                  "text-sm sm:text-[15px] font-medium truncate",
                   engagementConfig.color
                 )}>
                   {engagementConfig.emoji} {engagementConfig.label}
                 </span>
                 {type === 'views' && (
-                  <Badge className="text-[9px] bg-primary/15 text-primary font-semibold px-1.5 py-0 rounded-full border-none normal-case tracking-normal">
+                  <Badge className="text-[9px] bg-primary/10 text-primary font-medium px-1.5 py-0 rounded-full border-none normal-case tracking-normal">
                     Base
                   </Badge>
                 )}
@@ -379,7 +379,7 @@ export function EngagementTypeCard({
                 )}
               />
             )}
-            <Badge variant="outline" className="font-semibold text-[10px] sm:text-xs border-border bg-muted/50 text-muted-foreground px-2 py-0.5 shrink-0 rounded-full">
+            <Badge variant="outline" className="font-medium text-[10px] sm:text-xs border-border bg-muted/50 text-muted-foreground px-2 py-0.5 shrink-0 rounded-full">
               {formatPrice(config.price)}
             </Badge>
             <div className="scale-90 sm:scale-100">
@@ -410,24 +410,20 @@ export function EngagementTypeCard({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="group mt-3 w-full flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors px-3 py-2.5 text-left data-[state=open]:bg-primary/10"
+                className="group mt-3 w-full flex items-center gap-3 rounded-xl border border-border bg-muted/30 hover:bg-muted/50 transition-colors px-3 py-2.5 text-left"
               >
-                <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <Timer className="h-4 w-4" />
-                  <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
-                  </span>
                 </span>
                 <span className="flex-1 min-w-0">
                   <span className="block text-[13px] font-medium text-foreground leading-tight">
-                    Customise delivery
+                    Delivery settings
                   </span>
                   <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5 font-normal">
-                    Delivery time, runs, variance & peak hours
+                    Time, batches and timing
                   </span>
                 </span>
-                <span className="flex items-center gap-1 text-[11px] font-medium text-primary shrink-0">
+                <span className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground shrink-0">
                   Open
                   <ChevronDown className="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform" />
                 </span>
@@ -435,16 +431,10 @@ export function EngagementTypeCard({
             </CollapsibleTrigger>
             <CollapsibleContent>
               <div className="mt-2 pt-2 border-t border-border space-y-3">
-                {/* Friendly intro: what is this section */}
-                <div className="rounded-lg bg-muted/40 border border-border px-3 py-2">
-                  <p className="text-[11px] leading-snug text-muted-foreground">
-                    <strong className="text-foreground">How delivery works:</strong> we split your total qty into multiple smaller batches ("runs") and ship them over the selected time window with randomised quantity + timing. More runs + longer time + higher variance = more organic looking.
-                  </p>
-                </div>
                 {/* Time Limit + Number of Runs side-by-side */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-1.5 min-w-0">
-                  <Label className="text-[10px] font-bold flex items-center gap-1.5 text-foreground uppercase tracking-widest">
+                  <Label className="text-xs font-medium flex items-center gap-1.5 text-foreground">
                     <Timer className="h-3 w-3 text-foreground" />
                     Delivery Time
                   </Label>
@@ -469,7 +459,7 @@ export function EngagementTypeCard({
                           variant={isSelected ? "default" : "outline"}
                           size="sm"
                           className={cn(
-                            "h-6 text-[10px] px-2 font-bold",
+                            "h-6 text-[10px] px-2 font-medium",
                             isSelected
                               ? "bg-foreground text-background"
                               : "bg-secondary text-foreground border border-border hover:bg-muted"
@@ -512,7 +502,7 @@ export function EngagementTypeCard({
                         min={1}
                         max={168}
                         step={1}
-                        className="w-20 sm:w-24 h-9 sm:h-10 text-sm sm:text-base bg-secondary border-2 border-border text-foreground font-bold"
+                        className="w-20 sm:w-24 h-9 sm:h-10 text-sm sm:text-base bg-secondary border border-border text-foreground font-medium"
                       />
                       <span className="text-xs sm:text-sm text-muted-foreground font-medium">hours</span>
                     </div>
@@ -521,7 +511,7 @@ export function EngagementTypeCard({
 
                 {/* Number of Runs */}
                 <div className="space-y-2 min-w-0">
-                  <Label className="text-[10px] font-bold flex flex-wrap items-center justify-between gap-1 text-foreground uppercase tracking-widest">
+                  <Label className="text-xs font-medium flex flex-wrap items-center justify-between gap-1 text-foreground">
                     <span className="flex items-center gap-1.5">
                       <List className="h-3 w-3 text-foreground" />
                       Number of Runs
@@ -554,7 +544,7 @@ export function EngagementTypeCard({
                           size="sm"
                           disabled={disabled}
                           className={cn(
-                            "h-7 min-w-[42px] px-2.5 text-[11px] font-bold rounded-md",
+                            "h-7 min-w-[42px] px-2.5 text-[11px] font-medium rounded-md",
                             isSelected
                               ? "bg-foreground text-background border-foreground"
                               : "bg-secondary text-foreground border border-border hover:bg-muted",
@@ -593,7 +583,7 @@ export function EngagementTypeCard({
                           }
                           handleRunCountChange(n);
                         }}
-                        className="w-20 sm:w-24 h-7 text-xs text-center bg-secondary border-2 border-border text-foreground font-bold px-1.5"
+                        className="w-20 sm:w-24 h-7 text-xs text-center bg-secondary border border-border text-foreground font-medium px-1.5"
                       />
                     </div>
                   </div>
@@ -601,10 +591,10 @@ export function EngagementTypeCard({
                   {/* Per-run hint */}
                   {config.runCount && config.runCount > 0 && config.quantity > 0 && (
                     <div className="flex items-center justify-between gap-2 px-2 py-1.5 rounded-md bg-secondary/60 border border-border/60">
-                      <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                      <span className="text-[10px] text-muted-foreground font-medium">
                         Per run
                       </span>
-                      <span className="text-[11px] font-bold text-foreground font-mono">
+                      <span className="text-[11px] font-medium text-foreground">
                         ~{Math.round(config.quantity / config.runCount).toLocaleString()} {engagementConfig?.label.toLowerCase()}
                       </span>
                     </div>
@@ -612,10 +602,10 @@ export function EngagementTypeCard({
 
                   {config.runIntervalMinutes && config.runCount && config.runCount > 1 && (
                     <div className="flex items-center justify-between gap-2 px-2 py-1.5 rounded-md bg-primary/10 border border-primary/30">
-                      <span className="text-[10px] text-primary font-medium uppercase tracking-wider">
+                      <span className="text-[10px] text-primary font-medium">
                         Restored interval
                       </span>
-                      <span className="text-[11px] font-bold text-foreground font-mono">
+                      <span className="text-[11px] font-medium text-foreground">
                         {config.runIntervalMinutes >= 1440 && config.runIntervalMinutes % 1440 === 0
                           ? `${config.runIntervalMinutes / 1440} day${config.runIntervalMinutes / 1440 === 1 ? '' : 's'}`
                           : config.runIntervalMinutes >= 60 && config.runIntervalMinutes % 60 === 0
@@ -626,7 +616,7 @@ export function EngagementTypeCard({
                   )}
 
                   {customRunsInput && parseInt(customRunsInput, 10) > maxAllowedRuns && (
-                    <div className="flex items-start gap-1.5 text-[10px] text-red-500 font-bold p-2 rounded-md bg-red-500/10 border border-red-500/30">
+                    <div className="flex items-start gap-1.5 text-[10px] text-destructive font-medium p-2 rounded-md bg-destructive/10 border border-destructive/30">
                       <AlertTriangle className="h-3 w-3 mt-0.5 shrink-0" />
                       <span>Max {maxAllowedRuns} runs allowed ({config.quantity.toLocaleString()} ÷ {providerMin})</span>
                     </div>
