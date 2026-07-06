@@ -7,25 +7,30 @@ import {
 } from 'lucide-react';
 import { PageMeta } from '@/components/seo/PageMeta';
 
-// MultySMM brand palette — purple → pink gradient on white
+// MultySMM brand palette — 3 logo colors (orange → magenta → purple)
 const C = {
   bg: '#FFFFFF',
-  bgSoft: '#FAFAFE',
-  ink: '#0B0B16',
+  bgSoft: '#FBF8FE',
+  ink: '#0F1A2B',
   ink2: '#4A4A5E',
   muted: '#8A8A9E',
-  line: 'rgba(11,11,22,.08)',
+  line: 'rgba(15,26,43,.08)',
   card: '#FFFFFF',
-  purple: '#A855F7',
-  purpleDeep: '#7C3AED',
-  pink: '#EC4899',
-  orange: '#F97316',
-  lilac: '#FDF4FF',
+  orange: '#F26522',
+  magenta: '#D63384',
+  purple: '#7B2CBF',
+  purpleDeep: '#5A189A',
+  pink: '#D63384',
+  lilac: '#F3E8FF',
+  orangeSoft: '#FFEDE3',
+  magentaSoft: '#FCE7F1',
   serif: "'Instrument Serif', 'Times New Roman', serif",
   sans: "'Inter', system-ui, sans-serif",
 };
 
-const GRADIENT = `linear-gradient(135deg, #F97316 0%, #EC4899 55%, #A855F7 100%)`;
+const GRADIENT = `linear-gradient(135deg, #F26522 0%, #D63384 50%, #7B2CBF 100%)`;
+const TRI = ['#F26522', '#D63384', '#7B2CBF'];
+const TRI_SOFT = ['#FFEDE3', '#FCE7F1', '#F3E8FF'];
 
 
 const Eyebrow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
