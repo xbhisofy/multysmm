@@ -40,8 +40,7 @@ import {
   curveToSchedule,
   calculateQuantitiesFromCurve,
 } from "@/lib/curve-to-schedule";
-import { Loader2, Rocket, Link as LinkIcon, Wallet, RefreshCw, Brain, Percent, HelpCircle, ArrowDown, Sparkles, Clock, Shuffle, Shield, TrendingUp, Eye, Heart, MessageCircle, Bookmark, Share2, AlertTriangle } from "lucide-react";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Loader2, Rocket, Link as LinkIcon, Wallet, RefreshCw, Brain, Percent, Eye, Heart, MessageCircle, Bookmark, Share2, AlertTriangle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useDebounce } from "@/hooks/useDebounce";
 import { FullOrganicConfig } from "@/lib/organic-algorithm";
@@ -1187,52 +1186,23 @@ export default function EngagementOrder() {
   return (
     <DashboardLayout>
       <div className="max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 space-y-3 sm:space-y-6 pb-8">
-        {/* Engagement console — clean & friendly */}
-        <div className="relative overflow-hidden rounded-2xl bg-white border border-slate-200/80 shadow-sm">
-          {/* soft gradient wash */}
-          <div
-            className="absolute inset-x-0 top-0 h-40 pointer-events-none opacity-70"
-            style={{
-              background:
-                'radial-gradient(60% 100% at 0% 0%, rgba(249,115,22,.10), transparent 60%), radial-gradient(50% 100% at 100% 0%, rgba(139,92,246,.10), transparent 60%)',
-            }}
-          />
-
-          {/* header */}
-          <div className="relative flex items-center justify-between gap-3 px-4 sm:px-6 py-4 sm:py-5">
-            <div className="flex items-center gap-3 min-w-0">
-              <div
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-md"
-                style={{ background: 'linear-gradient(135deg, #F97316, #EC4899 55%, #8B5CF6)' }}
-              >
-                <Rocket className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-400">
-                  Engagement Console
-                </p>
-                <h1 className="text-base sm:text-lg font-semibold text-slate-900 tracking-tight leading-tight">
-                  Organic Full Engagement
-                </h1>
-                <p className="hidden sm:block text-xs text-slate-500 mt-1">
-                  Ek link paste karo — likes, views, comments sab natural speed pe.
-                </p>
-              </div>
+        {/* Engagement console — simple mode picker */}
+        <div className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
+          <div className="flex items-start gap-3 px-4 sm:px-5 py-4 border-b border-border/70">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <Rocket className="h-5 w-5" />
             </div>
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-100 shrink-0">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inset-0 rounded-full opacity-75 animate-ping bg-emerald-500" />
-                <span className="relative rounded-full h-1.5 w-1.5 bg-emerald-500" />
-              </span>
-              Active
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-xl font-semibold text-foreground leading-snug">
+                Organic Full Engagement
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                Bas link paste karo. Baaki delivery hum simple aur natural rakhenge.
+              </p>
             </div>
           </div>
 
-          <div className="relative h-px bg-slate-100" />
-
-          {/* two toggle cards */}
-          <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 sm:p-4">
-            {/* AI Organic Algorithm */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-3 sm:p-4">
             <button
               type="button"
               onClick={() => {
@@ -1240,28 +1210,23 @@ export default function EngagementOrder() {
                 setIsOrganicMode(val);
                 if (val) setIsAutoRatios(false);
               }}
-              className={`text-left rounded-xl p-4 transition-all border ${
+              className={`text-left rounded-xl p-3 sm:p-4 transition-colors border ${
                 isOrganicMode
-                  ? 'border-orange-200 bg-orange-50/70 shadow-[0_6px_18px_-8px_rgba(249,115,22,.35)]'
-                  : 'border-slate-200/70 bg-white hover:bg-slate-50 hover:border-slate-300'
+                  ? 'border-primary/40 bg-primary/10'
+                  : 'border-border bg-background hover:bg-muted/40'
               }`}
             >
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div
-                    className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
-                      isOrganicMode ? 'text-white shadow-md' : 'text-orange-500 bg-orange-50 border border-orange-100'
-                    }`}
-                    style={isOrganicMode ? { background: 'linear-gradient(135deg, #F97316, #EA580C)' } : undefined}
-                  >
-                    <Brain className="h-5 w-5" />
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <Brain className="h-4 w-4" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-sm font-semibold text-slate-900 leading-tight">
-                      Organic Algorithm
+                    <h3 className="text-sm sm:text-base font-medium text-foreground leading-tight">
+                      Natural Delivery
                     </h3>
-                    <p className="text-xs text-slate-500 mt-0.5 leading-snug">
-                      Natural, human-like delivery
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-snug">
+                      Safe speed pe split delivery
                     </p>
                   </div>
                 </div>
@@ -1272,26 +1237,11 @@ export default function EngagementOrder() {
                     if (val) setIsAutoRatios(false);
                   }}
                   onClick={(e) => e.stopPropagation()}
-                  className="data-[state=checked]:bg-orange-500 shrink-0"
+                  className="data-[state=checked]:bg-primary shrink-0"
                 />
-              </div>
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                {['Drip speed', 'Random variance', 'Safe for algo'].map((t) => (
-                  <span
-                    key={t}
-                    className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
-                      isOrganicMode
-                        ? 'bg-white text-orange-600 border border-orange-100'
-                        : 'bg-slate-50 text-slate-500 border border-slate-100'
-                    }`}
-                  >
-                    {t}
-                  </span>
-                ))}
               </div>
             </button>
 
-            {/* AI Smart Ratios */}
             <button
               type="button"
               onClick={() => {
@@ -1299,28 +1249,23 @@ export default function EngagementOrder() {
                 setIsAutoRatios(val);
                 if (val) setIsOrganicMode(false);
               }}
-              className={`text-left rounded-xl p-4 transition-all border ${
+              className={`text-left rounded-xl p-3 sm:p-4 transition-colors border ${
                 isAutoRatios
-                  ? 'border-purple-200 bg-purple-50/70 shadow-[0_6px_18px_-8px_rgba(139,92,246,.35)]'
-                  : 'border-slate-200/70 bg-white hover:bg-slate-50 hover:border-slate-300'
+                  ? 'border-primary/40 bg-primary/10'
+                  : 'border-border bg-background hover:bg-muted/40'
               }`}
             >
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div
-                    className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
-                      isAutoRatios ? 'text-white shadow-md' : 'text-purple-500 bg-purple-50 border border-purple-100'
-                    }`}
-                    style={isAutoRatios ? { background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)' } : undefined}
-                  >
-                    <Percent className="h-5 w-5" />
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <Percent className="h-4 w-4" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-sm font-semibold text-slate-900 leading-tight">
-                      Smart Ratios
+                    <h3 className="text-sm sm:text-base font-medium text-foreground leading-tight">
+                      Auto Mix
                     </h3>
-                    <p className="text-xs text-slate-500 mt-0.5 leading-snug">
-                      Auto-balanced engagement mix
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-snug">
+                      Views, likes, comments ka balance
                     </p>
                   </div>
                 </div>
@@ -1331,42 +1276,16 @@ export default function EngagementOrder() {
                     if (val) setIsOrganicMode(false);
                   }}
                   onClick={(e) => e.stopPropagation()}
-                  className="data-[state=checked]:bg-purple-500 shrink-0"
+                  className="data-[state=checked]:bg-primary shrink-0"
                 />
-              </div>
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                {['Auto mix', 'Best ratios', 'One-tap'].map((t) => (
-                  <span
-                    key={t}
-                    className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
-                      isAutoRatios
-                        ? 'bg-white text-purple-600 border border-purple-100'
-                        : 'bg-slate-50 text-slate-500 border border-slate-100'
-                    }`}
-                  >
-                    {t}
-                  </span>
-                ))}
               </div>
             </button>
           </div>
 
-          {/* footer */}
-          <div className="relative flex items-center justify-between gap-2 px-4 sm:px-6 py-3 border-t border-slate-100 bg-slate-50/60">
-            <p className="text-xs text-slate-500">
-              Ek link, saari engagement — bilkul natural.
+          <div className="px-4 sm:px-5 py-3 border-t border-border/70 bg-muted/30">
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Current mode: <span className="font-medium text-foreground">{isOrganicMode ? 'Natural Delivery' : isAutoRatios ? 'Auto Mix' : 'Manual'}</span>
             </p>
-            <span
-              className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                isOrganicMode
-                  ? 'bg-orange-50 text-orange-600 border border-orange-100'
-                  : isAutoRatios
-                  ? 'bg-purple-50 text-purple-600 border border-purple-100'
-                  : 'bg-slate-100 text-slate-500 border border-slate-200'
-              }`}
-            >
-              {isOrganicMode ? 'Organic mode' : isAutoRatios ? 'Auto mode' : 'Manual mode'}
-            </span>
           </div>
         </div>
 
@@ -1380,8 +1299,8 @@ export default function EngagementOrder() {
               <div className="w-7 h-7 rounded-lg bg-foreground/10 flex items-center justify-center">
                 <Rocket className="h-3.5 w-3.5 text-foreground" />
               </div>
-              <Label className="text-sm font-bold tracking-tight text-foreground">Select Platform</Label>
-              <span className="ml-auto text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Pick one</span>
+              <Label className="text-sm font-medium text-foreground">Select Platform</Label>
+              <span className="ml-auto text-xs text-muted-foreground font-medium">Pick one</span>
             </div>
             <PlatformSelector
               selected={platform}
@@ -1441,7 +1360,7 @@ export default function EngagementOrder() {
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-foreground/10 flex items-center justify-center">
                 <LinkIcon className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
               </div>
-              <Label className="text-base sm:text-lg font-bold tracking-tight text-foreground">Video/Post Link</Label>
+              <Label className="text-base sm:text-lg font-medium text-foreground">Video/Post Link</Label>
               {/* Single / Mass segmented toggle */}
               <div className="ml-auto inline-flex p-1 rounded-full bg-secondary border border-border" role="tablist">
                 <button
@@ -1597,71 +1516,13 @@ export default function EngagementOrder() {
         <div className="space-y-4 sm:space-y-5">
           <div className="flex items-center justify-between px-1 gap-2">
             <div className="min-w-0">
-              <h2 className="text-lg sm:text-xl font-bold tracking-tight text-foreground">Engagement Breakdown</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-foreground">Engagement Breakdown</h2>
               <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1 hidden sm:block">
                 Customize organic settings per type
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    className="relative inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-success/40 bg-success/10 text-success hover:bg-success/15 transition-colors"
-                    aria-label="How organic engagement works"
-                  >
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
-                    </span>
-                    <HelpCircle className="h-3.5 w-3.5" />
-                    <span className="hidden sm:inline">How it works</span>
-                    <span className="sm:hidden">Guide</span>
-                    <ArrowDown className="h-3 w-3 animate-bounce" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent align="end" className="w-[320px] sm:w-[380px] p-0 overflow-hidden">
-                  <div className="p-4 bg-gradient-to-br from-success/15 via-success/5 to-transparent border-b border-border">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Sparkles className="h-4 w-4 text-success" />
-                      <h3 className="text-sm font-bold text-foreground">How Full Engagement Works</h3>
-                    </div>
-                    <p className="text-[11px] text-muted-foreground leading-relaxed">
-                      One link → views, likes, comments, saves & shares — delivered like real humans.
-                    </p>
-                  </div>
-                  <div className="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
-                    {[
-                      { icon: LinkIcon, title: 'Paste your post link', desc: 'Instagram reel, post or YouTube — one link triggers all engagement types.' },
-                      { icon: Eye, title: 'Pick what you want', desc: 'Toggle Views, Likes, Comments, Saves, Shares. Set quantity per type or use the bundle.' },
-                      { icon: Brain, title: 'AI plans organic delivery', desc: 'S-curve schedule splits each type into 5–15 runs with ±50% qty variance — no two batches identical.' },
-                      { icon: Clock, title: 'Smart timing', desc: 'Peak hours (6–10 PM IST) get 1.5× boost. Night slows down. ±5min jitter on every run.' },
-                      { icon: Shuffle, title: 'Multi-provider rotation', desc: 'Each run auto-routes to the best available provider for that type — quality stays high.' },
-                      { icon: TrendingUp, title: 'Maintained, not dumped', desc: 'Engagement keeps trickling over hours so your post looks consistently active — not spiked.' },
-                      { icon: Shield, title: '100% account safe', desc: 'Randomized patterns + human-like pacing = undetectable. Zero ban risk.' },
-                    ].map((s, i) => (
-                      <div key={s.title} className="flex gap-2.5">
-                        <div className="shrink-0 w-7 h-7 rounded-lg bg-success/10 text-success flex items-center justify-center font-bold text-[11px]">
-                          {i + 1}
-                        </div>
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-1.5 mb-0.5">
-                            <s.icon className="h-3 w-3 text-success" />
-                            <p className="text-[12px] font-bold text-foreground">{s.title}</p>
-                          </div>
-                          <p className="text-[11px] text-muted-foreground leading-snug">{s.desc}</p>
-                        </div>
-                      </div>
-                    ))}
-                    <div className="mt-3 p-2.5 rounded-lg bg-muted/50 border border-border">
-                      <p className="text-[11px] text-foreground leading-snug">
-                        <strong>Pro tip:</strong> Tap <span className="font-mono px-1 py-0.5 bg-background rounded border border-border text-[10px]">Settings</span> on each card below to fine-tune delivery time, number of runs and variance per engagement type.
-                      </p>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-              <span className="text-xs sm:text-sm bg-foreground text-background px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-bold">
+              <span className="text-xs sm:text-sm bg-primary/10 text-primary px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-medium">
                 {bundlesLoading ? (
                   <span className="flex items-center gap-1.5"><Loader2 className="h-3 w-3 animate-spin" /> ...</span>
                 ) : (

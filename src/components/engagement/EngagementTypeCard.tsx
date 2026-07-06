@@ -25,7 +25,7 @@ import {
 import { ControlPoint, curveToSchedule } from "@/lib/curve-to-schedule";
 import {
   Eye, Heart, MessageCircle, Bookmark, Share2,
-  Clock, Sparkles, AlertTriangle,
+  Clock, AlertTriangle,
   Timer, Shuffle, Flame, Calendar, ChevronDown, ChevronUp, List, Pencil,
   UserPlus, Bell, Repeat, RefreshCw
 } from "lucide-react";
@@ -317,49 +317,37 @@ export function EngagementTypeCard({
 
   return (
     <Card className={cn(
-      "three-d-card border-2",
-      hasError
-        ? "border-white/20"
-        : config.enabled
-          ? "border-primary/30"
-          : "border-white/5 opacity-60"
+      "rounded-xl border bg-card shadow-sm",
+      hasError ? "border-destructive/40" : "border-border",
+      !config.enabled && "opacity-70"
     )}>
-      <CardContent className="p-2 sm:p-3 overflow-hidden">
+      <CardContent className="p-3 overflow-hidden">
         {/* Header Row - compact single line */}
         <div className="flex items-center justify-between gap-1.5 sm:gap-2 min-w-0">
           {/* Left: Icon + Label */}
           <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
             <div className={cn(
-              "p-1 sm:p-1.5 rounded-lg sm:rounded-xl shrink-0",
-              config.enabled ? "bg-white/10" : "bg-white/5"
+              "p-1.5 rounded-lg shrink-0 bg-muted/60",
+              config.enabled ? "text-primary" : "text-muted-foreground"
             )}>
               <Icon className={cn(
                 "h-3.5 w-3.5 sm:h-4 sm:w-4",
-                config.enabled ? "text-primary" : "text-white/20"
+                config.enabled ? "text-primary" : "text-muted-foreground"
               )} />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
-                <span className={cn(
-                  "text-sm sm:text-[15px] font-semibold tracking-tight truncate",
-                  engagementConfig.color
+                  <span className={cn(
+                  "text-sm sm:text-[15px] font-medium truncate text-foreground"
                 )}>
-                  {engagementConfig.emoji} {engagementConfig.label}
+                  {engagementConfig.label}
                 </span>
                 {type === 'views' && (
-                  <Badge className="text-[9px] bg-primary/15 text-primary font-semibold px-1.5 py-0 rounded-full border-none normal-case tracking-normal">
+                  <Badge className="text-[9px] bg-primary/10 text-primary font-medium px-1.5 py-0 rounded-full border-none normal-case tracking-normal">
                     Base
                   </Badge>
                 )}
               </div>
-              {config.enabled && scheduleData && (
-                <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-muted-foreground mt-0.5 font-medium">
-                  <Sparkles className="h-3 w-3 text-primary shrink-0" />
-                  <span>{scheduleData.runCount} runs</span>
-                  <span className="opacity-40">•</span>
-                  <span>~{formatDuration(scheduleData.duration)}</span>
-                </div>
-              )}
             </div>
           </div>
 
@@ -379,7 +367,7 @@ export function EngagementTypeCard({
                 )}
               />
             )}
-            <Badge variant="outline" className="font-semibold text-[10px] sm:text-xs border-border bg-muted/50 text-muted-foreground px-2 py-0.5 shrink-0 rounded-full">
+            <Badge variant="outline" className="font-medium text-[10px] sm:text-xs border-border bg-muted/50 text-muted-foreground px-2 py-0.5 shrink-0 rounded-full">
               {formatPrice(config.price)}
             </Badge>
             <div className="scale-90 sm:scale-100">
@@ -392,15 +380,9 @@ export function EngagementTypeCard({
           </div>
         </div>
 
-        {/* Quantity Limits - compact */}
-        {config.enabled && (
-          <div className="mt-1 text-[11px] text-muted-foreground font-normal">
-            <span>Min: {providerMin.toLocaleString()} · Max: {providerMax.toLocaleString()}</span>
-            {hasError && (
-              <span className="ml-2 text-destructive font-medium">
-                ⚠ {isBelowMin && `Min ${providerMin}`}{isAboveMax && `Max ${providerMax.toLocaleString()}`}
-              </span>
-            )}
+        {config.enabled && hasError && (
+          <div className="mt-2 text-[11px] text-destructive font-medium">
+            ⚠ {isBelowMin && `Minimum ${providerMin}`}{isAboveMax && `Maximum ${providerMax.toLocaleString()}`}
           </div>
         )}
 
@@ -410,41 +392,29 @@ export function EngagementTypeCard({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="group mt-3 w-full flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors px-3 py-2.5 text-left data-[state=open]:bg-primary/10"
+                className="group mt-2 w-full flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/25 hover:bg-muted/45 transition-colors px-3 py-2 text-left"
               >
-                <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                  <Timer className="h-4 w-4" />
-                  <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
-                  </span>
-                </span>
                 <span className="flex-1 min-w-0">
                   <span className="block text-[13px] font-medium text-foreground leading-tight">
-                    Customise delivery
+                    Settings
                   </span>
-                  <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5 font-normal">
-                    Delivery time, runs, variance & peak hours
-                  </span>
+                  {scheduleData && (
+                    <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5 font-normal">
+                      {scheduleData.runCount} batches · ~{formatDuration(scheduleData.duration)}
+                    </span>
+                  )}
                 </span>
-                <span className="flex items-center gap-1 text-[11px] font-medium text-primary shrink-0">
-                  Open
+                <span className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground shrink-0">
                   <ChevronDown className="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform" />
                 </span>
               </button>
             </CollapsibleTrigger>
             <CollapsibleContent>
               <div className="mt-2 pt-2 border-t border-border space-y-3">
-                {/* Friendly intro: what is this section */}
-                <div className="rounded-lg bg-muted/40 border border-border px-3 py-2">
-                  <p className="text-[11px] leading-snug text-muted-foreground">
-                    <strong className="text-foreground">How delivery works:</strong> we split your total qty into multiple smaller batches ("runs") and ship them over the selected time window with randomised quantity + timing. More runs + longer time + higher variance = more organic looking.
-                  </p>
-                </div>
                 {/* Time Limit + Number of Runs side-by-side */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-1.5 min-w-0">
-                  <Label className="text-[10px] font-bold flex items-center gap-1.5 text-foreground uppercase tracking-widest">
+                  <Label className="text-xs font-medium flex items-center gap-1.5 text-foreground">
                     <Timer className="h-3 w-3 text-foreground" />
                     Delivery Time
                   </Label>
@@ -469,7 +439,7 @@ export function EngagementTypeCard({
                           variant={isSelected ? "default" : "outline"}
                           size="sm"
                           className={cn(
-                            "h-6 text-[10px] px-2 font-bold",
+                            "h-6 text-[10px] px-2 font-medium",
                             isSelected
                               ? "bg-foreground text-background"
                               : "bg-secondary text-foreground border border-border hover:bg-muted"
@@ -512,7 +482,7 @@ export function EngagementTypeCard({
                         min={1}
                         max={168}
                         step={1}
-                        className="w-20 sm:w-24 h-9 sm:h-10 text-sm sm:text-base bg-secondary border-2 border-border text-foreground font-bold"
+                        className="w-20 sm:w-24 h-9 sm:h-10 text-sm sm:text-base bg-secondary border border-border text-foreground font-medium"
                       />
                       <span className="text-xs sm:text-sm text-muted-foreground font-medium">hours</span>
                     </div>
@@ -521,7 +491,7 @@ export function EngagementTypeCard({
 
                 {/* Number of Runs */}
                 <div className="space-y-2 min-w-0">
-                  <Label className="text-[10px] font-bold flex flex-wrap items-center justify-between gap-1 text-foreground uppercase tracking-widest">
+                  <Label className="text-xs font-medium flex flex-wrap items-center justify-between gap-1 text-foreground">
                     <span className="flex items-center gap-1.5">
                       <List className="h-3 w-3 text-foreground" />
                       Number of Runs
@@ -554,7 +524,7 @@ export function EngagementTypeCard({
                           size="sm"
                           disabled={disabled}
                           className={cn(
-                            "h-7 min-w-[42px] px-2.5 text-[11px] font-bold rounded-md",
+                            "h-7 min-w-[42px] px-2.5 text-[11px] font-medium rounded-md",
                             isSelected
                               ? "bg-foreground text-background border-foreground"
                               : "bg-secondary text-foreground border border-border hover:bg-muted",
@@ -593,7 +563,7 @@ export function EngagementTypeCard({
                           }
                           handleRunCountChange(n);
                         }}
-                        className="w-20 sm:w-24 h-7 text-xs text-center bg-secondary border-2 border-border text-foreground font-bold px-1.5"
+                        className="w-20 sm:w-24 h-7 text-xs text-center bg-secondary border border-border text-foreground font-medium px-1.5"
                       />
                     </div>
                   </div>
@@ -601,10 +571,10 @@ export function EngagementTypeCard({
                   {/* Per-run hint */}
                   {config.runCount && config.runCount > 0 && config.quantity > 0 && (
                     <div className="flex items-center justify-between gap-2 px-2 py-1.5 rounded-md bg-secondary/60 border border-border/60">
-                      <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                      <span className="text-[10px] text-muted-foreground font-medium">
                         Per run
                       </span>
-                      <span className="text-[11px] font-bold text-foreground font-mono">
+                      <span className="text-[11px] font-medium text-foreground">
                         ~{Math.round(config.quantity / config.runCount).toLocaleString()} {engagementConfig?.label.toLowerCase()}
                       </span>
                     </div>
@@ -612,10 +582,10 @@ export function EngagementTypeCard({
 
                   {config.runIntervalMinutes && config.runCount && config.runCount > 1 && (
                     <div className="flex items-center justify-between gap-2 px-2 py-1.5 rounded-md bg-primary/10 border border-primary/30">
-                      <span className="text-[10px] text-primary font-medium uppercase tracking-wider">
+                      <span className="text-[10px] text-primary font-medium">
                         Restored interval
                       </span>
-                      <span className="text-[11px] font-bold text-foreground font-mono">
+                      <span className="text-[11px] font-medium text-foreground">
                         {config.runIntervalMinutes >= 1440 && config.runIntervalMinutes % 1440 === 0
                           ? `${config.runIntervalMinutes / 1440} day${config.runIntervalMinutes / 1440 === 1 ? '' : 's'}`
                           : config.runIntervalMinutes >= 60 && config.runIntervalMinutes % 60 === 0
@@ -626,7 +596,7 @@ export function EngagementTypeCard({
                   )}
 
                   {customRunsInput && parseInt(customRunsInput, 10) > maxAllowedRuns && (
-                    <div className="flex items-start gap-1.5 text-[10px] text-red-500 font-bold p-2 rounded-md bg-red-500/10 border border-red-500/30">
+                    <div className="flex items-start gap-1.5 text-[10px] text-destructive font-medium p-2 rounded-md bg-destructive/10 border border-destructive/30">
                       <AlertTriangle className="h-3 w-3 mt-0.5 shrink-0" />
                       <span>Max {maxAllowedRuns} runs allowed ({config.quantity.toLocaleString()} ÷ {providerMin})</span>
                     </div>
@@ -636,13 +606,13 @@ export function EngagementTypeCard({
 
                 {/* Variance Slider */}
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold flex items-center justify-between text-foreground uppercase tracking-widest">
+                  <Label className="text-xs font-medium flex items-center justify-between text-foreground">
                     <span className="flex items-center gap-1">
                       <Shuffle className="h-3 w-3 text-foreground" />
                       Random Variance
                     </span>
                     <span className={cn(
-                      "font-mono text-sm font-bold px-2 py-0.5 rounded-lg",
+                      "text-sm font-medium px-2 py-0.5 rounded-lg",
                       variancePercent <= 15 ? "text-red-400 bg-red-500/20"
                         : variancePercent <= 25 ? "text-amber-400 bg-amber-500/20"
                           : variancePercent <= 35 ? "text-emerald-400 bg-emerald-500/20"
@@ -692,34 +662,25 @@ export function EngagementTypeCard({
                   </div>
 
                   {/* Detection Risk Level Indicator - Compact on mobile */}
-                  <div className={cn(
-                    "rounded-xl border-2 p-2.5 sm:p-4 mt-2 sm:mt-3 space-y-2 sm:space-y-3 transition-all duration-300",
-                    variancePercent <= 15
-                      ? "border-red-500/60 bg-red-500/10"
-                      : variancePercent <= 25
-                        ? "border-amber-500/60 bg-amber-500/10"
-                        : variancePercent <= 35
-                          ? "border-emerald-500/60 bg-emerald-500/10"
-                          : "border-green-400/60 bg-green-400/10"
-                  )}>
+                  <div className="rounded-xl border border-border bg-muted/30 p-2.5 sm:p-3 mt-2 space-y-2">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs sm:text-sm font-bold text-foreground">Detection Risk</span>
+                      <span className="text-xs sm:text-sm font-medium text-foreground">Safety level</span>
                       <Badge className={cn(
-                        "text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 font-bold border-2",
+                        "text-[10px] sm:text-xs px-2 py-0.5 font-medium border",
                         variancePercent <= 15
-                          ? "bg-red-500 text-white border-red-400"
+                          ? "bg-destructive/10 text-destructive border-destructive/20"
                           : variancePercent <= 25
-                            ? "bg-amber-500 text-black border-amber-400"
+                            ? "bg-primary/10 text-primary border-primary/20"
                             : variancePercent <= 35
-                              ? "bg-emerald-500 text-white border-emerald-400"
-                              : "bg-green-400 text-black border-green-300"
+                              ? "bg-success/10 text-success border-success/20"
+                              : "bg-success/10 text-success border-success/20"
                       )}>
                         {variancePercent <= 15
-                          ? "⚠ High"
+                          ? "Low"
                           : variancePercent <= 25
-                            ? "⚠ Medium"
+                            ? "Good"
                             : variancePercent <= 35
-                              ? "✓ Low"
+                              ? "Better"
                               : "✓ Safe"}
                       </Badge>
                     </div>
@@ -741,37 +702,27 @@ export function EngagementTypeCard({
                       />
                     </div>
 
-                    {/* Description - Hidden on mobile for space */}
-                    <p className={cn(
-                      "text-xs sm:text-sm font-medium hidden sm:block",
-                      variancePercent <= 15
-                        ? "text-red-400"
-                        : variancePercent <= 25
-                          ? "text-amber-400"
-                          : variancePercent <= 35
-                            ? "text-emerald-400"
-                            : "text-green-400"
-                    )}>
+                    <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
                       {variancePercent <= 15
-                        ? "⚠ High bot detection risk - increase variance"
+                        ? "Thoda zyada natural karne ke liye variance badha sakte ho."
                         : variancePercent <= 25
-                          ? "⚠ Moderate risk - consider increasing"
+                          ? "Simple aur balanced delivery."
                           : variancePercent <= 35
-                            ? "✓ Natural organic pattern"
-                            : "✓ 100% undetectable"}
+                            ? "Natural looking delivery pattern."
+                            : "Very smooth delivery pattern."}
                     </p>
                   </div>
 
                   {/* Per run range - Compact on mobile */}
                   {scheduleData && scheduleData.runCount > 0 && (
-                    <div className="flex items-center justify-between text-xs sm:text-sm bg-secondary rounded-xl px-3 sm:px-4 py-2 sm:py-3 border-2 border-border">
+                    <div className="flex items-center justify-between text-xs sm:text-sm bg-secondary rounded-xl px-3 sm:px-4 py-2 sm:py-3 border border-border">
                       <span className="text-muted-foreground font-medium">Per run:</span>
                       <div className="flex items-center gap-1.5 sm:gap-3">
-                        <span className="text-foreground/60 font-bold font-mono text-xs sm:text-sm">
+                        <span className="text-foreground/60 font-medium text-xs sm:text-sm">
                           -{Math.round((config.quantity / scheduleData.runCount) * (variancePercent / 100))}
                         </span>
                         <span className="text-muted-foreground text-xs">to</span>
-                        <span className="text-foreground font-bold font-mono text-xs sm:text-sm">
+                        <span className="text-foreground font-medium text-xs sm:text-sm">
                           +{Math.round((config.quantity / scheduleData.runCount) * (variancePercent / 100))}
                         </span>
                       </div>
@@ -782,7 +733,7 @@ export function EngagementTypeCard({
                 {/* Peak Hours Toggle - compact */}
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-secondary border border-border gap-3">
                   <div className="min-w-0">
-                    <Label className="text-[10px] font-bold flex items-center gap-1.5 text-foreground uppercase tracking-widest">
+                    <Label className="text-xs font-medium flex items-center gap-1.5 text-foreground">
                       <Flame className="h-3 w-3 text-foreground shrink-0" />
                       Peak Hours Boost
                     </Label>
@@ -793,19 +744,19 @@ export function EngagementTypeCard({
 
                 {/* Schedule Preview - Compact on mobile */}
                 {scheduleData && (
-                  <div className="bg-secondary rounded-xl border-2 border-border overflow-hidden">
+                  <div className="bg-secondary rounded-xl border border-border overflow-hidden">
                     <div className="p-3 sm:p-5">
-                      <div className="flex items-center gap-2 text-xs sm:text-sm font-bold mb-3 sm:mb-4 text-foreground">
+                      <div className="flex items-center gap-2 text-xs sm:text-sm font-medium mb-3 sm:mb-4 text-foreground">
                         <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-foreground" />
                         Schedule Preview
                       </div>
                       <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
                         <div className="bg-muted rounded-lg sm:rounded-xl p-2 sm:p-4 border border-border">
-                          <p className="text-xl sm:text-3xl font-bold text-foreground">{scheduleData.runCount}</p>
+                          <p className="text-xl sm:text-3xl font-semibold text-foreground">{scheduleData.runCount}</p>
                           <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-0.5 sm:mt-1">runs</p>
                         </div>
                         <div className="bg-muted rounded-lg sm:rounded-xl p-2 sm:p-4 border border-border">
-                          <p className="text-base sm:text-3xl font-bold text-foreground">
+                          <p className="text-base sm:text-3xl font-semibold text-foreground">
                             {scheduleData.avgInterval >= 60
                               ? `~${Math.floor(scheduleData.avgInterval / 60)}h`
                               : `~${scheduleData.avgInterval}m`
@@ -814,8 +765,8 @@ export function EngagementTypeCard({
                           <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-0.5 sm:mt-1">interval</p>
                         </div>
                         <div className="bg-muted rounded-lg sm:rounded-xl p-2 sm:p-4 border border-border">
-                          <p className="text-sm sm:text-lg font-bold text-foreground">{format(scheduleData.finishTime, 'MMM d')}</p>
-                          <p className="text-xs sm:text-base font-bold text-foreground">{format(scheduleData.finishTime, 'h:mm a')}</p>
+                          <p className="text-sm sm:text-lg font-semibold text-foreground">{format(scheduleData.finishTime, 'MMM d')}</p>
+                          <p className="text-xs sm:text-base font-medium text-foreground">{format(scheduleData.finishTime, 'h:mm a')}</p>
                           <p className="text-[10px] sm:text-xs text-muted-foreground font-medium hidden sm:block mt-1">finish</p>
                         </div>
                       </div>
@@ -826,7 +777,7 @@ export function EngagementTypeCard({
                       <CollapsibleTrigger asChild>
                         <Button
                           variant="ghost"
-                          className="w-full h-9 sm:h-10 rounded-none border-t border-border text-[10px] sm:text-xs gap-1.5 sm:gap-2 hover:bg-muted font-bold text-foreground"
+                          className="w-full h-9 sm:h-10 rounded-none border-t border-border text-[10px] sm:text-xs gap-1.5 sm:gap-2 hover:bg-muted font-medium text-foreground"
                         >
                           <List className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                           View {scheduleData.runCount} Runs
@@ -848,10 +799,10 @@ export function EngagementTypeCard({
                                   className="flex items-center justify-between py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg bg-muted text-[10px] sm:text-xs"
                                 >
                                   <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                                    <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-[9px] sm:text-[10px] shrink-0">
+                                    <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-medium text-[9px] sm:text-[10px] shrink-0">
                                       {run.runNumber}
                                     </span>
-                                    <span className="font-bold text-foreground truncate">{format(run.scheduledAt, 'MMM d, h:mm')}</span>
+                                    <span className="font-medium text-foreground truncate">{format(run.scheduledAt, 'MMM d, h:mm')}</span>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
                                     {editingRunIndex === idx ? (
@@ -860,7 +811,7 @@ export function EngagementTypeCard({
                                         inputMode="numeric"
                                         pattern="[0-9]*"
                                         defaultValue={customRunQuantities[idx] ?? run.quantity}
-                                        className="w-16 sm:w-20 h-5 sm:h-6 text-[10px] sm:text-xs text-right font-mono bg-secondary border-border text-foreground font-bold"
+                                        className="w-16 sm:w-20 h-5 sm:h-6 text-[10px] sm:text-xs text-right bg-secondary border-border text-foreground font-medium"
                                         min={providerMin}
                                         autoFocus
                                         onBlur={(e) => {
@@ -883,7 +834,7 @@ export function EngagementTypeCard({
                                         onClick={() => setEditingRunIndex(idx)}
                                         className="flex items-center gap-0.5 sm:gap-1 hover:bg-secondary px-1 sm:px-2 py-0.5 sm:py-1 rounded transition-colors"
                                       >
-                                        <span className="font-mono font-bold text-foreground text-[10px] sm:text-xs">
+                                        <span className="font-medium text-foreground text-[10px] sm:text-xs">
                                           +{(customRunQuantities[idx] ?? run.quantity).toLocaleString()}
                                         </span>
                                         <Pencil className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-muted-foreground opacity-50" />
@@ -897,7 +848,7 @@ export function EngagementTypeCard({
                                     )}
                                     {/* Cumulative Total - Simplified on mobile */}
                                     <div className="border-l border-border pl-1.5 sm:pl-2 text-right">
-                                      <span className="font-bold text-foreground text-[10px] sm:text-xs">={cumulativeTotal.toLocaleString()}</span>
+                                      <span className="font-medium text-foreground text-[10px] sm:text-xs">={cumulativeTotal.toLocaleString()}</span>
                                     </div>
                                   </div>
                                 </div>
