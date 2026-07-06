@@ -7,25 +7,30 @@ import {
 } from 'lucide-react';
 import { PageMeta } from '@/components/seo/PageMeta';
 
-// MultySMM brand palette — purple → pink gradient on white
+// MultySMM brand palette — 3 logo colors (orange → magenta → purple)
 const C = {
   bg: '#FFFFFF',
-  bgSoft: '#FAFAFE',
-  ink: '#0B0B16',
+  bgSoft: '#FBF8FE',
+  ink: '#0F1A2B',
   ink2: '#4A4A5E',
   muted: '#8A8A9E',
-  line: 'rgba(11,11,22,.08)',
+  line: 'rgba(15,26,43,.08)',
   card: '#FFFFFF',
-  purple: '#A855F7',
-  purpleDeep: '#7C3AED',
-  pink: '#EC4899',
-  orange: '#F97316',
-  lilac: '#FDF4FF',
+  orange: '#F26522',
+  magenta: '#D63384',
+  purple: '#7B2CBF',
+  purpleDeep: '#5A189A',
+  pink: '#D63384',
+  lilac: '#F3E8FF',
+  orangeSoft: '#FFEDE3',
+  magentaSoft: '#FCE7F1',
   serif: "'Instrument Serif', 'Times New Roman', serif",
   sans: "'Inter', system-ui, sans-serif",
 };
 
-const GRADIENT = `linear-gradient(135deg, #F97316 0%, #EC4899 55%, #A855F7 100%)`;
+const GRADIENT = `linear-gradient(135deg, #F26522 0%, #D63384 50%, #7B2CBF 100%)`;
+const TRI = ['#F26522', '#D63384', '#7B2CBF'];
+const TRI_SOFT = ['#FFEDE3', '#FCE7F1', '#F3E8FF'];
 
 
 const Eyebrow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -47,12 +52,14 @@ const Index = () => {
         breadcrumbs={[{ name: 'Home', path: '/' }]}
       />
 
-      {/* soft purple glow background */}
+      {/* soft tri-color glow background */}
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[1200px] h-[700px] rounded-full"
-          style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.18), transparent 70%)', filter: 'blur(40px)' }} />
-        <div className="absolute top-[60%] -right-40 w-[600px] h-[600px] rounded-full"
-          style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.18), transparent 70%)', filter: 'blur(40px)' }} />
+        <div className="absolute -top-32 left-[15%] w-[900px] h-[600px] rounded-full"
+          style={{ background: 'radial-gradient(closest-side, rgba(242,101,34,.18), transparent 70%)', filter: 'blur(40px)' }} />
+        <div className="absolute -top-20 right-[10%] w-[700px] h-[600px] rounded-full"
+          style={{ background: 'radial-gradient(closest-side, rgba(123,44,191,.18), transparent 70%)', filter: 'blur(40px)' }} />
+        <div className="absolute top-[55%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full"
+          style={{ background: 'radial-gradient(closest-side, rgba(214,51,132,.18), transparent 70%)', filter: 'blur(40px)' }} />
       </div>
 
       {/* ═══ NAV ═══ */}
@@ -214,11 +221,11 @@ const Index = () => {
                 { n: '01', t: 'Paste your post link', d: 'Drop any Instagram, YouTube or TikTok URL — that is all we need to begin.' },
                 { n: '02', t: 'Pick what to grow', d: 'Choose views, likes, comments, saves and shares. Set quantity for each.' },
                 { n: '03', t: 'Watch it deliver', d: 'AI plans the curve, jitters timing, and delivers naturally over hours.' },
-              ].map((s) => (
+              ].map((s, i) => (
                 <div key={s.n} className="rounded-2xl p-5 transition-all hover:-translate-y-0.5"
                   style={{ background: C.card, border: `1px solid ${C.line}`, boxShadow: '0 4px 20px rgba(11,11,22,.04)' }}>
                   <div className="flex items-baseline gap-4">
-                    <span className="text-[14px] font-bold" style={{ color: C.purple }}>{s.n}</span>
+                    <span className="text-[14px] font-bold" style={{ color: TRI[i % 3] }}>{s.n}</span>
                     <div className="flex-1">
                       <h3 className="text-[16px] font-bold mb-1.5">{s.t}</h3>
                       <p className="text-[13.5px] leading-relaxed" style={{ color: C.ink2 }}>{s.d}</p>
@@ -263,9 +270,9 @@ const Index = () => {
 
               <div className="grid grid-cols-3 gap-2.5 mb-5">
                 {[
-                  { l: 'Views', v: '10K', c: C.purple },
-                  { l: 'Likes', v: '800', c: C.pink },
-                  { l: 'Comments', v: '50', c: '#14B8A6' },
+                  { l: 'Views', v: '10K', c: C.orange },
+                  { l: 'Likes', v: '800', c: C.magenta },
+                  { l: 'Comments', v: '50', c: C.purple },
                 ].map((s) => (
                   <div key={s.l} className="rounded-xl p-3 text-center" style={{ background: '#fff', border: `1px solid ${C.line}` }}>
                     <div className="text-[11px]" style={{ color: C.muted }}>{s.l}</div>
@@ -277,11 +284,12 @@ const Index = () => {
               <svg viewBox="0 0 320 100" className="w-full h-24">
                 <defs>
                   <linearGradient id="curve" x1="0" x2="1">
-                    <stop offset="0%" stopColor={C.purple} />
-                    <stop offset="100%" stopColor={C.pink} />
+                    <stop offset="0%" stopColor={C.orange} />
+                    <stop offset="50%" stopColor={C.magenta} />
+                    <stop offset="100%" stopColor={C.purple} />
                   </linearGradient>
                   <linearGradient id="fill" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0%" stopColor={C.purple} stopOpacity="0.2" />
+                    <stop offset="0%" stopColor={C.magenta} stopOpacity="0.2" />
                     <stop offset="100%" stopColor={C.purple} stopOpacity="0" />
                   </linearGradient>
                 </defs>
@@ -327,12 +335,12 @@ const Index = () => {
               { icon: Shuffle, t: 'Multi-Provider Routing', d: 'We rotate across top-tier providers automatically so you always get the fastest, safest source.' },
               { icon: Layers, t: 'Engagement Bundles', d: 'Pre-built packs for Reels, Shorts, Stories and viral campaigns — one click, done.' },
               { icon: Shield, t: 'Account Safety First', d: 'Human-pace patterns, ±50% variance and night slowdown — zero account bans reported.' },
-            ].map((f) => (
+            ].map((f, i) => (
               <div key={f.t} className="rounded-2xl p-6 transition-all hover:-translate-y-1"
                 style={{ background: C.card, border: `1px solid ${C.line}`, boxShadow: '0 4px 20px rgba(11,11,22,.04)' }}>
                 <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
-                  style={{ background: C.lilac }}>
-                  <f.icon className="w-5 h-5" style={{ color: C.purple }} />
+                  style={{ background: TRI_SOFT[i % 3] }}>
+                  <f.icon className="w-5 h-5" style={{ color: TRI[i % 3] }} />
                 </div>
                 <h3 className="text-[16px] font-bold mb-2">{f.t}</h3>
                 <p className="text-[13.5px] leading-relaxed" style={{ color: C.ink2 }}>{f.d}</p>
@@ -440,9 +448,12 @@ const Index = () => {
       {/* ═══ CTA ═══ */}
       <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto rounded-[32px] text-center py-16 sm:py-20 px-6 sm:px-10 relative overflow-hidden"
-          style={{ background: 'linear-gradient(180deg, #FAF5FF 0%, #FDF2F8 100%)', border: `1px solid ${C.line}` }}>
-          <div aria-hidden className="absolute -top-20 left-1/2 -translate-x-1/2 w-[500px] h-[400px] rounded-full"
-            style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.25), transparent 70%)', filter: 'blur(40px)' }} />
+          style={{ background: 'linear-gradient(135deg, #FFF4EC 0%, #FCE7F1 55%, #F3E8FF 100%)', border: `1px solid ${C.line}` }}>
+          <div aria-hidden className="absolute -top-24 left-[20%] w-[400px] h-[300px] rounded-full"
+            style={{ background: 'radial-gradient(closest-side, rgba(242,101,34,.25), transparent 70%)', filter: 'blur(40px)' }} />
+          <div aria-hidden className="absolute -top-24 right-[15%] w-[400px] h-[300px] rounded-full"
+            style={{ background: 'radial-gradient(closest-side, rgba(123,44,191,.25), transparent 70%)', filter: 'blur(40px)' }} />
+
           <div className="relative">
             <Eyebrow>Start Today</Eyebrow>
             <h2 className="mt-4 text-[2rem] sm:text-[3rem] font-black leading-[1.02] tracking-[-0.035em] mb-5">
