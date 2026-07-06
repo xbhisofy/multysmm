@@ -89,8 +89,9 @@ export default function EngagementOrderDetail() {
   // Edit modal state
   const [editingRun, setEditingRun] = useState<EditRunData | null>(null);
 
-  // Dynamic refetch interval - balanced for performance
-  const [refetchInterval, setRefetchInterval] = useState<number | false>(5000);
+  // Realtime already delivers row-level updates; polling is a slower fallback.
+  const [refetchInterval, setRefetchInterval] = useState<number | false>(20000);
+  const lastRealtimeAt = useRef<number>(0);
 
   const { data: order, isLoading, refetch, dataUpdatedAt } = useQuery({
     queryKey: ['engagement-order-detail', orderNumber],
@@ -119,22 +120,26 @@ export default function EngagementOrderDetail() {
     placeholderData: (prev: any) => prev, // Show previous data instantly while refetching
   });
 
-  // Adjust polling speed based on order status
+  // Polling ladder — realtime does the heavy lifting; polling is a safety net.
   useEffect(() => {
     if (!order) return;
     const isActive = order.status === 'processing' || order.status === 'pending';
-    const hasActiveRuns = order.items?.some((item: any) => 
+    const hasActiveRuns = order.items?.some((item: any) =>
       item.runs?.some((run: any) => run.status === 'started')
     );
-    
-    if (hasActiveRuns) {
-      setRefetchInterval(5000); // 5s for orders with active runs
+    // If a realtime event landed in the last 45s, trust the socket — pause polling.
+    const rtRecent = Date.now() - lastRealtimeAt.current < 45000;
+
+    if (order.status === 'completed' || order.status === 'cancelled' || order.status === 'failed') {
+      setRefetchInterval(false);
+    } else if (rtRecent) {
+      setRefetchInterval(60000); // realtime is healthy — check once a minute
+    } else if (hasActiveRuns) {
+      setRefetchInterval(20000);
     } else if (isActive) {
-      setRefetchInterval(10000); // 10s for pending/processing
-    } else if (order.status === 'completed') {
-      setRefetchInterval(false); // Stop polling for completed orders
+      setRefetchInterval(30000);
     } else {
-      setRefetchInterval(15000); // 15s for other states
+      setRefetchInterval(60000);
     }
   }, [order?.status, order?.items?.length]);
 
