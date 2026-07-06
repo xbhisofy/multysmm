@@ -341,22 +341,22 @@ export function EngagementTypeCard({
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
                 <span className={cn(
-                  "text-xs sm:text-sm font-extrabold tracking-tight truncate",
+                  "text-sm sm:text-[15px] font-semibold tracking-tight truncate",
                   engagementConfig.color
                 )}>
                   {engagementConfig.emoji} {engagementConfig.label}
                 </span>
                 {type === 'views' && (
-                  <Badge className="text-[8px] sm:text-[9px] bg-primary text-black font-black px-1 sm:px-1.5 py-0 uppercase tracking-wider border-none">
+                  <Badge className="text-[9px] bg-primary/15 text-primary font-semibold px-1.5 py-0 rounded-full border-none normal-case tracking-normal">
                     Base
                   </Badge>
                 )}
               </div>
               {config.enabled && scheduleData && (
-                <div className="flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] text-white/30 mt-0.5 font-black uppercase tracking-wider">
-                  <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-primary shrink-0" />
+                <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-muted-foreground mt-0.5 font-medium">
+                  <Sparkles className="h-3 w-3 text-primary shrink-0" />
                   <span>{scheduleData.runCount} runs</span>
-                  <span className="opacity-20">•</span>
+                  <span className="opacity-40">•</span>
                   <span>~{formatDuration(scheduleData.duration)}</span>
                 </div>
               )}
@@ -374,12 +374,12 @@ export function EngagementTypeCard({
                 onChange={(e) => handleQuantityChange(e.target.value)}
                 onBlur={handleQuantityBlur}
                 className={cn(
-                  "w-14 sm:w-20 h-7 sm:h-8 text-xs sm:text-sm text-right bg-secondary border-2 border-border text-foreground font-bold px-1.5",
-                  hasError && "border-foreground"
+                  "w-14 sm:w-20 h-7 sm:h-8 text-xs sm:text-sm text-right bg-secondary border border-border text-foreground font-medium px-1.5 rounded-lg",
+                  hasError && "border-destructive"
                 )}
               />
             )}
-            <Badge variant="outline" className="font-black text-[10px] sm:text-xs border-white/10 bg-white/5 text-white/60 px-1.5 sm:px-2 py-0.5 sm:py-1 shrink-0">
+            <Badge variant="outline" className="font-semibold text-[10px] sm:text-xs border-border bg-muted/50 text-muted-foreground px-2 py-0.5 shrink-0 rounded-full">
               {formatPrice(config.price)}
             </Badge>
             <div className="scale-90 sm:scale-100">
@@ -394,10 +394,10 @@ export function EngagementTypeCard({
 
         {/* Quantity Limits - compact */}
         {config.enabled && (
-          <div className="mt-1 text-[10px] text-muted-foreground">
-            <span>Min: {providerMin.toLocaleString()} • Max: {providerMax.toLocaleString()}</span>
+          <div className="mt-1 text-[11px] text-muted-foreground font-normal">
+            <span>Min: {providerMin.toLocaleString()} · Max: {providerMax.toLocaleString()}</span>
             {hasError && (
-              <span className="ml-2 text-foreground font-bold">
+              <span className="ml-2 text-destructive font-medium">
                 ⚠ {isBelowMin && `Min ${providerMin}`}{isAboveMax && `Max ${providerMax.toLocaleString()}`}
               </span>
             )}
@@ -420,16 +420,16 @@ export function EngagementTypeCard({
                   </span>
                 </span>
                 <span className="flex-1 min-w-0">
-                  <span className="block text-[12px] font-bold text-foreground leading-tight">
-                    Tap to customise delivery
+                  <span className="block text-[13px] font-medium text-foreground leading-tight">
+                    Customise delivery
                   </span>
-                  <span className="block text-[10.5px] text-muted-foreground leading-snug mt-0.5">
-                    Set delivery time, number of runs, variance & peak hours
+                  <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5 font-normal">
+                    Delivery time, runs, variance & peak hours
                   </span>
                 </span>
-                <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-primary shrink-0">
+                <span className="flex items-center gap-1 text-[11px] font-medium text-primary shrink-0">
                   Open
-                  <ChevronDown className="h-4 w-4 animate-bounce group-data-[state=open]:rotate-180 group-data-[state=open]:animate-none transition-transform" />
+                  <ChevronDown className="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform" />
                 </span>
               </button>
             </CollapsibleTrigger>
