@@ -16,16 +16,17 @@ Deno.serve(async (req) => {
   try {
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Verify admin OR service role
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("Not authenticated");
-    const token = authHeader.replace("Bearer ", "");
-    
-    // Bypass for cron/system calls
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
-    const isSystemCall = (token === serviceRoleKey) || (anonKey && token === anonKey);
+    // Verify admin OR service role (no anon-key bypass)
+    const authHeader = req.headers.get("Authorization") || "";
+    const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+    const cronSecret = req.headers.get("x-cron-secret") || "";
+    const expectedCron = Deno.env.get("CRON_SECRET") ?? "";
+    const isSystemCall =
+      (!!serviceRoleKey && token === serviceRoleKey) ||
+      (!!expectedCron && cronSecret === expectedCron);
 
     if (!isSystemCall) {
+      if (!token) throw new Error("Not authenticated");
       const { data: { user }, error: authError } = await supabase.auth.getUser(token);
       if (authError || !user) throw new Error("Not authenticated");
 
@@ -37,6 +38,7 @@ Deno.serve(async (req) => {
         .maybeSingle();
       if (!roleData) throw new Error("Admin access required");
     }
+
 
     // Optional: sync only specific service IDs
     const body = await req.json().catch(() => ({}));
