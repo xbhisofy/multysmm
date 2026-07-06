@@ -626,13 +626,13 @@ export function EngagementTypeCard({
 
                 {/* Variance Slider */}
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold flex items-center justify-between text-foreground uppercase tracking-widest">
+                  <Label className="text-xs font-medium flex items-center justify-between text-foreground">
                     <span className="flex items-center gap-1">
                       <Shuffle className="h-3 w-3 text-foreground" />
                       Random Variance
                     </span>
                     <span className={cn(
-                      "font-mono text-sm font-bold px-2 py-0.5 rounded-lg",
+                      "text-sm font-medium px-2 py-0.5 rounded-lg",
                       variancePercent <= 15 ? "text-red-400 bg-red-500/20"
                         : variancePercent <= 25 ? "text-amber-400 bg-amber-500/20"
                           : variancePercent <= 35 ? "text-emerald-400 bg-emerald-500/20"
@@ -682,34 +682,25 @@ export function EngagementTypeCard({
                   </div>
 
                   {/* Detection Risk Level Indicator - Compact on mobile */}
-                  <div className={cn(
-                    "rounded-xl border-2 p-2.5 sm:p-4 mt-2 sm:mt-3 space-y-2 sm:space-y-3 transition-all duration-300",
-                    variancePercent <= 15
-                      ? "border-red-500/60 bg-red-500/10"
-                      : variancePercent <= 25
-                        ? "border-amber-500/60 bg-amber-500/10"
-                        : variancePercent <= 35
-                          ? "border-emerald-500/60 bg-emerald-500/10"
-                          : "border-green-400/60 bg-green-400/10"
-                  )}>
+                  <div className="rounded-xl border border-border bg-muted/30 p-2.5 sm:p-3 mt-2 space-y-2">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs sm:text-sm font-bold text-foreground">Detection Risk</span>
+                      <span className="text-xs sm:text-sm font-medium text-foreground">Safety level</span>
                       <Badge className={cn(
-                        "text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 font-bold border-2",
+                        "text-[10px] sm:text-xs px-2 py-0.5 font-medium border",
                         variancePercent <= 15
-                          ? "bg-red-500 text-white border-red-400"
+                          ? "bg-destructive/10 text-destructive border-destructive/20"
                           : variancePercent <= 25
-                            ? "bg-amber-500 text-black border-amber-400"
+                            ? "bg-primary/10 text-primary border-primary/20"
                             : variancePercent <= 35
-                              ? "bg-emerald-500 text-white border-emerald-400"
-                              : "bg-green-400 text-black border-green-300"
+                              ? "bg-success/10 text-success border-success/20"
+                              : "bg-success/10 text-success border-success/20"
                       )}>
                         {variancePercent <= 15
-                          ? "⚠ High"
+                          ? "Low"
                           : variancePercent <= 25
-                            ? "⚠ Medium"
+                            ? "Good"
                             : variancePercent <= 35
-                              ? "✓ Low"
+                              ? "Better"
                               : "✓ Safe"}
                       </Badge>
                     </div>
@@ -731,37 +722,27 @@ export function EngagementTypeCard({
                       />
                     </div>
 
-                    {/* Description - Hidden on mobile for space */}
-                    <p className={cn(
-                      "text-xs sm:text-sm font-medium hidden sm:block",
-                      variancePercent <= 15
-                        ? "text-red-400"
-                        : variancePercent <= 25
-                          ? "text-amber-400"
-                          : variancePercent <= 35
-                            ? "text-emerald-400"
-                            : "text-green-400"
-                    )}>
+                    <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
                       {variancePercent <= 15
-                        ? "⚠ High bot detection risk - increase variance"
+                        ? "Thoda zyada natural karne ke liye variance badha sakte ho."
                         : variancePercent <= 25
-                          ? "⚠ Moderate risk - consider increasing"
+                          ? "Simple aur balanced delivery."
                           : variancePercent <= 35
-                            ? "✓ Natural organic pattern"
-                            : "✓ 100% undetectable"}
+                            ? "Natural looking delivery pattern."
+                            : "Very smooth delivery pattern."}
                     </p>
                   </div>
 
                   {/* Per run range - Compact on mobile */}
                   {scheduleData && scheduleData.runCount > 0 && (
-                    <div className="flex items-center justify-between text-xs sm:text-sm bg-secondary rounded-xl px-3 sm:px-4 py-2 sm:py-3 border-2 border-border">
+                    <div className="flex items-center justify-between text-xs sm:text-sm bg-secondary rounded-xl px-3 sm:px-4 py-2 sm:py-3 border border-border">
                       <span className="text-muted-foreground font-medium">Per run:</span>
                       <div className="flex items-center gap-1.5 sm:gap-3">
-                        <span className="text-foreground/60 font-bold font-mono text-xs sm:text-sm">
+                        <span className="text-foreground/60 font-medium text-xs sm:text-sm">
                           -{Math.round((config.quantity / scheduleData.runCount) * (variancePercent / 100))}
                         </span>
                         <span className="text-muted-foreground text-xs">to</span>
-                        <span className="text-foreground font-bold font-mono text-xs sm:text-sm">
+                        <span className="text-foreground font-medium text-xs sm:text-sm">
                           +{Math.round((config.quantity / scheduleData.runCount) * (variancePercent / 100))}
                         </span>
                       </div>
@@ -772,7 +753,7 @@ export function EngagementTypeCard({
                 {/* Peak Hours Toggle - compact */}
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-secondary border border-border gap-3">
                   <div className="min-w-0">
-                    <Label className="text-[10px] font-bold flex items-center gap-1.5 text-foreground uppercase tracking-widest">
+                    <Label className="text-xs font-medium flex items-center gap-1.5 text-foreground">
                       <Flame className="h-3 w-3 text-foreground shrink-0" />
                       Peak Hours Boost
                     </Label>
@@ -783,19 +764,19 @@ export function EngagementTypeCard({
 
                 {/* Schedule Preview - Compact on mobile */}
                 {scheduleData && (
-                  <div className="bg-secondary rounded-xl border-2 border-border overflow-hidden">
+                  <div className="bg-secondary rounded-xl border border-border overflow-hidden">
                     <div className="p-3 sm:p-5">
-                      <div className="flex items-center gap-2 text-xs sm:text-sm font-bold mb-3 sm:mb-4 text-foreground">
+                      <div className="flex items-center gap-2 text-xs sm:text-sm font-medium mb-3 sm:mb-4 text-foreground">
                         <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-foreground" />
                         Schedule Preview
                       </div>
                       <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
                         <div className="bg-muted rounded-lg sm:rounded-xl p-2 sm:p-4 border border-border">
-                          <p className="text-xl sm:text-3xl font-bold text-foreground">{scheduleData.runCount}</p>
+                          <p className="text-xl sm:text-3xl font-semibold text-foreground">{scheduleData.runCount}</p>
                           <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-0.5 sm:mt-1">runs</p>
                         </div>
                         <div className="bg-muted rounded-lg sm:rounded-xl p-2 sm:p-4 border border-border">
-                          <p className="text-base sm:text-3xl font-bold text-foreground">
+                          <p className="text-base sm:text-3xl font-semibold text-foreground">
                             {scheduleData.avgInterval >= 60
                               ? `~${Math.floor(scheduleData.avgInterval / 60)}h`
                               : `~${scheduleData.avgInterval}m`
@@ -804,8 +785,8 @@ export function EngagementTypeCard({
                           <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-0.5 sm:mt-1">interval</p>
                         </div>
                         <div className="bg-muted rounded-lg sm:rounded-xl p-2 sm:p-4 border border-border">
-                          <p className="text-sm sm:text-lg font-bold text-foreground">{format(scheduleData.finishTime, 'MMM d')}</p>
-                          <p className="text-xs sm:text-base font-bold text-foreground">{format(scheduleData.finishTime, 'h:mm a')}</p>
+                          <p className="text-sm sm:text-lg font-semibold text-foreground">{format(scheduleData.finishTime, 'MMM d')}</p>
+                          <p className="text-xs sm:text-base font-medium text-foreground">{format(scheduleData.finishTime, 'h:mm a')}</p>
                           <p className="text-[10px] sm:text-xs text-muted-foreground font-medium hidden sm:block mt-1">finish</p>
                         </div>
                       </div>
@@ -816,7 +797,7 @@ export function EngagementTypeCard({
                       <CollapsibleTrigger asChild>
                         <Button
                           variant="ghost"
-                          className="w-full h-9 sm:h-10 rounded-none border-t border-border text-[10px] sm:text-xs gap-1.5 sm:gap-2 hover:bg-muted font-bold text-foreground"
+                          className="w-full h-9 sm:h-10 rounded-none border-t border-border text-[10px] sm:text-xs gap-1.5 sm:gap-2 hover:bg-muted font-medium text-foreground"
                         >
                           <List className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                           View {scheduleData.runCount} Runs
@@ -838,10 +819,10 @@ export function EngagementTypeCard({
                                   className="flex items-center justify-between py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg bg-muted text-[10px] sm:text-xs"
                                 >
                                   <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                                    <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-[9px] sm:text-[10px] shrink-0">
+                                    <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-medium text-[9px] sm:text-[10px] shrink-0">
                                       {run.runNumber}
                                     </span>
-                                    <span className="font-bold text-foreground truncate">{format(run.scheduledAt, 'MMM d, h:mm')}</span>
+                                    <span className="font-medium text-foreground truncate">{format(run.scheduledAt, 'MMM d, h:mm')}</span>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
                                     {editingRunIndex === idx ? (
@@ -850,7 +831,7 @@ export function EngagementTypeCard({
                                         inputMode="numeric"
                                         pattern="[0-9]*"
                                         defaultValue={customRunQuantities[idx] ?? run.quantity}
-                                        className="w-16 sm:w-20 h-5 sm:h-6 text-[10px] sm:text-xs text-right font-mono bg-secondary border-border text-foreground font-bold"
+                                        className="w-16 sm:w-20 h-5 sm:h-6 text-[10px] sm:text-xs text-right bg-secondary border-border text-foreground font-medium"
                                         min={providerMin}
                                         autoFocus
                                         onBlur={(e) => {
@@ -873,7 +854,7 @@ export function EngagementTypeCard({
                                         onClick={() => setEditingRunIndex(idx)}
                                         className="flex items-center gap-0.5 sm:gap-1 hover:bg-secondary px-1 sm:px-2 py-0.5 sm:py-1 rounded transition-colors"
                                       >
-                                        <span className="font-mono font-bold text-foreground text-[10px] sm:text-xs">
+                                        <span className="font-medium text-foreground text-[10px] sm:text-xs">
                                           +{(customRunQuantities[idx] ?? run.quantity).toLocaleString()}
                                         </span>
                                         <Pencil className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-muted-foreground opacity-50" />
@@ -887,7 +868,7 @@ export function EngagementTypeCard({
                                     )}
                                     {/* Cumulative Total - Simplified on mobile */}
                                     <div className="border-l border-border pl-1.5 sm:pl-2 text-right">
-                                      <span className="font-bold text-foreground text-[10px] sm:text-xs">={cumulativeTotal.toLocaleString()}</span>
+                                      <span className="font-medium text-foreground text-[10px] sm:text-xs">={cumulativeTotal.toLocaleString()}</span>
                                     </div>
                                   </div>
                                 </div>
