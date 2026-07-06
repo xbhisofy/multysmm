@@ -17,8 +17,10 @@ export function TemplateCard({ template: t, onEdit, allowDuplicate = true, allow
 
   const c = t.config || {};
   const qty = c.base_quantity ?? c.quantity ?? '—';
-  const runs = c.runs ?? Object.values(c.engagements || {})[0]?.runs ?? '—';
-  const interval = c.interval ?? Object.values(c.engagements || {})[0]?.drip_interval ?? '—';
+  const firstEng: any = Object.values(c.engagements || {})[0] || {};
+  const qty = c.base_quantity ?? c.quantity ?? '—';
+  const runs = c.runs ?? firstEng.runs ?? '—';
+  const interval = c.interval ?? firstEng.drip_interval ?? '—';
 
   const useIt = () => {
     trackUsage.mutate(t.id);
