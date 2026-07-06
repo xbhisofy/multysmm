@@ -116,21 +116,26 @@ serve(async (req) => {
     let totalInr = 0
     const lines: string[] = []
     for (const a of rows) {
-      totalInr += a._inr
-      const emoji = a.last_balance_error ? '❌' : a._inr < 50 ? '⚠️' : a._inr < 200 ? '🟡' : '🟢'
-      const native = a._cur === 'USD'
-        ? `$${a._bal.toFixed(2)} (₹${a._inr.toFixed(0)})`
-        : `₹${a._inr.toFixed(2)}`
-      lines.push(`${emoji} <b>${a.name}</b> — ${native}${a.last_balance_error ? `\n   <i>err: ${String(a.last_balance_error).slice(0,80)}</i>` : ''}`)
+      if (!a.last_balance_error) totalInr += a._inr
+      const emoji = a.last_balance_error ? '❌' : a._inr < 50 ? '🚨' : a._inr < 200 ? '🟡' : '🟢'
+      const native = a.last_balance_error
+        ? `<i>error: ${String(a.last_balance_error).slice(0, 80)}</i>`
+        : a._cur === 'USD'
+          ? `<b>₹${a._inr.toFixed(0)}</b> <i>($${a._bal.toFixed(2)})</i>`
+          : `<b>₹${a._inr.toFixed(2)}</b>`
+      lines.push(`${emoji} <b>${a.name}</b>\n   └ ${native}`)
     }
 
     const stamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
     const msg =
-      `📊 <b>Provider Balance Report</b>\n` +
-      `<i>${stamp} IST</i>\n\n` +
-      (lines.length ? lines.join('\n') : '<i>No active providers</i>') +
-      `\n\n💰 <b>Total (approx):</b> ₹${totalInr.toFixed(0)}` +
-      `\n💱 Rate: 1 USD ≈ ₹${usdToInr.toFixed(2)}`
+      `⏰ <b>3-Hour Provider Balance Report</b>\n` +
+      `<i>${stamp} IST</i>\n` +
+      `━━━━━━━━━━━━━━━━━━━\n` +
+      (lines.length ? lines.join('\n\n') : '<i>No active providers</i>') +
+      `\n━━━━━━━━━━━━━━━━━━━\n` +
+      `💵 <b>Total:</b> ₹${totalInr.toFixed(0)}\n` +
+      `💱 Rate: 1 USD ≈ ₹${usdToInr.toFixed(2)}\n\n` +
+      `<i>Type /bal anytime for live check</i>`
 
     const sendResults = []
     for (const cid of chatIds) {

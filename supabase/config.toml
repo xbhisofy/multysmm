@@ -5,3 +5,9 @@ verify_jwt = false
 
 [functions.monitor-order-health]
 verify_jwt = false
+
+[functions.telegram-bot-webhook]
+verify_jwt = false
+
+[functions.tg-setup-webhook]
+verify_jwt = false
