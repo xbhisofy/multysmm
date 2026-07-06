@@ -108,12 +108,12 @@ const Index = () => {
             </span>
           </div>
 
-          <h1 className="text-[2.8rem] sm:text-[4.6rem] lg:text-[6.2rem] font-black leading-[1.02] tracking-[-0.04em] mb-8" style={{ fontFamily: C.sans }}>
+          <h1 className="text-[2.4rem] sm:text-[3.8rem] lg:text-[5rem] font-black leading-[1.02] tracking-[-0.04em] mb-8" style={{ fontFamily: C.sans }}>
             Grow{' '}
             <span style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               Smarter Accounts
             </span>
-            <br className="hidden sm:block" />
+            <br />
             Instantly With{' '}
             <span style={{ color: '#CBD5E1' }}>AI</span>
           </h1>
@@ -212,7 +212,7 @@ const Index = () => {
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
             <Eyebrow>How it works</Eyebrow>
-            <h2 className="mt-4 text-[2rem] sm:text-[3rem] lg:text-[3.4rem] font-black leading-[1.02] tracking-[-0.035em]">
+            <h2 className="mt-4 text-[1.6rem] sm:text-[2.4rem] lg:text-[2.8rem] font-black leading-[1.02] tracking-[-0.035em]">
               From link to growth<br /> in <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>3 simple steps</span>
             </h2>
 
@@ -321,7 +321,7 @@ const Index = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <Eyebrow>Core Features</Eyebrow>
-            <h2 className="mt-4 text-[2rem] sm:text-[3rem] lg:text-[3.4rem] font-black leading-[1.02] tracking-[-0.035em]">
+            <h2 className="mt-4 text-[1.6rem] sm:text-[2.4rem] lg:text-[2.8rem] font-black leading-[1.02] tracking-[-0.035em]">
               Built for Speed, <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400 }}>Powered</span><br />
               by <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Intelligence</span>
             </h2>
@@ -355,7 +355,7 @@ const Index = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <Eyebrow>Why MultySMM</Eyebrow>
-            <h2 className="mt-4 text-[2rem] sm:text-[3rem] lg:text-[3.4rem] font-black leading-[1.02] tracking-[-0.035em]">
+            <h2 className="mt-4 text-[1.6rem] sm:text-[2.4rem] lg:text-[2.8rem] font-black leading-[1.02] tracking-[-0.035em]">
               We're Building Trust &<br />
               <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Brand Personality</span>
             </h2>
@@ -456,7 +456,7 @@ const Index = () => {
 
           <div className="relative">
             <Eyebrow>Start Today</Eyebrow>
-            <h2 className="mt-4 text-[2rem] sm:text-[3rem] font-black leading-[1.02] tracking-[-0.035em] mb-5">
+            <h2 className="mt-4 text-[1.6rem] sm:text-[2.4rem] font-black leading-[1.02] tracking-[-0.035em] mb-5">
               Ready to grow <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>smarter?</span>
             </h2>
             <p className="text-[15px] sm:text-[16.5px] mb-9 max-w-md mx-auto" style={{ color: C.ink2 }}>
