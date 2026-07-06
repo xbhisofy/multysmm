@@ -374,12 +374,12 @@ export function EngagementTypeCard({
                 onChange={(e) => handleQuantityChange(e.target.value)}
                 onBlur={handleQuantityBlur}
                 className={cn(
-                  "w-14 sm:w-20 h-7 sm:h-8 text-xs sm:text-sm text-right bg-secondary border-2 border-border text-foreground font-bold px-1.5",
-                  hasError && "border-foreground"
+                  "w-14 sm:w-20 h-7 sm:h-8 text-xs sm:text-sm text-right bg-secondary border border-border text-foreground font-medium px-1.5 rounded-lg",
+                  hasError && "border-destructive"
                 )}
               />
             )}
-            <Badge variant="outline" className="font-black text-[10px] sm:text-xs border-white/10 bg-white/5 text-white/60 px-1.5 sm:px-2 py-0.5 sm:py-1 shrink-0">
+            <Badge variant="outline" className="font-semibold text-[10px] sm:text-xs border-border bg-muted/50 text-muted-foreground px-2 py-0.5 shrink-0 rounded-full">
               {formatPrice(config.price)}
             </Badge>
             <div className="scale-90 sm:scale-100">
