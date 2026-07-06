@@ -44,6 +44,8 @@ import { Loader2, Rocket, Link as LinkIcon, Wallet, RefreshCw, Brain, Percent, E
 import { Switch } from "@/components/ui/switch";
 import { useDebounce } from "@/hooks/useDebounce";
 import { FullOrganicConfig } from "@/lib/organic-algorithm";
+import { TemplateEditorDialog } from "@/components/templates/TemplateEditorDialog";
+import { useTemplateMutations, useTemplateSettings, DEFAULT_TEMPLATE_SETTINGS } from "@/hooks/useTemplates";
 
 type EngagementConfigs = Record<string, EngagementConfig>;
 
@@ -246,6 +248,38 @@ export default function EngagementOrder() {
     })();
     return () => { cancelled = true; };
   }, [repeatFrom, user?.id]);
+
+  // ============ SMART TEMPLATES (hydrate from ?template=<id>) ============
+  const { data: templateSettings = DEFAULT_TEMPLATE_SETTINGS } = useTemplateSettings();
+  const { trackUsage } = useTemplateMutations();
+  const [templateSaveOpen, setTemplateSaveOpen] = useState(false);
+  const [showNewTemplateBanner, setShowNewTemplateBanner] = useState(false);
+  const templateHydratedRef = useRef(false);
+
+  useEffect(() => {
+    if (templateHydratedRef.current) return;
+    const params = new URLSearchParams(location.search);
+    if (params.get('newTemplate') === '1') setShowNewTemplateBanner(true);
+    const tid = params.get('template');
+    if (!tid || !user?.id) return;
+    templateHydratedRef.current = true;
+    (async () => {
+      const { data } = await supabase.from('order_templates').select('*').eq('id', tid).eq('user_id', user.id).maybeSingle();
+      if (!data) return;
+      const snap: any = (data as any).config || {};
+      if (snap.platform) setPlatform(snap.platform);
+      if (typeof snap.base_quantity === 'number') setBaseQuantity(snap.base_quantity);
+      if (typeof snap.is_organic_mode === 'boolean') setIsOrganicMode(snap.is_organic_mode);
+      if (typeof snap.is_auto_ratios === 'boolean') setIsAutoRatios(snap.is_auto_ratios);
+      if (snap.engagements && typeof snap.engagements === 'object') setEngagements(snap.engagements);
+      setLink('');
+      trackUsage.mutate(tid);
+      toast({ title: 'Template loaded', description: `"${(data as any).name}" restored. Paste a link and click Place Order.` });
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search, user?.id]);
+
+
 
 
 
@@ -1186,6 +1220,16 @@ export default function EngagementOrder() {
   return (
     <DashboardLayout>
       <div className="max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 space-y-3 sm:space-y-6 pb-8">
+        {showNewTemplateBanner && (
+          <div className="rounded-xl px-4 py-3 flex items-center gap-3 text-sm"
+            style={{ background: 'linear-gradient(135deg,#FFF3E9,#FCE7F1,#F3E8FF)', border: '1px solid #E5D7FA', color: '#0B0B16' }}>
+            <Bookmark className="w-4 h-4 shrink-0" style={{ color: '#7B2CBF' }} />
+            <span className="flex-1">
+              <strong>Creating a new template:</strong> configure your order below, then click <em>Save as Template</em>.
+            </span>
+            <button onClick={() => setShowNewTemplateBanner(false)} className="text-xs font-semibold opacity-70 hover:opacity-100">Dismiss</button>
+          </div>
+        )}
         {/* Engagement console — premium mode picker */}
         <div className="relative rounded-2xl bg-card border border-border shadow-[0_8px_30px_-12px_rgba(249,115,22,0.15)] overflow-hidden">
           {/* Soft brand wash */}
@@ -1698,10 +1742,38 @@ export default function EngagementOrder() {
                   </Button>
                 );
               })()}
+              {templateSettings.enabled && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="default"
+                  onClick={() => setTemplateSaveOpen(true)}
+                  className="h-10 sm:h-11 px-4 text-sm font-semibold rounded-lg"
+                  title="Save current settings as a reusable template"
+                >
+                  <Bookmark className="h-4 w-4 mr-1.5" />
+                  Save as Template
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Save as Template */}
+      <TemplateEditorDialog
+        open={templateSaveOpen}
+        onOpenChange={setTemplateSaveOpen}
+        platform={platform}
+        snapshot={{
+          platform,
+          base_quantity: baseQuantity,
+          is_organic_mode: isOrganicMode,
+          is_auto_ratios: isAutoRatios,
+          engagements,
+        }}
+        serviceSnapshot={{ platform }}
+      />
 
       {/* Mass Order Confirmation */}
       <AlertDialog open={massConfirmOpen} onOpenChange={setMassConfirmOpen}>

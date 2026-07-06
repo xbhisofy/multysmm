@@ -1,58 +1,94 @@
-# Admin Dashboard — Advanced Analytics & Time-Based Filters
+# Smart Order Templates
 
-This is a large, multi-week feature. To ship something useful fast without breaking the current dashboard, I'll split it into **Phase 1 (build now)** and **Phase 2 (later)**. Please confirm the split before I start.
+A reusable "personal order profile" system. User saves every order setting (except the link) once, then future orders = open template → paste link → place order.
 
-## Phase 1 — build now
+---
 
-### Filter bar (top of `/admin`)
-- Presets: Today, Yesterday, Last 7 Days, Last 30 Days, This Month, Last Month, This Year, Lifetime, Custom (start + end date)
-- Stored in URL query (`?range=last7`) so refresh keeps the view
-- Instant refresh via a single RPC call — no page reload
+## 1. Database (single migration)
 
-### Analytics cards (period-aware)
-Every card recomputes for the selected range. Compared vs previous equal-length window for the growth arrow (green ↑ / red ↓ / gray –).
+**Table `public.order_templates`**
+- `user_id` (owner, RLS-scoped)
+- `name`, `description`, `category` (Instagram/TikTok/YouTube/Facebook/Telegram/X/Other)
+- `is_favorite` (bool), `color_label` (blue/orange/green/purple/red/yellow)
+- `platform`, `service_id` (nullable — service may later be deleted)
+- `service_snapshot` jsonb (name/category cached for display if service removed)
+- `config` jsonb — the full snapshot: quantity, runs, interval, interval_unit, drip_feed, AI organic flags, delivery settings, advanced options, filters (country/gender/language/keywords/hashtags), and any engagement-order sub-items
+- `usage_count` int, `last_used_at`, `created_at`, `updated_at`
+- `is_archived` bool
 
-- **Financial:** Total Deposits, Gross Revenue (order value), Net Revenue (deposits − refunds), Total Profit (revenue − provider cost), Average / Largest / Smallest Deposit, Pending Deposits, Failed Deposits, Refunded Amount
-- **Orders:** Total, Completed, Processing, Pending, Cancelled, Failed, Refunded, Avg/Highest/Lowest Order Value (single + engagement orders combined, plus a small breakdown)
-- **Users:** New Registrations, Users Who Added Funds (in range), First-Time Depositors (in range), VIP Users (LTV ≥ ₹10k), Banned Users, Active Users (signed in during range), Inactive Users
-- **Wallet:** Current Total Wallet Balance (live), Total Wallet Credits (in range), Total Wallet Debits (in range)
-- **Platform breakdown:** Order counts per platform — Instagram, TikTok, YouTube, Facebook, Telegram, X/Twitter, Other (from `services.category`)
-- **Top lists (in range):** Top 10 Depositors, Top 10 Spenders, Top 10 by Order Count, Top 10 by Profit (LTV proxy)
+RLS: user can CRUD only own rows; service_role full access.
+Trigger: `updated_at` auto-refresh.
 
-### UX
-- Cards grouped in collapsible sections (Financial / Orders / Users / Wallet / Platform / Top lists)
-- Growth chip on each stat card
-- CSV export of the current range's stats + top lists
-- Mobile: filter collapses into a bottom-sheet, cards stack 1-col → 2-col → 3-col
+**Table `public.template_settings`** (single row, admin-managed)
+- `enabled`, `max_per_user` (default 50)
+- allow_categories / allow_favorites / allow_color_labels / allow_descriptions / allow_duplicate / allow_archive / allow_dashboard_widget / allow_save_after_order / allow_save_from_repeat
+- `max_name_length` (default 60), `max_description_length` (default 300)
 
-### Backend
-- Single new RPC `get_admin_analytics(from_ts, to_ts)` returning one JSON payload with every card + previous-period counterparts. Security-definer + admin check, same pattern as `get_admin_dashboard_stats`.
-- Uses existing tables — no schema change beyond one or two helper indexes on `transactions(type, status, created_at)` and `orders(status, created_at)` if missing.
-- Frontend caches per `(from, to)` key via React Query for 30 s.
+Public SELECT on settings (needed by client to hide/show features); UPDATE only for admin.
 
-### Files
-```text
-supabase/migrations/<ts>_admin_analytics_rpc.sql   -- new RPC + indexes
-src/lib/admin-analytics.ts                          -- range presets, formatting, CSV
-src/components/admin/AnalyticsRangeBar.tsx          -- filter bar + custom range
-src/components/admin/AnalyticsStatCard.tsx          -- card w/ growth chip
-src/pages/admin/Admin.tsx                           -- wire filter + new sections
-```
+---
 
-## Phase 2 — later (on request)
-- **Withdrawals** — no withdrawal system exists yet in the DB, so "Total Withdrawals" is skipped in Phase 1
-- **Suspended Users** — no `suspended` state exists, only `banned`; treated same as banned in Phase 1
-- **Returning Customers** — needs a stricter definition; will confirm later
-- **Provider analytics** (success/failure rate, provider revenue) — needs an `order → provider_account_id` join not yet stored on `orders`; will add tracking first
-- **Excel / PDF export** — CSV covers 95% of needs; add later if wanted
-- **Charts** — Phase 1 is numeric cards only; line/bar charts come next
-- **Super-admin permission gating** for financial analytics — currently every admin sees everything; will add a role split later
-- **Caching layer** beyond React Query (e.g. materialised view) — only if queries get slow at scale
+## 2. Frontend — new files
 
-## Technical notes (safe to skip)
-- All order rows counted = `orders` + `engagement_orders` unioned.
-- "Profit" = Σ(order price − Σ(run cost via `services.price` × qty / 1000)). Same math as existing top-up plan RPC.
-- Growth = `((current − previous) / previous) * 100`, previous window = same length immediately before `from_ts`.
-- Custom range max 366 days to keep queries fast.
+**Pages**
+- `src/pages/Templates.tsx` — list page: search bar, filter chips (platform/category/favorites/recent/most-used), sort dropdown, grid of template cards, "Create Template" button. Favorites pinned first.
+- `src/pages/TemplateEditor.tsx` — create/edit form (name required; description, category, color, favorite optional). Also embeds the existing engagement-order config panel so user can define the full snapshot.
 
-Reply **"go"** to build Phase 1, or tell me what to add/remove first.
+**Components**
+- `src/components/templates/TemplateCard.tsx` — preview card (icon, name, service, qty, runs, interval, live estimated price via current service pricing, usage count, last used, note, color strip). Buttons: Use / Edit / Duplicate / Favorite / Delete.
+- `src/components/templates/SaveAsTemplateDialog.tsx` — reusable dialog to save current config; used from EngagementOrder after successful order and from Repeat Order.
+- `src/components/dashboard/QuickTemplatesWidget.tsx` — dashboard card with top 4 favorites/recent + "View All →".
+
+**Hooks / lib**
+- `src/hooks/useTemplates.tsx` — CRUD, search, filter, sort, favorite toggle, duplicate, archive, usage tracking (increments `usage_count`, sets `last_used_at` on use).
+- `src/lib/template-config.ts` — helpers to serialize the current engagement-order form state into `config` snapshot and to hydrate the form back from a snapshot.
+
+---
+
+## 3. Integration points (edits to existing files)
+
+- `src/components/layout/Sidebar.tsx` — add "Templates" nav item (Bookmark icon) between Engagement Orders and AI Assistant.
+- `src/App.tsx` — register `/templates` and `/templates/new`, `/templates/:id/edit` routes.
+- `src/pages/EngagementOrder.tsx`:
+  - Read `?template=<id>` query param → load template config, hydrate form, clear link field only.
+  - After successful order placement → show "Save as Template" button (respects `allow_save_after_order`).
+- `src/pages/Dashboard.tsx` — mount `<QuickTemplatesWidget />` when `allow_dashboard_widget` is on.
+- Repeat-order flow → add "Save Configuration as Template" action (respects `allow_save_from_repeat`).
+
+---
+
+## 4. Behaviour rules
+
+- **Price is never stored.** Card always recomputes from current service price × quantity.
+- **Discontinued service:** if `service_id` no longer exists / inactive, card shows "Discontinued service" banner with `Choose Replacement` or `Delete`. Use button disabled.
+- **Only link is empty on use.** Every other saved field is restored exactly.
+- **Validation:** name required (respect max length), service must exist + active, quantity/runs/interval > 0, enforce `max_per_user` limit server-side (via trigger) and client-side.
+- **Server-side ownership check** on every mutation via RLS.
+
+---
+
+## 5. Admin
+
+- `src/pages/admin/AdminTemplateSettings.tsx` — form bound to `template_settings` singleton with all toggles + limits.
+- Add to admin nav.
+
+---
+
+## 6. Out of scope (future, DB shape already supports)
+
+Public marketplace, share/export/import, QR, AI-generated, team/agency templates. No code now, but jsonb `config` + separate settings row leave room.
+
+---
+
+## Build order
+
+1. Migration (tables + RLS + settings singleton).
+2. Hook + lib helpers.
+3. Templates list page + card + editor.
+4. Sidebar entry + routes.
+5. EngagementOrder `?template=` hydration + "Save as Template" post-order.
+6. Dashboard widget.
+7. Repeat-order "Save as Template" entry.
+8. Admin settings page.
+
+Approve karo toh migration se shuru karta hun.
