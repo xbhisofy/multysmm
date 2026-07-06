@@ -1701,6 +1701,10 @@ export default function EngagementOrder() {
                   </Button>
                 );
               })()}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Mass Order Confirmation */}
       <AlertDialog open={massConfirmOpen} onOpenChange={setMassConfirmOpen}>
