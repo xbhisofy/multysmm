@@ -9,7 +9,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { z } from 'zod';
 import { PageMeta } from '@/components/seo/PageMeta';
 
-const GRADIENT = 'linear-gradient(135deg, #F97316 0%, #6366F1 100%)';
+const GRADIENT = 'linear-gradient(135deg, #F26522 0%, #D63384 50%, #7B2CBF 100%)';
+const ACCENT = '#F26522';
+const MAGENTA = '#D63384';
+const PURPLE = '#7B2CBF';
 
 
 
@@ -93,7 +96,7 @@ export default function Auth() {
     } finally { setIsSubmitting(false); }
   };
 
-  const inputClass = "h-12 rounded-xl border-[#FFE4CC] bg-white focus:border-[#F97316] focus:ring-2 focus:ring-[#F97316]/15 text-[#0B0B16] font-medium px-4 placeholder:text-[#bbb] transition-all";
+  const inputClass = "h-12 rounded-xl border-[#FCE0D0] bg-white focus:border-[#F26522] focus:ring-2 focus:ring-[#F26522]/15 text-[#0B0B16] font-medium px-4 placeholder:text-[#bbb] transition-all";
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 py-12 relative overflow-hidden"
@@ -130,12 +133,12 @@ export default function Auth() {
           {showVerifyEmail ? (
             <div className="text-center py-8">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: '#FAF5FF' }}>
-                <Mail className="w-7 h-7" style={{ color: '#F97316' }} />
+                <Mail className="w-7 h-7" style={{ color: '#F26522' }} />
               </div>
               <h3 className="text-xl font-bold mb-2" style={{ color: '#0B0B16' }}>Check your inbox</h3>
               <p className="text-[13px] mb-2" style={{ color: '#7d6f97' }}>Verification link sent to:</p>
               <p className="text-[13px] font-semibold mb-6" style={{ color: '#0B0B16' }}>{email}</p>
-              <button onClick={() => { setShowVerifyEmail(false); setIsLogin(true); }} className="text-[13px] font-bold" style={{ color: '#F97316' }}>
+              <button onClick={() => { setShowVerifyEmail(false); setIsLogin(true); }} className="text-[13px] font-bold" style={{ color: '#F26522' }}>
                 ← Back to login
               </button>
             </div>
@@ -148,7 +151,7 @@ export default function Auth() {
                     <Input type="email" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
                   </div>
                   {error && <p className="text-[13px] font-medium" style={{ color: '#ef4444' }}>{error}</p>}
-                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#F97316' }}>{successMessage}</p>}
+                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#F26522' }}>{successMessage}</p>}
                   <button type="submit" disabled={isSubmitting}
                     className="w-full h-12 rounded-xl text-[13.5px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-70"
                     style={{ background: GRADIENT, boxShadow: '0 12px 28px -8px rgba(124,58,237,.45)' }}>
@@ -174,7 +177,7 @@ export default function Auth() {
                     <div className="flex items-center justify-between mb-1.5">
                       <Label className="text-[12px] font-semibold" style={{ color: '#4A4A5E', textTransform: 'none', letterSpacing: 'normal' }}>Password</Label>
                       {isLogin && (
-                        <button type="button" onClick={() => setIsForgotPassword(true)} className="text-[11px] font-semibold" style={{ color: '#F97316' }}>
+                        <button type="button" onClick={() => setIsForgotPassword(true)} className="text-[11px] font-semibold" style={{ color: '#F26522' }}>
                           Forgot password?
                         </button>
                       )}
@@ -188,7 +191,7 @@ export default function Auth() {
                   </div>
 
                   {error && <p className="text-[13px] font-medium" style={{ color: '#ef4444' }}>{error}</p>}
-                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#F97316' }}>{successMessage}</p>}
+                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#F26522' }}>{successMessage}</p>}
 
                   <button type="submit" disabled={isSubmitting}
                     className="w-full h-12 rounded-xl text-[13.5px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-70 transition-transform hover:-translate-y-0.5"
@@ -198,7 +201,7 @@ export default function Auth() {
 
                   <p className="text-center text-[13px]" style={{ color: '#7d6f97' }}>
                     {isLogin ? "Don't have an account? " : 'Already have an account? '}
-                    <button type="button" onClick={() => { setIsLogin(!isLogin); setError(''); setSuccessMessage(''); }} className="font-bold" style={{ color: '#F97316' }}>
+                    <button type="button" onClick={() => { setIsLogin(!isLogin); setError(''); setSuccessMessage(''); }} className="font-bold" style={{ color: '#F26522' }}>
                       {isLogin ? 'Sign up' : 'Sign in'}
                     </button>
                   </p>
