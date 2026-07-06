@@ -1189,25 +1189,37 @@ export default function EngagementOrder() {
       <div className="max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 space-y-3 sm:space-y-6 pb-8">
         {/* Engagement console — clean & friendly */}
         <div className="relative overflow-hidden rounded-2xl bg-white border border-slate-200/80 shadow-sm">
+          {/* soft gradient wash */}
+          <div
+            className="absolute inset-x-0 top-0 h-40 pointer-events-none opacity-70"
+            style={{
+              background:
+                'radial-gradient(60% 100% at 0% 0%, rgba(249,115,22,.10), transparent 60%), radial-gradient(50% 100% at 100% 0%, rgba(139,92,246,.10), transparent 60%)',
+            }}
+          />
+
           {/* header */}
-          <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-4 sm:py-5">
+          <div className="relative flex items-center justify-between gap-3 px-4 sm:px-6 py-4 sm:py-5">
             <div className="flex items-center gap-3 min-w-0">
               <div
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: 'linear-gradient(135deg, #F97316, #EC4899)' }}
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-md"
+                style={{ background: 'linear-gradient(135deg, #F97316, #EC4899 55%, #8B5CF6)' }}
               >
-                <Rocket className="h-5 w-5 text-white" />
+                <Rocket className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
-                  Engagement
+                <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-400">
+                  Engagement Console
                 </p>
                 <h1 className="text-base sm:text-lg font-semibold text-slate-900 tracking-tight leading-tight">
                   Organic Full Engagement
                 </h1>
+                <p className="hidden sm:block text-xs text-slate-500 mt-1">
+                  Ek link paste karo — likes, views, comments sab natural speed pe.
+                </p>
               </div>
             </div>
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-100 shrink-0">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inset-0 rounded-full opacity-75 animate-ping bg-emerald-500" />
                 <span className="relative rounded-full h-1.5 w-1.5 bg-emerald-500" />
@@ -1216,10 +1228,10 @@ export default function EngagementOrder() {
             </div>
           </div>
 
-          <div className="h-px bg-slate-100" />
+          <div className="relative h-px bg-slate-100" />
 
           {/* two toggle cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 sm:p-4">
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 sm:p-4">
             {/* AI Organic Algorithm */}
             <button
               type="button"
@@ -1230,15 +1242,15 @@ export default function EngagementOrder() {
               }}
               className={`text-left rounded-xl p-4 transition-all border ${
                 isOrganicMode
-                  ? 'border-orange-200 bg-orange-50/60'
-                  : 'border-slate-200/70 bg-white hover:bg-slate-50'
+                  ? 'border-orange-200 bg-orange-50/70 shadow-[0_6px_18px_-8px_rgba(249,115,22,.35)]'
+                  : 'border-slate-200/70 bg-white hover:bg-slate-50 hover:border-slate-300'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                      isOrganicMode ? 'text-white' : 'text-orange-500 bg-orange-50 border border-orange-100'
+                    className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
+                      isOrganicMode ? 'text-white shadow-md' : 'text-orange-500 bg-orange-50 border border-orange-100'
                     }`}
                     style={isOrganicMode ? { background: 'linear-gradient(135deg, #F97316, #EA580C)' } : undefined}
                   >
@@ -1263,6 +1275,20 @@ export default function EngagementOrder() {
                   className="data-[state=checked]:bg-orange-500 shrink-0"
                 />
               </div>
+              <div className="flex flex-wrap gap-1.5 mt-3">
+                {['Drip speed', 'Random variance', 'Safe for algo'].map((t) => (
+                  <span
+                    key={t}
+                    className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                      isOrganicMode
+                        ? 'bg-white text-orange-600 border border-orange-100'
+                        : 'bg-slate-50 text-slate-500 border border-slate-100'
+                    }`}
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
             </button>
 
             {/* AI Smart Ratios */}
@@ -1275,15 +1301,15 @@ export default function EngagementOrder() {
               }}
               className={`text-left rounded-xl p-4 transition-all border ${
                 isAutoRatios
-                  ? 'border-purple-200 bg-purple-50/60'
-                  : 'border-slate-200/70 bg-white hover:bg-slate-50'
+                  ? 'border-purple-200 bg-purple-50/70 shadow-[0_6px_18px_-8px_rgba(139,92,246,.35)]'
+                  : 'border-slate-200/70 bg-white hover:bg-slate-50 hover:border-slate-300'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                      isAutoRatios ? 'text-white' : 'text-purple-500 bg-purple-50 border border-purple-100'
+                    className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
+                      isAutoRatios ? 'text-white shadow-md' : 'text-purple-500 bg-purple-50 border border-purple-100'
                     }`}
                     style={isAutoRatios ? { background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)' } : undefined}
                   >
@@ -1308,16 +1334,38 @@ export default function EngagementOrder() {
                   className="data-[state=checked]:bg-purple-500 shrink-0"
                 />
               </div>
+              <div className="flex flex-wrap gap-1.5 mt-3">
+                {['Auto mix', 'Best ratios', 'One-tap'].map((t) => (
+                  <span
+                    key={t}
+                    className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                      isAutoRatios
+                        ? 'bg-white text-purple-600 border border-purple-100'
+                        : 'bg-slate-50 text-slate-500 border border-slate-100'
+                    }`}
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
             </button>
           </div>
 
           {/* footer */}
-          <div className="flex items-center justify-between gap-2 px-4 sm:px-6 py-3 border-t border-slate-100 bg-slate-50/60">
+          <div className="relative flex items-center justify-between gap-2 px-4 sm:px-6 py-3 border-t border-slate-100 bg-slate-50/60">
             <p className="text-xs text-slate-500">
               Ek link, saari engagement — bilkul natural.
             </p>
-            <span className="text-[11px] font-medium text-slate-400">
-              {isOrganicMode ? 'Organic' : isAutoRatios ? 'Auto' : 'Manual'}
+            <span
+              className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                isOrganicMode
+                  ? 'bg-orange-50 text-orange-600 border border-orange-100'
+                  : isAutoRatios
+                  ? 'bg-purple-50 text-purple-600 border border-purple-100'
+                  : 'bg-slate-100 text-slate-500 border border-slate-200'
+              }`}
+            >
+              {isOrganicMode ? 'Organic mode' : isAutoRatios ? 'Auto mode' : 'Manual mode'}
             </span>
           </div>
         </div>
