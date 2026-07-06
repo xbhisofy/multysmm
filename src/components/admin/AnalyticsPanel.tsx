@@ -299,11 +299,12 @@ function Section({
 }) {
   return (
     <div>
-      <div className="flex items-center gap-2 mb-2 px-1">
-        {icon}
-        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+      <div className="flex items-center gap-2 mb-3 px-1">
+        <span className="text-muted-foreground">{icon}</span>
+        <h3 className="text-sm font-semibold text-foreground tracking-tight">{title}</h3>
+        <div className="flex-1 h-px bg-border/60 ml-2" />
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-2.5 sm:gap-3">
         {children}
       </div>
     </div>

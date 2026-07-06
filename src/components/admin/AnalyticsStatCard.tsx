@@ -33,20 +33,16 @@ export function AnalyticsStatCard({
   const g = current !== undefined && previous !== undefined ? growth(current, previous) : null;
 
   return (
-    <Card className="glass-card overflow-hidden">
-      <CardContent className="p-4">
+    <Card className="glass-card overflow-hidden h-full">
+      <CardContent className="p-3 sm:p-4">
         <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground truncate">
-              {label}
-            </p>
-            <p className="text-xl sm:text-2xl font-bold tabular-nums mt-1 truncate">{value}</p>
-            {hint && <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{hint}</p>}
-          </div>
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground font-medium line-clamp-1 flex-1 min-w-0">
+            {label}
+          </p>
           {icon && (
             <div
               className={cn(
-                'w-9 h-9 rounded-xl bg-gradient-to-br flex items-center justify-center shrink-0',
+                'w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br flex items-center justify-center shrink-0',
                 ACCENTS[accent]
               )}
             >
@@ -54,22 +50,27 @@ export function AnalyticsStatCard({
             </div>
           )}
         </div>
-        {g && (
-          <div
-            className={cn(
-              'mt-2 inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded',
-              g.dir === 'up' && 'text-success bg-success/10',
-              g.dir === 'down' && 'text-destructive bg-destructive/10',
-              g.dir === 'flat' && 'text-muted-foreground bg-muted/40'
-            )}
-          >
-            {g.dir === 'up' && <ArrowUpRight className="h-3 w-3" />}
-            {g.dir === 'down' && <ArrowDownRight className="h-3 w-3" />}
-            {g.dir === 'flat' && <Minus className="h-3 w-3" />}
-            {g.pct === null ? 'new' : `${g.pct > 0 ? '+' : ''}${g.pct.toFixed(1)}%`}
-            <span className="text-muted-foreground font-normal ml-0.5">vs prev</span>
-          </div>
-        )}
+        <p className="text-lg sm:text-xl lg:text-2xl font-bold tabular-nums mt-1.5 break-words leading-tight">
+          {value}
+        </p>
+        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+          {hint && <p className="text-[10px] text-muted-foreground line-clamp-1">{hint}</p>}
+          {g && (
+            <div
+              className={cn(
+                'inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded',
+                g.dir === 'up' && 'text-success bg-success/10',
+                g.dir === 'down' && 'text-destructive bg-destructive/10',
+                g.dir === 'flat' && 'text-muted-foreground bg-muted/40'
+              )}
+            >
+              {g.dir === 'up' && <ArrowUpRight className="h-2.5 w-2.5" />}
+              {g.dir === 'down' && <ArrowDownRight className="h-2.5 w-2.5" />}
+              {g.dir === 'flat' && <Minus className="h-2.5 w-2.5" />}
+              {g.pct === null ? 'new' : `${g.pct > 0 ? '+' : ''}${g.pct.toFixed(1)}%`}
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
