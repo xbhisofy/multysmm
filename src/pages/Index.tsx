@@ -333,12 +333,12 @@ const Index = () => {
               { icon: Shuffle, t: 'Multi-Provider Routing', d: 'We rotate across top-tier providers automatically so you always get the fastest, safest source.' },
               { icon: Layers, t: 'Engagement Bundles', d: 'Pre-built packs for Reels, Shorts, Stories and viral campaigns — one click, done.' },
               { icon: Shield, t: 'Account Safety First', d: 'Human-pace patterns, ±50% variance and night slowdown — zero account bans reported.' },
-            ].map((f) => (
+            ].map((f, i) => (
               <div key={f.t} className="rounded-2xl p-6 transition-all hover:-translate-y-1"
                 style={{ background: C.card, border: `1px solid ${C.line}`, boxShadow: '0 4px 20px rgba(11,11,22,.04)' }}>
                 <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
-                  style={{ background: C.lilac }}>
-                  <f.icon className="w-5 h-5" style={{ color: C.purple }} />
+                  style={{ background: TRI_SOFT[i % 3] }}>
+                  <f.icon className="w-5 h-5" style={{ color: TRI[i % 3] }} />
                 </div>
                 <h3 className="text-[16px] font-bold mb-2">{f.t}</h3>
                 <p className="text-[13.5px] leading-relaxed" style={{ color: C.ink2 }}>{f.d}</p>
