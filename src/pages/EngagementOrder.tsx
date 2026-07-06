@@ -249,6 +249,38 @@ export default function EngagementOrder() {
     return () => { cancelled = true; };
   }, [repeatFrom, user?.id]);
 
+  // ============ SMART TEMPLATES (hydrate from ?template=<id>) ============
+  const { data: templateSettings = DEFAULT_TEMPLATE_SETTINGS } = useTemplateSettings();
+  const { trackUsage } = useTemplateMutations();
+  const [templateSaveOpen, setTemplateSaveOpen] = useState(false);
+  const [showNewTemplateBanner, setShowNewTemplateBanner] = useState(false);
+  const templateHydratedRef = useRef(false);
+
+  useEffect(() => {
+    if (templateHydratedRef.current) return;
+    const params = new URLSearchParams(location.search);
+    if (params.get('newTemplate') === '1') setShowNewTemplateBanner(true);
+    const tid = params.get('template');
+    if (!tid || !user?.id) return;
+    templateHydratedRef.current = true;
+    (async () => {
+      const { data } = await supabase.from('order_templates').select('*').eq('id', tid).eq('user_id', user.id).maybeSingle();
+      if (!data) return;
+      const snap: any = (data as any).config || {};
+      if (snap.platform) setPlatform(snap.platform);
+      if (typeof snap.base_quantity === 'number') setBaseQuantity(snap.base_quantity);
+      if (typeof snap.is_organic_mode === 'boolean') setIsOrganicMode(snap.is_organic_mode);
+      if (typeof snap.is_auto_ratios === 'boolean') setIsAutoRatios(snap.is_auto_ratios);
+      if (snap.engagements && typeof snap.engagements === 'object') setEngagements(snap.engagements);
+      setLink('');
+      trackUsage.mutate(tid);
+      toast({ title: 'Template loaded', description: `"${(data as any).name}" restored. Paste a link and click Place Order.` });
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search, user?.id]);
+
+
+
 
 
 
