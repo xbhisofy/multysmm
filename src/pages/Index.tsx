@@ -52,12 +52,14 @@ const Index = () => {
         breadcrumbs={[{ name: 'Home', path: '/' }]}
       />
 
-      {/* soft purple glow background */}
+      {/* soft tri-color glow background */}
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[1200px] h-[700px] rounded-full"
-          style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.18), transparent 70%)', filter: 'blur(40px)' }} />
-        <div className="absolute top-[60%] -right-40 w-[600px] h-[600px] rounded-full"
-          style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,.18), transparent 70%)', filter: 'blur(40px)' }} />
+        <div className="absolute -top-32 left-[15%] w-[900px] h-[600px] rounded-full"
+          style={{ background: 'radial-gradient(closest-side, rgba(242,101,34,.18), transparent 70%)', filter: 'blur(40px)' }} />
+        <div className="absolute -top-20 right-[10%] w-[700px] h-[600px] rounded-full"
+          style={{ background: 'radial-gradient(closest-side, rgba(123,44,191,.18), transparent 70%)', filter: 'blur(40px)' }} />
+        <div className="absolute top-[55%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full"
+          style={{ background: 'radial-gradient(closest-side, rgba(214,51,132,.18), transparent 70%)', filter: 'blur(40px)' }} />
       </div>
 
       {/* ═══ NAV ═══ */}
