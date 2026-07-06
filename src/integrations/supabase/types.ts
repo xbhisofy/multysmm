@@ -1625,6 +1625,7 @@ export type Database = {
           is_organic_mode: boolean
           items: Json
           link: string
+          next_run_at: string
           order_number: number
           status: string
           total_price: number
