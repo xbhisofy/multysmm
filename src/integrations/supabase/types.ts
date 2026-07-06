@@ -1616,6 +1616,21 @@ export type Database = {
           wallet_balance: number
         }[]
       }
+      get_user_engagement_orders_summary: {
+        Args: { p_limit?: number }
+        Returns: {
+          base_quantity: number
+          created_at: string
+          id: string
+          is_organic_mode: boolean
+          items: Json
+          link: string
+          order_number: number
+          status: string
+          total_price: number
+          updated_at: string
+        }[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
