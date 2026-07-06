@@ -1186,23 +1186,38 @@ export default function EngagementOrder() {
   return (
     <DashboardLayout>
       <div className="max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 space-y-3 sm:space-y-6 pb-8">
-        {/* Engagement console — simple mode picker */}
-        <div className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
-          <div className="flex items-start gap-3 px-4 sm:px-5 py-4 border-b border-border/70">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+        {/* Engagement console — premium mode picker */}
+        <div className="relative rounded-2xl bg-card border border-border shadow-[0_8px_30px_-12px_rgba(249,115,22,0.15)] overflow-hidden">
+          {/* Soft brand wash */}
+          <div className="pointer-events-none absolute inset-0 opacity-70"
+            style={{
+              background:
+                'radial-gradient(600px 120px at 0% 0%, rgba(249,115,22,0.10), transparent 60%), radial-gradient(500px 120px at 100% 0%, rgba(249,115,22,0.06), transparent 60%)',
+            }}
+          />
+
+          <div className="relative flex items-start gap-3 px-4 sm:px-5 pt-4 pb-3">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-primary/70 text-primary-foreground flex items-center justify-center shrink-0 shadow-[0_6px_18px_-8px_rgba(249,115,22,0.6)]">
               <Rocket className="h-5 w-5" />
             </div>
-            <div className="min-w-0">
-              <h1 className="text-lg sm:text-xl font-semibold text-foreground leading-snug">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-primary/80">Engagement Console</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70 px-2 py-0.5 text-[10px] font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Live
+                </span>
+              </div>
+              <h1 className="text-lg sm:text-xl font-semibold text-foreground leading-snug mt-1">
                 Organic Full Engagement
               </h1>
               <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                Bas link paste karo. Baaki delivery hum simple aur natural rakhenge.
+                Ek link paste karo — hum delivery ko natural aur safe rakhenge.
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-3 sm:p-4">
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-2.5 px-3 sm:px-4 pb-3">
             <button
               type="button"
               onClick={() => {
@@ -1210,22 +1225,24 @@ export default function EngagementOrder() {
                 setIsOrganicMode(val);
                 if (val) setIsAutoRatios(false);
               }}
-              className={`text-left rounded-xl p-3 sm:p-4 transition-colors border ${
+              className={`group relative text-left rounded-xl p-3.5 sm:p-4 transition-all border ${
                 isOrganicMode
-                  ? 'border-primary/40 bg-primary/10'
-                  : 'border-border bg-background hover:bg-muted/40'
+                  ? 'border-primary/50 bg-gradient-to-br from-primary/[0.09] to-primary/[0.03] shadow-[0_6px_20px_-12px_rgba(249,115,22,0.5)]'
+                  : 'border-border bg-background hover:border-primary/30 hover:bg-muted/40'
               }`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                    isOrganicMode ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'
+                  }`}>
                     <Brain className="h-4 w-4" />
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-sm sm:text-base font-medium text-foreground leading-tight">
                       Natural Delivery
                     </h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-snug">
+                    <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
                       Safe speed pe split delivery
                     </p>
                   </div>
@@ -1240,6 +1257,13 @@ export default function EngagementOrder() {
                   className="data-[state=checked]:bg-primary shrink-0"
                 />
               </div>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {['Drip speed', 'Random variance', 'Algo-safe'].map((t) => (
+                  <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-muted/70 text-muted-foreground border border-border/60">
+                    {t}
+                  </span>
+                ))}
+              </div>
             </button>
 
             <button
@@ -1249,22 +1273,24 @@ export default function EngagementOrder() {
                 setIsAutoRatios(val);
                 if (val) setIsOrganicMode(false);
               }}
-              className={`text-left rounded-xl p-3 sm:p-4 transition-colors border ${
+              className={`group relative text-left rounded-xl p-3.5 sm:p-4 transition-all border ${
                 isAutoRatios
-                  ? 'border-primary/40 bg-primary/10'
-                  : 'border-border bg-background hover:bg-muted/40'
+                  ? 'border-primary/50 bg-gradient-to-br from-primary/[0.09] to-primary/[0.03] shadow-[0_6px_20px_-12px_rgba(249,115,22,0.5)]'
+                  : 'border-border bg-background hover:border-primary/30 hover:bg-muted/40'
               }`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                    isAutoRatios ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'
+                  }`}>
                     <Percent className="h-4 w-4" />
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-sm sm:text-base font-medium text-foreground leading-tight">
                       Auto Mix
                     </h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-snug">
+                    <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
                       Views, likes, comments ka balance
                     </p>
                   </div>
@@ -1279,15 +1305,33 @@ export default function EngagementOrder() {
                   className="data-[state=checked]:bg-primary shrink-0"
                 />
               </div>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {['Best ratios', 'One-tap', 'Balanced'].map((t) => (
+                  <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-muted/70 text-muted-foreground border border-border/60">
+                    {t}
+                  </span>
+                ))}
+              </div>
             </button>
           </div>
 
-          <div className="px-4 sm:px-5 py-3 border-t border-border/70 bg-muted/30">
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Current mode: <span className="font-medium text-foreground">{isOrganicMode ? 'Natural Delivery' : isAutoRatios ? 'Auto Mix' : 'Manual'}</span>
+          <div className="relative px-4 sm:px-5 py-2.5 border-t border-border/70 bg-muted/40 flex items-center justify-between gap-3">
+            <p className="text-xs text-muted-foreground truncate">
+              Ek link, saari engagement — bilkul natural.
             </p>
+            <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full border ${
+              isOrganicMode
+                ? 'bg-primary/10 text-primary border-primary/30'
+                : isAutoRatios
+                ? 'bg-primary/10 text-primary border-primary/30'
+                : 'bg-background text-muted-foreground border-border'
+            }`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${isOrganicMode || isAutoRatios ? 'bg-primary' : 'bg-muted-foreground/50'}`} />
+              {isOrganicMode ? 'Natural Delivery' : isAutoRatios ? 'Auto Mix' : 'Manual mode'}
+            </span>
           </div>
         </div>
+
 
         {/* AI Growth Engine moved to sidebar → /ai-assistant */}
 
