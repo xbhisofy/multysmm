@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS public.order_templates CASCADE; DROP TABLE IF EXISTS public.template_settings CASCADE; DROP FUNCTION IF EXISTS public.enforce_template_cap() CASCADE;
