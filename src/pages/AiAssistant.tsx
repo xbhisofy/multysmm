@@ -14,7 +14,7 @@ const STORAGE_KEY = "ai-assistant-chat-v1";
 
 const SUGGESTIONS = [
   { icon: TrendingUp, text: "Instagram reel pe 1k views ke liye kitna engagement chahiye?" },
-  { icon: Users, text: "TikTok pe 10k views ka safe organic package suggest karo" },
+  { icon: Users, text: "Suggest a safe organic package for 10k TikTok views" },
   { icon: MessageCircle, text: "YouTube video ke liye 5000 views ka natural plan?" },
   { icon: Zap, text: "Instagram par grow karne ke top tips" },
 ];
