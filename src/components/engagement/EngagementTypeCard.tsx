@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { useCurrency } from "@/hooks/useCurrency";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -73,7 +73,6 @@ export function EngagementTypeCard({
   customCurvePoints,
   pricePerK = 0,
 }: EngagementTypeCardProps) {
-  const { formatPrice } = useCurrency();
   const [customHoursInput, setCustomHoursInput] = useState(
     config.timeLimitCustomMode && config.timeLimitHours ? String(config.timeLimitHours) : '24'
   );
@@ -351,7 +350,7 @@ export function EngagementTypeCard({
             </div>
           </div>
 
-          {/* Right: Input + Price + Switch */}
+          {/* Right: Input + Switch */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {config.enabled && (
               <Input
@@ -367,9 +366,6 @@ export function EngagementTypeCard({
                 )}
               />
             )}
-            <Badge variant="outline" className="font-medium text-[10px] sm:text-xs border-border bg-muted/50 text-muted-foreground px-2 py-0.5 shrink-0 rounded-full">
-              {formatPrice(config.price)}
-            </Badge>
             <div className="scale-90 sm:scale-100">
               <Switch
                 checked={config.enabled}
