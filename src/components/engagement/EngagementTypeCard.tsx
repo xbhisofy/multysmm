@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { useCurrency } from "@/hooks/useCurrency";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -73,7 +73,6 @@ export function EngagementTypeCard({
   customCurvePoints,
   pricePerK = 0,
 }: EngagementTypeCardProps) {
-  const { formatPrice } = useCurrency();
   const [customHoursInput, setCustomHoursInput] = useState(
     config.timeLimitCustomMode && config.timeLimitHours ? String(config.timeLimitHours) : '24'
   );
