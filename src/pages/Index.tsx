@@ -322,8 +322,8 @@ const Index = () => {
           <div className="text-center mb-12">
             <Eyebrow>Core Features</Eyebrow>
             <h2 className="mt-4 text-[1.6rem] sm:text-[2.4rem] lg:text-[2.8rem] font-black leading-[1.02] tracking-[-0.035em]">
-              Built for Speed, <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400 }}>Powered</span><br />
-              by <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Intelligence</span>
+              Built for Speed, <span>Powered</span><br />
+              by <span style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Intelligence</span>
             </h2>
           </div>
 
