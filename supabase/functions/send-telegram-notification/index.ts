@@ -33,19 +33,28 @@ serve(async (req) => {
 
 
   try {
-    // Auth: signed-in user OR service-role key
+    // Auth: service-role key OR authenticated admin user only.
+    // Regular users must NOT be able to send arbitrary admin Telegram messages.
     const authHeader = req.headers.get("Authorization") || "";
     const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
     let authorized = !!token && !!serviceKey && token === serviceKey;
     if (!authorized && token) {
       try {
-        const supa = createClient(
+        const supaAdmin = createClient(
           Deno.env.get("SUPABASE_URL") ?? "",
-          Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+          serviceKey,
         );
-        const { data, error } = await supa.auth.getUser(token);
-        authorized = !error && !!data?.user;
+        const { data: userData, error: userErr } = await supaAdmin.auth.getUser(token);
+        if (!userErr && userData?.user) {
+          const { data: roleRow } = await supaAdmin
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", userData.user.id)
+            .eq("role", "admin")
+            .maybeSingle();
+          authorized = !!roleRow;
+        }
       } catch (_) {
         authorized = false;
       }
@@ -56,6 +65,7 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
 
     const BOT_TOKEN = Deno.env.get("PROVIDER_BALANCE_BOT_TOKEN");
     if (!BOT_TOKEN) {

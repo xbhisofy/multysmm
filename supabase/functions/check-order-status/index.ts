@@ -137,32 +137,18 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Auth check - this is a cron/internal function
-    // Allow: anon key (cron), service key (internal), or valid user JWT
-    // For cron calls, the system sends the anon key automatically
-    const authHeader = req.headers.get('Authorization')
-    const token = authHeader?.replace('Bearer ', '') || ''
-    const anonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    // Auth check — service role or shared cron secret only (no anon-key bypass)
+    const authHeader = req.headers.get('Authorization') || ''
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
+    const cronSecret = req.headers.get('x-cron-secret') || ''
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    
-    // System calls: anon key or service key
-    const isSystemCall = !!(token && (token === anonKey || token === serviceKey))
-    
-    if (!isSystemCall && token) {
-      // User JWT - verify it
-      const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token)
-      if (claimsError || !claimsData?.claims?.sub) {
-        console.log('JWT verification failed, checking if valid system token...')
-        // Still allow if it looks like a valid JWT (cron might send different format)
-      }
-    }
-    
-    // If no token at all, reject
-    if (!authHeader) {
+    const expectedCron = Deno.env.get('CRON_SECRET') ?? ''
+    if (!((serviceKey && token === serviceKey) || (expectedCron && cronSecret === expectedCron))) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
+
 
     // Check if specific run ID was passed (for on-demand check)
     let targetRunId: string | null = null

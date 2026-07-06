@@ -34,10 +34,22 @@ async function sendTelegram(supabaseUrl: string, anonKey: string, text: string) 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  // Auth: service role or shared cron secret only
+  const authHeader = req.headers.get("Authorization") || "";
+  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+  const cronSecret = req.headers.get("x-cron-secret") || "";
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-  const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+  const expectedCron = Deno.env.get("CRON_SECRET") ?? "";
+  if (!((serviceKey && token === serviceKey) || (expectedCron && cronSecret === expectedCron))) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const anonKey = serviceKey; // legacy variable kept for downstream calls
   const supabase = createClient(supabaseUrl, serviceKey);
+
 
   try {
     const { data: runs, error } = await supabase
