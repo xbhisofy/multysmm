@@ -213,7 +213,7 @@ const Index = () => {
           <div>
             <Eyebrow>How it works</Eyebrow>
             <h2 className="mt-4 text-[1.6rem] sm:text-[2.4rem] lg:text-[2.8rem] font-black leading-[1.02] tracking-[-0.035em]">
-              From link to growth<br /> in <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>3 simple steps</span>
+              From link to growth<br /> in <span style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>3 simple steps</span>
             </h2>
 
             <div className="mt-8 space-y-3">
