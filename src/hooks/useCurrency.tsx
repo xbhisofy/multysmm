@@ -3,14 +3,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 
 const DEFAULT_RATES: Record<CurrencyCode, number> = {
-  USD: 1,
   INR: 83.5,
-  EUR: 0.92,
-  GBP: 0.79,
-  AED: 3.67,
 };
 
-export type CurrencyCode = 'USD' | 'INR' | 'EUR' | 'GBP' | 'AED';
+export type CurrencyCode = 'INR';
 
 interface CurrencyInfo {
   code: CurrencyCode;
@@ -20,12 +16,9 @@ interface CurrencyInfo {
 }
 
 export const CURRENCIES: CurrencyInfo[] = [
-  { code: 'USD', symbol: '$', name: 'US Dollar', flag: '🇺🇸' },
   { code: 'INR', symbol: '₹', name: 'Indian Rupee', flag: '🇮🇳' },
-  { code: 'EUR', symbol: '€', name: 'Euro', flag: '🇪🇺' },
-  { code: 'GBP', symbol: '£', name: 'British Pound', flag: '🇬🇧' },
-  { code: 'AED', symbol: 'د.إ', name: 'UAE Dirham', flag: '🇦🇪' },
 ];
+
 
 interface CurrencyContextType {
   currency: CurrencyCode;
@@ -40,12 +33,8 @@ interface CurrencyContextType {
 const CurrencyContext = createContext<CurrencyContextType | null>(null);
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
-  // Default USD; users can switch to their preferred currency (persisted in localStorage).
-  const [currency, setCurrencyState] = useState<CurrencyCode>(() => {
-    if (typeof window === 'undefined') return 'USD';
-    const saved = window.localStorage.getItem('preferred_currency') as CurrencyCode | null;
-    return saved && CURRENCIES.some(c => c.code === saved) ? saved : 'USD';
-  });
+  const [currency, setCurrencyState] = useState<CurrencyCode>('INR');
+
   const rates = DEFAULT_RATES;
   const isLoadingRates = false;
   const setCurrency = useCallback((code: CurrencyCode) => {
@@ -105,11 +94,12 @@ export function useCurrency() {
   if (!context) {
     // Fallback for components outside provider (like landing page)
     return {
-      currency: 'USD' as CurrencyCode,
+      currency: 'INR' as CurrencyCode,
       setCurrency: () => { },
       rates: DEFAULT_RATES,
       isLoadingRates: false,
-      formatPrice: (usdAmount: number) => `$${usdAmount.toFixed(2)}`,
+      formatPrice: (usdAmount: number) => `₹${(usdAmount * 83.5).toFixed(2)}`,
+
       convertFromUSD: (usdAmount: number) => usdAmount,
       currencyInfo: CURRENCIES[0],
     };
