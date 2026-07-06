@@ -341,22 +341,22 @@ export function EngagementTypeCard({
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
                 <span className={cn(
-                  "text-xs sm:text-sm font-extrabold tracking-tight truncate",
+                  "text-sm sm:text-[15px] font-semibold tracking-tight truncate",
                   engagementConfig.color
                 )}>
                   {engagementConfig.emoji} {engagementConfig.label}
                 </span>
                 {type === 'views' && (
-                  <Badge className="text-[8px] sm:text-[9px] bg-primary text-black font-black px-1 sm:px-1.5 py-0 uppercase tracking-wider border-none">
+                  <Badge className="text-[9px] bg-primary/15 text-primary font-semibold px-1.5 py-0 rounded-full border-none normal-case tracking-normal">
                     Base
                   </Badge>
                 )}
               </div>
               {config.enabled && scheduleData && (
-                <div className="flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] text-white/30 mt-0.5 font-black uppercase tracking-wider">
-                  <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-primary shrink-0" />
+                <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-muted-foreground mt-0.5 font-medium">
+                  <Sparkles className="h-3 w-3 text-primary shrink-0" />
                   <span>{scheduleData.runCount} runs</span>
-                  <span className="opacity-20">•</span>
+                  <span className="opacity-40">•</span>
                   <span>~{formatDuration(scheduleData.duration)}</span>
                 </div>
               )}
