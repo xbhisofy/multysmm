@@ -158,15 +158,26 @@ export function Sidebar({ onClose }: SidebarProps) {
 
       {/* Currency */}
       <div className="px-3 pb-2">
-        <div className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-[12px] font-medium"
+        <label className="relative w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-[12px] font-medium cursor-pointer"
           style={{ color: '#7d6f97', background: '#FAF7FF', border: '1px solid #efeaf7' }}>
           <div className="flex items-center gap-2">
-            <span className="text-base">🇮🇳</span>
-            <span className="uppercase tracking-wider">INR</span>
+            <span className="text-base">{currencyInfo.flag}</span>
+            <span className="uppercase tracking-wider">{currency}</span>
           </div>
-          <span className="text-[10px] opacity-70">₹</span>
-        </div>
+          <span className="text-[10px] opacity-70">{currencyInfo.symbol}</span>
+          <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value as any)}
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            aria-label="Select currency"
+          >
+            {CURRENCIES.map(c => (
+              <option key={c.code} value={c.code}>{c.flag} {c.code} — {c.name}</option>
+            ))}
+          </select>
+        </label>
       </div>
+
 
 
       {/* Sign out */}
