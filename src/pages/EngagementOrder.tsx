@@ -1760,6 +1760,21 @@ export default function EngagementOrder() {
         </Card>
       </div>
 
+      {/* Save as Template */}
+      <TemplateEditorDialog
+        open={templateSaveOpen}
+        onOpenChange={setTemplateSaveOpen}
+        platform={platform}
+        snapshot={{
+          platform,
+          base_quantity: baseQuantity,
+          is_organic_mode: isOrganicMode,
+          is_auto_ratios: isAutoRatios,
+          engagements,
+        }}
+        serviceSnapshot={{ platform }}
+      />
+
       {/* Mass Order Confirmation */}
       <AlertDialog open={massConfirmOpen} onOpenChange={setMassConfirmOpen}>
         <AlertDialogContent>
