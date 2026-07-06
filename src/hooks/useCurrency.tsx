@@ -94,11 +94,12 @@ export function useCurrency() {
   if (!context) {
     // Fallback for components outside provider (like landing page)
     return {
-      currency: 'USD' as CurrencyCode,
+      currency: 'INR' as CurrencyCode,
       setCurrency: () => { },
       rates: DEFAULT_RATES,
       isLoadingRates: false,
-      formatPrice: (usdAmount: number) => `$${usdAmount.toFixed(2)}`,
+      formatPrice: (usdAmount: number) => `₹${(usdAmount * 83.5).toFixed(2)}`,
+
       convertFromUSD: (usdAmount: number) => usdAmount,
       currencyInfo: CURRENCIES[0],
     };
