@@ -19,26 +19,30 @@ input[type="number"] {
 
 @layer base {
   :root {
-    /* ════ MULTYSMM BRAND: ORANGE → PINK → PURPLE (matches logo) ════ */
-    --background: 30 20% 98%;
-    --foreground: 240 25% 10%;
+    /* ════ MULTYSMM BRAND: exact logo palette ════
+       Orange  #F26522  ~ hsl(18 89% 54%)
+       Magenta #D63384  ~ hsl(328 65% 52%)
+       Purple  #7B2CBF  ~ hsl(272 63% 46%)
+       Ink     #0F1A2B  ~ hsl(217 49% 12%) */
+    --background: 30 25% 99%;
+    --foreground: 217 49% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 25% 10%;
+    --card-foreground: 217 49% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 25% 10%;
+    --popover-foreground: 217 49% 12%;
 
-    --primary: 22 95% 55%;
+    --primary: 18 89% 54%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 280 30% 97%;
-    --secondary-foreground: 240 25% 10%;
+    --secondary: 20 40% 97%;
+    --secondary-foreground: 217 49% 12%;
 
-    --muted: 280 20% 96%;
-    --muted-foreground: 240 5% 45%;
+    --muted: 20 25% 95%;
+    --muted-foreground: 217 15% 42%;
 
-    --accent: 280 70% 55%;
+    --accent: 272 63% 46%;
     --accent-foreground: 0 0% 100%;
 
     --success: 160 60% 42%;
@@ -50,14 +54,14 @@ input[type="number"] {
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 280 15% 90%;
-    --input: 280 15% 90%;
-    --ring: 22 95% 55%;
+    --border: 20 25% 90%;
+    --input: 20 25% 90%;
+    --ring: 18 89% 54%;
 
     --radius: 1rem;
 
-    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
-    --shadow-glow: 0 0 30px rgba(168, 85, 247, 0.18);
+    --shadow-soft: 0 4px 20px rgba(15, 26, 43, 0.06);
+    --shadow-glow: 0 0 30px rgba(123, 44, 191, 0.18);
 
   }
 }
