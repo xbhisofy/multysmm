@@ -19,7 +19,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { PlatformSelector } from "@/components/engagement/PlatformSelector";
-import { AiGrowthEngine, type AiGrowthResult } from "@/components/engagement/AiGrowthEngine";
+
 import { QuantitySelector } from "@/components/engagement/QuantitySelector";
 import { EngagementTypeCard } from "@/components/engagement/EngagementTypeCard";
 import { DeliveryPreview } from "@/components/engagement/DeliveryPreview";
@@ -1386,48 +1386,8 @@ export default function EngagementOrder() {
           </div>
         </div>
 
-        {/* AI Growth Engine */}
-        {orderMode === 'single' && (
-          <AiGrowthEngine
-            availablePlatforms={availablePlatforms}
-            selectedPlatform={platform}
-            onPlatformChange={setPlatform}
-            onApply={(r: AiGrowthResult) => {
-              setPlatform(r.platform);
-              if (r.link) setLink(r.link);
-              setBaseQuantity(r.base_quantity);
-              setIsOrganicMode(r.is_organic_mode);
-              setIsAutoRatios(false);
-              const types = Object.keys(r.quantities) as EngagementType[];
-              types.forEach((t) => userEditedQtyRef.current.add(t));
-              setEngagements((prev) => {
-                const next = { ...prev };
-                types.forEach((t) => {
-                  if (!next[t]) return;
-                  const svc = servicePrices[t];
-                  const qty = r.quantities[t];
-                  next[t] = {
-                    ...next[t],
-                    enabled: true,
-                    quantity: qty,
-                    price: svc ? (qty / 1000) * svc.pricePerK : next[t].price,
-                  };
-                });
-                return next;
-              });
-              // Ensure any types NOT in AI result are disabled for a clean plan
-              setEngagements((prev) => {
-                const next = { ...prev };
-                Object.keys(next).forEach((t) => {
-                  if (!r.quantities[t]) {
-                    next[t] = { ...next[t], enabled: false };
-                  }
-                });
-                return next;
-              });
-            }}
-          />
-        )}
+        {/* AI Growth Engine moved to sidebar → /ai-assistant */}
+
 
         {/* Platform Selector */}
         <Card className="glass-card border-2 border-border">
