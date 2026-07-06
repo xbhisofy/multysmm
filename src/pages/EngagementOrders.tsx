@@ -269,7 +269,7 @@ function OrderCard({ order, onClick, onRepeat }: { order: any; onClick: () => vo
           </div>
           <div className="p-3 bg-secondary rounded-xl border border-border">
             <Clock className="h-4 w-4 mx-auto mb-1 text-foreground" />
-            <p className="text-sm font-bold text-foreground">{pendingRuns.length}</p>
+            <p className="text-sm font-bold text-foreground">{pendingRunsCount}</p>
             <p className="text-[10px] text-muted-foreground">Pending</p>
           </div>
           <div className="p-3 bg-secondary rounded-xl border border-border">
@@ -289,30 +289,27 @@ function OrderCard({ order, onClick, onRepeat }: { order: any; onClick: () => vo
         </div>
 
         {/* Next Run Timer */}
-        {nextRun && (
+        {nextRunAt && (
           <div className="flex items-center gap-2 p-3 bg-secondary rounded-xl border border-border text-sm">
             <Timer className="h-4 w-4 text-foreground" />
             <span className="text-muted-foreground">Next run:</span>
-            <strong className="text-foreground">{format(new Date(nextRun.scheduled_at), 'HH:mm')}</strong>
+            <strong className="text-foreground">{format(nextRunAt, 'HH:mm')}</strong>
             <span className="text-muted-foreground">
-              ({formatDistanceToNow(new Date(nextRun.scheduled_at), { addSuffix: true })})
+              ({formatDistanceToNow(nextRunAt, { addSuffix: true })})
             </span>
           </div>
         )}
 
         {/* Engagement Items */}
         <div className="flex flex-wrap gap-2">
-          {order.items?.map((item: any) => {
+          {items.map((item: any) => {
             const Icon = ENGAGEMENT_ICONS[item.engagement_type as keyof typeof ENGAGEMENT_ICONS] || Eye;
-            const itemRuns = item.runs || [];
-            const itemCompleted = itemRuns.filter((r: any) => r.status === 'completed' || isAutoCompletedCancel(r)).length;
-            const itemDelivered = itemRuns.reduce(
-              (sum: number, r: any) => sum + calculateActualDelivered(r),
-              0
-            );
+            const itemCompleted = item.completed_runs || 0;
+            const itemTotal = item.total_runs || 0;
+            const itemDelivered = item.delivered_qty || 0;
 
             return (
-              <Badge 
+              <Badge
                 key={item.id}
                 variant="secondary"
                 className="flex items-center gap-1.5 py-1.5 px-3"
@@ -320,7 +317,7 @@ function OrderCard({ order, onClick, onRepeat }: { order: any; onClick: () => vo
                 <Icon className="h-3.5 w-3.5" />
                 <span className="capitalize">{item.engagement_type}:</span>
                 <span className="font-mono">{itemDelivered.toLocaleString()}/{item.quantity.toLocaleString()}</span>
-                <span className="text-muted-foreground">({itemCompleted}/{itemRuns.length})</span>
+                <span className="text-muted-foreground">({itemCompleted}/{itemTotal})</span>
               </Badge>
             );
           })}
