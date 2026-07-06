@@ -22,6 +22,7 @@ import Wallet from "./pages/Wallet";
 import Settings from "./pages/Settings";
 import Support from "./pages/Support";
 import ApiAccess from "./pages/ApiAccess";
+import AiAssistant from "./pages/AiAssistant";
 
 // Engagement pages
 import EngagementOrder from "./pages/EngagementOrder";
@@ -113,6 +114,7 @@ const App = () => {
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/support" element={<Support />} />
                     <Route path="/api-access" element={<ApiAccess />} />
+                    <Route path="/ai-assistant" element={<AiAssistant />} />
 
                     {/* Engagement */}
                     <Route path="/engagement-order" element={<EngagementOrder />} />
