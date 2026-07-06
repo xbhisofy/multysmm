@@ -110,7 +110,7 @@ export default function AdminDeposits() {
                 const tgMessage = `<b>${statusText}: Deposit Request</b>\n\n` +
                     `👤 <b>User:</b> ${profile?.full_name || 'Unknown'}\n` +
                     `📧 <b>Email:</b> ${profile?.email}\n` +
-                    `💰 <b>Amount:</b> $${variables.amount}\n` +
+                    `💰 <b>Amount:</b> ₹${variables.amount}\n` +
                     `🆔 <b>ID:</b> <code>${deposit?.payment_reference}</code>\n` +
                     `📅 <b>Action Date:</b> ${new Date().toLocaleString()}`;
 
