@@ -1,6 +1,7 @@
-import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useMemo, useCallback } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { Virtuoso } from "react-virtuoso";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -11,12 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { format, formatDistanceToNow } from "date-fns";
-import { 
-  Loader2, 
-  ExternalLink, 
-  Clock, 
-  CheckCircle2, 
-  XCircle, 
+import {
+  Loader2,
+  ExternalLink,
+  Clock,
+  CheckCircle2,
+  XCircle,
   Play,
   RefreshCw,
   Eye,
@@ -49,51 +50,75 @@ const STATUS_CONFIG = {
   started: { color: "bg-foreground text-background", icon: Play },
 };
 
+const PAGE_SIZE = 25;
+
 export default function EngagementOrders() {
   const navigate = useNavigate();
   const { user, isLoading: authLoading } = useAuth();
-  const { formatPrice } = useCurrency();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Uses server-side aggregate RPC — one row per order with pre-computed
-  // run counts + delivered qty. Payload ~95% smaller than the old
-  // nested `items → runs(*)` embed (previously the #1 slowest query platform-wide).
-  const { data: orders, refetch } = useQuery({
-    queryKey: ['engagement-orders', user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      const { data, error } = await supabase.rpc('get_user_engagement_orders_summary', { p_limit: 50 });
+  // Paginated + virtualized list. Loads PAGE_SIZE orders per page via the
+  // aggregate RPC; Virtuoso only renders the visible cards, so the DOM stays
+  // small even with 100k+ orders in the account.
+  const {
+    data,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetching,
+  } = useInfiniteQuery({
+    queryKey: ['engagement-orders-paged', user?.id],
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }) => {
+      if (!user) return [] as any[];
+      const { data, error } = await supabase.rpc(
+        'get_user_engagement_orders_summary',
+        { p_limit: PAGE_SIZE, p_offset: (pageParam as number) * PAGE_SIZE } as any
+      );
       if (error) throw error;
-      return data as any[];
+      return (data ?? []) as any[];
     },
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.length < PAGE_SIZE ? undefined : allPages.length,
     enabled: !!user,
     staleTime: 60_000,
     refetchOnWindowFocus: false,
     refetchInterval: 60_000,
   });
 
+  const orders = useMemo(
+    () => (data?.pages ?? []).flat(),
+    [data]
+  );
 
-  // Filter orders based on search query
+  // Search filters currently loaded pages only (avoids full-table scans for 100k orders).
   const filteredOrders = useMemo(() => {
-    if (!orders || !searchQuery.trim()) return orders;
-    
+    if (!searchQuery.trim()) return orders;
     const query = searchQuery.toLowerCase().trim();
-    return orders.filter(order => 
+    return orders.filter((order: any) =>
       order.order_number?.toString().includes(query) ||
       order.link?.toLowerCase().includes(query)
     );
   }, [orders, searchQuery]);
 
-  // INSTANT RENDER - no loading state
+  const handleEndReached = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage && !searchQuery.trim()) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, searchQuery, fetchNextPage]);
+
   if (!user && !authLoading) {
     navigate('/auth');
     return null;
   }
-
   if (!user) {
     navigate('/auth');
     return null;
   }
+
+  const showEmpty = !isFetching && orders.length === 0;
+  const showNoSearchMatch = orders.length > 0 && filteredOrders.length === 0 && !!searchQuery.trim();
 
   return (
     <DashboardLayout>
@@ -119,7 +144,7 @@ export default function EngagementOrders() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by order number or video link..."
+            placeholder="Search loaded orders by number or video link..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 pr-10"
@@ -134,41 +159,62 @@ export default function EngagementOrders() {
           )}
         </div>
 
-        {/* Search Results Info */}
         {searchQuery && (
           <p className="text-sm text-muted-foreground">
-            {filteredOrders?.length || 0} result{filteredOrders?.length !== 1 ? 's' : ''} found for "{searchQuery}"
+            {filteredOrders.length} match{filteredOrders.length !== 1 ? 'es' : ''} in {orders.length} loaded order{orders.length !== 1 ? 's' : ''}
+            {hasNextPage && ' — scroll down or clear search to load more.'}
           </p>
         )}
 
-        {/* Orders List */}
-        {orders?.length === 0 ? (
+        {/* Orders list */}
+        {showEmpty ? (
           <Card className="p-12 text-center">
             <p className="text-muted-foreground mb-4">No engagement orders yet</p>
             <Button onClick={() => navigate('/engagement-order')}>
               Place Your First Order
             </Button>
           </Card>
-        ) : filteredOrders?.length === 0 ? (
+        ) : showNoSearchMatch ? (
           <Card className="p-12 text-center">
             <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-            <p className="text-muted-foreground mb-2">No orders found for "{searchQuery}"</p>
-            <p className="text-sm text-muted-foreground mb-4">Try searching with order number or video link</p>
+            <p className="text-muted-foreground mb-2">No loaded orders match "{searchQuery}"</p>
+            <p className="text-sm text-muted-foreground mb-4">Clear search to keep loading older orders</p>
             <Button variant="outline" onClick={() => setSearchQuery("")}>
               Clear Search
             </Button>
           </Card>
         ) : (
-          <div className="space-y-4">
-            {filteredOrders?.map((order) => (
-              <OrderCard
-                key={order.id}
-                order={order}
-                onClick={() => navigate(`/engagement-orders/${order.order_number}`)}
-                onRepeat={() => navigate('/engagement-order', { state: { repeatFrom: order.order_number } })}
-              />
-            ))}
-          </div>
+          <Virtuoso
+            useWindowScroll
+            data={filteredOrders}
+            endReached={handleEndReached}
+            increaseViewportBy={{ top: 400, bottom: 800 }}
+            computeItemKey={(_, order: any) => order.id}
+            itemContent={(_, order: any) => (
+              <div className="pb-4">
+                <OrderCard
+                  order={order}
+                  onClick={() => navigate(`/engagement-orders/${order.order_number}`)}
+                  onRepeat={() => navigate('/engagement-order', { state: { repeatFrom: order.order_number } })}
+                />
+              </div>
+            )}
+            components={{
+              Footer: () => (
+                <div className="py-4 flex justify-center">
+                  {isFetchingNextPage ? (
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                  ) : hasNextPage && !searchQuery.trim() ? (
+                    <Button variant="outline" size="sm" onClick={() => fetchNextPage()}>
+                      Load more
+                    </Button>
+                  ) : orders.length > 0 ? (
+                    <p className="text-xs text-muted-foreground">No more orders</p>
+                  ) : null}
+                </div>
+              ),
+            }}
+          />
         )}
       </div>
     </DashboardLayout>
