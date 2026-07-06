@@ -418,7 +418,7 @@ export default function AdminTopupPlan() {
                       {b.pending_quantity.toLocaleString()}
                     </p>
                     <p className="text-[11px] text-muted-foreground mt-1">
-                      {b.pending_runs.toLocaleString()} pending runs · ${b.pending_user_usd.toFixed(2)} user value
+                      {b.pending_runs.toLocaleString()} pending runs · ₹{(b.pending_user_usd * usdToInr).toFixed(2)} user value
                     </p>
                   </div>
                 ))}
@@ -451,10 +451,10 @@ export default function AdminTopupPlan() {
                       <TableHead>#</TableHead>
                       <TableHead>User</TableHead>
                       <TableHead className="text-right">Pending Orders</TableHead>
-                      <TableHead className="text-right">Pending Value ($)</TableHead>
-                      <TableHead className="text-right">Wallet ($)</TableHead>
-                      <TableHead className="text-right">Deposited ($)</TableHead>
-                      <TableHead className="text-right">Spent ($)</TableHead>
+                      <TableHead className="text-right">Pending Value (₹)</TableHead>
+                      <TableHead className="text-right">Wallet (₹)</TableHead>
+                      <TableHead className="text-right">Deposited (₹)</TableHead>
+                      <TableHead className="text-right">Spent (₹)</TableHead>
                       <TableHead>Risk</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -477,11 +477,12 @@ export default function AdminTopupPlan() {
                           </TableCell>
                           <TableCell className="text-right tabular-nums">{Number(u.pending_orders).toLocaleString()}</TableCell>
                           <TableCell className="text-right tabular-nums font-bold text-orange-600">
-                            ${pending.toFixed(2)}
+                            ₹{(pending * usdToInr).toFixed(2)}
                           </TableCell>
-                          <TableCell className="text-right tabular-nums">${Number(u.wallet_balance).toFixed(2)}</TableCell>
-                          <TableCell className="text-right tabular-nums">${deposited.toFixed(2)}</TableCell>
-                          <TableCell className="text-right tabular-nums">${Number(u.total_spent).toFixed(2)}</TableCell>
+                          <TableCell className="text-right tabular-nums">₹{(Number(u.wallet_balance) * usdToInr).toFixed(2)}</TableCell>
+                          <TableCell className="text-right tabular-nums">₹{(deposited * usdToInr).toFixed(2)}</TableCell>
+                          <TableCell className="text-right tabular-nums">₹{(Number(u.total_spent) * usdToInr).toFixed(2)}</TableCell>
+
                           <TableCell>
                             <Badge variant={risk.color} className="text-[10px]">{risk.label}</Badge>
                           </TableCell>
