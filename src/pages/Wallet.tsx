@@ -464,34 +464,55 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Summary cards — respect selected date range */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <SummaryCard
-            label="Deposit"
-            value={formatPrice(summary?.deposit ?? 0)}
-            icon={<TrendingUp className="h-4 w-4" />}
-            tone="success"
-          />
-          <SummaryCard
-            label="Spent"
-            value={formatPrice(summary?.spent ?? 0)}
-            icon={<TrendingDown className="h-4 w-4" />}
-            tone="danger"
-          />
-          <SummaryCard
-            label="Current Balance"
-            value={formatPrice(wallet?.balance || 0)}
-            icon={<WalletIcon className="h-4 w-4" />}
-            tone="primary"
-            hint="Live · not filtered"
-          />
-          <SummaryCard
-            label="Transactions"
-            value={String(summary?.count ?? 0)}
-            icon={<Activity className="h-4 w-4" />}
-            tone="muted"
-            hint={rangeKey === 'lifetime' ? 'Lifetime' : 'In range'}
-          />
+        {/* Wallet analytics — date filter + summary cards */}
+        <div className="rounded-2xl border border-border bg-card p-4 md:p-5 space-y-4">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <h2 className="text-base font-bold text-foreground">Wallet Analytics</h2>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                Deposits &amp; spending for the selected period
+              </p>
+            </div>
+            <WalletDateFilter
+              value={rangeKey}
+              custom={customRange}
+              onChange={(k, c) => {
+                setRangeKey(k);
+                if (c) setCustomRange(c);
+                setPageSize(100);
+              }}
+            />
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <SummaryCard
+              label="Total Deposit"
+              value={formatPrice(summary?.deposit ?? 0)}
+              icon={<TrendingUp className="h-4 w-4" />}
+              tone="success"
+              hint={rangeKey === 'lifetime' ? 'Lifetime' : 'In selected range'}
+            />
+            <SummaryCard
+              label="Total Spent"
+              value={formatPrice(summary?.spent ?? 0)}
+              icon={<TrendingDown className="h-4 w-4" />}
+              tone="danger"
+              hint={rangeKey === 'lifetime' ? 'Lifetime' : 'In selected range'}
+            />
+            <SummaryCard
+              label="Current Balance"
+              value={formatPrice(wallet?.balance || 0)}
+              icon={<WalletIcon className="h-4 w-4" />}
+              tone="primary"
+              hint="Live · not filtered"
+            />
+            <SummaryCard
+              label="Transactions"
+              value={String(summary?.count ?? 0)}
+              icon={<Activity className="h-4 w-4" />}
+              tone="muted"
+              hint={rangeKey === 'lifetime' ? 'Lifetime' : 'In selected range'}
+            />
+          </div>
         </div>
 
         {/* Transactions */}
