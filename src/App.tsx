@@ -44,6 +44,7 @@ import AdminPopupAd from "./pages/admin/AdminPopupAd";
 import AdminTopupPlan from "./pages/admin/AdminTopupPlan";
 import AdminChat from "./pages/admin/AdminChat";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminTemplateSettings from "./pages/admin/AdminTemplateSettings";
 
 import { GlobalSubscriptionGuard } from "@/components/subscription/GlobalSubscriptionGuard";
 import { LiveChatWidget } from "@/components/chat/LiveChatWidget";
