@@ -33,12 +33,8 @@ interface CurrencyContextType {
 const CurrencyContext = createContext<CurrencyContextType | null>(null);
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
-  // Default USD; users can switch to their preferred currency (persisted in localStorage).
-  const [currency, setCurrencyState] = useState<CurrencyCode>(() => {
-    if (typeof window === 'undefined') return 'USD';
-    const saved = window.localStorage.getItem('preferred_currency') as CurrencyCode | null;
-    return saved && CURRENCIES.some(c => c.code === saved) ? saved : 'USD';
-  });
+  const [currency, setCurrencyState] = useState<CurrencyCode>('INR');
+
   const rates = DEFAULT_RATES;
   const isLoadingRates = false;
   const setCurrency = useCallback((code: CurrencyCode) => {
