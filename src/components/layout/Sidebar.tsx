@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Wallet, Settings, LifeBuoy, Shield, LogOut, Rocket, Sparkles, X, Code2, Send, Layers, Bot } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useCurrency, CURRENCIES } from '@/hooks/useCurrency';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps { onClose?: () => void; }
@@ -25,7 +25,7 @@ const adminNavItems = [{ icon: Shield, label: 'Admin Panel', path: '/admin' }];
 export function Sidebar({ onClose }: SidebarProps) {
   const location = useLocation();
   const { isAdmin, signOut, wallet, profile } = useAuth();
-  const { formatPrice } = useCurrency();
+  const { formatPrice, currency, currencyInfo, setCurrency } = useCurrency();
 
   return (
     <div className="h-full w-full overflow-hidden flex flex-col" style={{ background: '#fff', borderRight: '1px solid #efeaf7' }}>
@@ -84,7 +84,7 @@ export function Sidebar({ onClose }: SidebarProps) {
               </div>
               <div className="flex items-center gap-1 shrink-0 pb-0.5 px-2 py-1 rounded-md" style={{ background: '#FAF5FF' }}>
                 <Wallet className="w-3 h-3" style={{ color: '#8B5CF6' }} />
-                <span className="text-[9px] font-bold" style={{ color: '#8B5CF6' }}>INR</span>
+                <span className="text-[9px] font-bold" style={{ color: '#8B5CF6' }}>{currency}</span>
               </div>
             </div>
             <Link to="/wallet" onClick={onClose}
@@ -158,15 +158,26 @@ export function Sidebar({ onClose }: SidebarProps) {
 
       {/* Currency */}
       <div className="px-3 pb-2">
-        <div className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-[12px] font-medium"
+        <label className="relative w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-[12px] font-medium cursor-pointer"
           style={{ color: '#7d6f97', background: '#FAF7FF', border: '1px solid #efeaf7' }}>
           <div className="flex items-center gap-2">
-            <span className="text-base">🇮🇳</span>
-            <span className="uppercase tracking-wider">INR</span>
+            <span className="text-base">{currencyInfo.flag}</span>
+            <span className="uppercase tracking-wider">{currency}</span>
           </div>
-          <span className="text-[10px] opacity-70">₹</span>
-        </div>
+          <span className="text-[10px] opacity-70">{currencyInfo.symbol}</span>
+          <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value as any)}
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            aria-label="Select currency"
+          >
+            {CURRENCIES.map(c => (
+              <option key={c.code} value={c.code}>{c.flag} {c.code} — {c.name}</option>
+            ))}
+          </select>
+        </label>
       </div>
+
 
 
       {/* Sign out */}
