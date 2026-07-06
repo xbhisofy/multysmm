@@ -122,6 +122,7 @@ const App = () => {
                     <Route path="/engagement-order" element={<EngagementOrder />} />
                     <Route path="/engagement-orders" element={<EngagementOrders />} />
                     <Route path="/engagement-orders/:orderNumber" element={<EngagementOrderDetail />} />
+                    <Route path="/templates" element={<Templates />} />
 
                     {/* Admin — server-verified guard */}
                     <Route path="/admin" element={<AdminGuard><Admin /></AdminGuard>} />
