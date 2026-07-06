@@ -108,7 +108,7 @@ const Index = () => {
             </span>
           </div>
 
-          <h1 className="text-[2.4rem] sm:text-[3.8rem] lg:text-[5rem] font-black leading-[1.02] tracking-[-0.04em] mb-8" style={{ fontFamily: C.sans }}>
+          <h1 className="text-[1.8rem] sm:text-[2.8rem] lg:text-[3.6rem] font-black leading-[1.08] tracking-[-0.03em] mb-8" style={{ fontFamily: C.sans }}>
             Grow{' '}
             <span style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               Smarter Accounts
