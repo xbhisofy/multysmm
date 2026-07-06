@@ -109,9 +109,9 @@ export function useCurrency() {
       setCurrency: () => { },
       rates: DEFAULT_RATES,
       isLoadingRates: false,
-      formatPrice: (usdAmount: number) => `₹${(usdAmount * DEFAULT_RATES.INR).toFixed(2)}`,
-      convertFromUSD: (usdAmount: number) => usdAmount * DEFAULT_RATES.INR,
-      currencyInfo: CURRENCIES[1],
+      formatPrice: (usdAmount: number) => `$${usdAmount.toFixed(2)}`,
+      convertFromUSD: (usdAmount: number) => usdAmount,
+      currencyInfo: CURRENCIES[0],
     };
   }
   return context;
