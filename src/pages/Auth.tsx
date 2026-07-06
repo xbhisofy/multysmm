@@ -9,7 +9,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { z } from 'zod';
 import { PageMeta } from '@/components/seo/PageMeta';
 
-const GRADIENT = 'linear-gradient(135deg, #F97316 0%, #6366F1 100%)';
+const GRADIENT = 'linear-gradient(135deg, #F26522 0%, #D63384 50%, #7B2CBF 100%)';
+const ACCENT = '#F26522';
+const MAGENTA = '#D63384';
+const PURPLE = '#7B2CBF';
 
 
 
