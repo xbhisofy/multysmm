@@ -149,7 +149,7 @@ export default function EngagementOrderDetail() {
 
     const itemIds: string[] = (order.items || []).map((i: any) => i.id).filter(Boolean);
     const channelName = `engagement-order-${order.id}-${Date.now()}`;
-    const lastRealtimeAt = { current: Date.now() };
+    // reuse the outer ref so the polling ladder can detect a healthy realtime stream
 
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;
     const debouncedInvalidate = (src: string, payload?: any) => {
