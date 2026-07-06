@@ -268,9 +268,9 @@ const Index = () => {
 
               <div className="grid grid-cols-3 gap-2.5 mb-5">
                 {[
-                  { l: 'Views', v: '10K', c: C.purple },
-                  { l: 'Likes', v: '800', c: C.pink },
-                  { l: 'Comments', v: '50', c: '#14B8A6' },
+                  { l: 'Views', v: '10K', c: C.orange },
+                  { l: 'Likes', v: '800', c: C.magenta },
+                  { l: 'Comments', v: '50', c: C.purple },
                 ].map((s) => (
                   <div key={s.l} className="rounded-xl p-3 text-center" style={{ background: '#fff', border: `1px solid ${C.line}` }}>
                     <div className="text-[11px]" style={{ color: C.muted }}>{s.l}</div>
