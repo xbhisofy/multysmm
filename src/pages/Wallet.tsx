@@ -520,15 +520,9 @@ export default function Wallet() {
           <div className="p-4 md:p-5 border-b border-border flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-3 flex-wrap">
               <h2 className="text-base font-bold text-foreground">Transactions</h2>
-              <WalletDateFilter
-                value={rangeKey}
-                custom={customRange}
-                onChange={(k, c) => {
-                  setRangeKey(k);
-                  if (c) setCustomRange(c);
-                  setPageSize(100);
-                }}
-              />
+              <span className="text-[11px] text-muted-foreground">
+                Filtered by selected period
+              </span>
             </div>
             <div className="flex items-center gap-1.5 flex-wrap">
               {(['all','deposit','order','refund'] as TransactionFilter[]).map(f => (
