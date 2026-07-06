@@ -92,9 +92,22 @@ function buildResolutionMessage(alert: any, currentDetails: Record<string, any>)
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
+  // Auth: service role or shared cron secret only
+  const authHeader = req.headers.get("Authorization") || "";
+  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+  const cronSecret = req.headers.get("x-cron-secret") || "";
+  const _serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+  const expectedCron = Deno.env.get("CRON_SECRET") ?? "";
+  if (!((_serviceKey && token === _serviceKey) || (expectedCron && cronSecret === expectedCron))) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const serviceKey = _serviceKey;
   const admin = createClient(supabaseUrl, serviceKey);
+
 
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
   let lastSendAt = 0;
