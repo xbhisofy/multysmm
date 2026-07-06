@@ -213,7 +213,7 @@ const Index = () => {
           <div>
             <Eyebrow>How it works</Eyebrow>
             <h2 className="mt-4 text-[1.6rem] sm:text-[2.4rem] lg:text-[2.8rem] font-black leading-[1.02] tracking-[-0.035em]">
-              From link to growth<br /> in <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>3 simple steps</span>
+              From link to growth<br /> in <span style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>3 simple steps</span>
             </h2>
 
             <div className="mt-8 space-y-3">
@@ -322,8 +322,8 @@ const Index = () => {
           <div className="text-center mb-12">
             <Eyebrow>Core Features</Eyebrow>
             <h2 className="mt-4 text-[1.6rem] sm:text-[2.4rem] lg:text-[2.8rem] font-black leading-[1.02] tracking-[-0.035em]">
-              Built for Speed, <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400 }}>Powered</span><br />
-              by <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Intelligence</span>
+              Built for Speed, <span>Powered</span><br />
+              by <span style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Intelligence</span>
             </h2>
           </div>
 
@@ -357,7 +357,7 @@ const Index = () => {
             <Eyebrow>Why MultySMM</Eyebrow>
             <h2 className="mt-4 text-[1.6rem] sm:text-[2.4rem] lg:text-[2.8rem] font-black leading-[1.02] tracking-[-0.035em]">
               We're Building Trust &<br />
-              <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Brand Personality</span>
+              <span style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Brand Personality</span>
             </h2>
           </div>
 
@@ -457,7 +457,7 @@ const Index = () => {
           <div className="relative">
             <Eyebrow>Start Today</Eyebrow>
             <h2 className="mt-4 text-[1.6rem] sm:text-[2.4rem] font-black leading-[1.02] tracking-[-0.035em] mb-5">
-              Ready to grow <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>smarter?</span>
+              Ready to grow <span style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>smarter?</span>
             </h2>
             <p className="text-[15px] sm:text-[16.5px] mb-9 max-w-md mx-auto" style={{ color: C.ink2 }}>
               Join 2,400+ creators using MultySMM's AI engine. No credit card required.
