@@ -448,9 +448,12 @@ const Index = () => {
       {/* ═══ CTA ═══ */}
       <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto rounded-[32px] text-center py-16 sm:py-20 px-6 sm:px-10 relative overflow-hidden"
-          style={{ background: 'linear-gradient(180deg, #FAF5FF 0%, #FDF2F8 100%)', border: `1px solid ${C.line}` }}>
-          <div aria-hidden className="absolute -top-20 left-1/2 -translate-x-1/2 w-[500px] h-[400px] rounded-full"
-            style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.25), transparent 70%)', filter: 'blur(40px)' }} />
+          style={{ background: 'linear-gradient(135deg, #FFF4EC 0%, #FCE7F1 55%, #F3E8FF 100%)', border: `1px solid ${C.line}` }}>
+          <div aria-hidden className="absolute -top-24 left-[20%] w-[400px] h-[300px] rounded-full"
+            style={{ background: 'radial-gradient(closest-side, rgba(242,101,34,.25), transparent 70%)', filter: 'blur(40px)' }} />
+          <div aria-hidden className="absolute -top-24 right-[15%] w-[400px] h-[300px] rounded-full"
+            style={{ background: 'radial-gradient(closest-side, rgba(123,44,191,.25), transparent 70%)', filter: 'blur(40px)' }} />
+
           <div className="relative">
             <Eyebrow>Start Today</Eyebrow>
             <h2 className="mt-4 text-[2rem] sm:text-[3rem] font-black leading-[1.02] tracking-[-0.035em] mb-5">
