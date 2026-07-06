@@ -420,16 +420,16 @@ export function EngagementTypeCard({
                   </span>
                 </span>
                 <span className="flex-1 min-w-0">
-                  <span className="block text-[12px] font-bold text-foreground leading-tight">
-                    Tap to customise delivery
+                  <span className="block text-[13px] font-medium text-foreground leading-tight">
+                    Customise delivery
                   </span>
-                  <span className="block text-[10.5px] text-muted-foreground leading-snug mt-0.5">
-                    Set delivery time, number of runs, variance & peak hours
+                  <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5 font-normal">
+                    Delivery time, runs, variance & peak hours
                   </span>
                 </span>
-                <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-primary shrink-0">
+                <span className="flex items-center gap-1 text-[11px] font-medium text-primary shrink-0">
                   Open
-                  <ChevronDown className="h-4 w-4 animate-bounce group-data-[state=open]:rotate-180 group-data-[state=open]:animate-none transition-transform" />
+                  <ChevronDown className="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform" />
                 </span>
               </button>
             </CollapsibleTrigger>
