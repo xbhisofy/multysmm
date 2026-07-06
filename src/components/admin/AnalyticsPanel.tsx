@@ -138,6 +138,15 @@ export function AnalyticsPanel() {
           hint={`${num(fin.deposits_count)} deposits`}
         />
         <AnalyticsStatCard
+          label="Total Spent (All Users)"
+          value={inr(fin.total_spent)}
+          icon={<CreditCard className="h-4 w-4" />}
+          current={Number(fin.total_spent || 0)}
+          previous={Number(prev.total_spent || 0)}
+          accent="warning"
+          hint="Wallet spent on orders"
+        />
+        <AnalyticsStatCard
           label="Gross Revenue"
           value={inr(ord.gross_revenue)}
           icon={<TrendingUp className="h-4 w-4" />}
