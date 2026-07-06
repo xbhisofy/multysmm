@@ -394,10 +394,10 @@ export function EngagementTypeCard({
 
         {/* Quantity Limits - compact */}
         {config.enabled && (
-          <div className="mt-1 text-[10px] text-muted-foreground">
-            <span>Min: {providerMin.toLocaleString()} • Max: {providerMax.toLocaleString()}</span>
+          <div className="mt-1 text-[11px] text-muted-foreground font-normal">
+            <span>Min: {providerMin.toLocaleString()} · Max: {providerMax.toLocaleString()}</span>
             {hasError && (
-              <span className="ml-2 text-foreground font-bold">
+              <span className="ml-2 text-destructive font-medium">
                 ⚠ {isBelowMin && `Min ${providerMin}`}{isAboveMax && `Max ${providerMax.toLocaleString()}`}
               </span>
             )}
