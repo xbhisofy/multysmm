@@ -1413,7 +1413,7 @@ export default function EngagementOrder() {
               </div>
               <Label className="text-base sm:text-lg font-medium text-foreground">Video/Post Link</Label>
               {/* Single / Mass segmented toggle */}
-              <div className="ml-auto inline-flex p-1 rounded-full bg-secondary border border-border" role="tablist">
+              <div className="mr-auto sm:mr-0 sm:ml-auto inline-flex p-1 rounded-full bg-secondary border border-border" role="tablist">
                 <button
                   type="button"
                   role="tab"
