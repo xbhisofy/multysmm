@@ -46,6 +46,7 @@ interface AnalyticsPayload {
   previous: Record<string, number>;
   lifetime: Record<string, number>;
   platforms: Array<{ platform: string; count: number }>;
+  platforms_spent: Array<{ platform: string; spent: number; count: number }>;
   top_depositors: Array<{ user_id: string; email: string; full_name: string; amount: number; n: number }>;
   top_spenders: Array<{ user_id: string; email: string; full_name: string; amount: number; n: number }>;
   top_orders: Array<{ user_id: string; email: string; full_name: string; n: number }>;
@@ -137,6 +138,15 @@ export function AnalyticsPanel() {
           hint={`${num(fin.deposits_count)} deposits`}
         />
         <AnalyticsStatCard
+          label="Total Spent (All Users)"
+          value={inr(fin.total_spent)}
+          icon={<CreditCard className="h-4 w-4" />}
+          current={Number(fin.total_spent || 0)}
+          previous={Number(prev.total_spent || 0)}
+          accent="warning"
+          hint="Wallet spent on orders"
+        />
+        <AnalyticsStatCard
           label="Gross Revenue"
           value={inr(ord.gross_revenue)}
           icon={<TrendingUp className="h-4 w-4" />}
@@ -221,6 +231,23 @@ export function AnalyticsPanel() {
         ))}
         {(!data?.platforms || data.platforms.length === 0) && (
           <p className="text-sm text-muted-foreground col-span-full">No orders in this range.</p>
+        )}
+      </Section>
+
+      {/* Spend by Platform */}
+      <Section title="Spend by Platform" icon={<CreditCard className="h-4 w-4" />}>
+        {(data?.platforms_spent ?? []).map((p) => (
+          <AnalyticsStatCard
+            key={p.platform}
+            label={p.platform}
+            value={inr(p.spent)}
+            icon={<Layers className="h-4 w-4" />}
+            accent="warning"
+            hint={`${num(p.count)} orders`}
+          />
+        ))}
+        {(!data?.platforms_spent || data.platforms_spent.length === 0) && (
+          <p className="text-sm text-muted-foreground col-span-full">No spending in this range.</p>
         )}
       </Section>
 
