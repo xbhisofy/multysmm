@@ -40,17 +40,22 @@ interface CurrencyContextType {
 const CurrencyContext = createContext<CurrencyContextType | null>(null);
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
-  // INR-only mode: currency switching disabled platform-wide.
-  const currency: CurrencyCode = 'INR';
+  // Default USD; users can switch to their preferred currency (persisted in localStorage).
+  const [currency, setCurrencyState] = useState<CurrencyCode>(() => {
+    if (typeof window === 'undefined') return 'USD';
+    const saved = window.localStorage.getItem('preferred_currency') as CurrencyCode | null;
+    return saved && CURRENCIES.some(c => c.code === saved) ? saved : 'USD';
+  });
   const rates = DEFAULT_RATES;
   const isLoadingRates = false;
-  const setCurrency = useCallback(async (_code: CurrencyCode) => {
-    // no-op: platform locked to INR
+  const setCurrency = useCallback((code: CurrencyCode) => {
+    setCurrencyState(code);
+    try { window.localStorage.setItem('preferred_currency', code); } catch {}
   }, []);
 
   const convertFromUSD = useCallback((usdAmount: number): number => {
-    // INR-only mode: always convert USD wallet/price values into INR
-    return usdAmount * (rates.INR || 83.5);
+    const rate = rates[currency] ?? 1;
+    return usdAmount * rate;
   }, [currency, rates]);
 
   const currencyInfo = CURRENCIES.find(c => c.code === currency) || CURRENCIES[0];
