@@ -23,6 +23,7 @@ import {
   LayoutDashboard,
   Clock,
   CreditCard,
+  Bookmark,
   MessageCircle,
   Globe,
   Percent,
