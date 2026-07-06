@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Layout } from '@/components/layout/Layout';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { PageMeta } from '@/components/seo/PageMeta';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -41,7 +41,7 @@ export default function AdminTemplateSettings() {
   );
 
   return (
-    <Layout>
+    <DashboardLayout>
       <PageMeta title="Template Settings — Admin" description="Admin settings for Smart Order Templates" />
       <div className="max-w-2xl mx-auto p-6">
         <h1 className="text-2xl font-black mb-6">Smart Template Settings</h1>
@@ -83,6 +83,6 @@ export default function AdminTemplateSettings() {
           </div>
         )}
       </div>
-    </Layout>
+    </DashboardLayout>
   );
 }

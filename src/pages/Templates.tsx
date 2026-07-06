@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Layout } from '@/components/layout/Layout';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { PageMeta } from '@/components/seo/PageMeta';
 import { useTemplates, useTemplateSettings, DEFAULT_TEMPLATE_SETTINGS, OrderTemplate } from '@/hooks/useTemplates';
 import { TemplateCard } from '@/components/templates/TemplateCard';
@@ -50,19 +50,19 @@ export default function Templates() {
 
   if (!settings.enabled) {
     return (
-      <Layout>
+      <DashboardLayout>
         <PageMeta title="Smart Templates" description="Smart order templates" />
         <div className="max-w-2xl mx-auto p-8 text-center">
           <Bookmark className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
           <h1 className="text-xl font-bold">Templates are disabled</h1>
           <p className="text-sm text-muted-foreground mt-1">An admin has turned off this feature.</p>
         </div>
-      </Layout>
+      </DashboardLayout>
     );
   }
 
   return (
-    <Layout>
+    <DashboardLayout>
       <PageMeta title="Smart Order Templates — MultySMM" description="Save your favorite order configurations and reuse them in seconds." />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         {/* Header */}
@@ -135,7 +135,7 @@ export default function Templates() {
           {templates.length} / {settings.max_per_user} templates used
         </p>
       </div>
-    </Layout>
+    </DashboardLayout>
   );
 }
 
