@@ -350,7 +350,7 @@ export function EngagementTypeCard({
             </div>
           </div>
 
-          {/* Right: Input + Price + Switch */}
+          {/* Right: Input + Switch */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {config.enabled && (
               <Input
