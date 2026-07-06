@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { PageMeta } from '@/components/seo/PageMeta';
 import { Badge } from '@/components/ui/badge';
+import { QuickTemplatesWidget } from '@/components/dashboard/QuickTemplatesWidget';
 
 export default function Dashboard() {
   const { user, wallet, profile } = useAuth();
