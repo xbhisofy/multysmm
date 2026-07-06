@@ -25,7 +25,7 @@ const adminNavItems = [{ icon: Shield, label: 'Admin Panel', path: '/admin' }];
 export function Sidebar({ onClose }: SidebarProps) {
   const location = useLocation();
   const { isAdmin, signOut, wallet, profile } = useAuth();
-  const { formatPrice } = useCurrency();
+  const { formatPrice, currency, currencyInfo, setCurrency } = useCurrency();
 
   return (
     <div className="h-full w-full overflow-hidden flex flex-col" style={{ background: '#fff', borderRight: '1px solid #efeaf7' }}>
