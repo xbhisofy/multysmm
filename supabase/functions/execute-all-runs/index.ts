@@ -737,42 +737,22 @@ serve(async (req) => {
   }
 
   try {
-    // Auth check
-    const authHeader = req.headers.get('Authorization')
-    const supabase = supabaseModule
-
-    if (authHeader?.startsWith('Bearer ')) {
-      const token = authHeader.replace('Bearer ', '')
-      const anonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-      const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-      const isSystemCall = (anonKey && token === anonKey) || (serviceKey && token === serviceKey)
-      
-      if (!isSystemCall) {
-        const parts = token.split('.')
-        if (parts.length === 3) {
-          try {
-            const payload = JSON.parse(atob(parts[1]))
-            if (payload.role !== 'anon' && payload.role !== 'service_role' && !payload.sub) {
-              return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-                status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-              })
-            }
-          } catch {
-            return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-              status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-            })
-          }
-        } else {
-          return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-            status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          })
-        }
-      }
-    } else if (!authHeader) {
+    // Auth check — service role or shared cron secret only (no anon-key bypass)
+    const authHeader = req.headers.get('Authorization') || ''
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
+    const cronSecret = req.headers.get('x-cron-secret') || ''
+    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    const expectedCron = Deno.env.get('CRON_SECRET') ?? ''
+    const isSystemCall =
+      (!!serviceKey && token === serviceKey) ||
+      (!!expectedCron && cronSecret === expectedCron)
+    if (!isSystemCall) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
+    const supabase = supabaseModule
+
 
     const requestOptions = await req.json().catch(() => ({})) as ExecuteAllRunsOptions
     const executionId = crypto.randomUUID().slice(0, 8)
