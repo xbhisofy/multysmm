@@ -28,6 +28,7 @@ import AiAssistant from "./pages/AiAssistant";
 import EngagementOrder from "./pages/EngagementOrder";
 import EngagementOrders from "./pages/EngagementOrders";
 import EngagementOrderDetail from "./pages/EngagementOrderDetail";
+import Templates from "./pages/Templates";
 
 // Admin pages
 import Admin from "./pages/admin/Admin";
