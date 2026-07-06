@@ -1220,6 +1220,16 @@ export default function EngagementOrder() {
   return (
     <DashboardLayout>
       <div className="max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 space-y-3 sm:space-y-6 pb-8">
+        {showNewTemplateBanner && (
+          <div className="rounded-xl px-4 py-3 flex items-center gap-3 text-sm"
+            style={{ background: 'linear-gradient(135deg,#FFF3E9,#FCE7F1,#F3E8FF)', border: '1px solid #E5D7FA', color: '#0B0B16' }}>
+            <Bookmark className="w-4 h-4 shrink-0" style={{ color: '#7B2CBF' }} />
+            <span className="flex-1">
+              <strong>Creating a new template:</strong> configure your order below, then click <em>Save as Template</em>.
+            </span>
+            <button onClick={() => setShowNewTemplateBanner(false)} className="text-xs font-semibold opacity-70 hover:opacity-100">Dismiss</button>
+          </div>
+        )}
         {/* Engagement console — premium mode picker */}
         <div className="relative rounded-2xl bg-card border border-border shadow-[0_8px_30px_-12px_rgba(249,115,22,0.15)] overflow-hidden">
           {/* Soft brand wash */}
