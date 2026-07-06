@@ -1624,81 +1624,80 @@ export default function EngagementOrder() {
           />
         )}
 
-        {/* Order Summary - Compact on mobile */}
-        <Card className="glass-card border-2 border-primary/40 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 overflow-hidden">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex flex-col gap-4 sm:gap-5 lg:flex-row lg:items-center lg:justify-between">
-              <div className="space-y-1 sm:space-y-2">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary">{formatPrice(totalPrice)}</span>
-                  <span className="text-muted-foreground text-xs sm:text-sm">total</span>
-                </div>
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  {totalEngagements.toLocaleString()} engagements • {Object.values(engagements).filter(e => e.enabled).length} types
-                </p>
+        {/* Order Summary — clean bar */}
+        <Card className="border border-border/70 bg-card shadow-sm overflow-hidden">
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-4">
+              {/* Price + meta */}
+              <div className="flex items-baseline gap-2 min-w-0">
+                <span className="text-xl sm:text-2xl font-bold text-primary shrink-0">{formatPrice(totalPrice)}</span>
+                <span className="text-xs text-muted-foreground truncate">
+                  {totalEngagements.toLocaleString()} engagements · {Object.values(engagements).filter(e => e.enabled).length} types
+                </span>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-                <div className="text-left sm:text-right p-2.5 sm:p-3 rounded-xl bg-secondary/50">
-                  <div className="flex items-center gap-2 text-xs sm:text-sm font-medium">
-                    <Wallet className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
-                    <span>Balance: {formatPrice(wallet?.balance || 0)}</span>
-                  </div>
-                  {!canAfford && totalPrice > 0 && (
-                    <p className="text-[10px] sm:text-xs text-destructive mt-1">
-                      Insufficient balance
-                    </p>
-                  )}
-                </div>
+              {/* Divider on desktop */}
+              <div className="hidden sm:block w-px h-6 bg-border shrink-0" />
 
-                {(() => {
-                  // Hard link-validity gate: hide the button until link(s) match the platform.
-                  const singleLinkValid =
-                    orderMode === 'single' &&
-                    link.trim().length > 0 &&
-                    detectPlatformFromUrl(link.trim()) === platform;
-                  const massLinksValid =
-                    orderMode === 'mass' &&
-                    parsedMassLinks.valid.length > 0;
-                  const canShowButton = singleLinkValid || massLinksValid;
+              {/* Balance */}
+              <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground shrink-0">
+                <Wallet className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="truncate">{formatPrice(wallet?.balance || 0)}</span>
+                {!canAfford && totalPrice > 0 && (
+                  <span className="text-destructive font-medium ml-0.5">Low</span>
+                )}
+              </div>
 
-                  if (!canShowButton) {
-                    return (
-                      <div className="h-12 sm:h-14 px-6 sm:px-8 rounded-xl border-2 border-dashed border-border bg-secondary/40 flex items-center justify-center text-xs sm:text-sm text-muted-foreground font-medium">
-                        {orderMode === 'mass'
-                          ? 'Add valid links to enable Place Order'
-                          : `Enter a valid ${platform.toUpperCase()} link to enable Place Order`}
-                      </div>
-                    );
-                  }
+              {/* Spacer pushes button right on desktop */}
+              <div className="hidden sm:block flex-1" />
 
+              {/* CTA */}
+              {(() => {
+                const singleLinkValid =
+                  orderMode === 'single' &&
+                  link.trim().length > 0 &&
+                  detectPlatformFromUrl(link.trim()) === platform;
+                const massLinksValid =
+                  orderMode === 'mass' &&
+                  parsedMassLinks.valid.length > 0;
+                const canShowButton = singleLinkValid || massLinksValid;
+
+                if (!canShowButton) {
                   return (
-                    <Button
-                      size="lg"
-                      onClick={handlePlaceOrder}
-                      disabled={placeOrderMutation.isPending || bundlesLoading}
-                      className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25 transition-all duration-300"
-                    >
-                      {placeOrderMutation.isPending ? (
-                        <>
-                          <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin mr-2" />
-                          Processing...
-                        </>
-                      ) : bundlesLoading ? (
-                        <>
-                          <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin mr-2" />
-                          Loading...
-                        </>
-                      ) : (
-                        <>
-                          <Rocket className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                          Place Order — {formatPrice(orderMode === 'mass' ? massTotalCost : totalPrice)}
-                        </>
-                      )}
-                    </Button>
+                    <div className="h-10 sm:h-11 px-4 rounded-lg border border-dashed border-border bg-muted/40 flex items-center justify-center text-xs text-muted-foreground whitespace-nowrap">
+                      {orderMode === 'mass'
+                        ? 'Paste valid links'
+                        : `Paste a valid ${platform.toUpperCase()} link`}
+                    </div>
                   );
-                })()}
-              </div>
+                }
+
+                return (
+                  <Button
+                    size="default"
+                    onClick={handlePlaceOrder}
+                    disabled={placeOrderMutation.isPending || bundlesLoading}
+                    className="h-10 sm:h-11 px-5 text-sm font-semibold rounded-lg bg-primary hover:bg-primary/90 transition-colors"
+                  >
+                    {placeOrderMutation.isPending ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-1.5" />
+                        Processing
+                      </>
+                    ) : bundlesLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-1.5" />
+                        Loading
+                      </>
+                    ) : (
+                      <>
+                        <Rocket className="h-4 w-4 mr-1.5" />
+                        Place Order
+                      </>
+                    )}
+                  </Button>
+                );
+              })()}
             </div>
           </CardContent>
         </Card>
