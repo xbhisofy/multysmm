@@ -84,7 +84,7 @@ export function Sidebar({ onClose }: SidebarProps) {
               </div>
               <div className="flex items-center gap-1 shrink-0 pb-0.5 px-2 py-1 rounded-md" style={{ background: '#FAF5FF' }}>
                 <Wallet className="w-3 h-3" style={{ color: '#8B5CF6' }} />
-                <span className="text-[9px] font-bold" style={{ color: '#8B5CF6' }}>INR</span>
+                <span className="text-[9px] font-bold" style={{ color: '#8B5CF6' }}>{currency}</span>
               </div>
             </div>
             <Link to="/wallet" onClick={onClose}
