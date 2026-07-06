@@ -8,7 +8,7 @@ const QUICK = [90, 500, 1000, 2000, 5000, 10000];
 const ACCENT = '#F7931A';
 
 export default function OxaPayAddFunds() {
-  const [amount, setAmount] = useState<string>('500');
+  const [amount, setAmount] = useState<string>('100');
   const [loading, setLoading] = useState(false);
 
   const handlePay = async () => {

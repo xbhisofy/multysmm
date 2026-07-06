@@ -7,7 +7,7 @@ const QUICK = [100, 500, 1000, 2000, 5000];
 const ACCENT = '#7C3AED';
 
 export default function ZapUpiDepositCard() {
-  const [amount, setAmount] = useState<string>('500');
+  const [amount, setAmount] = useState<string>('100');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -140,7 +140,7 @@ export function AmountBlock({
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          placeholder="500"
+          placeholder="100"
           className="flex-1 bg-transparent border-0 outline-none text-slate-900 text-[26px] font-semibold tracking-tight placeholder:text-slate-300"
         />
         <span className="text-[10.5px] font-medium text-slate-400 tracking-wider">

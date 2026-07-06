@@ -11,7 +11,7 @@ const MAX_AMOUNT = 540000;
 const ACCENT = '#0088CC';
 
 export default function ManualFundCard() {
-  const [amount, setAmount] = useState<string>('500');
+  const [amount, setAmount] = useState<string>('100');
   const { user, profile } = useAuth();
 
   const handleOpenTelegram = () => {
