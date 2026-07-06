@@ -1219,7 +1219,7 @@ export default function EngagementOrder() {
                 Organic Full Engagement
               </h1>
               <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                Ek link paste karo — hum delivery ko natural aur safe rakhenge.
+                Paste one link — we'll keep the delivery natural and safe.
               </p>
             </div>
           </div>
@@ -1324,7 +1324,7 @@ export default function EngagementOrder() {
 
           <div className="relative px-4 sm:px-5 py-2.5 border-t border-border/70 bg-muted/40 flex items-center justify-between gap-3">
             <p className="text-xs text-muted-foreground truncate">
-              Ek link, saari engagement — bilkul natural.
+              One link, all engagement — completely natural.
             </p>
             <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full border ${
               isOrganicMode

@@ -226,8 +226,8 @@ export function PopupAdDialog() {
       // ---- One fire per admin Force ----
       // Every time admin clicks Force Show, a new `last_force_trigger`
       // timestamp lands here. We fire the popup exactly once per trigger
-      // per browser — no daily cap, no random delay. Admin force karega
-      // utni baar user ko popup dikhega.
+      // per browser — no daily cap, no random delay. Each admin Force Show
+      // fires the popup exactly once per user.
       if (open) return; // already showing
       const seen = localStorage.getItem(SEEN_FORCE_KEY);
       if (seen === force) return; // this trigger already consumed in this browser
