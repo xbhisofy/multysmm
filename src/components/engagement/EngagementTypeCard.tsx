@@ -25,7 +25,7 @@ import {
 import { ControlPoint, curveToSchedule } from "@/lib/curve-to-schedule";
 import {
   Eye, Heart, MessageCircle, Bookmark, Share2,
-  Clock, Sparkles, AlertTriangle,
+  Clock, AlertTriangle,
   Timer, Shuffle, Flame, Calendar, ChevronDown, ChevronUp, List, Pencil,
   UserPlus, Bell, Repeat, RefreshCw
 } from "lucide-react";
@@ -317,34 +317,30 @@ export function EngagementTypeCard({
 
   return (
     <Card className={cn(
-      "three-d-card border",
-      hasError
-        ? "border-destructive/40"
-        : config.enabled
-          ? "border-primary/25"
-          : "border-border/60 opacity-70"
+      "rounded-xl border bg-card shadow-sm",
+      hasError ? "border-destructive/40" : "border-border",
+      !config.enabled && "opacity-70"
     )}>
-      <CardContent className="p-2 sm:p-3 overflow-hidden">
+      <CardContent className="p-3 overflow-hidden">
         {/* Header Row - compact single line */}
         <div className="flex items-center justify-between gap-1.5 sm:gap-2 min-w-0">
           {/* Left: Icon + Label */}
           <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
             <div className={cn(
-              "p-1 sm:p-1.5 rounded-lg sm:rounded-xl shrink-0",
-              config.enabled ? "bg-white/10" : "bg-white/5"
+              "p-1.5 rounded-lg shrink-0 bg-muted/60",
+              config.enabled ? "text-primary" : "text-muted-foreground"
             )}>
               <Icon className={cn(
                 "h-3.5 w-3.5 sm:h-4 sm:w-4",
-                config.enabled ? "text-primary" : "text-white/20"
+                config.enabled ? "text-primary" : "text-muted-foreground"
               )} />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
                   <span className={cn(
-                  "text-sm sm:text-[15px] font-medium truncate",
-                  engagementConfig.color
+                  "text-sm sm:text-[15px] font-medium truncate text-foreground"
                 )}>
-                  {engagementConfig.emoji} {engagementConfig.label}
+                  {engagementConfig.label}
                 </span>
                 {type === 'views' && (
                   <Badge className="text-[9px] bg-primary/10 text-primary font-medium px-1.5 py-0 rounded-full border-none normal-case tracking-normal">
@@ -352,14 +348,6 @@ export function EngagementTypeCard({
                   </Badge>
                 )}
               </div>
-              {config.enabled && scheduleData && (
-                <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-muted-foreground mt-0.5 font-medium">
-                  <Sparkles className="h-3 w-3 text-primary shrink-0" />
-                  <span>{scheduleData.runCount} runs</span>
-                  <span className="opacity-40">•</span>
-                  <span>~{formatDuration(scheduleData.duration)}</span>
-                </div>
-              )}
             </div>
           </div>
 
@@ -392,15 +380,9 @@ export function EngagementTypeCard({
           </div>
         </div>
 
-        {/* Quantity Limits - compact */}
-        {config.enabled && (
-          <div className="mt-1 text-[11px] text-muted-foreground font-normal">
-            <span>Min: {providerMin.toLocaleString()} · Max: {providerMax.toLocaleString()}</span>
-            {hasError && (
-              <span className="ml-2 text-destructive font-medium">
-                ⚠ {isBelowMin && `Min ${providerMin}`}{isAboveMax && `Max ${providerMax.toLocaleString()}`}
-              </span>
-            )}
+        {config.enabled && hasError && (
+          <div className="mt-2 text-[11px] text-destructive font-medium">
+            ⚠ {isBelowMin && `Minimum ${providerMin}`}{isAboveMax && `Maximum ${providerMax.toLocaleString()}`}
           </div>
         )}
 
@@ -410,21 +392,19 @@ export function EngagementTypeCard({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="group mt-3 w-full flex items-center gap-3 rounded-xl border border-border bg-muted/30 hover:bg-muted/50 transition-colors px-3 py-2.5 text-left"
+                className="group mt-2 w-full flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/25 hover:bg-muted/45 transition-colors px-3 py-2 text-left"
               >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Timer className="h-4 w-4" />
-                </span>
                 <span className="flex-1 min-w-0">
                   <span className="block text-[13px] font-medium text-foreground leading-tight">
-                    Delivery settings
+                    Settings
                   </span>
-                  <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5 font-normal">
-                    Time, batches and timing
-                  </span>
+                  {scheduleData && (
+                    <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5 font-normal">
+                      {scheduleData.runCount} batches · ~{formatDuration(scheduleData.duration)}
+                    </span>
+                  )}
                 </span>
                 <span className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground shrink-0">
-                  Open
                   <ChevronDown className="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform" />
                 </span>
               </button>
