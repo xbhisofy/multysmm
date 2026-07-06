@@ -357,7 +357,7 @@ const Index = () => {
             <Eyebrow>Why MultySMM</Eyebrow>
             <h2 className="mt-4 text-[1.6rem] sm:text-[2.4rem] lg:text-[2.8rem] font-black leading-[1.02] tracking-[-0.035em]">
               We're Building Trust &<br />
-              <span style={{ fontFamily: C.serif, fontStyle: 'italic', fontWeight: 400, background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Brand Personality</span>
+              <span style={{ background: GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Brand Personality</span>
             </h2>
           </div>
 
