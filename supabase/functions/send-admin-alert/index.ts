@@ -41,9 +41,11 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Auth check - only allow calls with valid auth (admin or service role from other edge functions)
-    const authHeader = req.headers.get('Authorization')
-    if (!authHeader?.startsWith('Bearer ')) {
+    // Auth check — service role only (no anon-key bypass, no user JWT)
+    const authHeader = req.headers.get('Authorization') || ''
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
+    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    if (!serviceKey || token !== serviceKey) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
@@ -54,20 +56,6 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // Verify token is valid (either user token or service role)
-    const token = authHeader.replace('Bearer ', '')
-    const anonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    
-    // Allow service role key (from cron/other edge functions) or valid user token
-    if (token !== serviceKey && token !== anonKey) {
-      const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(token)
-      if (authError || !user) {
-        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-          status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        })
-      }
-    }
 
     const resendApiKey = Deno.env.get('RESEND_API_KEY')
     if (!resendApiKey) {
