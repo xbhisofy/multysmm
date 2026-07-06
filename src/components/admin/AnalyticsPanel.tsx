@@ -46,6 +46,7 @@ interface AnalyticsPayload {
   previous: Record<string, number>;
   lifetime: Record<string, number>;
   platforms: Array<{ platform: string; count: number }>;
+  platforms_spent: Array<{ platform: string; spent: number; count: number }>;
   top_depositors: Array<{ user_id: string; email: string; full_name: string; amount: number; n: number }>;
   top_spenders: Array<{ user_id: string; email: string; full_name: string; amount: number; n: number }>;
   top_orders: Array<{ user_id: string; email: string; full_name: string; n: number }>;
