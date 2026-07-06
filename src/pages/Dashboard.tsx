@@ -8,7 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { PageMeta } from '@/components/seo/PageMeta';
 import { Badge } from '@/components/ui/badge';
-import { QuickTemplatesWidget } from '@/components/dashboard/QuickTemplatesWidget';
+
 
 export default function Dashboard() {
   const { user, wallet, profile } = useAuth();
@@ -107,8 +107,6 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Quick Templates */}
-        <QuickTemplatesWidget />
 
         {/* Orders */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">

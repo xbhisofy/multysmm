@@ -495,63 +495,6 @@ export type Database = {
         }
         Relationships: []
       }
-      order_templates: {
-        Row: {
-          category: string | null
-          color_label: string | null
-          config: Json
-          created_at: string
-          description: string | null
-          id: string
-          is_archived: boolean
-          is_favorite: boolean
-          last_used_at: string | null
-          name: string
-          platform: string | null
-          service_id: string | null
-          service_snapshot: Json
-          updated_at: string
-          usage_count: number
-          user_id: string
-        }
-        Insert: {
-          category?: string | null
-          color_label?: string | null
-          config?: Json
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_archived?: boolean
-          is_favorite?: boolean
-          last_used_at?: string | null
-          name: string
-          platform?: string | null
-          service_id?: string | null
-          service_snapshot?: Json
-          updated_at?: string
-          usage_count?: number
-          user_id: string
-        }
-        Update: {
-          category?: string | null
-          color_label?: string | null
-          config?: Json
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_archived?: boolean
-          is_favorite?: boolean
-          last_used_at?: string | null
-          name?: string
-          platform?: string | null
-          service_id?: string | null
-          service_snapshot?: Json
-          updated_at?: string
-          usage_count?: number
-          user_id?: string
-        }
-        Relationships: []
-      }
       orders: {
         Row: {
           created_at: string | null
@@ -1360,60 +1303,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      template_settings: {
-        Row: {
-          allow_archive: boolean
-          allow_categories: boolean
-          allow_color_labels: boolean
-          allow_dashboard_widget: boolean
-          allow_descriptions: boolean
-          allow_duplicate: boolean
-          allow_favorites: boolean
-          allow_save_after_order: boolean
-          allow_save_from_repeat: boolean
-          enabled: boolean
-          id: boolean
-          max_description_length: number
-          max_name_length: number
-          max_per_user: number
-          updated_at: string
-        }
-        Insert: {
-          allow_archive?: boolean
-          allow_categories?: boolean
-          allow_color_labels?: boolean
-          allow_dashboard_widget?: boolean
-          allow_descriptions?: boolean
-          allow_duplicate?: boolean
-          allow_favorites?: boolean
-          allow_save_after_order?: boolean
-          allow_save_from_repeat?: boolean
-          enabled?: boolean
-          id?: boolean
-          max_description_length?: number
-          max_name_length?: number
-          max_per_user?: number
-          updated_at?: string
-        }
-        Update: {
-          allow_archive?: boolean
-          allow_categories?: boolean
-          allow_color_labels?: boolean
-          allow_dashboard_widget?: boolean
-          allow_descriptions?: boolean
-          allow_duplicate?: boolean
-          allow_favorites?: boolean
-          allow_save_after_order?: boolean
-          allow_save_from_repeat?: boolean
-          enabled?: boolean
-          id?: boolean
-          max_description_length?: number
-          max_name_length?: number
-          max_per_user?: number
-          updated_at?: string
-        }
-        Relationships: []
       }
       transactions: {
         Row: {
