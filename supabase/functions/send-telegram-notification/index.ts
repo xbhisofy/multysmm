@@ -78,6 +78,7 @@ serve(async (req) => {
     const rawIds = [
       Deno.env.get("PROVIDER_BALANCE_CHAT_ID_1"),
       Deno.env.get("PROVIDER_BALANCE_CHAT_ID_2"),
+      Deno.env.get("PROVIDER_BALANCE_CHAT_ID_3"),
       Deno.env.get("TELEGRAM_CHAT_ID"),
     ];
     const chatIds = Array.from(
