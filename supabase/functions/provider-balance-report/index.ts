@@ -91,8 +91,14 @@ serve(async (req) => {
     const botToken = Deno.env.get('PROVIDER_BALANCE_BOT_TOKEN')
     const chatId1 = Deno.env.get('PROVIDER_BALANCE_CHAT_ID_1')
     const chatId2 = Deno.env.get('PROVIDER_BALANCE_CHAT_ID_2')
+    const chatId3 = Deno.env.get('PROVIDER_BALANCE_CHAT_ID_3')
     if (!botToken) throw new Error('PROVIDER_BALANCE_BOT_TOKEN not set')
-    const chatIds = [chatId1, chatId2].filter(Boolean) as string[]
+    const chatIds = Array.from(new Set(
+      [chatId1, chatId2, chatId3]
+        .flatMap(v => (v ? v.split(',') : []))
+        .map(s => s.trim())
+        .filter(Boolean)
+    ))
     if (chatIds.length === 0) throw new Error('No PROVIDER_BALANCE_CHAT_ID_* set')
 
     const usdToInr = await getUsdToInrRate()
