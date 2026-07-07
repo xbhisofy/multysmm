@@ -11,6 +11,7 @@ const WEBHOOK_SECRET = Deno.env.get('TG_WEBHOOK_SECRET') ?? ''
 const ALLOWED_CHATS = [
   Deno.env.get('PROVIDER_BALANCE_CHAT_ID_1'),
   Deno.env.get('PROVIDER_BALANCE_CHAT_ID_2'),
+  Deno.env.get('PROVIDER_BALANCE_CHAT_ID_3'),
   Deno.env.get('TELEGRAM_CHAT_ID'),
 ].flatMap(v => (v ? v.split(',') : [])).map(s => s.trim()).filter(Boolean)
 
