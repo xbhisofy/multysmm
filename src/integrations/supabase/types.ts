@@ -1552,6 +1552,7 @@ export type Database = {
         Args: { p_actor: string; p_is_admin: boolean; p_order_id: string }
         Returns: Json
       }
+      cleanup_finished_orders_24h: { Args: never; Returns: Json }
       cleanup_old_completed_engagement_orders: { Args: never; Returns: Json }
       credit_wallet_oxapay: { Args: { p_order_id: string }; Returns: Json }
       credit_wallet_zapupi: {
