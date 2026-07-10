@@ -161,7 +161,7 @@ Deno.serve(async (req) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
         },
-        body: JSON.stringify({ message: msg, parse_mode: "HTML" }),
+        body: JSON.stringify({ message: msg, parse_mode: "HTML", force: true, alert_kind: "deposit_admin" }),
       });
     } catch (e) {
       console.error("tg notify failed", e);
