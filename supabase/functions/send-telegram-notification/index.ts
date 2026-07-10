@@ -33,12 +33,20 @@ serve(async (req) => {
 
 
   try {
-    // Auth: service-role key OR authenticated admin user only.
-    // Regular users must NOT be able to send arbitrary admin Telegram messages.
+    const body = await req.json().catch(() => ({}));
+    let { message, photo_url, parse_mode = "HTML", alert_kind, force, type } = body || {};
+
+    // Auth: service-role key OR authenticated admin user.
+    // Special case: any authenticated user can trigger type="subscription_request"
+    // — the server rebuilds the message from their own pending request row so
+    // regular users cannot send arbitrary admin messages.
     const authHeader = req.headers.get("Authorization") || "";
     const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
     let authorized = !!token && !!serviceKey && token === serviceKey;
+    let authedUserId: string | null = null;
+    let isAdmin = false;
+
     if (!authorized && token) {
       try {
         const supaAdmin = createClient(
@@ -47,25 +55,61 @@ serve(async (req) => {
         );
         const { data: userData, error: userErr } = await supaAdmin.auth.getUser(token);
         if (!userErr && userData?.user) {
+          authedUserId = userData.user.id;
           const { data: roleRow } = await supaAdmin
             .from("user_roles")
             .select("role")
             .eq("user_id", userData.user.id)
             .eq("role", "admin")
             .maybeSingle();
-          authorized = !!roleRow;
+          isAdmin = !!roleRow;
+          authorized = isAdmin;
         }
       } catch (_) {
         authorized = false;
       }
     }
+
+    // Allow regular authenticated user to trigger subscription request alert
+    if (!authorized && authedUserId && type === "subscription_request") {
+      try {
+        const supaAdmin = createClient(
+          Deno.env.get("SUPABASE_URL") ?? "",
+          serviceKey,
+        );
+        const { data: reqRow } = await supaAdmin
+          .from("subscription_requests")
+          .select("id, full_name, email, phone, plan_type, created_at")
+          .eq("user_id", authedUserId)
+          .eq("status", "pending")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (reqRow) {
+          const appUrl = (body?.app_url && typeof body.app_url === "string") ? body.app_url : "";
+          message =
+            `<b>👑 NEW SUBSCRIPTION REQUEST</b>\n\n` +
+            `👤 <b>Name:</b> ${reqRow.full_name}\n` +
+            `📧 <b>Email:</b> ${reqRow.email}\n` +
+            `📞 <b>Phone:</b> ${reqRow.phone}\n` +
+            `💎 <b>Plan:</b> ${String(reqRow.plan_type).toUpperCase()}\n` +
+            (appUrl ? `\n<a href="${appUrl}/admin/subscriptions">Open Admin Panel</a>` : "");
+          parse_mode = "HTML";
+          alert_kind = "subscription_request";
+          force = true; // bypass low-priority cooldown
+          authorized = true;
+        }
+      } catch (_) {
+        // fall through to unauthorized
+      }
+    }
+
     if (!authorized) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
 
     const BOT_TOKEN = Deno.env.get("PROVIDER_BALANCE_BOT_TOKEN");
     if (!BOT_TOKEN) {
@@ -97,7 +141,6 @@ serve(async (req) => {
       );
     }
 
-    const { message, photo_url, parse_mode = "HTML", alert_kind, force } = await req.json();
     if (!message) {
       return new Response(JSON.stringify({ error: "No message provided" }), {
         status: 400,
