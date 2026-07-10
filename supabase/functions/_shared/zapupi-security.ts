@@ -235,6 +235,6 @@ async function sendTelegram(message: string) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${SERVICE_ROLE}`,
     },
-    body: JSON.stringify({ message, parse_mode: "HTML" }),
+    body: JSON.stringify({ message, parse_mode: "HTML", force: true, alert_kind: "deposit" }),
   });
 }
