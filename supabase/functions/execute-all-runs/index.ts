@@ -1404,12 +1404,22 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         supabase, item.service.id, busyAccountIds, executionId
       )
       
-      // Default provider fallback
+      // Default provider fallback — ONLY when the service has ZERO active
+      // mappings configured by the admin. If ANY mapping exists for this
+      // service, the admin's selection is authoritative and we must NEVER
+      // fall back to services.provider_id (that would silently route to an
+      // unchecked / unlinked provider). This was the routing bug.
       let defaultProvider: ProviderAccount | null = null
-      if (item.service.provider_id) {
-        // FIX: provider_account_id column is UUID. Resolve text provider_id → matching
-        // provider_accounts row (UUID). If none exists, skip the fallback to avoid
-        // "invalid input syntax for type uuid" errors that block all runs.
+      const hasConfiguredMappings = await (async () => {
+        const { count } = await supabase
+          .from('service_provider_mapping')
+          .select('id', { count: 'exact', head: true })
+          .eq('service_id', item.service.id)
+          .eq('is_active', true)
+        return (count || 0) > 0
+      })()
+
+      if (!hasConfiguredMappings && item.service.provider_id) {
         const { data: acct } = await supabase
           .from('provider_accounts').select('*')
           .eq('provider_id', item.service.provider_id)
@@ -1425,7 +1435,10 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             api_key: acct.api_key, api_url: acct.api_url,
             priority: 999, is_active: acct.is_active, last_used_at: acct.last_used_at
           }
+          console.log(`↩️ Using legacy default provider ${acct.name} (no service_provider_mapping configured for service ${item.service.id})`)
         }
+      } else if (hasConfiguredMappings) {
+        console.log(`🔒 Service ${item.service.id} has admin-configured mappings; legacy default provider fallback is DISABLED`)
       }
       
       const zeroDeliveryRetry = isRetry && isZeroDeliveryProviderFailure(run)
