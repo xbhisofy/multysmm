@@ -43,7 +43,7 @@ import AdminAuditLog from "./pages/admin/AdminAuditLog";
 import AdminPopupAd from "./pages/admin/AdminPopupAd";
 import AdminTopupPlan from "./pages/admin/AdminTopupPlan";
 import AdminChat from "./pages/admin/AdminChat";
-import AdminAnalytics from "./pages/admin/AdminAnalytics";
+
 
 
 import { GlobalSubscriptionGuard } from "@/components/subscription/GlobalSubscriptionGuard";
