@@ -125,66 +125,47 @@ export default function AdminProviderAccounts() {
     },
   });
 
-  // Delete mutation
+  // Delete mutation — SURGICAL: only removes the selected provider account
+  // and its own mappings. Never touches other accounts' mappings, other
+  // providers' services, bundles, priorities, or service IDs.
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const account = accounts?.find(a => a.id === id);
       if (!account) throw new Error("Account not found");
 
-      // Nullify references in organic_run_schedule
+      // 1) Nullify FK references in organic_run_schedule (history rows keep)
       const { error: refError } = await supabase
         .from("organic_run_schedule")
         .update({ provider_account_id: null })
         .eq("provider_account_id", id);
       if (refError) throw refError;
 
-      // Delete service_provider_mapping for this account
+      // 2) Delete ONLY the mappings that belong to THIS account.
+      //    Other provider accounts mapped to the same service stay intact
+      //    with their priorities, sort_order and provider_service_id.
       const { error: mapError } = await supabase
         .from("service_provider_mapping")
         .delete()
         .eq("provider_account_id", id);
       if (mapError) throw mapError;
 
-      // Delete the provider account
+      // 3) Delete the provider account itself.
       const { error } = await supabase
         .from("provider_accounts")
         .delete()
         .eq("id", id);
       if (error) throw error;
 
-      // Check if any other accounts remain for this provider_id
-      const { data: remainingAccounts } = await supabase
-        .from("provider_accounts")
-        .select("id")
-        .eq("provider_id", account.provider_id)
-        .limit(1);
-
-      // If no accounts left, clean up all services of this provider
-      if (!remainingAccounts?.length) {
-        const { data: services } = await supabase
-          .from("services")
-          .select("id")
-          .eq("provider_id", account.provider_id);
-
-        if (services?.length) {
-          const serviceIds = services.map(s => s.id);
-          // Batch nullify all FK references
-          await Promise.all([
-            ...serviceIds.map(sid => supabase.from("bundle_items").update({ service_id: null }).eq("service_id", sid)),
-            ...serviceIds.map(sid => supabase.from("engagement_order_items").update({ service_id: null }).eq("service_id", sid)),
-            ...serviceIds.map(sid => supabase.from("service_provider_mapping").delete().eq("service_id", sid)),
-          ]);
-          // Delete all services
-          await supabase.from("services").delete().eq("provider_id", account.provider_id);
-        }
-        // Delete the provider itself
-        await supabase.from("providers").delete().eq("id", account.provider_id);
-      }
+      // NOTE: Intentionally NOT cascading into services / bundle_items /
+      // providers table. Removing one account must never wipe bundles or
+      // other accounts' configuration. If the admin also wants to remove
+      // the underlying provider + its services, they can do that explicitly.
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["provider-accounts"] });
       queryClient.invalidateQueries({ queryKey: ["providers"] });
-      toast.success("Account and all associated services have been removed!");
+      queryClient.invalidateQueries({ queryKey: ["service-mappings"] });
+      toast.success("Provider account unlinked. Other providers untouched.");
     },
     onError: (error: any) => {
       toast.error(error.message || "Failed to delete account");
