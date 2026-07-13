@@ -193,7 +193,6 @@ export default function AdminBundles() {
       const { data, error } = await supabase
         .from('provider_accounts')
         .select('*')
-        .order('priority', { ascending: true })
         .order('name', { ascending: true });
       if (error) throw error;
       console.log('[AdminBundles] Fetched provider accounts:', data?.length);
