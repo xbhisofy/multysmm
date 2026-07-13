@@ -29,9 +29,21 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
+    // Verify the caller's JWT using an anon-key client scoped to their Authorization header.
+    // (Service-role clients don't have the JWKS verifier configured after signing-key rotation,
+    // which caused "Invalid token" for valid sessions.)
     const token = auth.replace("Bearer ", "");
-    const { data: { user }, error: userErr } = await admin.auth.getUser(token);
-    if (userErr || !user) return json({ error: "Invalid token" }, 401);
+    const userClient = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: auth } } },
+    );
+    const { data: { user }, error: userErr } = await userClient.auth.getUser(token);
+    if (userErr || !user) {
+      console.error("auth.getUser failed:", userErr?.message);
+      return json({ error: "Invalid token" }, 401);
+    }
+
 
     // Admin role check
     const { data: isAdmin } = await admin.rpc("has_role", {
