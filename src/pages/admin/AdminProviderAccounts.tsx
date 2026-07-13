@@ -64,6 +64,8 @@ export default function AdminProviderAccounts() {
       }
     } catch (e: any) {
       toast.error(`❌ ${e?.message || "Test failed"}`, { id: tid });
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ["provider-accounts"] });
     }
   };
   
