@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Edit, Trash2, Key, Clock, Link as LinkIcon, ArrowLeft } from "lucide-react";
+import { Plus, Edit, Trash2, Key, Clock, Link as LinkIcon, ArrowLeft, Zap, Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
@@ -41,6 +41,26 @@ export default function AdminProviderAccounts() {
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<ProviderAccount | null>(null);
+  const [testingId, setTestingId] = useState<string | null>(null);
+  const [dialogTesting, setDialogTesting] = useState(false);
+
+  const runTest = async (payload: { account_id?: string; api_url?: string; api_key?: string }, label?: string) => {
+    const tid = toast.loading(`Testing ${label || "provider"} key...`);
+    try {
+      const { data, error } = await supabase.functions.invoke("test-provider-key", { body: payload });
+      if (error) throw error;
+      if (data?.ok) {
+        toast.success(
+          `✅ Key valid — balance: ${data.balance ?? "?"} ${data.currency ?? ""} (${data.latency_ms}ms)`,
+          { id: tid }
+        );
+      } else {
+        toast.error(`❌ ${data?.error || "Invalid key"}`, { id: tid });
+      }
+    } catch (e: any) {
+      toast.error(`❌ ${e?.message || "Test failed"}`, { id: tid });
+    }
+  };
   
   // Form state
   const [formData, setFormData] = useState({
@@ -362,6 +382,20 @@ export default function AdminProviderAccounts() {
                 </div>
                 
                 <DialogFooter>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={dialogTesting || !formData.api_key || !formData.api_url}
+                    onClick={async () => {
+                      setDialogTesting(true);
+                      await runTest({ api_url: formData.api_url, api_key: formData.api_key }, formData.name);
+                      setDialogTesting(false);
+                    }}
+                    className="gap-2"
+                  >
+                    {dialogTesting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
+                    Test Connection
+                  </Button>
                   <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                     Cancel
                   </Button>
@@ -448,6 +482,21 @@ export default function AdminProviderAccounts() {
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                title="Test API key"
+                                disabled={testingId === account.id}
+                                onClick={async () => {
+                                  setTestingId(account.id);
+                                  await runTest({ account_id: account.id }, account.name);
+                                  setTestingId(null);
+                                }}
+                              >
+                                {testingId === account.id
+                                  ? <Loader2 className="h-4 w-4 animate-spin" />
+                                  : <Zap className="h-4 w-4" />}
+                              </Button>
                               <Button
                                 variant="ghost"
                                 size="icon"
