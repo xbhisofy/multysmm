@@ -160,19 +160,50 @@ serve(async (req) => {
     console.log(`Action: ${action}, Provider: ${provider_id}`)
 
     // Source of truth = provider_accounts (fresh keys). Fall back to providers only if no account exists.
+    // Some legacy providers are saved as variants (example: "Goup 3") while the active key
+    // lives on the base account (same api_url). Keep the selected account id so imported
+    // services are always linked in service_provider_mapping.
     let apiKey: string | null = null
     let apiUrl: string | null = null
+    let selectedProviderAccountId: string | null = null
+    let providerFallback: any = null
 
-    const { data: account } = await supabase
+    const { data: exactAccount } = await supabase
       .from('provider_accounts')
-      .select('api_key, api_url, name')
+      .select('id, api_key, api_url, name, provider_id')
       .eq('provider_id', provider_id)
       .eq('is_active', true)
       .order('priority', { ascending: true })
       .limit(1)
       .maybeSingle()
 
+    let account = exactAccount
+
+    if (!account) {
+      const { data: provider } = await supabase
+        .from('providers')
+        .select('*')
+        .eq('id', provider_id)
+        .maybeSingle()
+
+      providerFallback = provider
+
+      if (provider?.api_url) {
+        const { data: urlMatchedAccount } = await supabase
+          .from('provider_accounts')
+          .select('id, api_key, api_url, name, provider_id')
+          .eq('api_url', provider.api_url)
+          .eq('is_active', true)
+          .order('priority', { ascending: true })
+          .limit(1)
+          .maybeSingle()
+
+        account = urlMatchedAccount
+      }
+    }
+
     if (account) {
+      selectedProviderAccountId = account.id
       apiKey = account.api_key
       apiUrl = account.api_url
 
@@ -181,17 +212,17 @@ serve(async (req) => {
         .from('providers')
         .upsert({
           id: provider_id,
-          name: account.name || provider_id,
+          name: providerFallback?.name || account.name || provider_id,
           api_key: account.api_key,
           api_url: account.api_url,
           is_active: true,
         }, { onConflict: 'id' })
     } else {
-      const { data: provider } = await supabase
+      const provider = providerFallback || (await supabase
         .from('providers')
         .select('*')
         .eq('id', provider_id)
-        .maybeSingle()
+        .maybeSingle()).data
 
       if (provider) {
         apiKey = provider.api_key
@@ -204,6 +235,25 @@ serve(async (req) => {
         status: 404,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
+    }
+
+    const linkServiceToSelectedAccount = async (serviceId: string, providerServiceId: string) => {
+      if (!selectedProviderAccountId) {
+        console.warn(`No active provider account found to link service ${serviceId} (${provider_id}:${providerServiceId})`)
+        return
+      }
+
+      const { error } = await supabase.from('service_provider_mapping').upsert({
+        service_id: serviceId,
+        provider_account_id: selectedProviderAccountId,
+        provider_service_id: providerServiceId,
+        sort_order: 1,
+        is_active: true
+      }, { onConflict: 'service_id,provider_account_id' })
+
+      if (error) {
+        console.error(`Failed to link service ${serviceId}:`, error.message)
+      }
     }
 
     // Fetch services from provider API
@@ -369,6 +419,8 @@ serve(async (req) => {
           .select('id')
           .eq('provider_id', provider_id)
           .eq('provider_service_id', service.provider_service_id)
+          .order('created_at', { ascending: false })
+          .limit(1)
           .maybeSingle()
         if (existing) {
           const { error } = await supabase
@@ -380,24 +432,7 @@ serve(async (req) => {
             errors.push(`Update ${service.name}: ${error.message}`)
           } else {
             updated++
-            
-            // Auto-link in mapping table
-            const { data: accounts } = await supabase
-              .from('provider_accounts')
-              .select('id')
-              .eq('provider_id', provider_id)
-              .eq('is_active', true)
-              .limit(1)
-            
-            if (accounts?.[0]) {
-              await supabase.from('service_provider_mapping').upsert({
-                service_id: existing.id,
-                provider_account_id: accounts[0].id,
-                provider_service_id: service.provider_service_id,
-                sort_order: 1,
-                is_active: true
-              }, { onConflict: 'service_id,provider_account_id' })
-            }
+            await linkServiceToSelectedAccount(existing.id, service.provider_service_id)
           }
         } else {
           const { data: inserted, error } = await supabase
@@ -410,25 +445,8 @@ serve(async (req) => {
             errors.push(`Insert ${service.name}: ${error.message}`)
           } else {
             imported++
-            
-            // Auto-link in mapping table
             if (inserted) {
-              const { data: accounts } = await supabase
-                .from('provider_accounts')
-                .select('id')
-                .eq('provider_id', provider_id)
-                .eq('is_active', true)
-                .limit(1)
-              
-              if (accounts?.[0]) {
-                await supabase.from('service_provider_mapping').insert({
-                  service_id: inserted.id,
-                  provider_account_id: accounts[0].id,
-                  provider_service_id: service.provider_service_id,
-                  sort_order: 1,
-                  is_active: true
-                })
-              }
+              await linkServiceToSelectedAccount(inserted.id, service.provider_service_id)
             }
           }
         }
@@ -449,30 +467,64 @@ serve(async (req) => {
 
     // ACTION: IMPORT_ALL - Import all services (bulk)
     if (action === 'import_all') {
-      // Delete existing services from this provider
-      await supabase.from('services').delete().eq('provider_id', provider_id)
-
       const servicesToInsert = servicesData.map(s =>
         transformService(s, provider_id, markup_percent)
       )
 
-      // Batch insert
-      const BATCH_SIZE = 500
       let imported = 0
+      let updated = 0
+      let linked = 0
+      const errors: string[] = []
 
-      for (let i = 0; i < servicesToInsert.length; i += BATCH_SIZE) {
-        const batch = servicesToInsert.slice(i, i + BATCH_SIZE)
-        const { error } = await supabase.from('services').insert(batch)
+      // Never delete/recreate services here: bundle_items uses ON DELETE SET NULL and
+      // mappings use ON DELETE CASCADE, so deleting causes bundles/services to unlink later.
+      for (const service of servicesToInsert) {
+        const { data: existing } = await supabase
+          .from('services')
+          .select('id')
+          .eq('provider_id', provider_id)
+          .eq('provider_service_id', service.provider_service_id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
 
-        if (!error) {
-          imported += batch.length
+        if (existing) {
+          const { error } = await supabase
+            .from('services')
+            .update(service)
+            .eq('id', existing.id)
+
+          if (error) {
+            errors.push(`Update ${service.name}: ${error.message}`)
+          } else {
+            updated++
+            await linkServiceToSelectedAccount(existing.id, service.provider_service_id)
+            linked++
+          }
+        } else {
+          const { data: inserted, error } = await supabase
+            .from('services')
+            .insert(service)
+            .select('id')
+            .single()
+
+          if (error) {
+            errors.push(`Insert ${service.name}: ${error.message}`)
+          } else if (inserted) {
+            imported++
+            await linkServiceToSelectedAccount(inserted.id, service.provider_service_id)
+            linked++
+          }
         }
       }
 
       return new Response(JSON.stringify({
         success: true,
         imported,
+        updated,
+        linked,
         total: servicesToInsert.length
+        ,errors: errors.length > 0 ? errors : undefined
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
