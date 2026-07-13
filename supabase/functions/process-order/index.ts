@@ -120,6 +120,7 @@ serve(async (req) => {
       .eq('service_id', serviceId)
       .eq('is_active', true)
       .order('sort_order', { ascending: true })
+    const hasConfiguredMappings = (mappings || []).length > 0
 
     // Build list of providers to try
     interface ProviderOption {
@@ -145,7 +146,7 @@ serve(async (req) => {
 
       for (const m of sorted) {
         const acc = m.provider_account
-        if (acc && acc.is_active) {
+        if (acc && acc.is_active && acc.api_url && m.provider_service_id) {
           providerOptions.push({
             name: acc.name,
             apiKey: acc.api_key,
@@ -153,12 +154,18 @@ serve(async (req) => {
             providerServiceId: m.provider_service_id,
             accountId: acc.id,
           })
+        } else if (acc && !acc.is_active) {
+          console.error(`[process-order] BLOCKED disabled mapped provider for service ${serviceId}: ${acc.name} (${acc.id})`)
+        } else if (acc && !m.provider_service_id) {
+          console.error(`[process-order] BLOCKED mapped provider with missing Service ID for service ${serviceId}: ${acc.name} (${acc.id})`)
         }
       }
     }
 
-    // Fallback: legacy single provider
-    if (providerOptions.length === 0 && providerId) {
+    // Fallback: legacy single provider ONLY when admin has no mappings at all.
+    // If mappings exist, admin selection is authoritative; never route to an
+    // unchecked/disabled provider as fallback.
+    if (providerOptions.length === 0 && !hasConfiguredMappings && providerId) {
       const { data: provider } = await supabase.from('providers').select('*').eq('id', providerId).single()
       if (provider) {
         providerOptions.push({
@@ -168,6 +175,8 @@ serve(async (req) => {
           providerServiceId: order.service?.provider_service_id || '',
         })
       }
+    } else if (providerOptions.length === 0 && hasConfiguredMappings) {
+      console.error(`[process-order] No active mapped provider available for service ${serviceId}; legacy fallback disabled because admin mappings exist`)
     }
 
     if (providerOptions.length === 0) {
