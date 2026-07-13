@@ -193,7 +193,6 @@ export default function AdminBundles() {
       const { data, error } = await supabase
         .from('provider_accounts')
         .select('*')
-        .order('priority', { ascending: true })
         .order('name', { ascending: true });
       if (error) throw error;
       console.log('[AdminBundles] Fetched provider accounts:', data?.length);
@@ -1156,14 +1155,14 @@ function ProviderMappingDialog({
   // Only show SAVED mappings from DB — no auto-fill
   const initMappings = () => {
     const newMappings: Record<string, { checked: boolean; serviceId: string; sortOrder: number }> = {};
-    providerAccounts.forEach(account => {
+    providerAccounts.forEach((account, idx) => {
       const existing = existingMappings?.find(m => m.provider_account_id === account.id);
       newMappings[account.id] = {
         checked: !!existing,
         serviceId: existing?.provider_service_id || '',
-        // Always mirror the provider account's priority — bundle mapping
-        // must never diverge from "Add a Provider" page.
-        sortOrder: account.priority,
+        // Per-service priority (source of truth = service_provider_mapping.sort_order).
+        // Fallback to index+1 for new/unsaved rows so each account gets a distinct default.
+        sortOrder: existing?.sort_order ?? (idx + 1),
       };
     });
     setMappings(newMappings);
@@ -1306,8 +1305,7 @@ function ProviderMappingDialog({
 
       for (const [accountId, data] of Object.entries(mappings)) {
         if (!data.checked) continue;
-        const acct = providerAccounts.find(a => a.id === accountId);
-        const sortOrder = acct?.priority ?? data.sortOrder;
+        const sortOrder = data.sortOrder;
         if (currentAccountIds.has(accountId)) {
           const existing = currentMappings?.find(m => m.provider_account_id === accountId);
           if (existing) {
@@ -1491,9 +1489,17 @@ function ProviderMappingDialog({
                         />
                       </TableCell>
                       <TableCell>
-                        <div className="w-14 h-8 flex items-center justify-center rounded-md border bg-muted/50 text-xs font-medium">
-                          #{account.priority}
-                        </div>
+                        <Input
+                          type="number"
+                          min={1}
+                          max={100}
+                          value={mapping.sortOrder}
+                          onChange={(e) =>
+                            handleMappingChange(account.id, 'sortOrder', parseInt(e.target.value) || 1)
+                          }
+                          className="h-8 w-16 text-xs"
+                          disabled={!mapping.checked}
+                        />
                       </TableCell>
                     </TableRow>
                   );
