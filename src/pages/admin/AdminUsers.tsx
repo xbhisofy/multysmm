@@ -38,8 +38,6 @@ import {
   ShieldOff,
   AlertTriangle,
   Download,
-  ArrowDownCircle,
-  LogIn,
 } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -855,31 +853,8 @@ export default function AdminUsers() {
                     </div>
                   )}
 
-                  {/* Activity meta — compact horizontal rows */}
-                  <div className="mt-3 rounded-xl bg-muted/40 divide-y divide-border/60 text-xs">
-                    <div className="flex items-center justify-between px-3 py-2 gap-2">
-                      <span className="flex items-center gap-1.5 text-muted-foreground shrink-0">
-                        <ArrowDownCircle className="h-3.5 w-3.5 text-emerald-500" /> Last Fund
-                      </span>
-                      <span className="font-medium truncate text-right">
-                        {u.last_deposit_at ? formatDistanceToNow(new Date(u.last_deposit_at), { addSuffix: true }) : 'Never'}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between px-3 py-2 gap-2">
-                      <span className="flex items-center gap-1.5 text-muted-foreground shrink-0">
-                        <ShoppingCart className="h-3.5 w-3.5" /> Orders
-                      </span>
-                      <span className="font-medium tabular-nums">{u.total_orders_count || 0}</span>
-                    </div>
-                    <div className="flex items-center justify-between px-3 py-2 gap-2">
-                      <span className="flex items-center gap-1.5 text-muted-foreground shrink-0">
-                        <LogIn className="h-3.5 w-3.5" /> Last Login
-                      </span>
-                      <span className="font-medium truncate text-right">
-                        {u.last_sign_in_at ? formatDistanceToNow(new Date(u.last_sign_in_at), { addSuffix: true }) : 'Never'}
-                      </span>
-                    </div>
-                  </div>
+
+
 
 
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
