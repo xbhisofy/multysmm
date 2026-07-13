@@ -33,7 +33,9 @@ const TRY_NEXT_ERRORS = [
   'incorrect service',
   'invalid service',
   'service unavailable',
+  'service is inactive',
   'service is not available',
+  'not found',
   'disabled',
   'maintenance',
   'rate limit',
@@ -45,6 +47,14 @@ const TRY_NEXT_ERRORS = [
 function shouldTryNextProvider(errorMsg: string): boolean {
   const lower = errorMsg.toLowerCase()
   return TRY_NEXT_ERRORS.some(e => lower.includes(e))
+}
+
+function isInvalidProviderServiceError(errorMsg: string): boolean {
+  const lower = errorMsg.toLowerCase()
+  return [
+    'service is inactive', 'service not found', 'incorrect service', 'invalid service',
+    'service unavailable', 'service is not available', 'not found', 'disabled',
+  ].some(e => lower.includes(e))
 }
 
 serve(async (req) => {
@@ -239,6 +249,15 @@ serve(async (req) => {
           const errorMsg = typeof result.error === 'string' ? result.error : JSON.stringify(result.error)
           console.log(`[process-order] Provider ${provider.name} error: ${errorMsg}`)
           lastError = errorMsg
+          if (provider.accountId && isInvalidProviderServiceError(errorMsg)) {
+            console.error(`[process-order] Disabling invalid mapping: service=${serviceId}, account=${provider.name}, provider_service_id=${provider.providerServiceId}, reason=${errorMsg}`)
+            await supabase
+              .from('service_provider_mapping')
+              .update({ is_active: false })
+              .eq('service_id', serviceId)
+              .eq('provider_account_id', provider.accountId)
+              .eq('provider_service_id', provider.providerServiceId)
+          }
           
           // If this error means we should try another provider, continue
           if (shouldTryNextProvider(errorMsg) && providerOptions.indexOf(provider) < providerOptions.length - 1) {

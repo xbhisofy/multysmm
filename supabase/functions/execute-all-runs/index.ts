@@ -121,8 +121,18 @@ const TRY_NEXT_PROVIDER_ERRORS = [
   'minimum order', 'minimum quantity', 'max quantity', 'maximum quantity',
   'quantity more than maximum', 'service not found', 'incorrect service',
   'invalid service', 'service unavailable', 'service is not available',
-  'disabled', 'not work', 'maintenance', 'down',
+  'service is inactive', 'not found', 'disabled', 'not work', 'maintenance', 'down',
 ]
+
+const INVALID_PROVIDER_SERVICE_ERRORS = [
+  'service is inactive', 'service not found', 'incorrect service', 'invalid service',
+  'service unavailable', 'service is not available', 'not found', 'disabled',
+]
+
+function isInvalidProviderServiceError(msg: string | null | undefined): boolean {
+  const lower = (msg || '').toLowerCase()
+  return INVALID_PROVIDER_SERVICE_ERRORS.some((err) => lower.includes(err))
+}
 
 interface ProviderAccount {
   id: string
@@ -1243,7 +1253,6 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         .from('service_provider_mapping')
         .select('id', { count: 'exact', head: true })
         .eq('service_id', currentServiceId)
-        .eq('is_active', true)
       const configuredMappingCountForService = configuredMappingCount || 0
       
       // Build busy account list
@@ -1412,8 +1421,8 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         supabase, item.service.id, busyAccountIds, executionId
       )
       
-      // Default provider fallback — ONLY when the service has ZERO active
-      // mappings configured by the admin. If ANY mapping exists for this
+      // Default provider fallback — ONLY when the service has ZERO mappings
+      // configured by the admin. If ANY mapping exists for this
       // service, the admin's selection is authoritative and we must NEVER
       // fall back to services.provider_id (that would silently route to an
       // unchecked / unlinked provider). This was the routing bug.
@@ -1757,6 +1766,16 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             if (lastError === null || lastError === undefined) lastError = 'Unknown provider error'
             if (typeof lastError !== 'string') lastError = JSON.stringify(lastError)
             providerResult = result
+
+            if (isInvalidProviderServiceError(lastError)) {
+              console.error(`🚫 Disabling invalid mapping: service=${currentServiceId}, provider=${selectedAccount.name}, provider_service_id=${providerServiceId}, reason=${lastError}`)
+              await supabase
+                .from('service_provider_mapping')
+                .update({ is_active: false })
+                .eq('service_id', currentServiceId)
+                .eq('provider_account_id', selectedAccount.id)
+                .eq('provider_service_id', providerServiceId)
+            }
             
             const isActiveOrderError = isActiveOrderErrorMsg(lastError)
             if (isActiveOrderError) {
