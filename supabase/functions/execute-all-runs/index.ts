@@ -1508,11 +1508,20 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
       // pending runs of the same item so shares/saves do not get stuck forever.
       const originalQty = run.quantity_to_send
       let effectiveQty = originalQty
+      // STRICT priority preserved: only push non-fitting providers to the end.
+      // Do NOT reorder fitting providers by min ascending — that overrides the
+      // admin-set sort_order and breaks "priority 1 first" routing.
       accountsToTry.sort((a, b) => {
         const aFits = (a.minQuantity || 0) <= effectiveQty ? 0 : 1
         const bFits = (b.minQuantity || 0) <= effectiveQty ? 0 : 1
         if (aFits !== bFits) return aFits - bFits
-        return (a.minQuantity || 0) - (b.minQuantity || 0)
+        const aSort = Number(a.sortOrder ?? 999)
+        const bSort = Number(b.sortOrder ?? 999)
+        if (aSort !== bSort) return aSort - bSort
+        const aPri = Number(a.account?.priority ?? 999)
+        const bPri = Number(b.account?.priority ?? 999)
+        if (aPri !== bPri) return aPri - bPri
+        return String(a.account?.name ?? '').localeCompare(String(b.account?.name ?? ''))
       })
       const smallestAccountMin = accountsToTry.reduce((min, entry) => {
         const candidateMin = Number(entry.minQuantity || 0)
@@ -1562,7 +1571,13 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             const aFits = (a.minQuantity || 0) <= effectiveQty ? 0 : 1
             const bFits = (b.minQuantity || 0) <= effectiveQty ? 0 : 1
             if (aFits !== bFits) return aFits - bFits
-            return (a.minQuantity || 0) - (b.minQuantity || 0)
+            const aSort = Number(a.sortOrder ?? 999)
+            const bSort = Number(b.sortOrder ?? 999)
+            if (aSort !== bSort) return aSort - bSort
+            const aPri = Number(a.account?.priority ?? 999)
+            const bPri = Number(b.account?.priority ?? 999)
+            if (aPri !== bPri) return aPri - bPri
+            return String(a.account?.name ?? '').localeCompare(String(b.account?.name ?? ''))
           })
           console.log(`🧩 Run #${run.run_number} merged to ${combinedQty} for ${item.engagement_type} to satisfy provider min ${smallestAccountMin}`)
         } else {
