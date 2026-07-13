@@ -1305,8 +1305,7 @@ function ProviderMappingDialog({
 
       for (const [accountId, data] of Object.entries(mappings)) {
         if (!data.checked) continue;
-        const acct = providerAccounts.find(a => a.id === accountId);
-        const sortOrder = acct?.priority ?? data.sortOrder;
+        const sortOrder = data.sortOrder;
         if (currentAccountIds.has(accountId)) {
           const existing = currentMappings?.find(m => m.provider_account_id === accountId);
           if (existing) {
