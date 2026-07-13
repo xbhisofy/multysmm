@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -65,14 +65,14 @@ export default function AdminServiceProviderMapping() {
     },
   });
 
-  // Fetch provider accounts
+  // Fetch provider accounts, including inactive accounts, so saving mappings never
+  // deletes configured routes just because an account is temporarily disabled.
   const { data: accounts } = useQuery({
     queryKey: ["provider-accounts-for-mapping"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("provider_accounts")
         .select("*")
-        .eq("is_active", true)
         .order("provider_id")
         .order("priority");
       if (error) throw error;
@@ -132,11 +132,11 @@ export default function AdminServiceProviderMapping() {
   };
 
   // Sync when existingMappings changes
-  useState(() => {
+  useEffect(() => {
     if (existingMappings && accounts) {
       updateMappingsFromExisting();
     }
-  });
+  }, [existingMappings, accounts, selectedServiceId]);
 
   // Save mutation
   const saveMutation = useMutation({
@@ -150,11 +150,18 @@ export default function AdminServiceProviderMapping() {
         .eq("service_id", selectedServiceId);
 
       const currentAccountIds = new Set(currentMappings?.map(m => m.provider_account_id) || []);
-      const newAccountIds = new Set(
-        Object.entries(mappings)
-          .filter(([_, val]) => val.checked)
-          .map(([id]) => id)
-      );
+      const selectedEntries = Object.entries(mappings)
+        .filter(([_, val]) => val.checked);
+
+      const missingServiceIds = selectedEntries
+        .filter(([_, val]) => !val.serviceId.trim())
+        .map(([accountId]) => accounts?.find(a => a.id === accountId)?.name || accountId);
+
+      if (missingServiceIds.length > 0) {
+        throw new Error(`Provider Service ID missing for: ${missingServiceIds.join(", ")}`);
+      }
+
+      const newAccountIds = new Set(selectedEntries.map(([id]) => id));
 
       // Batch delete removed mappings
       const toDelete = (currentMappings || []).filter(m => !newAccountIds.has(m.provider_account_id));
@@ -171,7 +178,7 @@ export default function AdminServiceProviderMapping() {
         .map(([accountId, data]) => ({
           service_id: selectedServiceId,
           provider_account_id: accountId,
-          provider_service_id: data.serviceId,
+          provider_service_id: data.serviceId.trim(),
           sort_order: data.sortOrder,
           is_active: true,
         }));
@@ -189,7 +196,7 @@ export default function AdminServiceProviderMapping() {
           supabase
             .from("service_provider_mapping")
             .update({
-              provider_service_id: data.serviceId,
+              provider_service_id: data.serviceId.trim(),
               sort_order: data.sortOrder,
               is_active: true,
             })
@@ -355,7 +362,14 @@ export default function AdminServiceProviderMapping() {
                           </TableCell>
                           <TableCell>
                             <div className="flex flex-col">
-                              <span className="font-medium">{account.name}</span>
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium">{account.name}</span>
+                                {!account.is_active && (
+                                  <Badge variant="outline" className="text-[10px] h-4 px-1">
+                                    Inactive
+                                  </Badge>
+                                )}
+                              </div>
                               <span className="text-xs text-muted-foreground">
                                 {account.provider_id} • Priority #{account.priority}
                               </span>
