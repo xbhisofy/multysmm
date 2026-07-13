@@ -451,7 +451,6 @@ export default function AdminProviderAccounts() {
                       <TableRow>
                         <TableHead>Name</TableHead>
                         <TableHead>API Key</TableHead>
-                        <TableHead>Priority</TableHead>
                         <TableHead>Verified</TableHead>
                         <TableHead>Last Used</TableHead>
                         <TableHead>Status</TableHead>
