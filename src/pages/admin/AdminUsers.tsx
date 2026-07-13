@@ -37,17 +37,11 @@ import {
   Ban,
   ShieldOff,
   AlertTriangle,
-  Download,
 } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { format, formatDistanceToNow } from 'date-fns';
-import { UserFiltersSheet } from '@/components/admin/UserFiltersSheet';
-import { UserSortSelect } from '@/components/admin/UserSortSelect';
-import {
-  DEFAULT_FILTERS, applyFilters, applySort, rowsToCsv, downloadCsv, indicatorFor,
-  type AdminFilters, type SortKey, type Row,
-} from '@/lib/admin-users-filters';
+import { indicatorFor, type Row } from '@/lib/admin-users-filters';
 
 interface Subscription {
   id: string;
@@ -116,8 +110,6 @@ export default function AdminUsers() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<UserTab>('all');
-  const [sortKey, setSortKey] = useState<SortKey>('last_fund');
-  const [filters, setFilters] = useState<AdminFilters>(DEFAULT_FILTERS);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [balanceAmount, setBalanceAmount] = useState('');
   const [balanceAction, setBalanceAction] = useState<'subtract' | 'add'>('add');
@@ -497,7 +489,7 @@ export default function AdminUsers() {
     return (u.orderCounts?.singleActive || 0) + (u.orderCounts?.engagementActive || 0);
   };
 
-  // Tab filter first, then advanced filters + search + sort
+  // Tab filter + search only
   const filteredUsers = useMemo(() => {
     let base: UserProfile[] = users || [];
     switch (activeTab) {
@@ -514,16 +506,13 @@ export default function AdminUsers() {
         base = base.filter((u) => !!u.is_banned);
         break;
     }
-    const filtered = applyFilters(base as unknown as Row[], filters, searchQuery);
-    const sorted = applySort(filtered, sortKey);
-    return sorted as unknown as UserProfile[];
-  }, [users, activeTab, filters, searchQuery, sortKey]);
-
-  const handleExport = () => {
-    const csv = rowsToCsv(filteredUsers as unknown as Row[]);
-    downloadCsv(`users-${new Date().toISOString().slice(0,10)}.csv`, csv);
-    toast.success(`Exported ${filteredUsers.length} users`);
-  };
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return base;
+    return base.filter((u) => {
+      const hay = [u.email, u.full_name || '', u.user_id, u.id, u.telegram_username || ''].join(' ').toLowerCase();
+      return hay.includes(q);
+    });
+  }, [users, activeTab, searchQuery]);
 
   const selectedBalanceInr = selectedUser ? (selectedUser.wallet?.balance || 0) * INR_RATE : 0;
   const parsedBalanceAmount = parseFloat(balanceAmount || '0') || 0;
@@ -701,13 +690,6 @@ export default function AdminUsers() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 h-10 rounded-xl"
             />
-          </div>
-          <div className="flex flex-wrap gap-2 md:ml-auto">
-            <UserSortSelect value={sortKey} onChange={setSortKey} />
-            <UserFiltersSheet value={filters} onChange={setFilters} />
-            <Button variant="outline" className="h-10 rounded-xl gap-2" onClick={handleExport} disabled={!filteredUsers.length}>
-              <Download className="h-4 w-4" /> CSV
-            </Button>
           </div>
         </div>
 
