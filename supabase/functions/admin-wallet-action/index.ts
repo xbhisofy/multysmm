@@ -38,11 +38,12 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY")!,
       { global: { headers: { Authorization: auth } } },
     );
-    const { data: { user }, error: userErr } = await userClient.auth.getUser(token);
-    if (userErr || !user) {
-      console.error("auth.getUser failed:", userErr?.message);
+    const { data: claimsData, error: claimsErr } = await userClient.auth.getClaims(token);
+    if (claimsErr || !claimsData?.claims?.sub) {
+      console.error("auth.getClaims failed:", claimsErr?.message);
       return json({ error: "Invalid token" }, 401);
     }
+    const user = { id: claimsData.claims.sub as string };
 
 
     // Admin role check
