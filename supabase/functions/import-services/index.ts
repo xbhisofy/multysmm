@@ -243,18 +243,32 @@ serve(async (req) => {
         return
       }
 
-      const { error } = await supabase.from('service_provider_mapping').upsert({
-        service_id: serviceId,
-        provider_account_id: selectedProviderAccountId,
-        provider_service_id: providerServiceId,
-        sort_order: 1,
-        is_active: true
-      }, { onConflict: 'service_id,provider_account_id' })
+      // Preserve user-set sort_order (priority) on re-import.
+      // Only set sort_order=1 when creating a brand-new mapping row.
+      const { data: existing } = await supabase
+        .from('service_provider_mapping')
+        .select('id')
+        .eq('service_id', serviceId)
+        .eq('provider_account_id', selectedProviderAccountId)
+        .maybeSingle()
 
-      if (error) {
-        console.error(`Failed to link service ${serviceId}:`, error.message)
+      if (existing) {
+        const { error } = await supabase.from('service_provider_mapping')
+          .update({ provider_service_id: providerServiceId, is_active: true })
+          .eq('id', existing.id)
+        if (error) console.error(`Failed to update mapping ${serviceId}:`, error.message)
+      } else {
+        const { error } = await supabase.from('service_provider_mapping').insert({
+          service_id: serviceId,
+          provider_account_id: selectedProviderAccountId,
+          provider_service_id: providerServiceId,
+          sort_order: 1,
+          is_active: true,
+        })
+        if (error) console.error(`Failed to link service ${serviceId}:`, error.message)
       }
     }
+
 
     // Fetch services from provider API
     const formData = new URLSearchParams()
