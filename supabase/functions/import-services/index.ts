@@ -159,51 +159,48 @@ serve(async (req) => {
 
     console.log(`Action: ${action}, Provider: ${provider_id}`)
 
-    // Get provider details - first try providers table, then fall back to provider_accounts
+    // Source of truth = provider_accounts (fresh keys). Fall back to providers only if no account exists.
     let apiKey: string | null = null
     let apiUrl: string | null = null
 
-    const { data: provider } = await supabase
-      .from('providers')
-      .select('*')
-      .eq('id', provider_id)
-      .single()
+    const { data: account } = await supabase
+      .from('provider_accounts')
+      .select('api_key, api_url, name')
+      .eq('provider_id', provider_id)
+      .eq('is_active', true)
+      .order('priority', { ascending: true })
+      .limit(1)
+      .maybeSingle()
 
-    if (provider) {
-      apiKey = provider.api_key
-      apiUrl = provider.api_url
+    if (account) {
+      apiKey = account.api_key
+      apiUrl = account.api_url
+
+      // Keep providers row in sync so services FK is satisfied and keys don't go stale
+      await supabase
+        .from('providers')
+        .upsert({
+          id: provider_id,
+          name: account.name || provider_id,
+          api_key: account.api_key,
+          api_url: account.api_url,
+          is_active: true,
+        }, { onConflict: 'id' })
     } else {
-      // Fallback: find a provider_account with matching provider_id
-      const { data: account } = await supabase
-        .from('provider_accounts')
-        .select('api_key, api_url, name')
-        .eq('provider_id', provider_id)
-        .eq('is_active', true)
-        .order('priority', { ascending: true })
-        .limit(1)
-        .single()
+      const { data: provider } = await supabase
+        .from('providers')
+        .select('*')
+        .eq('id', provider_id)
+        .maybeSingle()
 
-      if (account) {
-        apiKey = account.api_key
-        apiUrl = account.api_url
-
-        // Auto-create providers entry so services FK constraint is satisfied
-        await supabase
-          .from('providers')
-          .upsert({
-            id: provider_id,
-            name: account.name || provider_id,
-            api_key: account.api_key,
-            api_url: account.api_url,
-            is_active: true,
-          }, { onConflict: 'id' })
-
-        console.log(`Auto-created provider entry for: ${provider_id}`)
+      if (provider) {
+        apiKey = provider.api_key
+        apiUrl = provider.api_url
       }
     }
 
     if (!apiKey || !apiUrl) {
-      return new Response(JSON.stringify({ error: `Provider not found: ${provider_id}. Check providers or provider_accounts table.` }), {
+      return new Response(JSON.stringify({ error: `Provider not found: ${provider_id}. Check provider_accounts table.` }), {
         status: 404,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
