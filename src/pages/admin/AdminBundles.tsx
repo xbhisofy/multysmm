@@ -1161,7 +1161,9 @@ function ProviderMappingDialog({
       newMappings[account.id] = {
         checked: !!existing,
         serviceId: existing?.provider_service_id || '',
-        sortOrder: existing?.sort_order || account.priority,
+        // Always mirror the provider account's priority — bundle mapping
+        // must never diverge from "Add a Provider" page.
+        sortOrder: account.priority,
       };
     });
     setMappings(newMappings);
@@ -1304,17 +1306,19 @@ function ProviderMappingDialog({
 
       for (const [accountId, data] of Object.entries(mappings)) {
         if (!data.checked) continue;
+        const acct = providerAccounts.find(a => a.id === accountId);
+        const sortOrder = acct?.priority ?? data.sortOrder;
         if (currentAccountIds.has(accountId)) {
           const existing = currentMappings?.find(m => m.provider_account_id === accountId);
           if (existing) {
-            toUpdate.push({ id: existing.id, provider_service_id: data.serviceId.trim(), sort_order: data.sortOrder });
+            toUpdate.push({ id: existing.id, provider_service_id: data.serviceId.trim(), sort_order: sortOrder });
           }
         } else {
           toInsert.push({
             service_id: currentServiceId,
             provider_account_id: accountId,
             provider_service_id: data.serviceId.trim(),
-            sort_order: data.sortOrder,
+            sort_order: sortOrder,
             is_active: true,
           });
         }
@@ -1487,17 +1491,9 @@ function ProviderMappingDialog({
                         />
                       </TableCell>
                       <TableCell>
-                        <Input
-                          type="number"
-                          min={1}
-                          max={100}
-                          value={mapping.sortOrder}
-                          onChange={(e) =>
-                            handleMappingChange(account.id, 'sortOrder', parseInt(e.target.value) || 1)
-                          }
-                          className="h-8 w-14 text-xs"
-                          disabled={!mapping.checked}
-                        />
+                        <div className="w-14 h-8 flex items-center justify-center rounded-md border bg-muted/50 text-xs font-medium">
+                          #{account.priority}
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
