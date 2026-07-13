@@ -37,17 +37,11 @@ import {
   Ban,
   ShieldOff,
   AlertTriangle,
-  Download,
 } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { format, formatDistanceToNow } from 'date-fns';
-import { UserFiltersSheet } from '@/components/admin/UserFiltersSheet';
-import { UserSortSelect } from '@/components/admin/UserSortSelect';
-import {
-  DEFAULT_FILTERS, applyFilters, applySort, rowsToCsv, downloadCsv, indicatorFor,
-  type AdminFilters, type SortKey, type Row,
-} from '@/lib/admin-users-filters';
+import { indicatorFor, type Row } from '@/lib/admin-users-filters';
 
 interface Subscription {
   id: string;
