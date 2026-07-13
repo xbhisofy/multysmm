@@ -467,9 +467,6 @@ export default function AdminProviderAccounts() {
                             </code>
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline">#{account.priority}</Badge>
-                          </TableCell>
-                          <TableCell>
                             <div className="flex flex-col gap-1">
                               {account.last_verified_status === 'valid' ? (
                                 <Badge className="w-fit bg-green-500/15 text-green-700 dark:text-green-400 border border-green-500/30 hover:bg-green-500/20">
