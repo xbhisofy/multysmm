@@ -192,12 +192,15 @@ class MappingCache {
         this.cache.set(serviceId, [])
       } else {
         const sorted = [...mappings].sort((a: any, b: any) => {
-          const aPriority = a.sort_order || 0
-          const bPriority = b.sort_order || 0
-          if (aPriority !== bPriority) return aPriority - bPriority
-          const aTime = a.provider_account?.last_used_at ? new Date(a.provider_account.last_used_at).getTime() : 0
-          const bTime = b.provider_account?.last_used_at ? new Date(b.provider_account.last_used_at).getTime() : 0
-          return aTime - bTime
+          // STRICT priority: mapping sort_order first, then account.priority — no LRU shuffle
+          const aSort = Number(a.sort_order ?? 999)
+          const bSort = Number(b.sort_order ?? 999)
+          if (aSort !== bSort) return aSort - bSort
+          const aPri = Number(a.provider_account?.priority ?? 999)
+          const bPri = Number(b.provider_account?.priority ?? 999)
+          if (aPri !== bPri) return aPri - bPri
+          // Deterministic tiebreak by account name, so order never drifts
+          return String(a.provider_account?.name ?? '').localeCompare(String(b.provider_account?.name ?? ''))
         })
         
         // Fetch each provider-service min_quantity from services table (by provider_service_id + provider_id)
@@ -1768,13 +1771,9 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             providerResult = result
 
             if (isInvalidProviderServiceError(lastError)) {
-              console.error(`🚫 Disabling invalid mapping: service=${currentServiceId}, provider=${selectedAccount.name}, provider_service_id=${providerServiceId}, reason=${lastError}`)
-              await supabase
-                .from('service_provider_mapping')
-                .update({ is_active: false })
-                .eq('service_id', currentServiceId)
-                .eq('provider_account_id', selectedAccount.id)
-                .eq('provider_service_id', providerServiceId)
+              // DO NOT auto-disable the admin mapping — that silently resets bundle config.
+              // Just log and let the retry loop try the next provider in priority order.
+              console.warn(`⚠️ Provider ${selectedAccount.name} returned "${lastError}" for service=${currentServiceId} provider_service_id=${providerServiceId}. Skipping this attempt; mapping kept ACTIVE. Admin should fix in panel if persistent.`)
             }
             
             const isActiveOrderError = isActiveOrderErrorMsg(lastError)
