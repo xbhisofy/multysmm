@@ -185,14 +185,14 @@ export default function AdminBundles() {
     });
   })();
 
-  // Fetch provider accounts for rotation - always get fresh data
+  // Fetch provider accounts for rotation - include inactive too so saving one
+  // service never silently deletes mappings that are temporarily disabled.
   const { data: providerAccounts, refetch: refetchAccounts } = useQuery({
     queryKey: ['provider-accounts-for-bundles'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('provider_accounts')
         .select('*')
-        .eq('is_active', true)
         .order('name');
       if (error) throw error;
       console.log('[AdminBundles] Fetched provider accounts:', data?.length);
@@ -1275,11 +1275,18 @@ function ProviderMappingDialog({
         .eq('service_id', currentServiceId);
 
       const currentAccountIds = new Set(currentMappings?.map(m => m.provider_account_id) || []);
-      const newAccountIds = new Set(
-        Object.entries(mappings)
-          .filter(([_, val]) => val.checked)
-          .map(([id]) => id)
-      );
+      const selectedEntries = Object.entries(mappings)
+        .filter(([_, val]) => val.checked);
+
+      const missingServiceIds = selectedEntries
+        .filter(([_, val]) => !val.serviceId.trim())
+        .map(([accountId]) => providerAccounts.find(a => a.id === accountId)?.name || accountId);
+
+      if (missingServiceIds.length > 0) {
+        throw new Error(`Service ID missing for: ${missingServiceIds.join(', ')}`);
+      }
+
+      const newAccountIds = new Set(selectedEntries.map(([id]) => id));
 
       // Batch delete removed mappings
       const toDelete = (currentMappings || []).filter(m => !newAccountIds.has(m.provider_account_id));
@@ -1299,13 +1306,13 @@ function ProviderMappingDialog({
         if (currentAccountIds.has(accountId)) {
           const existing = currentMappings?.find(m => m.provider_account_id === accountId);
           if (existing) {
-            toUpdate.push({ id: existing.id, provider_service_id: data.serviceId, sort_order: data.sortOrder });
+            toUpdate.push({ id: existing.id, provider_service_id: data.serviceId.trim(), sort_order: data.sortOrder });
           }
         } else {
           toInsert.push({
             service_id: currentServiceId,
             provider_account_id: accountId,
-            provider_service_id: data.serviceId,
+            provider_service_id: data.serviceId.trim(),
             sort_order: data.sortOrder,
             is_active: true,
           });
@@ -1319,7 +1326,7 @@ function ProviderMappingDialog({
       await Promise.all(
         toUpdate.map(u =>
           supabase.from('service_provider_mapping')
-            .update({ provider_service_id: u.provider_service_id, sort_order: u.sort_order, is_active: true })
+            .update({ provider_service_id: u.provider_service_id.trim(), sort_order: u.sort_order, is_active: true })
             .eq('id', u.id)
         )
       );
@@ -1454,7 +1461,14 @@ function ProviderMappingDialog({
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium">{account.name}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium">{account.name}</span>
+                            {!account.is_active && (
+                              <Badge variant="outline" className="text-[10px] h-4 px-1">
+                                Inactive
+                              </Badge>
+                            )}
+                          </div>
                           <span className="text-[10px] text-muted-foreground">
                             {account.provider_id}
                           </span>
