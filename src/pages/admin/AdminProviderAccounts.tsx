@@ -28,6 +28,11 @@ interface ProviderAccount {
   created_at: string;
   updated_at: string;
   delivery_multiplier?: number | null;
+  last_verified_at?: string | null;
+  last_verified_status?: 'valid' | 'invalid' | null;
+  last_verified_balance?: number | null;
+  last_verified_currency?: string | null;
+  last_verified_error?: string | null;
 }
 
 interface Provider {
