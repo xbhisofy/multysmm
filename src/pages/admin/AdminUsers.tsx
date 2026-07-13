@@ -815,25 +815,8 @@ export default function AdminUsers() {
                     ))}
                   </div>
 
-                  {/* Order Count Badge */}
-                  {(hasActiveOrders(u) || hasPausedOrders(u)) && (
-                    <div className="mt-3 p-2.5 rounded-lg bg-muted/50 flex items-center justify-between">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <ShoppingCart className="h-4 w-4 text-muted-foreground shrink-0" />
-                        <span className="text-sm truncate">
-                          {getTotalActiveOrders(u) > 0 && (
-                            <span className="text-primary font-medium">{getTotalActiveOrders(u)} Active</span>
-                          )}
-                          {getTotalActiveOrders(u) > 0 && hasPausedOrders(u) && ' • '}
-                          {hasPausedOrders(u) && (
-                            <span className="text-warning font-medium">
-                              {(u.orderCounts?.singlePaused || 0) + (u.orderCounts?.engagementPaused || 0)} Paused
-                            </span>
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                  )}
+
+
 
 
 
