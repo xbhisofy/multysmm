@@ -361,16 +361,7 @@ export default function AdminProviderAccounts() {
                     />
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label>Priority (lower = used first)</Label>
-                    <Input
-                      type="number"
-                      min={1}
-                      max={100}
-                      value={formData.priority}
-                      onChange={(e) => setFormData(prev => ({ ...prev, priority: parseInt(e.target.value) || 1 }))}
-                    />
-                  </div>
+                  {/* Priority removed — priority is now managed per-service in Bundle → Providers dialog. */}
                   
                   <div className="space-y-2">
                     <Label>Delivery Multiplier (over-delivery factor)</Label>
