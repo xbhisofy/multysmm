@@ -1306,17 +1306,19 @@ function ProviderMappingDialog({
 
       for (const [accountId, data] of Object.entries(mappings)) {
         if (!data.checked) continue;
+        const acct = providerAccounts.find(a => a.id === accountId);
+        const sortOrder = acct?.priority ?? data.sortOrder;
         if (currentAccountIds.has(accountId)) {
           const existing = currentMappings?.find(m => m.provider_account_id === accountId);
           if (existing) {
-            toUpdate.push({ id: existing.id, provider_service_id: data.serviceId.trim(), sort_order: data.sortOrder });
+            toUpdate.push({ id: existing.id, provider_service_id: data.serviceId.trim(), sort_order: sortOrder });
           }
         } else {
           toInsert.push({
             service_id: currentServiceId,
             provider_account_id: accountId,
             provider_service_id: data.serviceId.trim(),
-            sort_order: data.sortOrder,
+            sort_order: sortOrder,
             is_active: true,
           });
         }
