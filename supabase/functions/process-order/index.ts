@@ -250,13 +250,9 @@ serve(async (req) => {
           console.log(`[process-order] Provider ${provider.name} error: ${errorMsg}`)
           lastError = errorMsg
           if (provider.accountId && isInvalidProviderServiceError(errorMsg)) {
-            console.error(`[process-order] Disabling invalid mapping: service=${serviceId}, account=${provider.name}, provider_service_id=${provider.providerServiceId}, reason=${errorMsg}`)
-            await supabase
-              .from('service_provider_mapping')
-              .update({ is_active: false })
-              .eq('service_id', serviceId)
-              .eq('provider_account_id', provider.accountId)
-              .eq('provider_service_id', provider.providerServiceId)
+            // DO NOT auto-disable admin mapping (was silently resetting bundle config).
+            // Just log and fall through to the next provider in priority order.
+            console.warn(`[process-order] ⚠️ Provider ${provider.name} returned "${errorMsg}" for service=${serviceId} provider_service_id=${provider.providerServiceId}. Skipping this attempt; mapping kept ACTIVE.`)
           }
           
           // If this error means we should try another provider, continue
