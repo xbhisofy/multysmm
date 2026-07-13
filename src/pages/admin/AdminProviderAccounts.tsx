@@ -202,14 +202,23 @@ export default function AdminProviderAccounts() {
   // Toggle active status
   const toggleMutation = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("provider_accounts")
         .update({ is_active })
-        .eq("id", id);
+        .eq("id", id)
+        .select("id, is_active");
       if (error) throw error;
+      if (!data || data.length === 0) {
+        throw new Error("Update blocked (permission denied or row not found). Aap admin ho ya nahi check karein.");
+      }
+      return data[0];
     },
-    onSuccess: () => {
+    onSuccess: (row) => {
       queryClient.invalidateQueries({ queryKey: ["provider-accounts"] });
+      toast.success(`Status ${row.is_active ? "enabled" : "disabled"}`);
+    },
+    onError: (err: any) => {
+      toast.error(err?.message || "Toggle failed");
     },
   });
 
