@@ -144,14 +144,15 @@ serve(async (req) => {
     const providerOptions: ProviderOption[] = []
 
     if (mappings && mappings.length > 0) {
-      // Sort by priority, then LRU as tiebreaker
+      // STRICT priority: mapping sort_order → account.priority → deterministic name tiebreak. No LRU shuffle.
       const sorted = [...mappings].sort((a, b) => {
-        const ap = a.sort_order || 0
-        const bp = b.sort_order || 0
-        if (ap !== bp) return ap - bp
-        const at = a.provider_account?.last_used_at ? new Date(a.provider_account.last_used_at).getTime() : 0
-        const bt = b.provider_account?.last_used_at ? new Date(b.provider_account.last_used_at).getTime() : 0
-        return at - bt
+        const aSort = Number(a.sort_order ?? 999)
+        const bSort = Number(b.sort_order ?? 999)
+        if (aSort !== bSort) return aSort - bSort
+        const aPri = Number(a.provider_account?.priority ?? 999)
+        const bPri = Number(b.provider_account?.priority ?? 999)
+        if (aPri !== bPri) return aPri - bPri
+        return String(a.provider_account?.name ?? '').localeCompare(String(b.provider_account?.name ?? ''))
       })
 
       for (const m of sorted) {
