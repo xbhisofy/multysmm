@@ -1161,7 +1161,9 @@ function ProviderMappingDialog({
       newMappings[account.id] = {
         checked: !!existing,
         serviceId: existing?.provider_service_id || '',
-        sortOrder: existing?.sort_order || account.priority,
+        // Always mirror the provider account's priority — bundle mapping
+        // must never diverge from "Add a Provider" page.
+        sortOrder: account.priority,
       };
     });
     setMappings(newMappings);
