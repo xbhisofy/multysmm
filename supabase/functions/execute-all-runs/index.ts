@@ -1239,6 +1239,12 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
       const sameLinkNormalized = sameLink
       const currentTypeNormalized = (currentType || '').toLowerCase().trim()
       const localExecutionKey = `${sameLinkNormalized}|${currentTypeNormalized}`
+      const { count: configuredMappingCount } = await supabase
+        .from('service_provider_mapping')
+        .select('id', { count: 'exact', head: true })
+        .eq('service_id', currentServiceId)
+        .eq('is_active', true)
+      const configuredMappingCountForService = configuredMappingCount || 0
       
       // Build busy account list
       const busyAccountIds: string[] = []
@@ -1293,8 +1299,10 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             const wasCancelled =
               ps.includes('cancel') || ps.includes('refund') ||
               em.includes('cancel') || em.includes('refund')
-            if (wasCancelled && pr.id !== run.id && pr.provider_account_id && !busyAccountIds.includes(pr.provider_account_id)) {
+            if (wasCancelled && configuredMappingCountForService > 1 && pr.id !== run.id && pr.provider_account_id && !busyAccountIds.includes(pr.provider_account_id)) {
               busyAccountIds.push(pr.provider_account_id)
+            } else if (wasCancelled && configuredMappingCountForService <= 1) {
+              console.log(`↩️ Keeping only mapped provider available for service ${currentServiceId}; prior cancellation will not permanently block retries`)
             }
           }
         }
@@ -1410,14 +1418,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
       // fall back to services.provider_id (that would silently route to an
       // unchecked / unlinked provider). This was the routing bug.
       let defaultProvider: ProviderAccount | null = null
-      const hasConfiguredMappings = await (async () => {
-        const { count } = await supabase
-          .from('service_provider_mapping')
-          .select('id', { count: 'exact', head: true })
-          .eq('service_id', item.service.id)
-          .eq('is_active', true)
-        return (count || 0) > 0
-      })()
+      const hasConfiguredMappings = configuredMappingCountForService > 0
 
       if (!hasConfiguredMappings && item.service.provider_id) {
         const { data: acct } = await supabase
