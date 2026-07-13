@@ -1489,9 +1489,17 @@ function ProviderMappingDialog({
                         />
                       </TableCell>
                       <TableCell>
-                        <div className="w-14 h-8 flex items-center justify-center rounded-md border bg-muted/50 text-xs font-medium">
-                          #{account.priority}
-                        </div>
+                        <Input
+                          type="number"
+                          min={1}
+                          max={100}
+                          value={mapping.sortOrder}
+                          onChange={(e) =>
+                            handleMappingChange(account.id, 'sortOrder', parseInt(e.target.value) || 1)
+                          }
+                          className="h-8 w-16 text-xs"
+                          disabled={!mapping.checked}
+                        />
                       </TableCell>
                     </TableRow>
                   );
