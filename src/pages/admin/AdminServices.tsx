@@ -139,24 +139,16 @@ export default function AdminServices() {
 
   const deleteServiceMutation = useMutation({
     mutationFn: async (id: string) => {
-      // Detach from any places that reference this service (FK constraints)
-      const { error: bundleError } = await supabase
-        .from('bundle_items')
-        .update({ service_id: null })
-        .eq('service_id', id);
-      if (bundleError) throw bundleError;
+      const [bundleRefs, engagementRefs, orderRefs] = await Promise.all([
+        supabase.from('bundle_items').select('id', { count: 'exact', head: true }).eq('service_id', id),
+        supabase.from('engagement_order_items').select('id', { count: 'exact', head: true }).eq('service_id', id),
+        supabase.from('orders').select('id', { count: 'exact', head: true }).eq('service_id', id),
+      ]);
 
-      const { error: engagementItemsError } = await supabase
-        .from('engagement_order_items')
-        .update({ service_id: null })
-        .eq('service_id', id);
-      if (engagementItemsError) throw engagementItemsError;
-
-      const { error: ordersError } = await supabase
-        .from('orders')
-        .update({ service_id: null })
-        .eq('service_id', id);
-      if (ordersError) throw ordersError;
+      const refs = (bundleRefs.count || 0) + (engagementRefs.count || 0) + (orderRefs.count || 0);
+      if (refs > 0) {
+        throw new Error('This service is used by bundles or orders. Disable it or edit provider mapping instead of deleting, to prevent bundle/order reset.');
+      }
 
       // Delete provider mappings for this service
       const { error: mappingsError } = await supabase
@@ -376,7 +368,7 @@ export default function AdminServices() {
                             size="sm"
                             className="text-destructive hover:text-destructive"
                             onClick={() => {
-                              if (confirm('Are you sure you want to delete this service?')) {
+                              if (confirm('Delete only if this service is not used by any bundle/order. If used, deletion will be blocked. Continue?')) {
                                 deleteServiceMutation.mutate(service.id);
                               }
                             }}
