@@ -691,13 +691,6 @@ export default function AdminUsers() {
               className="pl-10 h-10 rounded-xl"
             />
           </div>
-          <div className="flex flex-wrap gap-2 md:ml-auto">
-            <UserSortSelect value={sortKey} onChange={setSortKey} />
-            <UserFiltersSheet value={filters} onChange={setFilters} />
-            <Button variant="outline" className="h-10 rounded-xl gap-2" onClick={handleExport} disabled={!filteredUsers.length}>
-              <Download className="h-4 w-4" /> CSV
-            </Button>
-          </div>
         </div>
 
         <p className="text-xs text-muted-foreground -mt-2">
