@@ -391,9 +391,10 @@ serve(async (req) => {
         })
       }
 
-      // Filter to only selected services
+      // Filter to only selected services (normalize both sides to string)
+      const selectedIdSet = new Set((service_ids as any[]).map((id) => String(id).trim()))
       const selectedServices = servicesData.filter(s =>
-        service_ids.includes(s.service.toString())
+        selectedIdSet.has(String(s.service).trim())
       )
 
       if (selectedServices.length === 0) {
