@@ -1457,13 +1457,19 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
       const zeroDeliveryRetry = isRetry && isZeroDeliveryProviderFailure(run)
       const accountsToTry: ProviderCandidate[] = [...availableAccounts]
       accountsToTry.sort((a, b) => {
+        // Only demote when this is an explicit zero-delivery-provider retry
+        // (health signal), NEVER on generic "recently used" — that's LRU.
         const aUnhealthy = zeroDeliveryRetry && providerNameLooksUnhealthy(a.account.name) ? 1 : 0
         const bUnhealthy = zeroDeliveryRetry && providerNameLooksUnhealthy(b.account.name) ? 1 : 0
         if (aUnhealthy !== bUnhealthy) return aUnhealthy - bUnhealthy
-        const aRecent = recentCompletedAccountIds.has(a.account.id) ? 1 : 0
-        const bRecent = recentCompletedAccountIds.has(b.account.id) ? 1 : 0
-        if (aRecent !== bRecent) return aRecent - bRecent
-        return (a.sortOrder || 999) - (b.sortOrder || 999)
+        // STRICT priority: mapping sort_order → account.priority → name
+        const aSort = Number(a.sortOrder ?? 999)
+        const bSort = Number(b.sortOrder ?? 999)
+        if (aSort !== bSort) return aSort - bSort
+        const aPri = Number(a.account?.priority ?? 999)
+        const bPri = Number(b.account?.priority ?? 999)
+        if (aPri !== bPri) return aPri - bPri
+        return String(a.account?.name ?? '').localeCompare(String(b.account?.name ?? ''))
       })
       if (defaultProvider && !accountsToTry.some(a => a.account.id === defaultProvider!.id)) {
         accountsToTry.push({
