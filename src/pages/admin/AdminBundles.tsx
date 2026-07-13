@@ -1155,14 +1155,14 @@ function ProviderMappingDialog({
   // Only show SAVED mappings from DB — no auto-fill
   const initMappings = () => {
     const newMappings: Record<string, { checked: boolean; serviceId: string; sortOrder: number }> = {};
-    providerAccounts.forEach(account => {
+    providerAccounts.forEach((account, idx) => {
       const existing = existingMappings?.find(m => m.provider_account_id === account.id);
       newMappings[account.id] = {
         checked: !!existing,
         serviceId: existing?.provider_service_id || '',
-        // Always mirror the provider account's priority — bundle mapping
-        // must never diverge from "Add a Provider" page.
-        sortOrder: account.priority,
+        // Per-service priority (source of truth = service_provider_mapping.sort_order).
+        // Fallback to index+1 for new/unsaved rows so each account gets a distinct default.
+        sortOrder: existing?.sort_order ?? (idx + 1),
       };
     });
     setMappings(newMappings);
