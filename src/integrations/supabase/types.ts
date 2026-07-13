@@ -923,6 +923,11 @@ export type Database = {
           last_balance_error: string | null
           last_low_balance_alert_at: string | null
           last_used_at: string | null
+          last_verified_at: string | null
+          last_verified_balance: number | null
+          last_verified_currency: string | null
+          last_verified_error: string | null
+          last_verified_status: string | null
           low_balance_threshold: number
           name: string
           priority: number | null
@@ -942,6 +947,11 @@ export type Database = {
           last_balance_error?: string | null
           last_low_balance_alert_at?: string | null
           last_used_at?: string | null
+          last_verified_at?: string | null
+          last_verified_balance?: number | null
+          last_verified_currency?: string | null
+          last_verified_error?: string | null
+          last_verified_status?: string | null
           low_balance_threshold?: number
           name: string
           priority?: number | null
@@ -961,6 +971,11 @@ export type Database = {
           last_balance_error?: string | null
           last_low_balance_alert_at?: string | null
           last_used_at?: string | null
+          last_verified_at?: string | null
+          last_verified_balance?: number | null
+          last_verified_currency?: string | null
+          last_verified_error?: string | null
+          last_verified_status?: string | null
           low_balance_threshold?: number
           name?: string
           priority?: number | null

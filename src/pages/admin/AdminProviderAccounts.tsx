@@ -28,6 +28,11 @@ interface ProviderAccount {
   created_at: string;
   updated_at: string;
   delivery_multiplier?: number | null;
+  last_verified_at?: string | null;
+  last_verified_status?: 'valid' | 'invalid' | null;
+  last_verified_balance?: number | null;
+  last_verified_currency?: string | null;
+  last_verified_error?: string | null;
 }
 
 interface Provider {
@@ -59,6 +64,8 @@ export default function AdminProviderAccounts() {
       }
     } catch (e: any) {
       toast.error(`❌ ${e?.message || "Test failed"}`, { id: tid });
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ["provider-accounts"] });
     }
   };
   
@@ -445,6 +452,7 @@ export default function AdminProviderAccounts() {
                         <TableHead>Name</TableHead>
                         <TableHead>API Key</TableHead>
                         <TableHead>Priority</TableHead>
+                        <TableHead>Verified</TableHead>
                         <TableHead>Last Used</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
@@ -461,6 +469,33 @@ export default function AdminProviderAccounts() {
                           </TableCell>
                           <TableCell>
                             <Badge variant="outline">#{account.priority}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col gap-1">
+                              {account.last_verified_status === 'valid' ? (
+                                <Badge className="w-fit bg-green-500/15 text-green-700 dark:text-green-400 border border-green-500/30 hover:bg-green-500/20">
+                                  ✓ Valid{account.last_verified_balance != null ? ` · ${account.last_verified_balance}${account.last_verified_currency ? ' ' + account.last_verified_currency : ''}` : ''}
+                                </Badge>
+                              ) : account.last_verified_status === 'invalid' ? (
+                                <Badge
+                                  variant="destructive"
+                                  className="w-fit"
+                                  title={account.last_verified_error || 'Invalid key'}
+                                >
+                                  ✕ Invalid
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className="w-fit text-muted-foreground">
+                                  ? Unknown
+                                </Badge>
+                              )}
+                              {account.last_verified_at && (
+                                <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                                  <Clock className="h-3 w-3" />
+                                  {formatDistanceToNow(new Date(account.last_verified_at), { addSuffix: true })}
+                                </span>
+                              )}
+                            </div>
                           </TableCell>
                           <TableCell>
                             {account.last_used_at ? (

@@ -54,13 +54,36 @@ Deno.serve(async (req) => {
     const ok = resp.ok && parsed && !providerError &&
       (parsed.balance !== undefined || parsed.funds !== undefined);
 
+    const balance = parsed?.balance ?? parsed?.funds ?? null;
+    const currency = parsed?.currency ?? null;
+    const errMsg = ok ? null : (providerError || (parsed ? 'Unexpected response' : text.slice(0, 200)));
+
+    if (account_id) {
+      try {
+        const supabase = createClient(
+          Deno.env.get('SUPABASE_URL')!,
+          Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+        );
+        await supabase
+          .from('provider_accounts')
+          .update({
+            last_verified_at: new Date().toISOString(),
+            last_verified_status: ok ? 'valid' : 'invalid',
+            last_verified_balance: ok && balance !== null ? Number(balance) : null,
+            last_verified_currency: ok ? currency : null,
+            last_verified_error: ok ? null : String(errMsg ?? '').slice(0, 500),
+          })
+          .eq('id', account_id);
+      } catch (_) { /* non-fatal */ }
+    }
+
     return new Response(JSON.stringify({
       ok,
       status: resp.status,
       latency_ms,
-      balance: parsed?.balance ?? parsed?.funds ?? null,
-      currency: parsed?.currency ?? null,
-      error: ok ? null : (providerError || (parsed ? 'Unexpected response' : text.slice(0, 200))),
+      balance,
+      currency,
+      error: errMsg,
       raw: parsed ?? text.slice(0, 500),
     }), {
       status: 200,
