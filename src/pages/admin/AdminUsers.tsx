@@ -489,7 +489,7 @@ export default function AdminUsers() {
     return (u.orderCounts?.singleActive || 0) + (u.orderCounts?.engagementActive || 0);
   };
 
-  // Tab filter first, then advanced filters + search + sort
+  // Tab filter + search only
   const filteredUsers = useMemo(() => {
     let base: UserProfile[] = users || [];
     switch (activeTab) {
@@ -506,16 +506,13 @@ export default function AdminUsers() {
         base = base.filter((u) => !!u.is_banned);
         break;
     }
-    const filtered = applyFilters(base as unknown as Row[], filters, searchQuery);
-    const sorted = applySort(filtered, sortKey);
-    return sorted as unknown as UserProfile[];
-  }, [users, activeTab, filters, searchQuery, sortKey]);
-
-  const handleExport = () => {
-    const csv = rowsToCsv(filteredUsers as unknown as Row[]);
-    downloadCsv(`users-${new Date().toISOString().slice(0,10)}.csv`, csv);
-    toast.success(`Exported ${filteredUsers.length} users`);
-  };
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return base;
+    return base.filter((u) => {
+      const hay = [u.email, u.full_name || '', u.user_id, u.id, u.telegram_username || ''].join(' ').toLowerCase();
+      return hay.includes(q);
+    });
+  }, [users, activeTab, searchQuery]);
 
   const selectedBalanceInr = selectedUser ? (selectedUser.wallet?.balance || 0) * INR_RATE : 0;
   const parsedBalanceAmount = parseFloat(balanceAmount || '0') || 0;
