@@ -38,8 +38,6 @@ import {
   ShieldOff,
   AlertTriangle,
   Download,
-  ArrowDownCircle,
-  LogIn,
 } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
