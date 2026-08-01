@@ -1,6 +1,6 @@
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 
-const FALLBACK_RETURN_URL = 'https://multysmm.com/wallet'
+const FALLBACK_RETURN_URL = 'https://multysmm.online/wallet'
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
@@ -46,6 +46,8 @@ function safeWalletUrl(value: string | null) {
     const url = new URL(value || FALLBACK_RETURN_URL)
     const host = url.hostname.toLowerCase()
     const allowedHost =
+      host === 'multysmm.online' ||
+      host === 'www.multysmm.online' ||
       host.endsWith('.lovable.app') ||
       host === 'lovable.app' ||
       host === 'localhost' ||
