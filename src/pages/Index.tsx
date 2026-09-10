@@ -288,16 +288,20 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* blue rocket tile */}
-              <div className="rounded-[2rem] p-7 flex flex-col justify-between text-white transition-all hover:-translate-y-1"
+              {/* blue rocket strip */}
+              <div className="md:col-span-4 md:row-span-1 rounded-[2rem] p-7 flex flex-col sm:flex-row items-start sm:items-center gap-5 text-white transition-all hover:-translate-y-1"
                 style={{ background: C.blue, boxShadow: '0 20px 44px rgba(37,99,235,.30)' }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,.22)' }}>
-                  <Rocket className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'rgba(255,255,255,.22)' }}>
+                  <Rocket className="w-6 h-6" />
                 </div>
-                <div>
-                  <h3 className="text-[20px] font-extrabold mb-1" style={{ fontFamily: C.display }}>Instant Start</h3>
-                  <p className="text-[12.5px] text-white/85">Orders begin within 60 seconds — no queues.</p>
+                <div className="flex-1">
+                  <h3 className="text-[21px] font-extrabold mb-1" style={{ fontFamily: C.display }}>Instant Start</h3>
+                  <p className="text-[13px] text-white/85">Orders begin within 60 seconds — no queues, no waiting rooms.</p>
                 </div>
+                <Link to="/auth" className="h-11 px-6 rounded-full text-[13px] font-extrabold inline-flex items-center gap-2 shrink-0"
+                  style={{ background: '#FFFFFF', color: C.blue }}>
+                  Start now <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             </div>
 
