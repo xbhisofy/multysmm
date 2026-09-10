@@ -30,7 +30,7 @@ const TRI = [C.blue, C.magenta, C.lime];
 const TRI_SOFT = [C.blueSoft, C.magentaSoft, C.limeSoft];
 
 const gradientText = {
-  background: GRADIENT,
+  background: 'linear-gradient(100deg, #2563EB 0%, #D946EF 100%)',
   WebkitBackgroundClip: 'text',
   backgroundClip: 'text',
   WebkitTextFillColor: 'transparent',
