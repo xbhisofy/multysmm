@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   ArrowRight, Sparkles, Brain, Zap, Wand2, Layers, Shield, Shuffle,
   CheckCircle2, Instagram, Youtube, Music2, Twitter, Users,
-  Package, Target, Activity, BarChart3, Rocket, Globe2, Lock,
+  Package, Target, Activity, BarChart3, Rocket, Globe2, Lock, Menu, X,
 } from 'lucide-react';
 import { PageMeta } from '@/components/seo/PageMeta';
 
@@ -44,6 +44,7 @@ const Eyebrow: React.FC<{ children: React.ReactNode; color?: string }> = ({ chil
 
 const Index = () => {
   const [prompt, setPrompt] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden" style={{ background: C.bg, color: C.ink, fontFamily: C.sans }}>
@@ -65,28 +66,52 @@ const Index = () => {
       </div>
 
       {/* ═══ NAV ═══ */}
-      <nav className="sticky top-4 z-50 w-full px-3 sm:px-4">
-        <div className="max-w-6xl mx-auto rounded-full flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6"
-          style={{ background: 'rgba(255,255,255,.88)', backdropFilter: 'blur(20px) saturate(180%)', border: `1px solid ${C.line}`, boxShadow: '0 12px 34px rgba(37,99,235,.10)' }}>
-          <Link to="/" className="flex items-center">
-            <img src="/logo.png" alt="MultySMM" className="h-12 sm:h-14 w-auto object-contain" />
-          </Link>
-          <div className="hidden md:flex items-center gap-8">
-            {[['Features', '#features'], ['How it works', '#how'], ['Why us', '#why'], ['FAQ', '#faq']].map(([t, h]) => (
-              <a key={t} href={h} className="text-[13.5px] font-semibold transition-colors hover:text-[#2563EB]" style={{ color: C.ink2 }}>{t}</a>
-            ))}
-          </div>
-          <div className="flex items-center gap-2">
-            <Link to="/auth" className="hidden sm:inline-flex h-9 px-3 items-center text-[13.5px] font-bold" style={{ color: C.ink }}>
-              Log in
+      <nav className="sticky top-2 sm:top-4 z-50 w-full px-3 sm:px-4">
+        <div className="max-w-6xl mx-auto rounded-3xl sm:rounded-full"
+          style={{ background: 'rgba(255,255,255,.90)', backdropFilter: 'blur(20px) saturate(180%)', border: `1px solid ${C.line}`, boxShadow: '0 12px 34px rgba(37,99,235,.10)' }}>
+          <div className="flex items-center justify-between h-14 sm:h-16 px-3 sm:px-6">
+            <Link to="/" className="flex items-center shrink-0">
+              <img src="/logo.png" alt="MultySMM" className="h-9 sm:h-12 lg:h-14 w-auto object-contain" />
             </Link>
-            <Link to="/auth" className="h-10 px-5 rounded-full text-[13px] font-extrabold text-white inline-flex items-center gap-1.5 transition-transform hover:scale-105"
-              style={{ background: GRADIENT, boxShadow: '0 12px 26px rgba(217,70,239,.35)' }}>
-              Get Started <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <div className="hidden md:flex items-center gap-6 lg:gap-8">
+              {[['Features', '#features'], ['How it works', '#how'], ['Why us', '#why'], ['FAQ', '#faq']].map(([t, h]) => (
+                <a key={t} href={h} className="text-[13.5px] font-semibold whitespace-nowrap transition-colors hover:text-[#2563EB]" style={{ color: C.ink2 }}>{t}</a>
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <Link to="/auth" className="hidden sm:inline-flex h-9 px-3 items-center text-[13.5px] font-bold" style={{ color: C.ink }}>
+                Log in
+              </Link>
+              <Link to="/auth" className="h-9 sm:h-10 px-4 sm:px-5 rounded-full text-[12px] sm:text-[13px] font-extrabold text-white inline-flex items-center gap-1.5 transition-transform hover:scale-105 whitespace-nowrap"
+                style={{ background: GRADIENT, boxShadow: '0 12px 26px rgba(217,70,239,.35)' }}>
+                Get Started <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <button
+                onClick={() => setMenuOpen((v) => !v)}
+                aria-label="Toggle menu"
+                aria-expanded={menuOpen}
+                className="md:hidden w-9 h-9 rounded-xl inline-flex items-center justify-center"
+                style={{ background: C.blueSoft, color: C.blue, border: `1px solid ${C.line}` }}>
+                {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
+
+          {menuOpen && (
+            <div className="md:hidden px-3 pb-3 flex flex-col gap-1" style={{ borderTop: `1px solid ${C.line}` }}>
+              {[['Features', '#features'], ['How it works', '#how'], ['Why us', '#why'], ['FAQ', '#faq']].map(([t, h]) => (
+                <a key={t} href={h} onClick={() => setMenuOpen(false)}
+                  className="mt-1 px-3 py-2.5 rounded-xl text-[14px] font-bold"
+                  style={{ color: C.ink, background: '#F8FAFF' }}>{t}</a>
+              ))}
+              <Link to="/auth" onClick={() => setMenuOpen(false)} className="mt-1 px-3 py-2.5 rounded-xl text-[14px] font-bold" style={{ color: C.blue, background: C.blueSoft }}>
+                Log in
+              </Link>
+            </div>
+          )}
         </div>
       </nav>
+
 
       <main>
         {/* ═══ HERO ═══ */}
