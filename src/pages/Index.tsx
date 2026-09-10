@@ -57,11 +57,11 @@ const Index = () => {
 
       {/* colourful ambient glow */}
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute -top-40 left-[8%] w-[720px] h-[560px] rounded-full"
+        <div className="absolute -top-40 left-[8%] w-[70vw] max-w-[720px] h-[560px] rounded-full"
           style={{ background: 'radial-gradient(closest-side, rgba(37,99,235,.22), transparent 70%)', filter: 'blur(50px)' }} />
-        <div className="absolute -top-24 right-[6%] w-[620px] h-[520px] rounded-full"
+        <div className="absolute -top-24 right-[6%] w-[65vw] max-w-[620px] h-[520px] rounded-full"
           style={{ background: 'radial-gradient(closest-side, rgba(217,70,239,.22), transparent 70%)', filter: 'blur(50px)' }} />
-        <div className="absolute top-[58%] left-1/2 -translate-x-1/2 w-[700px] h-[480px] rounded-full"
+        <div className="absolute top-[58%] left-1/2 -translate-x-1/2 w-[80vw] max-w-[700px] h-[480px] rounded-full"
           style={{ background: 'radial-gradient(closest-side, rgba(132,204,22,.20), transparent 70%)', filter: 'blur(60px)' }} />
       </div>
 
@@ -125,7 +125,7 @@ const Index = () => {
               </span>
             </div>
 
-            <h1 className="text-[2rem] sm:text-[3rem] lg:text-[4rem] font-extrabold leading-[1.05] tracking-[-0.03em] mb-7"
+            <h1 className="text-[1.75rem] xs:text-[2rem] sm:text-[3rem] lg:text-[4rem] break-words font-extrabold leading-[1.05] tracking-[-0.03em] mb-7"
               style={{ fontFamily: C.display }}>
               Explode your social presence with{' '}
               <span style={gradientText}>AI Precision</span>
@@ -294,7 +294,7 @@ const Index = () => {
                 <div aria-hidden className="absolute bottom-0 left-0 right-0 h-1" style={{ background: GRADIENT }} />
                 <div className="md:flex-1 relative">
                   <h3 className="text-white text-[24px] sm:text-[28px] font-extrabold mb-4" style={{ fontFamily: C.display }}>Why choose MultySMM?</h3>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.10)' }}>
                       <p className="font-extrabold text-[16px] flex items-center gap-2" style={{ color: C.lime }}><Globe2 className="w-4 h-4" /> Global</p>
                       <p className="text-[12px] mt-1" style={{ color: C.muted }}>120+ countries targeted.</p>
