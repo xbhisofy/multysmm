@@ -28,12 +28,12 @@ export default function ContactUs() {
           <div className="grid sm:grid-cols-2 gap-4 mb-10">
             <div className="rounded-xl border border-border p-5 bg-card">
               <div className="flex items-center gap-3 mb-2">
-                <div className="h-10 w-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                  <Mail className="h-5 w-5 text-orange-500" />
+                <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                  <Mail className="h-5 w-5 text-blue-500" />
                 </div>
                 <h3 className="font-semibold">Email Support</h3>
               </div>
-              <a href="mailto:support@multysmm.com" className="text-sm text-orange-500 hover:underline break-all">
+              <a href="mailto:support@multysmm.com" className="text-sm text-blue-500 hover:underline break-all">
                 support@multysmm.com
               </a>
               <p className="text-xs text-muted-foreground mt-2">For all general queries, billing & technical support.</p>
@@ -68,8 +68,8 @@ export default function ContactUs() {
 
             <div className="rounded-xl border border-border p-5 bg-card">
               <div className="flex items-center gap-3 mb-2">
-                <div className="h-10 w-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                  <Clock className="h-5 w-5 text-purple-500" />
+                <div className="h-10 w-10 rounded-lg bg-fuchsia-500/10 flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-fuchsia-500" />
                 </div>
                 <h3 className="font-semibold">Working Hours</h3>
               </div>
@@ -81,8 +81,8 @@ export default function ContactUs() {
 
           <div className="rounded-xl border border-border p-6 bg-card">
             <div className="flex items-start gap-3">
-              <div className="h-10 w-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0">
-                <MapPin className="h-5 w-5 text-orange-500" />
+              <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                <MapPin className="h-5 w-5 text-blue-500" />
               </div>
               <div>
                 <h3 className="font-semibold mb-2">Registered Business Address</h3>
@@ -98,7 +98,7 @@ export default function ContactUs() {
 
           <div className="mt-10 text-sm text-muted-foreground">
             <p>
-              For grievances, please email <a className="text-orange-500 hover:underline" href="mailto:support@multysmm.com">support@multysmm.com</a> with subject line "Grievance" — our grievance officer will respond within 48 hours.
+              For grievances, please email <a className="text-blue-500 hover:underline" href="mailto:support@multysmm.com">support@multysmm.com</a> with subject line "Grievance" — our grievance officer will respond within 48 hours.
             </p>
           </div>
         </div>

@@ -610,7 +610,7 @@ export function EngagementTypeCard({
                     <span className={cn(
                       "text-sm font-medium px-2 py-0.5 rounded-lg",
                       variancePercent <= 15 ? "text-red-400 bg-red-500/20"
-                        : variancePercent <= 25 ? "text-amber-400 bg-amber-500/20"
+                        : variancePercent <= 25 ? "text-blue-400 bg-blue-500/20"
                           : variancePercent <= 35 ? "text-emerald-400 bg-emerald-500/20"
                             : "text-green-400 bg-green-400/20"
                     )}>±{variancePercent}%</span>
@@ -632,7 +632,7 @@ export function EngagementTypeCard({
                         variancePercent <= 15
                           ? "from-red-600 to-red-500"
                           : variancePercent <= 25
-                            ? "from-amber-600 to-amber-500"
+                            ? "from-blue-600 to-blue-500"
                             : variancePercent <= 35
                               ? "from-emerald-600 to-emerald-500"
                               : "from-green-500 to-green-400"
@@ -642,7 +642,7 @@ export function EngagementTypeCard({
                         variancePercent <= 15
                           ? "border-red-500 shadow-red-500/30"
                           : variancePercent <= 25
-                            ? "border-amber-500 shadow-amber-500/30"
+                            ? "border-blue-500 shadow-blue-500/30"
                             : variancePercent <= 35
                               ? "border-emerald-500 shadow-emerald-500/30"
                               : "border-green-400 shadow-green-400/30"
@@ -689,7 +689,7 @@ export function EngagementTypeCard({
                           variancePercent <= 15
                             ? "bg-red-500"
                             : variancePercent <= 25
-                              ? "bg-amber-500"
+                              ? "bg-blue-500"
                               : variancePercent <= 35
                                 ? "bg-emerald-500"
                                 : "bg-green-400"

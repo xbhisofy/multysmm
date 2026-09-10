@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { Loader2, Zap, IndianRupee, ArrowUpRight } from 'lucide-react';
 
 const QUICK = [100, 500, 1000, 2000, 5000];
-const ACCENT = '#7C3AED';
+const ACCENT = '#C026D3';
 
 export default function ZapUpiDepositCard() {
   const [amount, setAmount] = useState<string>('100');

@@ -298,22 +298,22 @@ export default function Admin() {
           </Link>
 
           <Link to="/admin/topup-plan">
-            <Card className="glass-card h-full hover:border-orange-500/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all cursor-pointer group border-2 border-orange-500/30">
+            <Card className="glass-card h-full hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10 transition-all cursor-pointer group border-2 border-blue-500/30">
               <CardContent className="p-5">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/30 to-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <CreditCard className="h-6 w-6 text-orange-500" />
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/30 to-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <CreditCard className="h-6 w-6 text-blue-500" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold group-hover:text-orange-500 transition-colors">
+                      <h3 className="font-semibold group-hover:text-blue-500 transition-colors">
                         Top-up Plan
                       </h3>
-                      <Badge className="text-[10px] h-4 px-1.5 bg-orange-500 text-white">NEW</Badge>
+                      <Badge className="text-[10px] h-4 px-1.5 bg-blue-500 text-white">NEW</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">Per-provider ₹ to add</p>
                   </div>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-orange-500 transition-colors" />
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-blue-500 transition-colors" />
                 </div>
               </CardContent>
             </Card>
@@ -343,22 +343,22 @@ export default function Admin() {
           </Link>
 
           <Link to="/admin/deposits">
-            <Card className="glass-card h-full hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/10 transition-all cursor-pointer group border-2 border-amber-500/30">
+            <Card className="glass-card h-full hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10 transition-all cursor-pointer group border-2 border-blue-500/30">
               <CardContent className="p-5">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/30 to-amber-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <CreditCard className="h-6 w-6 text-amber-500" />
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/30 to-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <CreditCard className="h-6 w-6 text-blue-500" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold group-hover:text-amber-500 transition-colors">
+                      <h3 className="font-semibold group-hover:text-blue-500 transition-colors">
                         Deposit Requests
                       </h3>
-                      <Badge className="text-[10px] h-4 px-1.5 bg-amber-500 text-amber-500-foreground">PENDING</Badge>
+                      <Badge className="text-[10px] h-4 px-1.5 bg-blue-500 text-blue-500-foreground">PENDING</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">Approve Razorpay payments</p>
                   </div>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-amber-500 transition-colors" />
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-blue-500 transition-colors" />
                 </div>
               </CardContent>
             </Card>
@@ -387,22 +387,22 @@ export default function Admin() {
           </Link>
 
           <Link to="/admin/popup-ad">
-            <Card className="glass-card h-full hover:border-orange-500/50 hover:shadow-lg hover:shadow-orange-500/10 transition-all cursor-pointer group border-2 border-orange-500/30">
+            <Card className="glass-card h-full hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10 transition-all cursor-pointer group border-2 border-blue-500/30">
               <CardContent className="p-5">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/30 to-red-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Megaphone className="h-6 w-6 text-orange-500" />
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/30 to-red-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Megaphone className="h-6 w-6 text-blue-500" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold group-hover:text-orange-500 transition-colors">
+                      <h3 className="font-semibold group-hover:text-blue-500 transition-colors">
                         Popup Ad
                       </h3>
-                      <Badge className="text-[10px] h-4 px-1.5 bg-orange-500 text-white">NEW</Badge>
+                      <Badge className="text-[10px] h-4 px-1.5 bg-blue-500 text-white">NEW</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">YouTube popup on engagement pages</p>
                   </div>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-orange-500 transition-colors" />
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-blue-500 transition-colors" />
                 </div>
               </CardContent>
             </Card>

@@ -64,7 +64,7 @@ function ScheduleStatus({ startsAt, endsAt }: { startsAt: string; endsAt: string
     return <p className="text-[11px] text-muted-foreground">No schedule set — popup is always available.</p>;
   }
   if (s && now < s) {
-    return <p className="text-[11px] text-amber-600 font-semibold">⏳ Scheduled — starts {new Date(s).toLocaleString()}</p>;
+    return <p className="text-[11px] text-blue-600 font-semibold">⏳ Scheduled — starts {new Date(s).toLocaleString()}</p>;
   }
   if (e && now > e) {
     return <p className="text-[11px] text-red-600 font-semibold">⛔ Expired on {new Date(e).toLocaleString()} — popup will not show.</p>;
@@ -205,9 +205,9 @@ export default function AdminPopupAd() {
   return (
     <DashboardLayout>
       <div className="space-y-6 px-2 sm:px-4 lg:px-6 pb-8">
-        <div className="glass-card p-6 bg-gradient-to-br from-red-500/10 via-transparent to-orange-500/10">
+        <div className="glass-card p-6 bg-gradient-to-br from-red-500/10 via-transparent to-blue-500/10">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-xl shadow-red-500/20">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-blue-500 flex items-center justify-center shadow-xl shadow-red-500/20">
               <Megaphone className="h-7 w-7 text-white" />
             </div>
             <div>
@@ -253,7 +253,7 @@ export default function AdminPopupAd() {
                       </a>
                     </p>
                   ) : (
-                    <p className="text-[11px] text-amber-600">Enter a valid YouTube link or ID</p>
+                    <p className="text-[11px] text-blue-600">Enter a valid YouTube link or ID</p>
                   )}
                 </div>
 
@@ -295,7 +295,7 @@ export default function AdminPopupAd() {
                         onClick={() => setVideoLayout(opt)}
                         className={`px-3 py-2 rounded-lg border text-xs font-semibold capitalize transition-colors ${
                           videoLayout === opt
-                            ? "bg-gradient-to-r from-red-500 to-orange-500 text-white border-transparent shadow"
+                            ? "bg-gradient-to-r from-red-500 to-blue-500 text-white border-transparent shadow"
                             : "bg-background hover:bg-muted"
                         }`}
                       >
@@ -321,7 +321,7 @@ export default function AdminPopupAd() {
                 {/* Schedule window */}
                 <div className="p-3 rounded-xl border bg-muted/30 space-y-3">
                   <div className="flex items-center gap-2">
-                    <CalendarClock className="w-4 h-4 text-orange-500" />
+                    <CalendarClock className="w-4 h-4 text-blue-500" />
                     <p className="text-sm font-semibold">Schedule (optional)</p>
                   </div>
                   <p className="text-[11px] text-muted-foreground -mt-1">
@@ -396,7 +396,7 @@ export default function AdminPopupAd() {
                     onClick={forceTrigger}
                     disabled={forcing || saving}
                     variant="destructive"
-                    className="flex-1 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
+                    className="flex-1 bg-gradient-to-r from-red-500 to-blue-500 hover:from-red-600 hover:to-blue-600"
                   >
                     {forcing ? (
                       <Loader2 className="w-4 h-4 animate-spin" />

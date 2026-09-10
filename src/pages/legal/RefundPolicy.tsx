@@ -15,10 +15,10 @@ export default function RefundPolicy() {
           <p className="text-muted-foreground mb-8">Last updated: February 22, 2026</p>
 
           {/* Warning box */}
-          <div className="flex gap-3 p-4 mb-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400/90">
+          <div className="flex gap-3 p-4 mb-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400/90">
             <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
             <p className="text-sm leading-relaxed">
-              <strong className="text-amber-400">Notice:</strong> MultySMM provides <strong>intangible digital services</strong>. Once services are delivered, they cannot be reversed or returned. Please read this policy carefully before making a purchase.
+              <strong className="text-blue-400">Notice:</strong> MultySMM provides <strong>intangible digital services</strong>. Once services are delivered, they cannot be reversed or returned. Please read this policy carefully before making a purchase.
             </p>
           </div>
 

@@ -227,7 +227,7 @@ export function MasterTimeline({ engagements }: MasterTimelineProps) {
                         </span>
                         {item.run.peakMultiplier > 1 && (
                           <Badge variant="secondary" className="text-[9px] px-1.5 py-0">
-                            <Flame className="h-2.5 w-2.5 mr-0.5 text-orange-500" />
+                            <Flame className="h-2.5 w-2.5 mr-0.5 text-blue-500" />
                             Peak
                           </Badge>
                         )}

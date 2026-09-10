@@ -38,7 +38,7 @@ const TYPE_COLORS: Record<string, string> = {
   shares: "#8b5cf6",     // Violet/Purple - Distinct cool tone
   followers: "#06b6d4",  // Cyan - Fresh, tech feel
   subscribers: "#ef4444", // Red - Strong contrast
-  watch_hours: "#f97316", // Orange - Warm, energetic
+  watch_hours: "#2563EB", // Orange - Warm, energetic
   retweets: "#14b8a6",   // Teal - Cool, calm
   reposts: "#a855f7",    // Purple - Rich, distinct
 };
@@ -312,7 +312,7 @@ export function OrderProgressChart({ runs, perType }: OrderProgressChartProps) {
           })}
           {stats && stats.startedRuns > 0 && (
             <div className="flex items-center gap-2 ml-4 pl-4 border-l border-border">
-              <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
               <span className="text-xs text-muted-foreground">{stats.startedRuns} in progress</span>
             </div>
           )}

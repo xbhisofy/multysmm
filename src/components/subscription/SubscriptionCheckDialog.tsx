@@ -118,13 +118,13 @@ export function SubscriptionCheckDialog({ open, onOpenChange }: SubscriptionChec
                     }`}
                   onClick={() => setSelectedPlan('lifetime')}
                 >
-                  <Badge className="absolute top-1.5 right-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-[10px] px-1.5 py-0.5">
+                  <Badge className="absolute top-1.5 right-1.5 bg-gradient-to-r from-blue-500 to-blue-500 text-white border-0 text-[10px] px-1.5 py-0.5">
                     <Sparkles className="h-2.5 w-2.5 mr-0.5" />
                     Best
                   </Badge>
                   <div className="flex items-center justify-between mb-2">
-                    <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center">
-                      <Crown className="h-4 w-4 text-amber-500" />
+                    <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                      <Crown className="h-4 w-4 text-blue-500" />
                     </div>
                     {selectedPlan === 'lifetime' && (
                       <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -137,11 +137,11 @@ export function SubscriptionCheckDialog({ open, onOpenChange }: SubscriptionChec
                   </div>
                   <ul className="space-y-1 text-[11px] font-bold text-muted-foreground/80">
                     <li className="flex items-center gap-1.5 transition-all hover:translate-x-1">
-                      <CheckCircle2 className="h-3 w-3 text-amber-500" />
+                      <CheckCircle2 className="h-3 w-3 text-blue-500" />
                       Lifetime Console Access
                     </li>
                     <li className="flex items-center gap-1.5">
-                      <CheckCircle2 className="h-3 w-3 text-amber-500" />
+                      <CheckCircle2 className="h-3 w-3 text-blue-500" />
                       All Future Updates
                     </li>
                   </ul>

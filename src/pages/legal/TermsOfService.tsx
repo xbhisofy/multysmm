@@ -15,10 +15,10 @@ export default function TermsOfService() {
           <p className="text-muted-foreground mb-8">Last updated: February 22, 2026</p>
 
           {/* Important notice box */}
-          <div className="flex gap-3 p-4 mb-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400/90">
+          <div className="flex gap-3 p-4 mb-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400/90">
             <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
             <p className="text-sm leading-relaxed">
-              <strong className="text-amber-400">Important:</strong> By accessing or using MultySMM, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you do not agree, you must immediately cease using the Platform.
+              <strong className="text-blue-400">Important:</strong> By accessing or using MultySMM, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you do not agree, you must immediately cease using the Platform.
             </p>
           </div>
 

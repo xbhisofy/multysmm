@@ -193,14 +193,14 @@ export function TypeHistoryCard({
   const isTerminal = isCancelled || itemStatus === 'completed' || itemStatus === 'failed';
 
   return (
-    <Card className={`three-d-card overflow-hidden ${isPaused ? 'border-amber-500/30' : ''} ${isCancelled ? 'border-destructive/30 opacity-60' : ''}`}>
+    <Card className={`three-d-card overflow-hidden ${isPaused ? 'border-blue-500/30' : ''} ${isCancelled ? 'border-destructive/30 opacity-60' : ''}`}>
       {/* Paused/Cancelled status banner */}
       {isPaused && (
-        <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border-b border-amber-500/20">
-          <div className="flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/20">
-            <Pause className="h-3.5 w-3.5 text-amber-400" />
+        <div className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border-b border-blue-500/20">
+          <div className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-500/20">
+            <Pause className="h-3.5 w-3.5 text-blue-400" />
           </div>
-          <span className="text-sm font-semibold text-amber-400">Paused</span>
+          <span className="text-sm font-semibold text-blue-400">Paused</span>
           <span className="text-xs text-muted-foreground">— Runs are being skipped until resumed</span>
           {itemId && (
             <Button variant="outline" size="sm" className="ml-auto h-7 text-xs text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10" onClick={() => onResume?.(itemId)}>
@@ -223,7 +223,7 @@ export function TypeHistoryCard({
       <div className="p-4 border-b border-border">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="flex items-start gap-3">
-            <div className={`flex items-center justify-center w-12 h-12 rounded-lg font-bold text-lg ${isPaused ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30' : isCancelled ? 'bg-white/5 text-white/20 border border-white/10' : 'bg-primary/20 text-primary border border-primary/30'
+            <div className={`flex items-center justify-center w-12 h-12 rounded-lg font-bold text-lg ${isPaused ? 'bg-blue-500/20 text-blue-500 border border-blue-500/30' : isCancelled ? 'bg-white/5 text-white/20 border border-white/10' : 'bg-primary/20 text-primary border border-primary/30'
               }`}>
               <Icon className="h-6 w-6 fill-current opacity-60" />
             </div>
@@ -259,7 +259,7 @@ export function TypeHistoryCard({
             {/* Per-type control buttons */}
             {itemId && !isTerminal && !isPaused && !isCancelled && (
               <div className="flex items-center gap-1.5">
-                <Button variant="outline" size="sm" className="h-8 text-amber-400 border-amber-500/30 hover:bg-amber-500/10" onClick={() => onPause?.(itemId)}>
+                <Button variant="outline" size="sm" className="h-8 text-blue-400 border-blue-500/30 hover:bg-blue-500/10" onClick={() => onPause?.(itemId)}>
                   <Pause className="h-3.5 w-3.5 mr-1" /> Pause
                 </Button>
                 <Button variant="outline" size="sm" className="h-8 text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => setShowCancelDialog(true)}>
@@ -268,7 +268,7 @@ export function TypeHistoryCard({
               </div>
             )}
 
-            <Badge className={`text-[10px] font-black uppercase tracking-widest border-none ${isPaused ? "bg-amber-500/20 text-amber-400" :
+            <Badge className={`text-[10px] font-black uppercase tracking-widest border-none ${isPaused ? "bg-blue-500/20 text-blue-400" :
               isCancelled ? "bg-destructive/20 text-destructive" :
                 itemStatus === 'completed' ? "bg-emerald-500/20 text-emerald-400" :
                   "bg-primary/20 text-primary"
@@ -389,9 +389,9 @@ export function TypeHistoryCard({
                 return (
                   <div
                     key={run.id}
-                    className={`p-4 transition-colors ${isActive ? 'bg-amber-500/10' :
+                    className={`p-4 transition-colors ${isActive ? 'bg-blue-500/10' :
                       isFailed ? 'bg-green-500/5' :
-                        isPending ? 'hover:bg-purple-500/5 cursor-pointer' :
+                        isPending ? 'hover:bg-fuchsia-500/5 cursor-pointer' :
                           isCompleted ? 'bg-emerald-500/5' : ''
                       }`}
                     onClick={() => isPending && onEditRun(run)}
@@ -399,9 +399,9 @@ export function TypeHistoryCard({
                     <div className="flex items-center gap-4">
                       {/* Run Number Circle - Colorful Gradient */}
                       <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm ${isCompleted ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white' :
-                        isActive ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white animate-pulse' :
+                        isActive ? 'bg-gradient-to-br from-blue-500 to-blue-500 text-white animate-pulse' :
                           isFailed ? 'bg-gradient-to-br from-green-500 to-red-500 text-white' :
-                            'bg-gradient-to-br from-purple-500 to-purple-500 text-white'
+                            'bg-gradient-to-br from-fuchsia-500 to-fuchsia-500 text-white'
                         }`}>
                         #{run.run_number}
                       </div>
@@ -411,10 +411,10 @@ export function TypeHistoryCard({
                         <div className="flex items-center gap-3 flex-wrap">
                           {/* Status Badge - Colorful */}
                           <Badge className={`text-xs ${isCompleted ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' :
-                            isActive ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' :
+                            isActive ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40' :
                               isFailed ? 'bg-green-500/20 text-green-400 border border-green-500/40' :
                                 isUpcoming ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40' :
-                                  'bg-purple-500/20 text-purple-400 border border-purple-500/40'
+                                  'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/40'
                             }`}>
                             {isCompleted && <CheckCircle2 className="h-3 w-3 mr-1" />}
                             {isActive && <Play className="h-3 w-3 mr-1" />}
@@ -448,13 +448,13 @@ export function TypeHistoryCard({
                         <div className="flex items-center gap-4 mt-1.5 text-sm text-muted-foreground flex-wrap">
                           <span className="flex items-center gap-1">
                             📅 Scheduled: {format(scheduledDate, 'MMM d, hh:mm a')}
-                            <span className={`ml-1 font-medium ${isPastDue ? 'text-orange-400' : 'text-teal-400'}`}>
+                            <span className={`ml-1 font-medium ${isPastDue ? 'text-blue-400' : 'text-teal-400'}`}>
                               ({isPastDue ? `${relativeTime} ago` : `in ${relativeTime}`})
                             </span>
                           </span>
 
                           {run.started_at && (
-                            <span className="flex items-center gap-1 text-amber-400">
+                            <span className="flex items-center gap-1 text-blue-400">
                               <Play className="h-3 w-3" />
                               Started: {format(new Date(run.started_at), 'hh:mm a')}
                             </span>
@@ -475,7 +475,7 @@ export function TypeHistoryCard({
                         {run.provider_account_name && !isAutoCompletedCancel && (
                           <div className="text-right">
                             <p className="text-xs text-muted-foreground uppercase">Provider</p>
-                            <p className="text-sm font-bold text-purple-400">{run.provider_account_name}</p>
+                            <p className="text-sm font-bold text-fuchsia-400">{run.provider_account_name}</p>
                           </div>
                         )}
 
