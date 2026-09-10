@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Menu } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 
-const GRADIENT = 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)';
+const GRADIENT = 'linear-gradient(120deg, #2563EB 0%, #D946EF 55%, #84CC16 100%)';
 
 export function MobileBottomNav() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -11,9 +11,9 @@ export function MobileBottomNav() {
     <>
       <header className="fixed top-0 left-0 right-0 z-40 lg:hidden">
         <div className="flex items-center justify-between h-14 px-4"
-          style={{ background: 'rgba(255,255,255,.92)', backdropFilter: 'blur(14px)', borderBottom: '1px solid #efeaf7' }}>
-          <button onClick={() => setSidebarOpen(true)} aria-label="Open navigation menu" className="flex items-center justify-center w-9 h-9 rounded-lg" style={{ border: '1px solid #efeaf7' }}>
-            <Menu className="w-4 h-4" style={{ color: '#6D28D9' }} />
+          style={{ background: 'rgba(255,255,255,.92)', backdropFilter: 'blur(14px)', borderBottom: '1px solid rgba(37,99,235,.12)', boxShadow: '0 6px 20px rgba(37,99,235,.08)' }}>
+          <button onClick={() => setSidebarOpen(true)} aria-label="Open navigation menu" className="flex items-center justify-center w-9 h-9 rounded-lg" style={{ border: '1px solid rgba(37,99,235,.15)', background: '#EFF6FF' }}>
+            <Menu className="w-4 h-4" style={{ color: '#2563EB' }} />
           </button>
           <div className="flex items-center">
             <img src="/logo.png" alt="MultySMM" className="h-8 w-auto object-contain" />
@@ -25,7 +25,7 @@ export function MobileBottomNav() {
       {sidebarOpen && (
         <>
           <div className="fixed inset-0 bg-black/30 z-50 lg:hidden backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-          <div className="fixed inset-y-0 left-0 z-50 w-[280px] lg:hidden shadow-xl">
+          <div className="fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[300px] lg:hidden shadow-2xl">
             <Sidebar onClose={() => setSidebarOpen(false)} />
           </div>
         </>
