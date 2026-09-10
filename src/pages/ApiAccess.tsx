@@ -77,9 +77,9 @@ export default function ApiAccess() {
         <DashboardLayout>
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 pb-10">
                 {/* Header */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-950/80 via-zinc-900 to-zinc-950 border border-white/[0.07] p-6 sm:p-8">
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-fuchsia-950/80 via-zinc-900 to-zinc-950 border border-white/[0.07] p-6 sm:p-8">
                     <div className="relative z-10 flex items-start gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-600 to-purple-900 flex items-center justify-center shadow-lg shrink-0">
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-fuchsia-600 to-fuchsia-900 flex items-center justify-center shadow-lg shrink-0">
                             <Code2 className="h-7 w-7 text-white" />
                         </div>
                         <div>
@@ -89,20 +89,20 @@ export default function ApiAccess() {
                             </p>
                         </div>
                     </div>
-                    <div className="absolute top-0 right-0 w-56 h-56 bg-purple-600/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4" />
+                    <div className="absolute top-0 right-0 w-56 h-56 bg-fuchsia-600/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4" />
                 </div>
 
                 {/* API Key Card */}
                 <div className="rounded-2xl bg-zinc-950 border border-white/[0.07] p-6 space-y-5">
                     <div className="flex items-center gap-2">
-                        <Key className="h-4 w-4 text-purple-400" />
+                        <Key className="h-4 w-4 text-fuchsia-400" />
                         <h2 className="text-base font-semibold text-white">Your API Key</h2>
                     </div>
 
                     {apiKey ? (
                         <div className="space-y-3">
                             <div className="flex items-center gap-2 p-4 rounded-xl bg-zinc-900 border border-white/[0.05] group">
-                                <code className="flex-1 text-[13px] font-mono text-purple-300 truncate select-all">
+                                <code className="flex-1 text-[13px] font-mono text-fuchsia-300 truncate select-all">
                                     {showKey ? apiKey : maskedKey}
                                 </code>
                                 <button
@@ -114,7 +114,7 @@ export default function ApiAccess() {
                                 </button>
                                 <button
                                     onClick={() => handleCopy(apiKey)}
-                                    className="shrink-0 text-zinc-500 hover:text-purple-400 transition-colors p-1.5 rounded-lg hover:bg-purple-500/10"
+                                    className="shrink-0 text-zinc-500 hover:text-fuchsia-400 transition-colors p-1.5 rounded-lg hover:bg-fuchsia-500/10"
                                     title="Copy"
                                 >
                                     {copied ? <CheckCircle2 className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
@@ -122,7 +122,7 @@ export default function ApiAccess() {
                             </div>
 
                             <div className="flex items-center gap-2 text-xs text-zinc-500 px-1">
-                                <Shield className="h-3.5 w-3.5 text-amber-500/80" />
+                                <Shield className="h-3.5 w-3.5 text-blue-500/80" />
                                 <span>Yeh key secret rakhein. Kisi ke saath share mat karein.</span>
                             </div>
 
@@ -153,7 +153,7 @@ export default function ApiAccess() {
                             <Button
                                 onClick={handleGenerateKey}
                                 disabled={isGenerating}
-                                className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-600/20"
+                                className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white shadow-lg shadow-fuchsia-600/20"
                             >
                                 {isGenerating ? (
                                     <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
@@ -191,10 +191,10 @@ export default function ApiAccess() {
                     </div>
 
                     {/* Notice */}
-                    <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
-                        <AlertCircle className="h-4 w-4 text-amber-400 mt-0.5 shrink-0" />
-                        <p className="text-xs text-amber-200/70">
-                            Saare requests ko <code className="bg-amber-500/10 px-1 py-0.5 rounded text-amber-300">POST</code> method se bhejein aur body mein <code className="bg-amber-500/10 px-1 py-0.5 rounded text-amber-300">key</code> field zaroori hai.
+                    <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-500/5 border border-blue-500/20">
+                        <AlertCircle className="h-4 w-4 text-blue-400 mt-0.5 shrink-0" />
+                        <p className="text-xs text-blue-200/70">
+                            Saare requests ko <code className="bg-blue-500/10 px-1 py-0.5 rounded text-blue-300">POST</code> method se bhejein aur body mein <code className="bg-blue-500/10 px-1 py-0.5 rounded text-blue-300">key</code> field zaroori hai.
                         </p>
                     </div>
 
@@ -215,7 +215,7 @@ export default function ApiAccess() {
 
                         {/* add */}
                         <EndpointCard
-                            icon={<ShoppingCart className="h-4 w-4 text-purple-400" />}
+                            icon={<ShoppingCart className="h-4 w-4 text-fuchsia-400" />}
                             method="POST"
                             action="add"
                             label="Place Order"
@@ -247,7 +247,7 @@ export default function ApiAccess() {
 
                         {/* balance */}
                         <EndpointCard
-                            icon={<Wallet className="h-4 w-4 text-amber-400" />}
+                            icon={<Wallet className="h-4 w-4 text-blue-400" />}
                             method="POST"
                             action="balance"
                             label="Check Balance"
@@ -309,7 +309,7 @@ function EndpointCard({
             <div className="flex border-b border-white/[0.05] bg-zinc-950">
                 <button
                     onClick={() => setTab('request')}
-                    className={`flex-1 py-2 text-[12px] font-medium transition-colors ${tab === 'request' ? 'text-white border-b-2 border-purple-500 bg-purple-500/5' : 'text-zinc-600 hover:text-zinc-400'
+                    className={`flex-1 py-2 text-[12px] font-medium transition-colors ${tab === 'request' ? 'text-white border-b-2 border-fuchsia-500 bg-fuchsia-500/5' : 'text-zinc-600 hover:text-zinc-400'
                         }`}
                 >
                     Request

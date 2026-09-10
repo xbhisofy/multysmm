@@ -54,7 +54,7 @@ export default function AboutUs() {
                 { icon: Users, title: "Trusted by Thousands", text: "Creators and agencies across India trust us." },
               ].map((f) => (
                 <div key={f.title} className="rounded-xl border border-border p-5 bg-card">
-                  <f.icon className="h-6 w-6 text-orange-500 mb-2" />
+                  <f.icon className="h-6 w-6 text-blue-500 mb-2" />
                   <h3 className="font-semibold text-foreground mb-1">{f.title}</h3>
                   <p className="text-sm">{f.text}</p>
                 </div>
@@ -75,7 +75,7 @@ export default function AboutUs() {
                 
                 <strong className="text-foreground">Registered Address:</strong> 8 The Green, Suite #14490, Dover, DE 19901, United States<br />
                 <strong className="text-foreground">Email:</strong> support@multysmm.com<br />
-                <strong className="text-foreground">Telegram Support:</strong> <a href="https://t.me/multysmm" target="_blank" rel="noreferrer" className="text-orange-500 hover:underline">@multysmm</a><br />
+                <strong className="text-foreground">Telegram Support:</strong> <a href="https://t.me/multysmm" target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">@multysmm</a><br />
                 <strong className="text-foreground">Website:</strong> https://multysmm.com
               </p>
             </section>

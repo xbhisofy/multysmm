@@ -552,7 +552,7 @@ export default function AdminUsers() {
     }
     if (sub.plan_type === 'lifetime') {
       return (
-        <Badge className="text-[10px] h-5 bg-amber-500/20 text-amber-500 border-amber-500/30">
+        <Badge className="text-[10px] h-5 bg-blue-500/20 text-blue-500 border-blue-500/30">
           <Crown className="h-3 w-3 mr-1" />
           Lifetime
         </Badge>
@@ -629,8 +629,8 @@ export default function AdminUsers() {
           <Card className="glass-card">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
-                  <Crown className="h-5 w-5 text-amber-500" />
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                  <Crown className="h-5 w-5 text-blue-500" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{lifetimeCount}</p>
@@ -711,7 +711,7 @@ export default function AdminUsers() {
                 ind === 'green'  ? 'bg-emerald-500' :
                 ind === 'blue'   ? 'bg-blue-500' :
                 ind === 'red'    ? 'bg-red-500' :
-                ind === 'orange' ? 'bg-orange-500' :
+                ind === 'orange' ? 'bg-blue-500' :
                 ind === 'gray'   ? 'bg-slate-400' : 'bg-transparent';
               const ringClass =
                 ind === 'red' ? 'ring-1 ring-red-500/30' :
@@ -768,7 +768,7 @@ export default function AdminUsers() {
                         </span>
                       )}
                       {u.subscription?.status === 'active' && u.subscription?.plan_type === 'lifetime' && (
-                        <span className="text-[10px] text-amber-500">Forever</span>
+                        <span className="text-[10px] text-blue-500">Forever</span>
                       )}
                     </div>
                     {u.is_banned ? (

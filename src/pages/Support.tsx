@@ -63,14 +63,14 @@ const CATEGORIES = [
 const PRIORITIES = [
   { value: 'low', label: 'Low', color: 'bg-blue-500' },
   { value: 'medium', label: 'Medium', color: 'bg-yellow-500' },
-  { value: 'high', label: 'High', color: 'bg-orange-500' },
+  { value: 'high', label: 'High', color: 'bg-blue-500' },
   { value: 'urgent', label: 'Urgent', color: 'bg-red-500' },
 ];
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
   open: { label: 'Open', color: 'bg-blue-500', icon: MessageSquare },
   pending: { label: 'Pending', color: 'bg-yellow-500', icon: Clock },
-  in_progress: { label: 'In Progress', color: 'bg-orange-500', icon: Clock },
+  in_progress: { label: 'In Progress', color: 'bg-blue-500', icon: Clock },
   resolved: { label: 'Resolved', color: 'bg-green-500', icon: CheckCircle },
   closed: { label: 'Closed', color: 'bg-muted', icon: CheckCircle },
 };

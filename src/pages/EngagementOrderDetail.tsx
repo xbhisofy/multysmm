@@ -65,7 +65,7 @@ const STATUS_CONFIG = {
   failed: { color: "bg-secondary text-muted-foreground border-border", icon: XCircle, label: "Failed" },
   partial: { color: "bg-muted text-muted-foreground border-border", icon: RefreshCw, label: "Partial" },
   cancelled: { color: "bg-destructive/20 text-destructive border-destructive/30", icon: Ban, label: "Cancelled" },
-  paused: { color: "bg-amber-500/20 text-amber-400 border-amber-500/30", icon: Pause, label: "Paused" },
+  paused: { color: "bg-blue-500/20 text-blue-400 border-blue-500/30", icon: Pause, label: "Paused" },
 };
 
 interface EditRunData {
@@ -1003,7 +1003,7 @@ export default function EngagementOrderDetail() {
                     order.variance_percent <= 15 
                       ? "bg-red-500/20 text-red-400 border border-red-500/30" 
                       : order.variance_percent <= 25 
-                        ? "bg-amber-500/20 text-amber-400 border border-amber-500/30" 
+                        ? "bg-blue-500/20 text-blue-400 border border-blue-500/30" 
                         : order.variance_percent <= 35
                           ? "bg-green-500/20 text-green-400 border border-green-500/30"
                           : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
@@ -1025,7 +1025,7 @@ export default function EngagementOrderDetail() {
                       order.variance_percent <= 15 
                         ? "h-full rounded-full transition-all duration-300 bg-red-500" 
                         : order.variance_percent <= 25 
-                          ? "h-full rounded-full transition-all duration-300 bg-amber-500" 
+                          ? "h-full rounded-full transition-all duration-300 bg-blue-500" 
                           : order.variance_percent <= 35
                             ? "h-full rounded-full transition-all duration-300 bg-green-500"
                             : "h-full rounded-full transition-all duration-300 bg-emerald-500"

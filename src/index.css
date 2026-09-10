@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap&font-display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap&font-display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -24,28 +24,28 @@ input[type="number"] {
        Magenta #D63384  ~ hsl(328 65% 52%)
        Purple  #7B2CBF  ~ hsl(272 63% 46%)
        Ink     #0F1A2B  ~ hsl(217 49% 12%) */
-    --background: 30 25% 99%;
-    --foreground: 217 49% 12%;
+    --background: 225 100% 99%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 217 49% 12%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 217 49% 12%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 18 89% 54%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 20 40% 97%;
-    --secondary-foreground: 217 49% 12%;
+    --secondary: 214 100% 97%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 20 25% 95%;
-    --muted-foreground: 217 15% 42%;
+    --muted: 216 60% 96%;
+    --muted-foreground: 215 20% 45%;
 
-    --accent: 272 63% 46%;
+    --accent: 292 84% 61%;
     --accent-foreground: 0 0% 100%;
 
-    --success: 160 60% 42%;
+    --success: 84 81% 44%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
@@ -54,14 +54,14 @@ input[type="number"] {
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 20 25% 90%;
-    --input: 20 25% 90%;
-    --ring: 18 89% 54%;
+    --border: 220 60% 92%;
+    --input: 220 60% 92%;
+    --ring: 221 83% 53%;
 
     --radius: 1rem;
 
-    --shadow-soft: 0 4px 20px rgba(15, 26, 43, 0.06);
-    --shadow-glow: 0 0 30px rgba(123, 44, 191, 0.18);
+    --shadow-soft: 0 4px 20px rgba(37, 99, 235, 0.08);
+    --shadow-glow: 0 0 30px rgba(217, 70, 239, 0.20);
 
   }
 }
@@ -78,14 +78,14 @@ html {
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Outfit', system-ui, sans-serif;
+    font-family: 'Syne', system-ui, sans-serif;
     font-weight: 800;
     letter-spacing: -0.03em;
     color: hsl(var(--foreground));
@@ -93,7 +93,7 @@ html {
   }
 
   label, .label {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     font-weight: 600;
     letter-spacing: 0.02em;
     @apply text-muted-foreground text-[12px];

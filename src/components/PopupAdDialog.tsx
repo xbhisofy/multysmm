@@ -340,7 +340,7 @@ export function PopupAdDialog() {
             className="absolute -inset-[2px] rounded-[22px] sm:rounded-[26px] opacity-90 blur-[6px] animate-pulse"
             style={{
               background:
-                "conic-gradient(from 0deg, #f97316, #ef4444, #fb923c, #f59e0b, #f97316)",
+                "conic-gradient(from 0deg, #2563EB, #ef4444, #fb923c, #f59e0b, #2563EB)",
             }}
           />
           {/* Card */}
@@ -388,14 +388,14 @@ export function PopupAdDialog() {
               <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                 {/* Logo badge */}
                 <div className="relative shrink-0">
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 blur-md opacity-70 animate-pulse" />
-                  <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-400 via-orange-500 to-red-500 flex items-center justify-center shadow-lg shadow-orange-500/40 ring-1 ring-white/20">
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-400 to-red-500 blur-md opacity-70 animate-pulse" />
+                  <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-400 via-blue-500 to-red-500 flex items-center justify-center shadow-lg shadow-blue-500/40 ring-1 ring-white/20">
                     <Play className="w-4 h-4 sm:w-5 sm:h-5 text-white fill-white drop-shadow" />
                   </div>
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold tracking-[0.18em] uppercase bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-sm shadow-orange-500/40">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold tracking-[0.18em] uppercase bg-gradient-to-r from-blue-500 to-red-500 text-white shadow-sm shadow-blue-500/40">
                       <Sparkles className="w-2.5 h-2.5" /> Featured
                     </span>
                   </div>
@@ -417,7 +417,7 @@ export function PopupAdDialog() {
                     type="button"
                     onClick={handleClose}
                     onPointerDown={(e) => e.stopPropagation()}
-                    className="group relative flex items-center gap-1.5 pl-4 sm:pl-3.5 pr-3 sm:pr-2.5 h-11 sm:h-auto sm:py-2 rounded-full text-[12px] sm:text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r from-orange-500/90 to-red-500/90 sm:from-white/10 sm:to-white/10 hover:from-orange-500 hover:to-red-500 sm:hover:bg-white/20 backdrop-blur-md ring-1 ring-white/25 transition-all hover:scale-[1.03] active:scale-95 shadow-lg shadow-orange-500/30 min-w-[88px] sm:min-w-[44px] justify-center"
+                    className="group relative flex items-center gap-1.5 pl-4 sm:pl-3.5 pr-3 sm:pr-2.5 h-11 sm:h-auto sm:py-2 rounded-full text-[12px] sm:text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r from-blue-500/90 to-red-500/90 sm:from-white/10 sm:to-white/10 hover:from-blue-500 hover:to-red-500 sm:hover:bg-white/20 backdrop-blur-md ring-1 ring-white/25 transition-all hover:scale-[1.03] active:scale-95 shadow-lg shadow-blue-500/30 min-w-[88px] sm:min-w-[44px] justify-center"
                   >
                     <span>Skip Ad</span>
                     <span className="w-6 h-6 sm:w-5 sm:h-5 rounded-full bg-white/25 group-hover:bg-white/35 flex items-center justify-center transition-colors">
@@ -473,7 +473,7 @@ export function PopupAdDialog() {
                 style={{ aspectRatio: isShort ? "9 / 16" : "16 / 9" }}
               >
                 {/* corner accents */}
-                <div className="pointer-events-none absolute top-0 left-0 w-10 h-10 sm:w-16 sm:h-16 border-t-2 border-l-2 border-orange-400/40 rounded-tl-xl sm:rounded-tl-2xl z-10" />
+                <div className="pointer-events-none absolute top-0 left-0 w-10 h-10 sm:w-16 sm:h-16 border-t-2 border-l-2 border-blue-400/40 rounded-tl-xl sm:rounded-tl-2xl z-10" />
                 <div className="pointer-events-none absolute bottom-0 right-0 w-10 h-10 sm:w-16 sm:h-16 border-b-2 border-r-2 border-red-500/40 rounded-br-xl sm:rounded-br-2xl z-10" />
                 <iframe
                   key={videoId + (ad.last_force_trigger || "")}
@@ -489,7 +489,7 @@ export function PopupAdDialog() {
             {/* Footer */}
             <div className="relative px-3 sm:px-6 pb-3 sm:pb-4 pt-1 flex items-center justify-between gap-2 sm:gap-3">
               <div className="flex items-center gap-2 text-[10px] sm:text-[11px] text-slate-400 min-w-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                 <span className="font-semibold tracking-wider uppercase truncate">MultySMM Promo</span>
               </div>
               <span className="text-[10px] sm:text-[11px] font-medium text-slate-300 shrink-0">
@@ -498,7 +498,7 @@ export function PopupAdDialog() {
                 ) : (
                   <span>
                     Skip in{" "}
-                    <span className="text-orange-300 font-bold tabular-nums">
+                    <span className="text-blue-300 font-bold tabular-nums">
                       {secondsLeft}s
                     </span>
                   </span>
@@ -510,7 +510,7 @@ export function PopupAdDialog() {
             {!canSkip && totalSkip > 0 && (
               <div className="h-1 w-full bg-white/5 overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-orange-400 via-red-500 to-orange-400 transition-[width] duration-250 ease-linear"
+                  className="h-full bg-gradient-to-r from-blue-400 via-red-500 to-blue-400 transition-[width] duration-250 ease-linear"
                   style={{ width: `${Math.min(100, Math.max(0, progress * 100))}%` }}
                 />
               </div>

@@ -296,7 +296,7 @@ export default function AdminDeposits() {
                                         </TableCell>
                                         <TableCell>
                                             {tx.status === 'pending' ? (
-                                                <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20 text-[10px] uppercase tracking-wider">
+                                                <Badge className="bg-blue-500/10 text-blue-500 border-blue-500/20 text-[10px] uppercase tracking-wider">
                                                     Pending
                                                 </Badge>
                                             ) : tx.status === 'completed' ? (

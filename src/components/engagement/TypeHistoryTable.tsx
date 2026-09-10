@@ -12,13 +12,13 @@ const ENGAGEMENT_CONFIG: Record<string, { icon: typeof Eye; color: string; bg: s
   views: { icon: Eye, color: "text-blue-500", bg: "bg-blue-100", border: "border-blue-500", label: "Views", emoji: "👁️" },
   likes: { icon: Heart, color: "text-red-500", bg: "bg-red-100", border: "border-red-500", label: "Likes", emoji: "❤️" },
   comments: { icon: MessageCircle, color: "text-green-500", bg: "bg-green-100", border: "border-green-500", label: "Comments", emoji: "💬" },
-  saves: { icon: Bookmark, color: "text-amber-500", bg: "bg-amber-100", border: "border-amber-500", label: "Saves", emoji: "📥" },
-  shares: { icon: Share2, color: "text-purple-500", bg: "bg-purple-100", border: "border-purple-500", label: "Shares", emoji: "🔄" },
-  reposts: { icon: Share2, color: "text-purple-500", bg: "bg-purple-100", border: "border-purple-500", label: "Reposts", emoji: "🔁" },
+  saves: { icon: Bookmark, color: "text-blue-500", bg: "bg-blue-100", border: "border-blue-500", label: "Saves", emoji: "📥" },
+  shares: { icon: Share2, color: "text-fuchsia-500", bg: "bg-fuchsia-100", border: "border-fuchsia-500", label: "Shares", emoji: "🔄" },
+  reposts: { icon: Share2, color: "text-fuchsia-500", bg: "bg-fuchsia-100", border: "border-fuchsia-500", label: "Reposts", emoji: "🔁" },
 };
 
 const STATUS_CONFIG = {
-  pending: { icon: Clock, color: "bg-amber-100 text-amber-700 border-amber-300", symbol: "⏳" },
+  pending: { icon: Clock, color: "bg-blue-100 text-blue-700 border-blue-300", symbol: "⏳" },
   started: { icon: Play, color: "bg-blue-100 text-blue-700 border-blue-300", symbol: "🔵" },
   completed: { icon: CheckCircle2, color: "bg-green-100 text-green-700 border-green-300", symbol: "✅" },
   failed: { icon: XCircle, color: "bg-red-100 text-red-700 border-red-300", symbol: "🔴" },
@@ -84,9 +84,9 @@ export function TypeHistoryTable({
           <p className="text-xs text-muted-foreground uppercase">Delivered</p>
           <p className="text-2xl font-bold text-green-600">{deliveredQuantity.toLocaleString()}</p>
         </div>
-        <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200">
+        <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
           <p className="text-xs text-muted-foreground uppercase">Remaining</p>
-          <p className="text-2xl font-bold text-amber-600">{remaining.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-blue-600">{remaining.toLocaleString()}</p>
         </div>
         <div className="p-4 rounded-xl bg-muted border">
           <p className="text-xs text-muted-foreground uppercase">Completed</p>
@@ -98,7 +98,7 @@ export function TypeHistoryTable({
         </div>
         <div className="p-4 rounded-xl bg-muted border">
           <p className="text-xs text-muted-foreground uppercase">Pending</p>
-          <p className="text-2xl font-bold text-amber-600">{pendingRuns.length}</p>
+          <p className="text-2xl font-bold text-blue-600">{pendingRuns.length}</p>
         </div>
       </div>
 
@@ -187,7 +187,7 @@ export function TypeHistoryTable({
                   {/* Scheduled */}
                   <div className="col-span-2">
                     <p className="font-medium">{format(scheduledDate, 'HH:mm')}</p>
-                    <p className={`text-xs ${isPast ? 'text-orange-500 font-medium' : 'text-muted-foreground'}`}>
+                    <p className={`text-xs ${isPast ? 'text-blue-500 font-medium' : 'text-muted-foreground'}`}>
                       {format(scheduledDate, 'MMM d')}
                     </p>
                   </div>
@@ -213,7 +213,7 @@ export function TypeHistoryTable({
                   {/* Peak */}
                   <div className="col-span-1">
                     {run.peak_multiplier && run.peak_multiplier > 1.3 ? (
-                      <span className="text-orange-600 text-xs">🔥 {run.peak_multiplier.toFixed(1)}x</span>
+                      <span className="text-blue-600 text-xs">🔥 {run.peak_multiplier.toFixed(1)}x</span>
                     ) : (
                       <span className="text-muted-foreground text-xs">1.0x</span>
                     )}

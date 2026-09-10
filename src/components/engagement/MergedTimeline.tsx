@@ -14,9 +14,9 @@ const ENGAGEMENT_CONFIG: Record<string, { icon: typeof Eye; label: string; emoji
   views: { icon: Eye, label: "views", emoji: "👁️", color: "text-cyan-400", bg: "bg-cyan-500/20", border: "border-cyan-500/40" },
   likes: { icon: Heart, label: "likes", emoji: "❤️", color: "text-green-400", bg: "bg-green-500/20", border: "border-green-500/40" },
   comments: { icon: MessageCircle, label: "comments", emoji: "💬", color: "text-emerald-400", bg: "bg-emerald-500/20", border: "border-emerald-500/40" },
-  saves: { icon: Bookmark, label: "saves", emoji: "📥", color: "text-amber-400", bg: "bg-amber-500/20", border: "border-amber-500/40" },
-  shares: { icon: Share2, label: "shares", emoji: "🔄", color: "text-purple-400", bg: "bg-purple-500/20", border: "border-purple-500/40" },
-  reposts: { icon: Share2, label: "reposts", emoji: "🔁", color: "text-purple-400", bg: "bg-purple-500/20", border: "border-purple-500/40" },
+  saves: { icon: Bookmark, label: "saves", emoji: "📥", color: "text-blue-400", bg: "bg-blue-500/20", border: "border-blue-500/40" },
+  shares: { icon: Share2, label: "shares", emoji: "🔄", color: "text-fuchsia-400", bg: "bg-fuchsia-500/20", border: "border-fuchsia-500/40" },
+  reposts: { icon: Share2, label: "reposts", emoji: "🔁", color: "text-fuchsia-400", bg: "bg-fuchsia-500/20", border: "border-fuchsia-500/40" },
 };
 
 // All engagement types to always show
@@ -288,12 +288,12 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
               <div
                 key={run.id}
                 className={`rounded-xl border transition-all ${isActive
-                  ? 'bg-amber-500/10 border-2 border-amber-500/40 shadow-lg shadow-amber-500/10'
+                  ? 'bg-blue-500/10 border-2 border-blue-500/40 shadow-lg shadow-blue-500/10'
                   : isCompleted
                     ? 'bg-emerald-500/10 border border-emerald-500/30'
                     : isFailed
                       ? 'bg-green-500/10 border border-green-500/30'
-                      : 'bg-purple-500/5 border border-purple-500/20 hover:bg-purple-500/10 cursor-pointer'
+                      : 'bg-fuchsia-500/5 border border-fuchsia-500/20 hover:bg-fuchsia-500/10 cursor-pointer'
                   }`}
                 onClick={() => isPending && onEditRun(run)}
               >
@@ -301,9 +301,9 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
                 <div className="p-3 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                   {/* Run Number Circle - Colorful Gradient */}
                   <div className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full font-bold text-sm sm:text-base shrink-0 ${isCompleted ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white' :
-                    isActive ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white animate-pulse' :
+                    isActive ? 'bg-gradient-to-br from-blue-500 to-blue-500 text-white animate-pulse' :
                       isFailed ? 'bg-gradient-to-br from-green-500 to-red-500 text-white' :
-                        'bg-gradient-to-br from-purple-500 to-purple-500 text-white'
+                        'bg-gradient-to-br from-fuchsia-500 to-fuchsia-500 text-white'
                     }`}>
                     #{index + 1}
                   </div>
@@ -313,10 +313,10 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
                     <div className="flex items-center gap-3 mb-2 flex-wrap">
                       {/* Status Badge - Colorful */}
                       <Badge className={`text-sm px-3 py-1 ${isCompleted ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' :
-                        isActive ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' :
+                        isActive ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40' :
                           isFailed ? 'bg-green-500/20 text-green-400 border border-green-500/40' :
                             isUpcoming ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40' :
-                              'bg-purple-500/20 text-purple-400 border border-purple-500/40'
+                              'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/40'
                         }`}>
                         {isCompleted && <CheckCircle2 className="h-4 w-4 mr-1.5" />}
                         {isActive && <Play className="h-4 w-4 mr-1.5" />}
@@ -343,7 +343,7 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
 
                       {/* Provider source badge - shows where this came from */}
                       {run.provider_account_name && !isAutoCompletedCancel && (
-                        <Badge className="bg-purple-500/20 text-purple-400 border border-purple-500/40 text-xs truncate max-w-[200px] sm:max-w-none">
+                        <Badge className="bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/40 text-xs truncate max-w-[200px] sm:max-w-none">
                           via {run.provider_account_name}
                         </Badge>
                       )}
@@ -377,7 +377,7 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
                         <Progress value={progressPercent} className="h-3" />
                         <div className="flex items-center justify-between text-xs text-muted-foreground">
                           <span>✓ Delivered: <span className="text-green-400 font-bold">{delivered?.toLocaleString()}</span></span>
-                          <span>⏳ Remaining: <span className="text-amber-400 font-bold">{providerRemains?.toLocaleString()}</span></span>
+                          <span>⏳ Remaining: <span className="text-blue-400 font-bold">{providerRemains?.toLocaleString()}</span></span>
                           {run.last_status_check && (
                             <span>
                               Updated: {formatDistanceToNow(new Date(run.last_status_check))} ago
@@ -402,7 +402,7 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
                           ⏰ Next in {formatDistanceToNow(scheduledDate)}
                         </span>
                       ) : (
-                        <span className="font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded">
+                        <span className="font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">
                           ⚠️ Overdue by {formatDistanceToNow(scheduledDate)}
                         </span>
                       )}
@@ -427,7 +427,7 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
                         : run.provider_status === 'In progress' || run.provider_status === 'Processing'
                           ? 'bg-blue-500/10 border border-blue-500/30 text-blue-400'
                           : run.provider_status === 'Pending'
-                            ? 'bg-amber-500/10 border border-amber-500/30 text-amber-400'
+                            ? 'bg-blue-500/10 border border-blue-500/30 text-blue-400'
                             : run.error_message?.includes('Auto-completed')
                               ? 'bg-teal-500/10 border border-teal-500/30 text-teal-400'
                               : isFailed
@@ -504,7 +504,7 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
                     {run.provider_account_name && !isAutoCompletedCancel && (
                       <div className="text-right">
                         <p className="text-xs text-muted-foreground uppercase">Provider</p>
-                        <p className="text-sm font-bold text-purple-400">{run.provider_account_name}</p>
+                        <p className="text-sm font-bold text-fuchsia-400">{run.provider_account_name}</p>
                       </div>
                     )}
 
@@ -582,13 +582,13 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
                           className={`flex flex-col items-center p-2 rounded-lg ${delivered > 0
                             ? `${typeConfig?.bg} border ${typeConfig?.border}`
                             : hasValue
-                              ? 'bg-amber-500/10 border border-amber-500/30'
+                              ? 'bg-blue-500/10 border border-blue-500/30'
                               : 'bg-secondary/30 border border-border/50 opacity-50'
                             }`}
                         >
-                          <TypeIcon className={`h-4 w-4 mb-1 ${delivered > 0 ? typeConfig?.color : hasValue ? 'text-amber-400' : 'text-muted-foreground'
+                          <TypeIcon className={`h-4 w-4 mb-1 ${delivered > 0 ? typeConfig?.color : hasValue ? 'text-blue-400' : 'text-muted-foreground'
                             }`} />
-                          <span className={`font-mono font-bold text-[11px] sm:text-sm ${delivered > 0 ? typeConfig?.color : hasValue ? 'text-amber-400' : 'text-muted-foreground'
+                          <span className={`font-mono font-bold text-[11px] sm:text-sm ${delivered > 0 ? typeConfig?.color : hasValue ? 'text-blue-400' : 'text-muted-foreground'
                             }`}>
                             {delivered > 0
                               ? `${delivered.toLocaleString()}/${dynamicTarget.toLocaleString()}`

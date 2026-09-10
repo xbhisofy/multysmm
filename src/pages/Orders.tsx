@@ -516,12 +516,12 @@ export default function Orders() {
                                   key={run.id}
                                   className={`relative rounded-lg transition-all ${
                                     isActive 
-                                      ? 'bg-amber-500/10 border-2 border-amber-500/50 shadow-md shadow-amber-500/20' 
+                                      ? 'bg-blue-500/10 border-2 border-blue-500/50 shadow-md shadow-blue-500/20' 
                                       : isCompleted
                                         ? 'bg-emerald-500/10 border border-emerald-500/30'
                                         : isFailed
                                           ? 'bg-green-500/10 border border-green-500/30'
-                                          : 'bg-purple-500/5 border border-purple-500/20'
+                                          : 'bg-fuchsia-500/5 border border-fuchsia-500/20'
                                   }`}
                                 >
                                   <div className="p-3">
@@ -530,12 +530,12 @@ export default function Orders() {
                                       {/* Run Number Badge - Colorful */}
                                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-mono text-sm font-bold ${
                                         isActive 
-                                          ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white animate-pulse' 
+                                          ? 'bg-gradient-to-br from-blue-500 to-blue-500 text-white animate-pulse' 
                                           : isCompleted
                                             ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white'
                                             : isFailed
                                               ? 'bg-gradient-to-br from-green-500 to-red-500 text-white'
-                                              : 'bg-gradient-to-br from-purple-500 to-purple-500 text-white'
+                                              : 'bg-gradient-to-br from-fuchsia-500 to-fuchsia-500 text-white'
                                       }`}>
                                         #{run.run_number}
                                       </div>
@@ -546,12 +546,12 @@ export default function Orders() {
                                           {/* Status Icon + Label - Colorful */}
                                           <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${
                                             isActive 
-                                              ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' 
+                                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
                                               : isCompleted
                                                 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                                                 : isFailed
                                                   ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                                                  : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                                                  : 'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/30'
                                           }`}>
                                             {isActive && <Loader2 className="h-3 w-3 animate-spin" />}
                                             {isCompleted && <CheckCircle2 className="h-3 w-3" />}
@@ -574,14 +574,14 @@ export default function Orders() {
                                           
                                           {/* Show scheduled total for pending - Purple */}
                                           {isPending && cumulativeDelivered === 0 && (
-                                            <span className="inline-flex items-center gap-1 text-xs bg-purple-500/20 text-purple-400 border border-purple-500/30 px-2 py-0.5 rounded-lg">
+                                            <span className="inline-flex items-center gap-1 text-xs bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/30 px-2 py-0.5 rounded-lg">
                                               → {cumulativeScheduled.toLocaleString()} scheduled
                                             </span>
                                           )}
                                           
                                           {/* Peak indicator - Orange/Amber */}
                                           {Number(run.peak_multiplier) > 1 && (
-                                            <span className="inline-flex items-center gap-1 text-[10px] text-orange-400 bg-orange-500/20 border border-orange-500/30 px-1.5 py-0.5 rounded">
+                                            <span className="inline-flex items-center gap-1 text-[10px] text-blue-400 bg-blue-500/20 border border-blue-500/30 px-1.5 py-0.5 rounded">
                                               <Zap className="h-3 w-3" />
                                               {run.peak_multiplier}x Peak
                                             </span>
@@ -632,7 +632,7 @@ export default function Orders() {
                                         <Button
                                           variant="ghost"
                                           size="sm"
-                                          className="h-8 px-3 text-purple-400 hover:bg-purple-500/20"
+                                          className="h-8 px-3 text-fuchsia-400 hover:bg-fuchsia-500/20"
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             setEditingRun({

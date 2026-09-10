@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const GRADIENT = "linear-gradient(135deg, #F97316 0%, #EC4899 55%, #8B5CF6 100%)";
+const GRADIENT = "linear-gradient(135deg, #2563EB 0%, #D946EF 55%, #D946EF 100%)";
 
 const STORAGE_KEY = "ai-assistant-chat-v1";
 
@@ -155,9 +155,9 @@ export default function AiAssistant() {
                 key={i}
                 onClick={() => send(s.text)}
                 disabled={loading}
-                className="text-left flex items-start gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:border-purple-300 hover:bg-purple-50/40 transition-all disabled:opacity-50"
+                className="text-left flex items-start gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:border-fuchsia-300 hover:bg-fuchsia-50/40 transition-all disabled:opacity-50"
               >
-                <s.icon className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#8B5CF6" }} />
+                <s.icon className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#D946EF" }} />
                 <span className="text-xs text-slate-700 line-clamp-2">{s.text}</span>
               </button>
             ))}
@@ -166,7 +166,7 @@ export default function AiAssistant() {
 
         {/* Composer */}
         <div className="mt-3 shrink-0">
-          <div className="relative rounded-2xl border border-slate-200 bg-white focus-within:border-purple-300 focus-within:ring-4 focus-within:ring-purple-100 transition-all">
+          <div className="relative rounded-2xl border border-slate-200 bg-white focus-within:border-fuchsia-300 focus-within:ring-4 focus-within:ring-fuchsia-100 transition-all">
             <textarea
               ref={inputRef}
               value={input}

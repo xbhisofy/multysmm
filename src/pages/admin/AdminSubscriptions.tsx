@@ -384,8 +384,8 @@ export default function AdminSubscriptions() {
           <Card className="glass-card">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
-                  <Crown className="h-5 w-5 text-amber-500" />
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                  <Crown className="h-5 w-5 text-blue-500" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{stats.lifetime}</p>
@@ -461,7 +461,7 @@ export default function AdminSubscriptions() {
                       </SelectItem>
                       <SelectItem value="lifetime">
                         <span className="flex items-center gap-2">
-                          <Crown className="h-4 w-4 text-amber-500" />
+                          <Crown className="h-4 w-4 text-blue-500" />
                           Lifetime
                         </span>
                       </SelectItem>
@@ -512,7 +512,7 @@ export default function AdminSubscriptions() {
                           <div className="flex items-center gap-2 mb-2">
                             <Badge
                               variant={sub.plan_type === 'lifetime' ? 'default' : 'secondary'}
-                              className={sub.plan_type === 'lifetime' ? 'bg-amber-500/20 text-amber-500 border-amber-500/30' : 'bg-blue-500/20 text-blue-500 border-blue-500/30'}
+                              className={sub.plan_type === 'lifetime' ? 'bg-blue-500/20 text-blue-500 border-blue-500/30' : 'bg-blue-500/20 text-blue-500 border-blue-500/30'}
                             >
                               {sub.plan_type === 'lifetime' ? (
                                 <><Crown className="h-3 w-3 mr-1" /> Lifetime</>
@@ -612,7 +612,7 @@ export default function AdminSubscriptions() {
                           <div className="flex items-center gap-2 mb-2">
                             <Badge
                               variant={request.plan_type === 'lifetime' ? 'default' : 'secondary'}
-                              className={request.plan_type === 'lifetime' ? 'bg-amber-500/20 text-amber-500 border-amber-500/30' : ''}
+                              className={request.plan_type === 'lifetime' ? 'bg-blue-500/20 text-blue-500 border-blue-500/30' : ''}
                             >
                               {request.plan_type === 'lifetime' ? (
                                 <><Crown className="h-3 w-3 mr-1" /> Lifetime</>

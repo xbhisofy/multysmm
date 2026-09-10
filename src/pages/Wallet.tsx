@@ -413,8 +413,8 @@ export default function Wallet() {
           <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-2 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.08)]">
             <div className="grid grid-cols-3 gap-1.5 relative">
               {([
-                { id: 'upi' as const, label: 'Instant UPI', sub: 'GPay · PhonePe · Paytm', icon: Zap, gradient: 'from-purple-500 to-pink-500', ring: 'ring-purple-500/30' },
-                { id: 'crypto' as const, label: 'Pay with Crypto', sub: 'USDT · BTC · TRX · LTC', icon: Bitcoin, gradient: 'from-amber-500 to-orange-500', ring: 'ring-amber-500/30' },
+                { id: 'upi' as const, label: 'Instant UPI', sub: 'GPay · PhonePe · Paytm', icon: Zap, gradient: 'from-fuchsia-500 to-fuchsia-500', ring: 'ring-fuchsia-500/30' },
+                { id: 'crypto' as const, label: 'Pay with Crypto', sub: 'USDT · BTC · TRX · LTC', icon: Bitcoin, gradient: 'from-blue-500 to-blue-500', ring: 'ring-blue-500/30' },
                 { id: 'manual' as const, label: 'Talk to Admin', sub: 'Custom / bulk top-ups', icon: MessageCircle, gradient: 'from-sky-500 to-blue-600', ring: 'ring-sky-500/30' },
               ]).map((opt) => {
                 const active = payMethod === opt.id;

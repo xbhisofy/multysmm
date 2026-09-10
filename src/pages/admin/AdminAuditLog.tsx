@@ -110,7 +110,7 @@ export default function AdminAuditLog() {
                 >
                   <div
                     className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
-                      isDeposit ? 'bg-emerald-500/15 text-emerald-600' : 'bg-amber-500/15 text-amber-600'
+                      isDeposit ? 'bg-emerald-500/15 text-emerald-600' : 'bg-blue-500/15 text-blue-600'
                     }`}
                   >
                     {isDeposit ? (

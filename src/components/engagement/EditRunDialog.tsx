@@ -184,8 +184,8 @@ export function EditRunDialog({
 
             {/* Warning */}
             {hasChanges && !hasInsufficientBalance && (
-              <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 rounded-lg text-sm">
-                <p className="text-amber-700">
+              <div className="p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 rounded-lg text-sm">
+                <p className="text-blue-700">
                   ⚠️ Variance will be reset to 0 when manually editing
                 </p>
               </div>

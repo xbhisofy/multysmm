@@ -315,10 +315,10 @@ export default function AdminTopupPlan() {
             const overall = totalBalance - totalProviderCost;
             const isExtra = overall >= 0;
             return (
-              <Card className={isExtra ? "border-green-300" : "border-orange-300"}>
+              <Card className={isExtra ? "border-green-300" : "border-blue-300"}>
                 <CardContent className="p-4">
                   <p className="text-xs text-muted-foreground">{isExtra ? "Extra (₹)" : "Short (₹)"}</p>
-                  <p className={`text-2xl font-bold ${isExtra ? "text-green-600" : "text-orange-600"}`}>
+                  <p className={`text-2xl font-bold ${isExtra ? "text-green-600" : "text-blue-600"}`}>
                     {isExtra ? "+" : "−"}₹{Math.floor(Math.abs(overall)).toLocaleString()}
                   </p>
                 </CardContent>
@@ -368,7 +368,7 @@ export default function AdminTopupPlan() {
                             {diff >= 0 ? (
                               <span className="text-green-600">+₹{Math.floor(diff).toLocaleString()} extra</span>
                             ) : (
-                              <span className="text-orange-600">−₹{Math.ceil(-diff).toLocaleString()} short</span>
+                              <span className="text-blue-600">−₹{Math.ceil(-diff).toLocaleString()} short</span>
                             )}
                           </TableCell>
                         </TableRow>
@@ -414,7 +414,7 @@ export default function AdminTopupPlan() {
                 {viewsTotals.map((b) => (
                   <div key={b.label} className="rounded-lg border p-4">
                     <p className="text-xs text-muted-foreground">{b.label}</p>
-                    <p className="text-3xl font-bold text-orange-600 tabular-nums mt-1">
+                    <p className="text-3xl font-bold text-blue-600 tabular-nums mt-1">
                       {b.pending_quantity.toLocaleString()}
                     </p>
                     <p className="text-[11px] text-muted-foreground mt-1">
@@ -431,7 +431,7 @@ export default function AdminTopupPlan() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-orange-600" /> Top 5 Users — Pending Order Value
+              <AlertTriangle className="h-4 w-4 text-blue-600" /> Top 5 Users — Pending Order Value
               <Badge variant="outline" className="ml-2 text-[10px] gap-1">
                 <Radio className="h-3 w-3 text-green-500 animate-pulse" /> Live
               </Badge>
@@ -476,7 +476,7 @@ export default function AdminTopupPlan() {
                             {u.full_name && <div className="text-[10px] text-muted-foreground">{u.full_name}</div>}
                           </TableCell>
                           <TableCell className="text-right tabular-nums">{Number(u.pending_orders).toLocaleString()}</TableCell>
-                          <TableCell className="text-right tabular-nums font-bold text-orange-600">
+                          <TableCell className="text-right tabular-nums font-bold text-blue-600">
                             ₹{(pending * usdToInr).toFixed(2)}
                           </TableCell>
                           <TableCell className="text-right tabular-nums">₹{(Number(u.wallet_balance) * usdToInr).toFixed(2)}</TableCell>
