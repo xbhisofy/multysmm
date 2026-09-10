@@ -16,12 +16,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [user, isLoading, navigate]);
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen text-gray-900" style={{ background: '#F8FAFF' }}>
       <aside className="fixed inset-y-0 left-0 z-40 w-[260px] hidden lg:block">
         <Sidebar />
       </aside>
       <MobileBottomNav />
-      <main className="lg:pl-[260px] w-full">
+      <main className="lg:pl-[260px] w-full overflow-x-hidden">
        <div className="min-h-screen pt-16 lg:pt-0 px-3 sm:px-4 py-4 sm:py-5 lg:p-8">
           <div className="max-w-7xl mx-auto w-full">{children}</div>
         </div>
