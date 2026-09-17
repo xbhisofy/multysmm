@@ -39,9 +39,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         supabase.from('user_roles').select('role').eq('user_id', userId),
       ]);
 
+      const roles = (roleResult.data ?? []).map((r) => r.role as AppRole);
+
       // A freshly created account may not have its profile/wallet/role rows yet.
       // Create them once, then re-read.
-      if (allowBootstrap && (!profileResult.data || !walletResult.data || !roleResult.data)) {
+      if (allowBootstrap && (!profileResult.data || !walletResult.data || roles.length === 0)) {
         const { error: bootstrapError } = await supabase.rpc('bootstrap_current_user', {
           p_full_name: null,
         });
@@ -54,7 +56,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (profileResult.data) setProfile(profileResult.data as unknown as Profile);
       if (walletResult.data) setWallet(walletResult.data as Wallet);
-      if (roleResult.data) setRole(roleResult.data.role as AppRole);
+      // A user can hold multiple roles — admin always wins.
+      if (roles.length > 0) setRole(roles.includes('admin' as AppRole) ? ('admin' as AppRole) : roles[0]);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
