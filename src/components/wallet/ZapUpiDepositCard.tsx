@@ -19,7 +19,7 @@ export default function ZapUpiDepositCard() {
     })();
   }, []);
 
-  const PROD_ORIGIN = 'https://multysmm.online';
+  const PROD_ORIGIN = 'https://multysmm.com';
   const openPage = (u: string) => {
     try { if (window.top && window.top !== window.self) { window.top.location.href = u; return; } } catch {}
     window.location.href = u;
