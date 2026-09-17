@@ -134,11 +134,9 @@ html {
 @layer components {
 
   .glass-card {
-    @apply relative overflow-hidden rounded-2xl border;
-    background: rgba(255,255,255,.88);
-    border-color: rgba(168,85,247,.14);
-    box-shadow: 0 4px 20px rgba(168,85,247,.08), 0 1px 3px rgba(0,0,0,.04);
-    backdrop-filter: blur(8px);
+    @apply relative overflow-hidden rounded-[1.25rem] border-2 bg-card;
+    border-color: hsl(var(--foreground) / 0.08);
+    box-shadow: 0 10px 28px -14px hsl(var(--electric) / 0.35);
   }
 
   .three-d-card {
@@ -150,26 +148,53 @@ html {
   }
 
   .glass-panel {
-    @apply rounded-2xl bg-card border border-border;
+    @apply rounded-[1.25rem] bg-card border-2;
+    border-color: hsl(var(--foreground) / 0.08);
     box-shadow: var(--shadow-soft);
   }
 
   .gradient-text {
     @apply bg-clip-text text-transparent font-extrabold;
-    background-image: linear-gradient(135deg, hsl(18 89% 54%), hsl(328 65% 52%), hsl(272 63% 46%));
+    background-image: linear-gradient(120deg, hsl(var(--electric)), hsl(var(--hot)) 55%, hsl(var(--sun)));
+  }
+
+  /* ════ BOLD BLOCKS ════ */
+  .block-electric {
+    @apply relative overflow-hidden text-white;
+    background: var(--gradient-hero);
+  }
+
+  .block-hot {
+    @apply relative overflow-hidden text-white;
+    background: var(--gradient-hot);
+  }
+
+  .block-sun {
+    @apply relative overflow-hidden;
+    background: var(--gradient-sun);
+    color: hsl(var(--foreground));
+  }
+
+  .stat-huge {
+    @apply font-extrabold leading-none tracking-tighter text-5xl md:text-7xl;
+    font-family: 'Syne', system-ui, sans-serif;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.18em];
   }
 
   /* ════ BUTTONS ════ */
   .btn-3d {
-    @apply relative overflow-hidden font-bold rounded-xl flex items-center justify-center transition-all duration-200;
-    background: linear-gradient(135deg, hsl(18 89% 54%), hsl(328 65% 52%), hsl(272 63% 46%));
-    color: white;
-    box-shadow: 0 4px 16px rgba(123,44,191, 0.28), 0 2px 8px rgba(242,101,34,0.22);
+    @apply relative overflow-hidden font-extrabold rounded-full flex items-center justify-center transition-all duration-200 text-white;
+    background: var(--gradient-hero);
+    box-shadow: var(--shadow-bold);
   }
 
   .btn-3d:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 24px rgba(123,44,191, 0.38), 0 3px 12px rgba(242,101,34,0.28);
+    transform: translateY(-2px);
+    background: var(--gradient-hot);
+    box-shadow: 0 22px 46px -14px hsl(var(--hot) / 0.5);
   }
 
   .btn-3d:active {
@@ -178,21 +203,22 @@ html {
 
 
   .btn-glass {
-    @apply relative overflow-hidden font-bold rounded-xl bg-secondary text-foreground border border-border transition-all duration-200;
+    @apply relative overflow-hidden font-extrabold rounded-full bg-secondary text-foreground border-2 border-foreground/10 transition-all duration-200;
   }
 
   .btn-glass:hover {
-    @apply bg-muted;
+    @apply bg-muted border-primary/40;
   }
 
   /* ════ NAVIGATION ════ */
   .nav-link {
-    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground font-semibold transition-colors;
+    @apply flex items-center gap-3 px-4 py-3 rounded-full text-muted-foreground font-bold transition-colors;
   }
 
   .nav-link-active {
-    @apply text-foreground bg-primary/10 border border-primary/20;
+    @apply text-primary-foreground bg-primary border-2 border-primary;
   }
+
 
   /* ════ INPUTS ════ */
   .input-3d {
