@@ -7,11 +7,6 @@ const corsHeaders = {
 };
 
 const INR_RATE = 83.5;
-// Only THESE admin users can manually add funds. Everyone else (admin or not) is blocked.
-// Funds otherwise come exclusively from successful ZapUPI payments.
-const SUPER_ADMIN_USER_IDS = new Set<string>([
-  "d84c0832-ba73-42be-ad4c-5e4c5a17c157", // multysmm@gmail.com
-]);
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -60,14 +55,6 @@ Deno.serve(async (req) => {
     if (action === "approve_pending") {
       return json({
         error: "Manual approvals are permanently disabled. Funds can only be added via ZapUPI.",
-      }, 403);
-    }
-
-    // 🔒 Manual `add` and `subtract` are allowed ONLY for the super-admin (zyrofit.my).
-    // All other admins are blocked from any wallet balance mutation.
-    if ((action === "add" || action === "subtract") && !SUPER_ADMIN_USER_IDS.has(user.id)) {
-      return json({
-        error: "Only the super-admin can add or subtract funds. All other credits must come via ZapUPI.",
       }, 403);
     }
 

@@ -106,18 +106,13 @@ function formatInrCompact(n: number): string {
 }
 
 export default function AdminUsers() {
-  const { user, isAdmin, isLoading: authLoading } = useAuth();
+  const { isAdmin, isLoading: authLoading } = useAuth();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<UserTab>('all');
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [balanceAmount, setBalanceAmount] = useState('');
   const [balanceAction, setBalanceAction] = useState<'subtract' | 'add'>('add');
-  // Only these admins can manually add funds. Everyone else: subtract only.
-  const SUPER_ADMIN_USER_IDS = new Set<string>([
-    'd84c0832-ba73-42be-ad4c-5e4c5a17c157', // multysmm@gmail.com
-  ]);
-  const isSuperAdmin = !!user?.id && SUPER_ADMIN_USER_IDS.has(user.id);
   const [removeSubUser, setRemoveSubUser] = useState<UserProfile | null>(null);
   const [pauseUser, setPauseUser] = useState<UserProfile | null>(null);
   const [cancelUser, setCancelUser] = useState<UserProfile | null>(null);
@@ -925,7 +920,7 @@ export default function AdminUsers() {
                   <p className="text-xs text-muted-foreground">Current Balance</p>
                 </div>
 
-                {isSuperAdmin ? (
+                {isAdmin ? (
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       type="button"
@@ -944,11 +939,7 @@ export default function AdminUsers() {
                       Subtract
                     </Button>
                   </div>
-                ) : (
-                  <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive">
-                    🔒 Only the super-admin (multysmm@gmail.com) can add or subtract funds. All other credits come from ZapUPI.
-                  </div>
-                )}
+                ) : null}
 
                 <div className="space-y-2">
                   <Label>Amount (₹ INR)</Label>
@@ -975,7 +966,7 @@ export default function AdminUsers() {
               </Button>
               <Button
                 onClick={() => updateBalanceMutation.mutate()}
-                disabled={updateBalanceMutation.isPending || !balanceAmount || !isSuperAdmin || isSubtractTooMuch}
+                disabled={updateBalanceMutation.isPending || !balanceAmount || !isAdmin || isSubtractTooMuch}
               >
                 {updateBalanceMutation.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
                 {balanceAction === 'add' ? 'Add' : 'Subtract'} ₹{balanceAmount || '0'}
