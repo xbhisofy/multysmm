@@ -70,14 +70,14 @@ const Index = () => {
       {/* ═══ NAV ═══ */}
       <nav className="sticky top-2 sm:top-4 z-50 w-full px-3 sm:px-4">
         <div className="max-w-6xl mx-auto rounded-3xl sm:rounded-full"
-          style={{ background: 'rgba(255,255,255,.90)', backdropFilter: 'blur(20px) saturate(180%)', border: `1px solid ${C.line}`, boxShadow: '0 12px 34px rgba(37,99,235,.10)' }}>
+          style={{ background: 'rgba(255,255,255,.90)', backdropFilter: 'blur(20px) saturate(180%)', border: `1px solid ${C.line}`, boxShadow: '0 12px 34px rgba(59,46,240,.10)' }}>
           <div className="flex items-center justify-between h-14 sm:h-16 px-3 sm:px-6">
             <Link to="/" className="flex items-center shrink-0">
               <img src="/logo.png" alt="MultySMM" className="h-9 sm:h-12 lg:h-14 w-auto object-contain" />
             </Link>
             <div className="hidden md:flex items-center gap-6 lg:gap-8">
               {[['Features', '#features'], ['How it works', '#how'], ['Why us', '#why'], ['FAQ', '#faq']].map(([t, h]) => (
-                <a key={t} href={h} className="text-[13.5px] font-semibold whitespace-nowrap transition-colors hover:text-[#2563EB]" style={{ color: C.ink2 }}>{t}</a>
+                <a key={t} href={h} className="text-[13.5px] font-semibold whitespace-nowrap transition-colors hover:text-[#3B2EF0]" style={{ color: C.ink2 }}>{t}</a>
               ))}
             </div>
             <div className="flex items-center gap-2">
@@ -85,7 +85,7 @@ const Index = () => {
                 Log in
               </Link>
               <Link to="/auth" className="h-9 sm:h-10 px-4 sm:px-5 rounded-full text-[12px] sm:text-[13px] font-extrabold text-white inline-flex items-center gap-1.5 transition-transform hover:scale-105 whitespace-nowrap"
-                style={{ background: GRADIENT, boxShadow: '0 12px 26px rgba(217,70,239,.35)' }}>
+                style={{ background: GRADIENT, boxShadow: '0 12px 26px rgba(245,54,75,.35)' }}>
                 Get Started <ArrowRight className="w-3.5 h-3.5" />
               </Link>
               <button
@@ -120,7 +120,7 @@ const Index = () => {
         <section className="pt-14 sm:pt-20 lg:pt-24 pb-14 sm:pb-20 text-center px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-7"
-              style={{ background: C.blueSoft, border: '1px solid rgba(37,99,235,.20)' }}>
+              style={{ background: C.blueSoft, border: '1px solid rgba(59,46,240,.20)' }}>
               <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: C.blue }} />
               <span className="text-[10px] sm:text-[11px] font-extrabold tracking-[0.2em] uppercase" style={{ color: C.blue }}>
                 The Next-Gen Growth Engine
@@ -144,9 +144,9 @@ const Index = () => {
               <div aria-hidden className="absolute -inset-1 rounded-[36px] -z-10"
                 style={{ background: GRADIENT, filter: 'blur(28px)', opacity: 0.28 }} />
               <div className="rounded-[32px] p-2 relative text-left"
-                style={{ background: C.card, border: `1px solid ${C.line}`, boxShadow: '0 32px 64px -16px rgba(37,99,235,.22)' }}>
+                style={{ background: C.card, border: `1px solid ${C.line}`, boxShadow: '0 32px 64px -16px rgba(59,46,240,.22)' }}>
                 <div className="absolute -top-3 right-5 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-[0.18em] text-white"
-                  style={{ background: C.lime, boxShadow: '0 8px 18px rgba(132,204,22,.45)' }}>
+                  style={{ background: C.lime, boxShadow: '0 8px 18px rgba(255,198,41,.45)' }}>
                   AI Powered
                 </div>
 
@@ -191,7 +191,7 @@ const Index = () => {
                   </div>
                   <Link to="/auth"
                     className="group w-full lg:w-auto h-12 px-8 rounded-2xl text-[14px] font-extrabold text-white inline-flex items-center justify-center gap-2.5 transition-all hover:scale-[1.03] active:scale-95"
-                    style={{ background: C.blue, boxShadow: '0 14px 30px rgba(37,99,235,.35)' }}>
+                    style={{ background: C.blue, boxShadow: '0 14px 30px rgba(59,46,240,.35)' }}>
                     Generate
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </Link>
@@ -204,7 +204,7 @@ const Index = () => {
               {[
                 { t: '🎬  Instagram reel — 10k views, 800 likes', c: C.blue, s: C.blueSoft },
                 { t: '▶️  YouTube — 5k views, 300 likes', c: C.magenta, s: C.magentaSoft },
-                { t: '🎵  TikTok — 20k views, 1.5k likes', c: '#65A30D', s: C.limeSoft },
+                { t: '🎵  TikTok — 20k views, 1.5k likes', c: '#B87500', s: C.limeSoft },
               ].map((x) => (
                 <button key={x.t} className="text-[12.5px] font-bold px-4 py-2 rounded-full transition-transform hover:-translate-y-0.5"
                   style={{ background: x.s, color: x.c, border: `1px solid ${x.c}26` }}>
@@ -230,7 +230,7 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-5 md:auto-rows-[236px]">
               {/* wide white tile */}
               <div className="md:col-span-2 rounded-[2rem] p-7 sm:p-8 flex flex-col justify-between relative overflow-hidden group transition-all hover:-translate-y-1"
-                style={{ background: C.card, border: `1px solid ${C.line}`, boxShadow: '0 18px 40px rgba(37,99,235,.08)' }}>
+                style={{ background: C.card, border: `1px solid ${C.line}`, boxShadow: '0 18px 40px rgba(59,46,240,.08)' }}>
                 <div aria-hidden className="absolute top-0 right-0 p-8 opacity-10 transition-opacity group-hover:opacity-20">
                   <div className="w-32 h-32 rounded-full" style={{ border: `8px solid ${C.blue}` }} />
                 </div>
@@ -247,7 +247,7 @@ const Index = () => {
 
               {/* magenta tile */}
               <div className="rounded-[2rem] p-7 flex flex-col justify-between text-white transition-all hover:-translate-y-1"
-                style={{ background: C.magenta, boxShadow: '0 20px 44px rgba(217,70,239,.32)' }}>
+                style={{ background: C.magenta, boxShadow: '0 20px 44px rgba(245,54,75,.32)' }}>
                 <div className="flex items-start justify-between">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,.22)' }}>
                     <Zap className="w-5 h-5" />
@@ -261,11 +261,11 @@ const Index = () => {
               </div>
 
               {/* lime hover tile */}
-              <div className="rounded-[2rem] p-7 flex flex-col justify-center items-center text-center group transition-all hover:-translate-y-1 hover:bg-[#84CC16]"
+              <div className="rounded-[2rem] p-7 flex flex-col justify-center items-center text-center group transition-all hover:-translate-y-1 hover:bg-[#FFC629]"
                 style={{ background: C.card, border: `1px solid ${C.line}` }}>
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors group-hover:bg-white"
                   style={{ background: C.limeSoft }}>
-                  <span className="text-[18px] font-extrabold" style={{ color: '#65A30D' }}>99%</span>
+                  <span className="text-[18px] font-extrabold" style={{ color: '#B87500' }}>99%</span>
                 </div>
                 <h3 className="text-[18px] font-extrabold transition-colors group-hover:text-white" style={{ fontFamily: C.display }}>Success Rate</h3>
               </div>
@@ -277,7 +277,7 @@ const Index = () => {
                   {[
                     { n: '1', t: 'Paste your link', c: C.blue, s: C.blueSoft },
                     { n: '2', t: 'Pick what to grow', c: C.magenta, s: C.magentaSoft },
-                    { n: '3', t: 'Watch it deliver', c: '#65A30D', s: C.limeSoft },
+                    { n: '3', t: 'Watch it deliver', c: '#B87500', s: C.limeSoft },
                   ].map((s) => (
                     <div key={s.n} className="flex items-center gap-3">
                       <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-extrabold"
@@ -308,7 +308,7 @@ const Index = () => {
                   </div>
                 </div>
                 <div className="w-full md:w-64 rounded-2xl flex items-center justify-center p-6 text-center"
-                  style={{ background: GRADIENT, boxShadow: '0 18px 40px rgba(217,70,239,.35)' }}>
+                  style={{ background: GRADIENT, boxShadow: '0 18px 40px rgba(245,54,75,.35)' }}>
                   <p className="text-white text-[17px] font-extrabold italic" style={{ fontFamily: C.display }}>
                     "The ultimate unfair advantage in social media."
                   </p>
@@ -317,7 +317,7 @@ const Index = () => {
 
               {/* blue rocket strip */}
               <div className="md:col-span-4 md:row-span-1 rounded-[2rem] p-7 flex flex-col sm:flex-row items-start sm:items-center gap-5 text-white transition-all hover:-translate-y-1"
-                style={{ background: C.blue, boxShadow: '0 20px 44px rgba(37,99,235,.30)' }}>
+                style={{ background: C.blue, boxShadow: '0 20px 44px rgba(59,46,240,.30)' }}>
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'rgba(255,255,255,.22)' }}>
                   <Rocket className="w-6 h-6" />
                 </div>
@@ -375,7 +375,7 @@ const Index = () => {
                 <div key={s.n} className="rounded-[1.75rem] p-7 transition-all hover:-translate-y-1"
                   style={{ background: C.card, border: `1px solid ${TRI[i]}26`, boxShadow: `0 16px 36px ${TRI[i]}16` }}>
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-[18px] font-extrabold mb-5"
-                    style={{ background: TRI_SOFT[i], color: i === 2 ? '#65A30D' : TRI[i], fontFamily: C.display }}>
+                    style={{ background: TRI_SOFT[i], color: i === 2 ? '#B87500' : TRI[i], fontFamily: C.display }}>
                     {s.n}
                   </div>
                   <h3 className="text-[18px] font-extrabold mb-2" style={{ fontFamily: C.display }}>{s.t}</h3>
@@ -386,7 +386,7 @@ const Index = () => {
 
             <div className="mt-8 text-center">
               <Link to="/auth" className="inline-flex h-12 px-7 rounded-full text-[14px] font-extrabold text-white items-center gap-2 transition-transform hover:scale-105"
-                style={{ background: GRADIENT, boxShadow: '0 14px 30px rgba(37,99,235,.32)' }}>
+                style={{ background: GRADIENT, boxShadow: '0 14px 30px rgba(59,46,240,.32)' }}>
                 Get Started <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -397,7 +397,7 @@ const Index = () => {
         <section id="why" className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-10">
-              <Eyebrow color="#65A30D">Why MultySMM</Eyebrow>
+              <Eyebrow color="#B87500">Why MultySMM</Eyebrow>
               <h2 className="mt-4 text-[1.7rem] sm:text-[2.4rem] lg:text-[2.8rem] font-extrabold leading-[1.05] tracking-[-0.03em]"
                 style={{ fontFamily: C.display }}>
                 Real numbers, <span style={gradientText}>real growth</span>
@@ -408,7 +408,7 @@ const Index = () => {
               {[
                 { icon: Users, v: '2,400+', l: 'Active Creators', c: C.blue, s: C.blueSoft },
                 { icon: Package, v: '50K+', l: 'Orders Delivered', c: C.magenta, s: C.magentaSoft },
-                { icon: Target, v: '99.9%', l: 'Success Rate', c: '#65A30D', s: C.limeSoft },
+                { icon: Target, v: '99.9%', l: 'Success Rate', c: '#B87500', s: C.limeSoft },
                 { icon: Zap, v: '24/7', l: 'Live Support', c: C.blue, s: C.blueSoft },
               ].map((s) => (
                 <div key={s.l} className="rounded-[1.75rem] p-6 text-center transition-all hover:-translate-y-1"
@@ -424,7 +424,7 @@ const Index = () => {
 
             {/* old vs new */}
             <div className="grid md:grid-cols-2 gap-5 mt-6">
-              <div className="rounded-[2rem] p-7 sm:p-8" style={{ background: C.card, border: '1.5px dashed rgba(217,70,239,.35)' }}>
+              <div className="rounded-[2rem] p-7 sm:p-8" style={{ background: C.card, border: '1.5px dashed rgba(245,54,75,.35)' }}>
                 <div className="text-[11px] font-extrabold uppercase tracking-[0.18em] mb-3" style={{ color: C.muted }}>Regular Panels</div>
                 <h3 className="text-[21px] font-extrabold mb-5" style={{ fontFamily: C.display }}>Bot-pattern delivery</h3>
                 <div className="space-y-3">
@@ -440,7 +440,7 @@ const Index = () => {
               </div>
 
               <div className="rounded-[2rem] p-7 sm:p-8 text-white relative overflow-hidden"
-                style={{ background: GRADIENT, boxShadow: '0 28px 64px -18px rgba(37,99,235,.45)' }}>
+                style={{ background: GRADIENT, boxShadow: '0 28px 64px -18px rgba(59,46,240,.45)' }}>
                 <div className="inline-flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.18em] mb-3 px-3 py-1 rounded-full"
                   style={{ background: 'rgba(255,255,255,.22)' }}>MultySMM</div>
                 <h3 className="text-[21px] font-extrabold mb-5" style={{ fontFamily: C.display }}>AI-organic delivery</h3>
@@ -472,7 +472,7 @@ const Index = () => {
               {[
                 { q: 'Is it safe for my account?', a: 'Yes. We use human-pace patterns, ±50% variance and night slowdown so delivery always looks organic.', c: C.blue },
                 { q: 'How fast are the results?', a: 'Most orders start within 60 seconds and then deliver gradually over hours for a natural curve.', c: C.magenta },
-                { q: 'Which platforms are supported?', a: 'Instagram, YouTube, TikTok, Facebook, X (Twitter), Spotify and more.', c: '#65A30D' },
+                { q: 'Which platforms are supported?', a: 'Instagram, YouTube, TikTok, Facebook, X (Twitter), Spotify and more.', c: '#B87500' },
                 { q: 'Do I need a credit card to start?', a: 'No. Sign-up is free — add funds to your wallet only when you want to place an order.', c: C.blue },
               ].map((f) => (
                 <div key={f.q} className="rounded-[1.5rem] p-6 text-left"
@@ -490,9 +490,9 @@ const Index = () => {
           <div className="max-w-4xl mx-auto rounded-[32px] text-center py-14 sm:py-18 px-6 sm:px-10 relative overflow-hidden"
             style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #FDF4FF 55%, #F7FEE7 100%)', border: `1px solid ${C.line}` }}>
             <div aria-hidden className="absolute -top-24 left-[18%] w-[400px] h-[300px] rounded-full"
-              style={{ background: 'radial-gradient(closest-side, rgba(37,99,235,.28), transparent 70%)', filter: 'blur(40px)' }} />
+              style={{ background: 'radial-gradient(closest-side, rgba(59,46,240,.28), transparent 70%)', filter: 'blur(40px)' }} />
             <div aria-hidden className="absolute -top-24 right-[14%] w-[400px] h-[300px] rounded-full"
-              style={{ background: 'radial-gradient(closest-side, rgba(217,70,239,.28), transparent 70%)', filter: 'blur(40px)' }} />
+              style={{ background: 'radial-gradient(closest-side, rgba(245,54,75,.28), transparent 70%)', filter: 'blur(40px)' }} />
             <div className="relative">
               <Eyebrow>Start Today</Eyebrow>
               <h2 className="mt-4 text-[1.7rem] sm:text-[2.4rem] font-extrabold leading-[1.05] tracking-[-0.03em] mb-5" style={{ fontFamily: C.display }}>
@@ -502,7 +502,7 @@ const Index = () => {
                 Join 2,400+ creators using MultySMM's AI engine. No credit card required.
               </p>
               <Link to="/auth" className="inline-flex h-14 px-9 rounded-full text-[16px] font-extrabold text-white items-center gap-2 transition-transform hover:scale-105 active:scale-95"
-                style={{ background: GRADIENT, boxShadow: '0 18px 40px rgba(217,70,239,.42)', fontFamily: C.display }}>
+                style={{ background: GRADIENT, boxShadow: '0 18px 40px rgba(245,54,75,.42)', fontFamily: C.display }}>
                 Scale Your Brand Now <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
