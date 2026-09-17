@@ -1437,7 +1437,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
           .from('provider_accounts').select('*')
           .eq('provider_id', item.service.provider_id)
           .eq('is_active', true)
-          .order('priority', { ascending: false })
+          .order('priority', { ascending: true })
           .limit(1).maybeSingle()
 
         if (acct && isValidHttpUrl(acct.api_url) &&
