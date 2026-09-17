@@ -38,7 +38,7 @@ const TYPE_COLORS: Record<string, string> = {
   shares: "#8b5cf6",     // Violet/Purple - Distinct cool tone
   followers: "#06b6d4",  // Cyan - Fresh, tech feel
   subscribers: "#ef4444", // Red - Strong contrast
-  watch_hours: "#2563EB", // Orange - Warm, energetic
+  watch_hours: "#3B2EF0", // Orange - Warm, energetic
   retweets: "#14b8a6",   // Teal - Cool, calm
   reposts: "#a855f7",    // Purple - Rich, distinct
 };
