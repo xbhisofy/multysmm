@@ -107,22 +107,27 @@ html {
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Syne', system-ui, sans-serif;
     font-weight: 800;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
     color: hsl(var(--foreground));
     text-shadow: none;
   }
 
+  h1 { font-weight: 800; letter-spacing: -0.045em; }
+
   label, .label {
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    @apply text-muted-foreground text-[12px];
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    @apply text-muted-foreground text-[11px];
   }
 
   ::selection {
-    background: hsla(280, 70%, 55%, 0.22);
+    background: hsl(var(--sun) / 0.55);
     color: hsl(var(--foreground));
   }
+
 
 }
 
