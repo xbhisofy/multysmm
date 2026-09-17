@@ -1,1 +1,0 @@
-ALTER TABLE public.platform_settings ADD COLUMN maintenance_mode boolean NOT NULL DEFAULT false;

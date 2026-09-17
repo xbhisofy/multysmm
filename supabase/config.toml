@@ -1,16 +1,1 @@
-project_id = "bcowzxvrjcyqwdkufoeu"
-
-[functions.oxapay-webhook]
-verify_jwt = false
-
-[functions.monitor-order-health]
-verify_jwt = false
-
-[functions.telegram-bot-webhook]
-verify_jwt = false
-
-[functions.tg-setup-webhook]
-verify_jwt = false
-
-[functions.tg-test-bal]
-verify_jwt = false
+project_id = "wlgtnuyamnyhpmnlgwfr"

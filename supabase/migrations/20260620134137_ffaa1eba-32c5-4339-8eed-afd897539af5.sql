@@ -1,1 +1,0 @@
-UPDATE public.bundle_items SET service_id = 'c1c7bc10-7656-46cf-9bcc-6e9f5b7a6106' WHERE engagement_type = 'reposts';

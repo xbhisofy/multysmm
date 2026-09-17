@@ -1,1 +1,0 @@
-ALTER TABLE public.popup_ads ADD COLUMN IF NOT EXISTS video_layout TEXT NOT NULL DEFAULT 'auto' CHECK (video_layout IN ('auto','landscape','portrait'));
