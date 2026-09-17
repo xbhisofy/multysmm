@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 interface SidebarProps { onClose?: () => void; }
 
-const GRADIENT = 'linear-gradient(120deg, #2563EB 0%, #D946EF 55%, #84CC16 100%)';
+const GRADIENT = 'linear-gradient(120deg, #3B2EF0 0%, #F5364B 55%, #FFC629 100%)';
 const DISPLAY = "'Syne', system-ui, sans-serif";
 
 const userNavItems = [
@@ -30,7 +30,7 @@ export function Sidebar({ onClose }: SidebarProps) {
   const { formatPrice, currency, currencyInfo, setCurrency } = useCurrency();
 
   return (
-    <div className="h-full w-full overflow-hidden flex flex-col" style={{ background: '#fff', borderRight: '1px solid rgba(37,99,235,.10)' }}>
+    <div className="h-full w-full overflow-hidden flex flex-col" style={{ background: '#fff', borderRight: '1px solid rgba(59,46,240,.10)' }}>
       {/* Close button (mobile) */}
       <div className="flex items-center justify-end px-3 pt-2 lg:hidden">
         <button onClick={onClose} aria-label="Close navigation menu" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>
@@ -42,8 +42,8 @@ export function Sidebar({ onClose }: SidebarProps) {
       {profile && (
         <div className="mx-3 sm:mx-4 mb-4 mt-3 lg:mt-4 relative rounded-2xl overflow-hidden bg-white"
           style={{
-            border: '1px solid rgba(37,99,235,.12)',
-            boxShadow: '0 10px 28px -14px rgba(37,99,235,.28), 0 1px 0 rgba(255,255,255,.6) inset',
+            border: '1px solid rgba(59,46,240,.12)',
+            boxShadow: '0 10px 28px -14px rgba(59,46,240,.28), 0 1px 0 rgba(255,255,255,.6) inset',
           }}>
           {/* subtle top gradient hairline */}
           <div aria-hidden className="absolute top-0 inset-x-0 h-[3px]" style={{ background: GRADIENT }} />
@@ -70,7 +70,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           </div>
 
           {/* Divider */}
-          <div className="mx-4 h-px" style={{ background: 'rgba(37,99,235,.10)' }} />
+          <div className="mx-4 h-px" style={{ background: 'rgba(59,46,240,.10)' }} />
 
           {/* Wallet section */}
           <div className="relative px-4 pt-3 pb-4">
@@ -85,13 +85,13 @@ export function Sidebar({ onClose }: SidebarProps) {
                 </p>
               </div>
               <div className="flex items-center gap-1 shrink-0 pb-0.5 px-2 py-1 rounded-md" style={{ background: '#EFF6FF' }}>
-                <Wallet className="w-3 h-3" style={{ color: '#2563EB' }} />
-                <span className="text-[9px] font-bold" style={{ color: '#2563EB' }}>{currency}</span>
+                <Wallet className="w-3 h-3" style={{ color: '#3B2EF0' }} />
+                <span className="text-[9px] font-bold" style={{ color: '#3B2EF0' }}>{currency}</span>
               </div>
             </div>
             <Link to="/wallet" onClick={onClose}
               className="group flex items-center justify-center gap-2 w-full h-10 rounded-xl text-[12.5px] font-semibold text-white transition-all active:scale-[.98]"
-              style={{ background: GRADIENT, boxShadow: '0 10px 22px -8px rgba(217,70,239,.50)' }}>
+              style={{ background: GRADIENT, boxShadow: '0 10px 22px -8px rgba(245,54,75,.50)' }}>
               <span className="tracking-wide">Add Funds</span>
               <Rocket className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
@@ -120,12 +120,12 @@ export function Sidebar({ onClose }: SidebarProps) {
               )}
               style={{
                 background: isActive ? '#EFF6FF' : 'transparent',
-                color: isActive ? '#2563EB' : '#475569',
-                border: isActive ? '1px solid rgba(37,99,235,.22)' : '1px solid transparent',
+                color: isActive ? '#3B2EF0' : '#475569',
+                border: isActive ? '1px solid rgba(59,46,240,.22)' : '1px solid transparent',
                 fontWeight: isActive ? 600 : 500,
               }}
             >
-              <item.icon className="w-4 h-4" style={{ color: isActive ? '#2563EB' : '#94A3B8' }} />
+              <item.icon className="w-4 h-4" style={{ color: isActive ? '#3B2EF0' : '#94A3B8' }} />
               <span className="flex-1">{item.label}</span>
               {(item as any).highlight && !isActive && (
                 <span className="text-[8px] px-1.5 py-0.5 rounded-full font-bold text-white" style={{ background: GRADIENT }}>HOT</span>
@@ -136,7 +136,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
         {isAdmin && (
           <>
-            <div className="my-3 mx-3" style={{ borderTop: '1px solid rgba(37,99,235,.10)' }} />
+            <div className="my-3 mx-3" style={{ borderTop: '1px solid rgba(59,46,240,.10)' }} />
             <p className="px-3 mb-2 text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: '#94A3B8' }}>Admin</p>
             {adminNavItems.map((item) => {
               const isActive = location.pathname.startsWith(item.path);
@@ -146,10 +146,10 @@ export function Sidebar({ onClose }: SidebarProps) {
                   style={{
                     background: isActive ? '#FDF4FF' : 'transparent',
                     color: isActive ? '#A21CAF' : '#475569',
-                    border: isActive ? '1px solid rgba(217,70,239,.25)' : '1px solid transparent',
+                    border: isActive ? '1px solid rgba(245,54,75,.25)' : '1px solid transparent',
                   }}
                 >
-                  <item.icon className="w-4 h-4" style={{ color: isActive ? '#D946EF' : '#94A3B8' }} />
+                  <item.icon className="w-4 h-4" style={{ color: isActive ? '#F5364B' : '#94A3B8' }} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -161,7 +161,7 @@ export function Sidebar({ onClose }: SidebarProps) {
       {/* Currency */}
       <div className="px-3 pb-2">
         <label className="relative w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-[12px] font-medium cursor-pointer"
-          style={{ color: '#475569', background: '#F8FAFF', border: '1px solid rgba(37,99,235,.12)' }}>
+          style={{ color: '#475569', background: '#F8FAFF', border: '1px solid rgba(59,46,240,.12)' }}>
           <div className="flex items-center gap-2">
             <span className="text-base">{currencyInfo.flag}</span>
             <span className="uppercase tracking-wider">{currency}</span>
@@ -183,9 +183,9 @@ export function Sidebar({ onClose }: SidebarProps) {
 
 
       {/* Sign out */}
-      <div className="p-3" style={{ borderTop: '1px solid rgba(37,99,235,.10)' }}>
+      <div className="p-3" style={{ borderTop: '1px solid rgba(59,46,240,.10)' }}>
         <button onClick={() => signOut()} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12px] font-medium transition-colors hover:bg-red-50" style={{ color: '#64748B' }}>
-          <LogOut className="w-3.5 h-3.5" style={{ color: '#D946EF' }} />
+          <LogOut className="w-3.5 h-3.5" style={{ color: '#F5364B' }} />
           <span>Sign out</span>
         </button>
       </div>

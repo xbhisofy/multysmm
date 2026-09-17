@@ -340,7 +340,7 @@ export function PopupAdDialog() {
             className="absolute -inset-[2px] rounded-[22px] sm:rounded-[26px] opacity-90 blur-[6px] animate-pulse"
             style={{
               background:
-                "conic-gradient(from 0deg, #2563EB, #ef4444, #fb923c, #f59e0b, #2563EB)",
+                "conic-gradient(from 0deg, #3B2EF0, #ef4444, #fb923c, #f59e0b, #3B2EF0)",
             }}
           />
           {/* Card */}

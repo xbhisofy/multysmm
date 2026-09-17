@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const GRADIENT = "linear-gradient(135deg, #2563EB 0%, #D946EF 55%, #D946EF 100%)";
+const GRADIENT = "linear-gradient(135deg, #3B2EF0 0%, #F5364B 55%, #F5364B 100%)";
 
 const STORAGE_KEY = "ai-assistant-chat-v1";
 
@@ -157,7 +157,7 @@ export default function AiAssistant() {
                 disabled={loading}
                 className="text-left flex items-start gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:border-fuchsia-300 hover:bg-fuchsia-50/40 transition-all disabled:opacity-50"
               >
-                <s.icon className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#D946EF" }} />
+                <s.icon className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#F5364B" }} />
                 <span className="text-xs text-slate-700 line-clamp-2">{s.text}</span>
               </button>
             ))}
