@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const [profileResult, walletResult, roleResult] = await Promise.all([
         supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
         supabase.from('wallets').select('*').eq('user_id', userId).maybeSingle(),
-        supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle(),
+        supabase.from('user_roles').select('role').eq('user_id', userId),
       ]);
 
       // A freshly created account may not have its profile/wallet/role rows yet.
