@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789669988318,
+      "tag": "0000_harden_secdef_and_user_bootstrap",
+      "breakpoints": true
+    }
+  ]
+}
