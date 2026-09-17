@@ -127,11 +127,12 @@ const Index = () => {
               </span>
             </div>
 
-            <h1 className="text-[1.75rem] xs:text-[2rem] sm:text-[3rem] lg:text-[4rem] break-words font-extrabold leading-[1.05] tracking-[-0.03em] mb-7"
+            <h1 className="text-[2.1rem] xs:text-[2.5rem] sm:text-[3.6rem] lg:text-[5rem] break-words font-extrabold leading-[0.98] tracking-[-0.045em] mb-7"
               style={{ fontFamily: C.display }}>
               Explode your social presence with{' '}
               <span style={gradientText}>AI Precision</span>
             </h1>
+
 
             <p className="text-[15px] sm:text-[18px] leading-[1.65] mb-12 max-w-2xl mx-auto" style={{ color: C.ink2 }}>
               Paste your link, select growth parameters, and watch MultySMM deliver{' '}
