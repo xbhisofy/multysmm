@@ -251,8 +251,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
 
+      // Create the profile / wallet / role rows for the brand new account.
+      const { error: bootstrapError } = await supabase.rpc('bootstrap_current_user', {
+        p_full_name: fullName || null,
+      });
+      if (bootstrapError) {
+        console.error('Account bootstrap failed:', bootstrapError);
+      }
+
       console.log('--- useAuth: signUp success ---');
       return { error: null };
+
     } catch (error) {
       console.error('--- useAuth: signUp catch ---', error);
       return { error: error as Error };
