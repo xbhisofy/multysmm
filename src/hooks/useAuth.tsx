@@ -31,13 +31,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // ALWAYS start loading as true to avoid redirecting before Supabase fetch completes
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchUserData = useCallback(async (userId: string) => {
+  const fetchUserData = useCallback(async (userId: string, allowBootstrap = true) => {
     try {
       const [profileResult, walletResult, roleResult] = await Promise.all([
-        supabase.from('profiles').select('*').eq('user_id', userId).single(),
-        supabase.from('wallets').select('*').eq('user_id', userId).single(),
-        supabase.from('user_roles').select('role').eq('user_id', userId).single(),
+        supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
+        supabase.from('wallets').select('*').eq('user_id', userId).maybeSingle(),
+        supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle(),
       ]);
+
+      // A freshly created account may not have its profile/wallet/role rows yet.
+      // Create them once, then re-read.
+      if (allowBootstrap && (!profileResult.data || !walletResult.data || !roleResult.data)) {
+        const { error: bootstrapError } = await supabase.rpc('bootstrap_current_user', {
+          p_full_name: null,
+        });
+        if (!bootstrapError) {
+          await fetchUserData(userId, false);
+          return;
+        }
+        console.error('Account bootstrap failed:', bootstrapError);
+      }
 
       if (profileResult.data) setProfile(profileResult.data as unknown as Profile);
       if (walletResult.data) setWallet(walletResult.data as Wallet);
@@ -46,6 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error('Error fetching user data:', error);
     }
   }, []);
+
 
   // Set up realtime subscription for wallet updates + ban enforcement
   useEffect(() => {
