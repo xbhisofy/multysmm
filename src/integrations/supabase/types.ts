@@ -1563,6 +1563,10 @@ export type Database = {
         Args: { ban: boolean; reason?: string; target_user_id: string }
         Returns: undefined
       }
+      bootstrap_current_user: {
+        Args: { p_full_name?: string }
+        Returns: undefined
+      }
       cancel_order_with_refund: {
         Args: { p_actor: string; p_is_admin: boolean; p_order_id: string }
         Returns: Json
