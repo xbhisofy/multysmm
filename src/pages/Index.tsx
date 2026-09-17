@@ -145,7 +145,7 @@ const Index = () => {
                 style={{ background: GRADIENT, filter: 'blur(28px)', opacity: 0.28 }} />
               <div className="rounded-[32px] p-2 relative text-left"
                 style={{ background: C.card, border: `1px solid ${C.line}`, boxShadow: '0 32px 64px -16px rgba(59,46,240,.22)' }}>
-                <div className="absolute -top-3 right-5 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-[0.18em] text-white"
+                <div className="absolute -top-3 right-5 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-[0.18em] text-[#0B1030]"
                   style={{ background: C.lime, boxShadow: '0 8px 18px rgba(255,198,41,.45)' }}>
                   AI Powered
                 </div>
