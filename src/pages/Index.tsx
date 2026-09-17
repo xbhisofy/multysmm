@@ -59,12 +59,13 @@ const Index = () => {
       {/* colourful ambient glow */}
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute -top-40 left-[8%] w-[70vw] max-w-[720px] h-[560px] rounded-full"
-          style={{ background: 'radial-gradient(closest-side, rgba(37,99,235,.22), transparent 70%)', filter: 'blur(50px)' }} />
+          style={{ background: 'radial-gradient(closest-side, rgba(59,46,240,.26), transparent 70%)', filter: 'blur(50px)' }} />
         <div className="absolute -top-24 right-[6%] w-[65vw] max-w-[620px] h-[520px] rounded-full"
-          style={{ background: 'radial-gradient(closest-side, rgba(217,70,239,.22), transparent 70%)', filter: 'blur(50px)' }} />
+          style={{ background: 'radial-gradient(closest-side, rgba(245,54,75,.22), transparent 70%)', filter: 'blur(50px)' }} />
         <div className="absolute top-[58%] left-1/2 -translate-x-1/2 w-[80vw] max-w-[700px] h-[480px] rounded-full"
-          style={{ background: 'radial-gradient(closest-side, rgba(132,204,22,.20), transparent 70%)', filter: 'blur(60px)' }} />
+          style={{ background: 'radial-gradient(closest-side, rgba(255,198,41,.28), transparent 70%)', filter: 'blur(60px)' }} />
       </div>
+
 
       {/* ═══ NAV ═══ */}
       <nav className="sticky top-2 sm:top-4 z-50 w-full px-3 sm:px-4">
