@@ -7,34 +7,35 @@ import {
 } from 'lucide-react';
 import { PageMeta } from '@/components/seo/PageMeta';
 
-// MultySMM — Neon Candy palette (electric blue / magenta / lime on near-white)
+// MultySMM — Ultra Bold palette (electric blue / hot red / sun yellow)
 const C = {
-  bg: '#F8FAFF',
-  ink: '#0F172A',
-  ink2: '#475569',
-  muted: '#94A3B8',
-  line: 'rgba(37,99,235,.10)',
+  bg: '#F4F5FF',
+  ink: '#0B1030',
+  ink2: '#4A5170',
+  muted: '#8C93B5',
+  line: 'rgba(59,46,240,.12)',
   card: '#FFFFFF',
-  blue: '#2563EB',
-  magenta: '#D946EF',
-  lime: '#84CC16',
-  blueSoft: '#EFF6FF',
-  magentaSoft: '#FDF4FF',
-  limeSoft: '#F7FEE7',
+  blue: '#3B2EF0',
+  magenta: '#F5364B',
+  lime: '#FFC629',
+  blueSoft: '#EEEDFF',
+  magentaSoft: '#FFEDEF',
+  limeSoft: '#FFF6DE',
   display: "'Syne', system-ui, sans-serif",
   sans: "'Plus Jakarta Sans', system-ui, sans-serif",
 };
 
-const GRADIENT = 'linear-gradient(120deg, #2563EB 0%, #D946EF 55%, #84CC16 100%)';
+const GRADIENT = 'linear-gradient(120deg, #3B2EF0 0%, #F5364B 58%, #FFC629 100%)';
 const TRI = [C.blue, C.magenta, C.lime];
 const TRI_SOFT = [C.blueSoft, C.magentaSoft, C.limeSoft];
 
 const gradientText = {
-  background: 'linear-gradient(100deg, #2563EB 0%, #D946EF 100%)',
+  background: 'linear-gradient(100deg, #3B2EF0 0%, #F5364B 100%)',
   WebkitBackgroundClip: 'text',
   backgroundClip: 'text',
   WebkitTextFillColor: 'transparent',
 } as React.CSSProperties;
+
 
 const Eyebrow: React.FC<{ children: React.ReactNode; color?: string }> = ({ children, color = C.blue }) => (
   <div className="inline-flex items-center gap-2 text-[11px] sm:text-[12px] font-extrabold uppercase tracking-[0.2em]" style={{ color }}>
