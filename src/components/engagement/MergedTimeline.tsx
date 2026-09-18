@@ -9,6 +9,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import { toast } from "sonner";
+import { getEffectiveRunStatus } from "@/lib/runStatus";
 
 const ENGAGEMENT_CONFIG: Record<string, { icon: typeof Eye; label: string; emoji: string; color: string; bg: string; border: string }> = {
   views: { icon: Eye, label: "views", emoji: "👁️", color: "text-cyan-400", bg: "bg-cyan-500/20", border: "border-cyan-500/40" },

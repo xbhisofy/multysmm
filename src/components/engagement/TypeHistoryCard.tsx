@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format, formatDistanceToNow } from "date-fns";
+import { getEffectiveRunStatus } from "@/lib/runStatus";
 import {
   Eye, Heart, MessageCircle, Bookmark, Share2,
   Clock, Play, CheckCircle2, XCircle, Pencil,
