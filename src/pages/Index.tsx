@@ -1,282 +1,243 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Check, Menu, X } from 'lucide-react';
+import {
+  ArrowRight, BarChart3, Check, ChevronDown, Eye, Heart, LockKeyhole,
+  Menu, MessageCircle, Play, Rocket, ShieldCheck, Sparkles, X, Zap,
+} from 'lucide-react';
 import { PageMeta } from '@/components/seo/PageMeta';
-import './brutal-home.css';
-
-const stats = [
-  { value: '100%', label: 'Real human reach', tone: 'signal' },
-  { value: '50K+', label: 'Orders delivered', tone: 'paper' },
-  { value: '0.0%', label: 'Bot activity detected', tone: 'grey' },
-];
+import { Button } from '@/components/ui/button';
+import skyImage from '@/assets/multysmm-sky.jpg';
+import './catalis-home.css';
 
 const features = [
-  {
-    title: 'Human clipping',
-    text: 'Real editors find the moments that travel — precision growth built on culture, not scripts.',
-    mark: 'signal',
-  },
-  {
-    title: 'Proof of work',
-    text: 'Every order is tracked live: provider status, delivered counts and remaining quantity in one view.',
-    mark: 'ink',
-  },
-  {
-    title: 'Natural velocity',
-    text: 'Human-paced delivery that triggers platform recommendations without tripping spam filters.',
-    mark: 'outline',
-  },
-];
-
-const tools = [
-  ['01', 'Intuitive order flow', 'Link to live campaign in a few clear steps.'],
-  ['02', 'Automated scheduling', 'Smart drip schedules run delivery while you create.'],
-  ['03', 'Protected wallet', 'Funds, top-ups and refunds stay accounted for.'],
-  ['04', 'Live monitoring', 'Status, progress and results without chasing updates.'],
+  { icon: Eye, title: 'Real audience reach', text: 'Build visibility through creator-led clipping and genuine content discovery.' },
+  { icon: Heart, title: 'Organic engagement', text: 'Grow through authentic likes, saves and shares—not bot-generated activity.' },
+  { icon: MessageCircle, title: 'Human interactions', text: 'Create natural conversations with engagement designed to feel genuine.' },
+  { icon: BarChart3, title: 'Growth analytics', text: 'Follow orders, delivery and performance from one calm, focused dashboard.' },
 ];
 
 const plans = [
-  { name: 'Starter', price: '$10', detail: 'For first campaigns', items: ['All major platforms', 'Live order tracking', 'Auto delivery schedule', 'Wallet access'] },
-  { name: 'Growth', price: '$50', detail: 'For active creators', items: ['Everything in Starter', 'Engagement bundles', 'Priority processing', 'Advanced analytics'], feature: true },
+  { name: 'Starter', price: '$10', detail: 'For first campaigns', items: ['All major platforms', 'Live order tracking', 'AI delivery schedule', 'Wallet access'] },
+  { name: 'Growth', price: '$50', detail: 'For active creators', items: ['Everything in Starter', 'Engagement bundles', 'Priority processing', 'Advanced analytics'] },
   { name: 'Scale', price: '$100', detail: 'For growing teams', items: ['Everything in Growth', 'API access', 'High-volume ordering', 'Priority support'] },
-];
-
-const marquee = ['Verified humans only', 'No bot activity', 'Organic expansion', 'Real engagement', 'Creator-led clipping', '24/7 monitoring'];
-
-const navLinks = [
-  ['About', '#about'],
-  ['Features', '#features'],
-  ['Pricing', '#pricing'],
-  ['Support', '/support'],
 ];
 
 const Index = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="brutal-page">
+    <div className="catalis-page" style={{ '--catalis-sky-image': `url(${skyImage})` } as React.CSSProperties}>
       <PageMeta
-        title="MultySMM — Organic Social Growth, No Bots"
-        description="Creator-led clipping and human-paced social engagement. Order, track and scale real growth from one dashboard."
+        title="MultySMM — Smarter Social Media Growth"
+        description="Plan and manage safe, human-paced social media growth with MultySMM."
         canonicalPath="/"
         breadcrumbs={[{ name: 'Home', path: '/' }]}
       />
 
-      {/* NAV */}
-      <nav className="brutal-nav">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
-          <Link to="/" className="flex items-center gap-3" aria-label="MultySMM home">
-            <img src="/logo.png" alt="" className="h-9 w-9 border-2 border-[hsl(var(--ink))] object-cover" />
-            <span className="brutal-title text-lg">MultySMM</span>
-          </Link>
-          <div className="hidden items-center gap-8 md:flex">
-            {navLinks.map(([label, href]) =>
-              href.startsWith('#') ? (
-                <a key={label} href={href} className="text-sm font-bold uppercase tracking-wide hover:text-[hsl(var(--signal))]">{label}</a>
-              ) : (
-                <Link key={label} to={href} className="text-sm font-bold uppercase tracking-wide hover:text-[hsl(var(--signal))]">{label}</Link>
-              ),
-            )}
-          </div>
-          <div className="flex items-center gap-3">
-            <Link to="/auth" className="brutal-btn hidden px-6 py-3 text-sm sm:inline-flex">Launch</Link>
-            <button
-              type="button"
-              className="border-2 border-[hsl(var(--ink))] p-2 md:hidden"
+      <header className="catalis-shell catalis-sky relative min-h-[720px] overflow-hidden rounded-b-[1.7rem] md:min-h-[760px]">
+        <nav className="catalis-nav absolute left-1/2 top-0 z-30 -translate-x-1/2 px-4 md:px-6">
+          <div className="flex h-full min-h-[4.4rem] items-center justify-between gap-4">
+            <Link to="/" aria-label="MultySMM home" className="flex items-center gap-2.5 shrink-0">
+              <img src="/logo.png" alt="" className="h-9 w-9 rounded-full object-cover" />
+              <span className="hidden text-sm font-bold sm:inline">MultySMM</span>
+            </Link>
+            <div className="hidden items-center gap-7 md:flex">
+              <a href="#about" className="text-xs text-muted-foreground hover:text-foreground">About us</a>
+              <a href="#features" className="text-xs text-muted-foreground hover:text-foreground">Features</a>
+              <a href="#pricing" className="text-xs text-muted-foreground hover:text-foreground">Pricing</a>
+              <a href="#footer" className="text-xs text-muted-foreground hover:text-foreground">Pages <ChevronDown className="ml-1 inline h-3 w-3" /></a>
+            </div>
+            <Button asChild className="catalis-button hidden sm:inline-flex">
+              <Link to="/auth">Get Started</Link>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
               aria-label="Toggle navigation"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
             >
-              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
+              {menuOpen ? <X /> : <Menu />}
+            </Button>
+          </div>
+          {menuOpen && (
+            <div className="grid gap-1 border-t py-3 md:hidden">
+              {[['About us', '#about'], ['Features', '#features'], ['Pricing', '#pricing']].map(([label, href]) => (
+                <a key={label} href={href} onClick={() => setMenuOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">{label}</a>
+              ))}
+              <Link to="/auth" className="rounded-md px-3 py-2 text-sm font-bold">Log in</Link>
+            </div>
+          )}
+        </nav>
+
+        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-5 pb-52 pt-40 text-center md:pt-36">
+          <span className="catalis-kicker mb-6 border-primary-foreground/30 bg-primary-foreground/15 text-primary-foreground">
+            <Sparkles className="h-3 w-3" /> No bots. Real engagement.
+          </span>
+          <h1 className="catalis-display mb-6 text-primary-foreground">
+            Grow through <em>organic</em> social engagement
+          </h1>
+          <p className="mb-8 max-w-xl text-sm leading-6 text-primary-foreground md:text-base">
+            Get creator-led clipping and human-paced engagement designed for authentic growth—not automated bot activity.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button asChild className="catalis-button"><Link to="/auth">Get Started</Link></Button>
+            <Button asChild className="catalis-button catalis-button-light"><a href="#about">Learn More</a></Button>
           </div>
         </div>
-        {menuOpen && (
-          <div className="grid border-t-2 border-[hsl(var(--ink))] md:hidden">
-            {navLinks.map(([label, href]) =>
-              href.startsWith('#') ? (
-                <a key={label} href={href} onClick={() => setMenuOpen(false)} className="border-b border-[hsl(var(--ink))]/20 px-5 py-3 text-sm font-bold uppercase">{label}</a>
-              ) : (
-                <Link key={label} to={href} onClick={() => setMenuOpen(false)} className="border-b border-[hsl(var(--ink))]/20 px-5 py-3 text-sm font-bold uppercase">{label}</Link>
-              ),
-            )}
-            <Link to="/auth" onClick={() => setMenuOpen(false)} className="brutal-btn justify-center">Launch platform</Link>
-          </div>
-        )}
-      </nav>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-12">
-        <div className="brutal-frame grid grid-cols-12 gap-0 overflow-hidden">
-          {/* HERO */}
-          <section className="brutal-cell col-span-12 flex flex-col justify-between border-b-2 border-[hsl(var(--ink))] p-8 md:col-span-8 md:border-r-2 md:p-16">
-            <div>
-              <span className="brutal-tag mb-8">Human intelligence only</span>
-              <h1 className="brutal-display mb-8 text-5xl md:text-7xl lg:text-8xl">
-                MulTy <br />
-                <span className="text-[hsl(var(--signal))]">SMM</span>
-              </h1>
-              <p className="max-w-md text-lg font-medium leading-snug md:text-2xl">
-                Organic social engagement and clipping infrastructure powered by real people, not bot farms.
-              </p>
-            </div>
-            <div className="mt-12 flex flex-wrap items-center gap-6">
-              <Link to="/auth" className="brutal-btn text-base">Launch platform</Link>
-              <a href="#features" className="brutal-link">See how it works</a>
-            </div>
-          </section>
-
-          {/* STATS */}
-          <div className="col-span-12 grid grid-rows-3 md:col-span-4">
-            {stats.map(({ value, label, tone }, i) => (
-              <div
-                key={label}
-                className={`${tone === 'signal' ? 'brutal-cell-signal items-center text-center' : tone === 'grey' ? 'brutal-cell-grey' : 'brutal-cell'} flex flex-col justify-center border-b-2 border-[hsl(var(--ink))] p-8 ${i === 2 ? 'md:border-b-0' : ''}`}
-              >
-                <span className="brutal-title text-4xl md:text-5xl">{value}</span>
-                <span className="mt-1 text-sm font-bold uppercase tracking-tight">{label}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* FEATURES */}
-          <section id="features" className="col-span-12 grid grid-cols-1 gap-[2px] bg-[hsl(var(--ink))] md:grid-cols-3">
-            {features.map(({ title, text, mark }) => (
-              <article key={title} className="brutal-cell brutal-tile p-8 md:p-12">
-                <div
-                  className={`mb-6 flex h-12 w-12 items-center justify-center ${mark === 'signal' ? 'bg-[hsl(var(--signal))]' : mark === 'ink' ? 'bg-[hsl(var(--ink))]' : 'border-2 border-[hsl(var(--signal))]'}`}
-                >
-                  {mark === 'signal' && <span className="h-6 w-6 border-2 border-[hsl(var(--paper))]" />}
-                  {mark === 'ink' && <span className="h-[2px] w-6 bg-[hsl(var(--paper))]" />}
-                  {mark === 'outline' && <span className="h-2 w-2 rounded-full bg-[hsl(var(--signal))]" />}
-                </div>
-                <h3 className="brutal-title mb-4 text-2xl">{title}</h3>
-                <p className="text-base opacity-80">{text}</p>
-              </article>
-            ))}
-          </section>
-
-          {/* MARQUEE */}
-          <div className="brutal-cell-ink col-span-12 overflow-hidden border-y-2 border-[hsl(var(--ink))] py-5">
-            <div className="brutal-marquee-track">
-              {[...marquee, ...marquee].map((word, i) => (
-                <span key={`${word}-${i}`} className="flex items-center gap-8">
-                  <span className="brutal-title text-lg italic md:text-xl">{word}</span>
-                  <span className="text-xl text-[hsl(var(--signal))]">●</span>
-                </span>
-              ))}
+        <div className="absolute inset-x-0 bottom-[-4.5rem] z-20 mx-auto h-72 max-w-3xl">
+          <div className="catalis-panel catalis-float absolute left-[4%] top-16 hidden w-64 p-5 shadow-xl sm:block">
+            <div className="text-sm font-bold">Engagement</div>
+            <div className="mt-2 font-serif text-4xl">85%</div>
+            <div className="catalis-mini-chart mt-3 h-20 bg-muted">
+              {[35, 60, 45, 74, 56, 92].map((height) => <span key={height} style={{ height: `${height}%` }} />)}
             </div>
           </div>
-
-          {/* ABOUT + TOOLS */}
-          <section id="about" className="brutal-cell-grey col-span-12 border-b-2 border-[hsl(var(--ink))] p-8 md:col-span-5 md:border-b-0 md:border-r-2 md:p-12">
-            <span className="brutal-tag mb-6">About us</span>
-            <h2 className="brutal-title mb-6 text-3xl md:text-4xl">Real people. Real content. Real growth.</h2>
-            <p className="text-base opacity-80">
-              We help creators, brands and agencies grow through creator-led clipping and human-paced engagement — every
-              order routed across verified providers with live status tracking.
-            </p>
-            <Link to="/auth" className="brutal-btn brutal-btn-ghost mt-8 text-sm">Create account <ArrowRight className="h-4 w-4" /></Link>
-          </section>
-
-          <section className="col-span-12 grid grid-cols-1 gap-[2px] bg-[hsl(var(--ink))] md:col-span-7 md:grid-cols-2">
-            {tools.map(([num, title, text]) => (
-              <article key={title} className="brutal-cell brutal-tile p-8">
-                <span className="brutal-title text-3xl text-[hsl(var(--signal))]">{num}</span>
-                <h3 className="brutal-title mt-4 text-xl">{title}</h3>
-                <p className="mt-3 text-sm opacity-80">{text}</p>
-              </article>
-            ))}
-          </section>
-
-          {/* PRICING */}
-          <section id="pricing" className="col-span-12 border-t-2 border-[hsl(var(--ink))]">
-            <div className="brutal-cell flex flex-col gap-4 border-b-2 border-[hsl(var(--ink))] p-8 md:flex-row md:items-end md:justify-between md:p-12">
-              <div>
-                <span className="brutal-tag mb-4">Wallet options</span>
-                <h2 className="brutal-title text-3xl md:text-5xl">Simple, transparent pricing</h2>
-              </div>
-              <p className="max-w-sm text-base opacity-80">Top up when you need to. Your balance is only used for the orders you place.</p>
+          <div className="catalis-panel absolute left-1/2 top-0 w-[min(88%,360px)] -translate-x-1/2 p-5 shadow-2xl">
+            <div className="flex items-center justify-between"><strong>Growth score</strong><span className="rounded-full bg-muted px-3 py-1 text-[10px]">Monthly</span></div>
+            <div className="catalis-mini-chart mt-5 h-40 bg-muted">
+              {[32, 54, 46, 68, 82, 74, 96].map((height) => <span key={height} style={{ height: `${height}%` }} />)}
             </div>
-            <div className="grid grid-cols-1 gap-[2px] bg-[hsl(var(--ink))] md:grid-cols-3">
-              {plans.map((plan) => (
-                <article
-                  key={plan.name}
-                  className={`${plan.feature ? 'brutal-cell-ink' : 'brutal-cell'} flex flex-col p-8 md:p-10`}
-                >
-                  <div className="flex items-center justify-between">
-                    <h3 className="brutal-title text-2xl">{plan.name}</h3>
-                    {plan.feature && <span className="brutal-tag">Popular</span>}
-                  </div>
-                  <div className="brutal-title mt-6 text-5xl">{plan.price}</div>
-                  <p className="mt-2 text-sm opacity-70">{plan.detail}</p>
-                  <ul className="mt-8 space-y-3">
-                    {plan.items.map((item) => (
-                      <li key={item} className="flex items-start gap-3 text-sm">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[hsl(var(--signal))]" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    to="/auth"
-                    className={`brutal-btn mt-10 justify-center text-sm ${plan.feature ? 'bg-[hsl(var(--signal))]' : ''}`}
-                  >
-                    Get started <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          {/* CTA */}
-          <section className="brutal-cell-signal col-span-12 flex flex-col items-start gap-6 border-t-2 border-[hsl(var(--ink))] p-8 md:flex-row md:items-center md:justify-between md:p-14">
-            <h2 className="brutal-title max-w-xl text-3xl md:text-5xl">Ready to grow without bots?</h2>
-            <Link to="/auth" className="brutal-btn text-base">Start now <ArrowRight className="h-4 w-4" /></Link>
-          </section>
-
-          {/* FOOTER */}
-          <footer id="footer" className="brutal-cell-ink col-span-12 border-t-2 border-[hsl(var(--ink))] p-8 md:p-12">
-            <div className="grid gap-10 md:grid-cols-[1.4fr_2fr]">
-              <div>
-                <Link to="/" className="flex items-center gap-3">
-                  <img src="/logo.png" alt="" className="h-10 w-10 object-cover" />
-                  <strong className="brutal-title text-xl">MultySMM</strong>
-                </Link>
-                <p className="mt-5 max-w-xs text-sm opacity-70">Creator-led clipping and organic engagement with full campaign control.</p>
-              </div>
-              <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
-                <div>
-                  <h4 className="brutal-title mb-4 text-sm">Product</h4>
-                  <div className="space-y-2 text-sm opacity-70">
-                    <a href="#features" className="block">Features</a>
-                    <a href="#pricing" className="block">Pricing</a>
-                    <Link to="/api-access" className="block">API access</Link>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="brutal-title mb-4 text-sm">Company</h4>
-                  <div className="space-y-2 text-sm opacity-70">
-                    <Link to="/about" className="block">About us</Link>
-                    <Link to="/contact" className="block">Contact</Link>
-                    <Link to="/support" className="block">Support</Link>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="brutal-title mb-4 text-sm">Legal</h4>
-                  <div className="space-y-2 text-sm opacity-70">
-                    <Link to="/terms" className="block">Terms</Link>
-                    <Link to="/privacy" className="block">Privacy</Link>
-                    <Link to="/refund" className="block">Refunds</Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="mt-10 border-t border-[hsl(var(--paper))]/20 pt-5 text-xs opacity-60">
-              © {new Date().getFullYear()} MultySMM. All rights reserved.
-            </div>
-          </footer>
+            <div className="mt-4 flex items-center justify-between"><span className="text-xs text-muted-foreground">Campaign health</span><strong className="font-serif text-3xl">80%</strong></div>
+          </div>
         </div>
+      </header>
+
+      <main>
+        <section id="about" className="px-5 pb-20 pt-36 md:pb-28 md:pt-44">
+          <div className="mx-auto max-w-5xl text-center">
+            <span className="catalis-kicker mb-6"><Sparkles className="h-3 w-3 text-primary" /> About us</span>
+            <h2 className="catalis-heading mx-auto max-w-5xl">
+              We help creators and businesses grow through <em>real people, real content and organic engagement.</em>
+            </h2>
+          </div>
+          <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-10 border-y py-10 md:grid-cols-3 md:gap-6">
+            {[
+              ['80%', 'Less time spent managing orders'],
+              ['50K+', 'Successful orders delivered'],
+              ['24/7', 'Monitoring and customer support'],
+            ].map(([value, label]) => (
+              <div key={value} className="flex items-center justify-center gap-5">
+                <span className="font-serif text-6xl leading-none">{value}</span>
+                <span className="max-w-32 text-sm leading-5 text-muted-foreground">{label}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="features" className="catalis-shell catalis-sky rounded-[1.7rem] px-5 py-16 md:px-10 md:py-24">
+          <div className="mx-auto max-w-4xl text-center text-primary-foreground">
+            <span className="catalis-kicker mb-6 border-primary-foreground/30 bg-primary-foreground/15 text-primary-foreground"><Sparkles className="h-3 w-3" /> Benefits</span>
+            <h2 className="catalis-heading text-primary-foreground">Make social growth easy. Simplify <em>your journey.</em></h2>
+            <p className="mx-auto mt-6 max-w-lg text-sm leading-6">Adapt quickly, scale campaigns and keep every order clear from start to finish.</p>
+          </div>
+          <div className="mx-auto mt-14 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map(({ icon: Icon, title, text }) => (
+              <article key={title} className="catalis-panel min-h-64 p-7 md:p-8">
+                <div className="mb-10 flex h-11 w-11 items-center justify-center rounded-full bg-muted text-primary"><Icon className="h-5 w-5" /></div>
+                <h3 className="mb-3 text-2xl leading-tight">{title}</h3>
+                <p className="text-sm leading-5 text-muted-foreground">{text}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-10 text-center"><Button asChild className="catalis-button"><Link to="/auth">Get Started</Link></Button></div>
+        </section>
+
+        <section className="px-5 py-20 md:py-28">
+          <div className="mx-auto max-w-4xl text-center">
+            <span className="catalis-kicker mb-6"><Sparkles className="h-3 w-3 text-primary" /> Features</span>
+            <h2 className="catalis-heading">Empowering and <em>strengthening</em> your social success</h2>
+            <p className="mx-auto mt-6 max-w-xl text-sm leading-6 text-muted-foreground">Powerful tools for planning, ordering and tracking social engagement without the usual complexity.</p>
+            <Button asChild className="catalis-button mt-7"><Link to="/auth">Start Growing</Link></Button>
+          </div>
+          <div className="mx-auto mt-14 grid max-w-4xl gap-4 md:grid-cols-2">
+            {[
+              { tag: 'CLEAN INTERFACE', title: 'Intuitive order flow', icon: Play, text: 'Move from link to live campaign in a few clear steps.' },
+              { tag: 'FASTER', title: 'Automated processes', icon: Zap, text: 'Smart schedules handle delivery while you focus on content.' },
+              { tag: 'SECURE', title: 'Protected transactions', icon: LockKeyhole, text: 'Your account and wallet activity stay protected.' },
+              { tag: 'TRUSTED TOOLS', title: 'Reliable monitoring', icon: ShieldCheck, text: 'See status, progress and results without chasing updates.' },
+            ].map(({ tag, title, icon: Icon, text }) => (
+              <article key={title} className="catalis-soft-panel flex min-h-80 flex-col p-7 md:p-9">
+                <span className="mb-4 w-fit rounded-full bg-background px-3 py-1 text-[10px] font-bold text-primary">{tag}</span>
+                <h3 className="text-3xl">{title}</h3>
+                <div className="mt-auto flex items-end gap-5 pt-12">
+                  <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-background text-primary"><Icon className="h-8 w-8" /></div>
+                  <p className="text-sm leading-5 text-muted-foreground">{text}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="pricing" className="catalis-sky px-5 py-20 md:py-28">
+          <div className="mx-auto max-w-4xl text-center text-primary-foreground">
+            <span className="catalis-kicker mb-6 border-primary-foreground/30 bg-primary-foreground/15 text-primary-foreground"><Sparkles className="h-3 w-3" /> Wallet options</span>
+            <h2 className="catalis-heading text-primary-foreground">Simple, transparent <em>growth</em></h2>
+            <p className="mt-6 text-sm">Add funds when you need them. Your balance is used only for orders you place.</p>
+          </div>
+          <div className="mx-auto mt-14 grid max-w-4xl gap-4 md:grid-cols-3">
+            {plans.map((plan) => (
+              <article key={plan.name} className="catalis-panel flex min-h-[460px] flex-col p-7 md:p-8">
+                <div className="mb-7 flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-full bg-muted text-primary"><Sparkles className="h-5 w-5" /></span><h3 className="text-2xl">{plan.name}</h3></div>
+                <div className="font-serif text-5xl">{plan.price}</div>
+                <p className="mt-2 text-sm text-muted-foreground">{plan.detail}</p>
+                <div className="mt-8 space-y-4">
+                  {plan.items.map((item) => <div key={item} className="flex gap-3 text-sm"><Check className="h-5 w-5 rounded-full bg-foreground p-1 text-background" />{item}</div>)}
+                </div>
+                <Button asChild className="catalis-button mt-auto"><Link to="/auth">Get Started <ArrowRight /></Link></Button>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="px-5 py-20 md:py-28">
+          <div className="mx-auto max-w-5xl text-center">
+            <span className="catalis-kicker mb-6"><Sparkles className="h-3 w-3 text-primary" /> Built for you</span>
+            <h2 className="catalis-heading">One platform for every <em>growth stage</em></h2>
+            <p className="mx-auto mt-6 max-w-xl text-sm text-muted-foreground">A focused experience for independent creators, growing brands and busy agencies.</p>
+          </div>
+          <div className="mx-auto mt-14 grid max-w-5xl gap-4 md:grid-cols-3">
+            {[
+              ['“', 'Creators', 'Simple ordering and visible progress for every campaign.'],
+              ['“', 'Brands', 'Structured engagement plans that keep launches moving.'],
+              ['“', 'Agencies', 'High-volume tools for managing multiple client campaigns.'],
+            ].map(([quote, name, text]) => (
+              <article key={name} className="catalis-soft-panel min-h-72 p-8 text-left">
+                <div className="font-serif text-6xl leading-none">{quote}</div>
+                <p className="mt-5 text-sm leading-6 text-muted-foreground">{text}</p>
+                <h3 className="mt-10 text-2xl">{name}</h3>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="catalis-shell catalis-sky relative min-h-[340px] overflow-hidden rounded-[1.7rem] px-5 py-20 text-center text-primary-foreground">
+          <div className="relative z-10 mx-auto max-w-3xl">
+            <Rocket className="mx-auto mb-5 h-8 w-8" />
+            <h2 className="catalis-heading text-primary-foreground">Ready to grow with clarity?</h2>
+            <p className="mx-auto mt-5 max-w-lg text-sm leading-6">Create your account and launch your next social campaign from one simple place.</p>
+            <Button asChild className="catalis-button mt-7"><Link to="/auth">Get Started</Link></Button>
+          </div>
+        </section>
       </main>
+
+      <footer id="footer" className="px-5 py-16 md:py-20">
+        <div className="mx-auto grid max-w-4xl gap-12 md:grid-cols-[1.4fr_2fr]">
+          <div>
+            <Link to="/" className="flex items-center gap-3"><img src="/logo.png" alt="" className="h-10 w-10 rounded-full object-cover" /><strong className="font-serif text-2xl">MultySMM</strong></Link>
+            <p className="mt-7 max-w-xs text-sm leading-6 text-muted-foreground">Smarter social growth, clear campaign control and support when you need it.</p>
+            <Button asChild className="catalis-button mt-7"><Link to="/auth">Get Started</Link></Button>
+          </div>
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+            <div><h4 className="mb-5 font-bold">Product</h4><div className="space-y-3 text-sm text-muted-foreground"><a href="#features" className="block">Features</a><a href="#pricing" className="block">Pricing</a><Link to="/api-access" className="block">API access</Link></div></div>
+            <div><h4 className="mb-5 font-bold">Company</h4><div className="space-y-3 text-sm text-muted-foreground"><Link to="/about" className="block">About us</Link><Link to="/contact" className="block">Contact</Link><Link to="/support" className="block">Support</Link></div></div>
+            <div><h4 className="mb-5 font-bold">Legal</h4><div className="space-y-3 text-sm text-muted-foreground"><Link to="/terms" className="block">Terms</Link><Link to="/privacy" className="block">Privacy</Link><Link to="/refund" className="block">Refunds</Link></div></div>
+          </div>
+        </div>
+        <div className="mx-auto mt-14 max-w-4xl border-t pt-6 text-xs text-muted-foreground">© {new Date().getFullYear()} MultySMM. All rights reserved.</div>
+      </footer>
     </div>
   );
 };
