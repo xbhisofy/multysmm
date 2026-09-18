@@ -12,6 +12,25 @@ const MAX_RUN_RETRIES = 9999
 const ACTIVE_ORDER_RETRY_MS = 5 * 60 * 1000
 const TEMPORARY_RETRY_MS = 60 * 1000
 
+// Busy-provider backoff: start ~60s, exponential, capped at 30 minutes,
+// and give up after MAX_BUSY_RETRIES attempts so a run can never loop forever.
+const BUSY_BACKOFF_BASE_MS = 60 * 1000
+const BUSY_BACKOFF_MAX_MS = 30 * 60 * 1000
+const MAX_BUSY_RETRIES = 30
+
+function busyBackoffMs(retryCount: number): number {
+  const attempt = Math.max(0, Number(retryCount || 0))
+  const delay = BUSY_BACKOFF_BASE_MS * Math.pow(1.6, attempt)
+  return Math.min(BUSY_BACKOFF_MAX_MS, Math.round(delay))
+}
+
+// Least-recently-used tiebreak (nulls = never used = first)
+function lastUsedMs(value: string | null | undefined): number {
+  if (!value) return 0
+  const t = new Date(value).getTime()
+  return Number.isFinite(t) ? t : 0
+}
+
 // Inline status-check cache for this execution (avoids re-polling same account row).
 const inlineProviderAccountCache = new Map<string, { api_key: string; api_url: string } | null>()
 const TERMINAL_PROVIDER_STATUSES = new Set([
@@ -192,14 +211,18 @@ class MappingCache {
         this.cache.set(serviceId, [])
       } else {
         const sorted = [...mappings].sort((a: any, b: any) => {
-          // STRICT priority: mapping sort_order first, then account.priority — no LRU shuffle
+          // STRICT priority: mapping sort_order first, then account.priority.
           const aSort = Number(a.sort_order ?? 999)
           const bSort = Number(b.sort_order ?? 999)
           if (aSort !== bSort) return aSort - bSort
           const aPri = Number(a.provider_account?.priority ?? 999)
           const bPri = Number(b.provider_account?.priority ?? 999)
           if (aPri !== bPri) return aPri - bPri
-          // Deterministic tiebreak by account name, so order never drifts
+          // Only on an exact priority tie: least-recently-used account first.
+          const aUsed = lastUsedMs(a.provider_account?.last_used_at)
+          const bUsed = lastUsedMs(b.provider_account?.last_used_at)
+          if (aUsed !== bUsed) return aUsed - bUsed
+          // Deterministic final tiebreak by account name, so order never drifts
           return String(a.provider_account?.name ?? '').localeCompare(String(b.provider_account?.name ?? ''))
         })
         
@@ -224,11 +247,19 @@ class MappingCache {
         }
 
         const accounts: ProviderCandidate[] = []
+        const seen = new Set<string>()
+        const pushCandidate = (c: ProviderCandidate) => {
+          const dedupeKey = `${c.account.id}|${c.providerServiceId}`
+          if (!c.providerServiceId || seen.has(dedupeKey)) return
+          seen.add(dedupeKey)
+          accounts.push(c)
+        }
+
         for (const mapping of sorted) {
           const account = mapping.provider_account as ProviderAccount
           if (account && account.is_active && isValidHttpUrl(account.api_url)) {
             const key = `${account.provider_id}:${mapping.provider_service_id}`
-            accounts.push({
+            pushCandidate({
               account,
               providerServiceId: mapping.provider_service_id,
               minQuantity: minByKey.get(key) || 0,
@@ -238,6 +269,41 @@ class MappingCache {
             console.log(`⚠️ Skipping provider ${account.name}: invalid api_url`)
           }
         }
+
+        // BACKUP ACCOUNTS: other active accounts of the same providers, appended
+        // AFTER every primary mapping so admin priority always wins.
+        const primaryProviderIds = Array.from(new Set(accounts.map(a => a.account.provider_id).filter(Boolean)))
+        if (primaryProviderIds.length > 0) {
+          const { data: backupAccts } = await supabase
+            .from('provider_accounts')
+            .select('*')
+            .in('provider_id', primaryProviderIds)
+            .eq('is_active', true)
+            .order('priority', { ascending: true })
+
+          for (const providerId of primaryProviderIds) {
+            const providerServiceId = accounts.find(a => a.account.provider_id === providerId)?.providerServiceId
+            const minQty = minByKey.get(`${providerId}:${providerServiceId}`) || 0
+            const backups = (backupAccts || [])
+              .filter((acct: any) => acct.provider_id === providerId && isValidHttpUrl(acct.api_url))
+              .sort((a: any, b: any) => {
+                const pa = Number(a.priority ?? 999), pb = Number(b.priority ?? 999)
+                if (pa !== pb) return pa - pb
+                const ua = lastUsedMs(a.last_used_at), ub = lastUsedMs(b.last_used_at)
+                if (ua !== ub) return ua - ub
+                return String(a.name ?? '').localeCompare(String(b.name ?? ''))
+              })
+            for (const acct of backups) {
+              pushCandidate({
+                account: acct as ProviderAccount,
+                providerServiceId: providerServiceId || '',
+                minQuantity: minQty,
+                sortOrder: 998, // after all primaries, before legacy default (999)
+              })
+            }
+          }
+        }
+
         this.cache.set(serviceId, accounts)
       }
     }
@@ -313,6 +379,8 @@ async function claimRunLock(params: {
     .update(params.updates)
     .eq('id', params.runId)
     .eq('status', params.expectedStatus)
+    // Duplicate safety: never claim a run that already holds a provider order
+    .is('provider_order_id', null)
     .select('id, status')
     .maybeSingle()
 
@@ -1469,6 +1537,9 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         const aPri = Number(a.account?.priority ?? 999)
         const bPri = Number(b.account?.priority ?? 999)
         if (aPri !== bPri) return aPri - bPri
+        const aUsed = lastUsedMs(a.account?.last_used_at)
+        const bUsed = lastUsedMs(b.account?.last_used_at)
+        if (aUsed !== bUsed) return aUsed - bUsed
         return String(a.account?.name ?? '').localeCompare(String(b.account?.name ?? ''))
       })
       if (defaultProvider && !accountsToTry.some(a => a.account.id === defaultProvider!.id)) {
@@ -1482,18 +1553,33 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
       
       if (accountsToTry.length === 0) {
         if (mappingCache.hasAnyForService(item.service.id)) {
-          // POSTPONE: All providers busy — push scheduled_at forward so we don't waste cycles
-          const postponeMs = ACTIVE_ORDER_RETRY_MS
+          const busyRetry = (run.retry_count || 0) + 1
+          if (busyRetry > MAX_BUSY_RETRIES) {
+            await supabase.from('organic_run_schedule').update({
+              status: 'failed',
+              error_message: `All providers busy after ${MAX_BUSY_RETRIES} postpone attempts`,
+              last_status_check: new Date().toISOString(),
+            }).eq('id', run.id)
+            failed++
+            console.log(`❌ Run #${run.run_number} failed: busy retry cap (${MAX_BUSY_RETRIES}) reached`)
+            results.push({ run_id: run.id, run_number: run.run_number, type: item.engagement_type,
+              success: false, error: `All providers busy after ${MAX_BUSY_RETRIES} attempts` })
+            continue
+          }
+          // POSTPONE (never fail): exponential backoff capped at 30min
+          const postponeMs = busyBackoffMs(busyRetry - 1)
           const newScheduledAt = new Date(Date.now() + postponeMs).toISOString()
           await supabase.from('organic_run_schedule').update({
+            status: 'pending',
             scheduled_at: newScheduledAt,
-            error_message: `[Postponed] All providers busy for this link`,
+            error_message: `[Postponed] All providers busy for this link (attempt ${busyRetry}/${MAX_BUSY_RETRIES})`,
+            retry_count: busyRetry,
             last_status_check: new Date().toISOString(),
           }).eq('id', run.id)
           skipped++
-          console.log(`⏳ Run #${run.run_number} postponed ${postponeMs / 60000}min (all providers pre-filtered as busy)`)
+          console.log(`⏳ Run #${run.run_number} postponed ${Math.round(postponeMs / 60000)}min (attempt ${busyRetry}/${MAX_BUSY_RETRIES}, all providers busy)`)
           results.push({ run_id: run.id, run_number: run.run_number, type: item.engagement_type,
-            success: false, skipped: true, reason: `All providers busy - postponed ${postponeMs / 60000}min` })
+            success: false, skipped: true, reason: `All providers busy - postponed ${Math.round(postponeMs / 60000)}min`, retry_attempt: busyRetry })
         } else {
           await supabase.from('organic_run_schedule').update({
             status: 'failed', error_message: 'No provider accounts configured',
@@ -1521,6 +1607,9 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         const aPri = Number(a.account?.priority ?? 999)
         const bPri = Number(b.account?.priority ?? 999)
         if (aPri !== bPri) return aPri - bPri
+        const aUsedQ = lastUsedMs(a.account?.last_used_at)
+        const bUsedQ = lastUsedMs(b.account?.last_used_at)
+        if (aUsedQ !== bUsedQ) return aUsedQ - bUsedQ
         return String(a.account?.name ?? '').localeCompare(String(b.account?.name ?? ''))
       })
       const smallestAccountMin = accountsToTry.reduce((min, entry) => {
@@ -1944,8 +2033,25 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         const retryCount = (run.retry_count || 0) + 1
         const lastErr = (lastError || '').toLowerCase()
         const isActiveOrderError = isActiveOrderErrorMsg(lastErr)
-        
-        const postponeMs = isActiveOrderError ? ACTIVE_ORDER_RETRY_MS : TEMPORARY_RETRY_MS
+
+        if (retryCount > MAX_BUSY_RETRIES) {
+          await supabase.from('organic_run_schedule').update({
+            status: 'failed', started_at: null,
+            error_message: `Failed after ${MAX_BUSY_RETRIES} busy retries. Last: ${lastError}`,
+            retry_count: retryCount, last_status_check: new Date().toISOString(),
+          }).eq('id', run.id)
+          failed++
+          console.log(`❌ Run #${run.run_number} failed: busy retry cap (${MAX_BUSY_RETRIES}) reached — ${lastError}`)
+          results.push({ run_id: run.id, type: item.engagement_type, run_number: run.run_number,
+            success: false, error: lastError, will_retry: false, retry_attempt: retryCount })
+          continue
+        }
+
+        // Exponential backoff (capped at 30min) so busy links back off instead of hammering
+        const postponeMs = Math.max(
+          isActiveOrderError ? ACTIVE_ORDER_RETRY_MS : TEMPORARY_RETRY_MS,
+          busyBackoffMs(retryCount - 1),
+        )
         const newScheduledAt = new Date(Date.now() + postponeMs).toISOString()
         
         await supabase.from('organic_run_schedule').update({
