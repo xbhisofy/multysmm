@@ -134,10 +134,11 @@ export function TypeHistoryTable({
         <ScrollArea className="h-[400px]">
           <div className="divide-y">
             {sortedRuns.map((run) => {
-              const statusConfig = STATUS_CONFIG[run.status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.pending;
+              const effectiveStatus = getEffectiveRunStatus(run);
+              const statusConfig = STATUS_CONFIG[effectiveStatus as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.pending;
               const StatusIcon = statusConfig.icon;
-              const isPending = run.status === 'pending';
-              const isActive = run.status === 'started';
+              const isPending = effectiveStatus === 'pending';
+              const isActive = effectiveStatus === 'started';
               const scheduledDate = new Date(run.scheduled_at);
               const isPast = scheduledDate < new Date() && isPending;
 
