@@ -10,7 +10,7 @@ export function MobileBottomNav() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-40 lg:hidden">
-        <div className="flex items-center justify-between h-14 px-4"
+        <div className="member-mobile-header flex items-center justify-between h-14 px-4"
           style={{ background: 'rgba(255,255,255,.92)', backdropFilter: 'blur(14px)', borderBottom: '1px solid rgba(59,46,240,.12)', boxShadow: '0 6px 20px rgba(59,46,240,.08)' }}>
           <button onClick={() => setSidebarOpen(true)} aria-label="Open navigation menu" className="flex items-center justify-center w-9 h-9 rounded-lg" style={{ border: '1px solid rgba(59,46,240,.15)', background: '#EFF6FF' }}>
             <Menu className="w-4 h-4" style={{ color: '#3B2EF0' }} />

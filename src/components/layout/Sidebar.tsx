@@ -30,7 +30,7 @@ export function Sidebar({ onClose }: SidebarProps) {
   const { formatPrice, currency, currencyInfo, setCurrency } = useCurrency();
 
   return (
-    <div className="h-full w-full overflow-hidden flex flex-col" style={{ background: '#fff', borderRight: '1px solid rgba(59,46,240,.10)' }}>
+    <div className="member-sidebar h-full w-full overflow-hidden flex flex-col" style={{ background: '#fff', borderRight: '1px solid rgba(59,46,240,.10)' }}>
       {/* Close button (mobile) */}
       <div className="flex items-center justify-end px-3 pt-2 lg:hidden">
         <button onClick={onClose} aria-label="Close navigation menu" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>

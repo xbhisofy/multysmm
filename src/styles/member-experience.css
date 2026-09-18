@@ -1,0 +1,144 @@
+.member-shell {
+  --member-sky: 202 70% 61%;
+  --member-blue: 216 100% 50%;
+  --member-ink: 215 35% 14%;
+  --member-paper: 0 0% 100%;
+  --member-soft: 204 55% 97%;
+  --member-line: 205 38% 87%;
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, hsl(var(--member-sky) / 0.2), hsl(var(--member-soft)) 23rem),
+    hsl(var(--member-soft));
+  color: hsl(var(--member-ink));
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.member-shell * { letter-spacing: 0; }
+
+.member-content {
+  position: relative;
+  isolation: isolate;
+}
+
+.member-content::before {
+  position: fixed;
+  inset: 0 0 auto 260px;
+  z-index: -1;
+  height: 21rem;
+  content: "";
+  background-image:
+    linear-gradient(180deg, hsl(var(--member-sky) / 0.18), hsl(var(--member-soft)) 92%),
+    var(--member-sky-image);
+  background-position: center 42%;
+  background-size: cover;
+  opacity: 0.48;
+}
+
+.member-page {
+  position: relative;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+.member-page h1,
+.member-page h2,
+.member-page h3,
+.member-page h4 {
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+}
+
+.member-page :is(.glass-card, .glass-panel, .three-d-card, [class*="bg-card"]) {
+  border-color: hsl(var(--member-line)) !important;
+  background-color: hsl(var(--member-paper) / 0.94) !important;
+  box-shadow: 0 16px 42px hsl(var(--member-ink) / 0.07) !important;
+  backdrop-filter: blur(16px);
+}
+
+.member-page :is(input, textarea, [role="combobox"]) {
+  border-color: hsl(var(--member-line)) !important;
+  background-color: hsl(var(--member-paper) / 0.9) !important;
+}
+
+.member-page :is(input, textarea, [role="combobox"]):focus {
+  border-color: hsl(var(--member-blue)) !important;
+  box-shadow: 0 0 0 3px hsl(var(--member-blue) / 0.12) !important;
+}
+
+.member-page button[class*="bg-gradient"],
+.member-page a[class*="bg-gradient"] {
+  background: hsl(var(--member-ink)) !important;
+  color: hsl(var(--member-paper)) !important;
+}
+
+.member-sidebar {
+  --sidebar-ink: 215 35% 14%;
+  background: hsl(var(--member-paper)) !important;
+  border-right: 1px solid hsl(var(--member-line)) !important;
+  color: hsl(var(--sidebar-ink));
+}
+
+.member-sidebar > div:nth-child(2) {
+  border-color: hsl(var(--member-line)) !important;
+  box-shadow: 0 12px 34px hsl(var(--member-ink) / 0.08) !important;
+}
+
+.member-sidebar nav a:hover { background: hsl(var(--member-soft)) !important; }
+
+.member-mobile-header {
+  background: hsl(var(--member-paper) / 0.9) !important;
+  border-bottom: 1px solid hsl(var(--member-line)) !important;
+  box-shadow: 0 8px 28px hsl(var(--member-ink) / 0.08) !important;
+}
+
+.member-auth {
+  min-height: 100vh;
+  background-image:
+    linear-gradient(90deg, hsl(var(--member-ink) / 0.2), transparent 58%),
+    var(--member-sky-image) !important;
+  background-position: center;
+  background-size: cover;
+}
+
+.member-auth-card {
+  width: min(100%, 28rem);
+  padding: 2rem;
+  border: 1px solid hsl(var(--member-paper) / 0.65);
+  border-radius: 1.75rem;
+  background: hsl(var(--member-paper) / 0.9);
+  box-shadow: 0 24px 70px hsl(var(--member-ink) / 0.2);
+  backdrop-filter: blur(18px);
+}
+
+.member-auth-card h1 {
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: clamp(2.7rem, 9vw, 4rem);
+  font-weight: 400 !important;
+  line-height: 0.95;
+  letter-spacing: 0 !important;
+}
+
+.member-auth-card button[type="submit"] {
+  border-radius: 999px !important;
+  background: hsl(var(--member-ink)) !important;
+  box-shadow: 0 12px 28px hsl(var(--member-ink) / 0.2) !important;
+}
+
+@media (max-width: 1023px) {
+  .member-content::before { inset-inline: 0; }
+}
+
+@media (max-width: 640px) {
+  .member-shell main > div { padding-inline: 0.75rem; }
+  .member-page { padding-inline: 0 !important; }
+  .member-page :is(.glass-card, .glass-panel, .three-d-card, [class*="bg-card"]) {
+    border-radius: 1.25rem !important;
+  }
+  .member-auth { align-items: flex-end; padding: 0.75rem; }
+  .member-auth-card { padding: 1.5rem; border-radius: 1.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .member-shell *, .member-auth * { scroll-behavior: auto !important; }
+}
