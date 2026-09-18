@@ -9,19 +9,17 @@ const corsHeaders = {
 const MAX_RETRIES = 3
 const RETRY_DELAY_MS = 2000
 const MAX_RUN_RETRIES = 9999
-const ACTIVE_ORDER_RETRY_MS = 5 * 60 * 1000
+const ACTIVE_ORDER_RETRY_MS = 60 * 1000
 const TEMPORARY_RETRY_MS = 60 * 1000
 
-// Busy-provider backoff: start ~60s, exponential, capped at 30 minutes,
-// and give up after MAX_BUSY_RETRIES attempts so a run can never loop forever.
+// Busy providers: the run simply WAITS IN QUEUE and is re-checked every minute.
+// No growing backoff — as soon as any provider frees up, the next tick dispatches it.
 const BUSY_BACKOFF_BASE_MS = 60 * 1000
-const BUSY_BACKOFF_MAX_MS = 30 * 60 * 1000
-const MAX_BUSY_RETRIES = 30
+const BUSY_BACKOFF_MAX_MS = 60 * 1000
+const MAX_BUSY_RETRIES = 4320 // ~3 days of minute-by-minute waiting before giving up
 
-function busyBackoffMs(retryCount: number): number {
-  const attempt = Math.max(0, Number(retryCount || 0))
-  const delay = BUSY_BACKOFF_BASE_MS * Math.pow(1.6, attempt)
-  return Math.min(BUSY_BACKOFF_MAX_MS, Math.round(delay))
+function busyBackoffMs(_retryCount: number): number {
+  return BUSY_BACKOFF_BASE_MS
 }
 
 // Least-recently-used tiebreak (nulls = never used = first)
