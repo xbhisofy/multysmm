@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { getEffectiveRunStatus } from "@/lib/runStatus";
 import { 
   Loader2, 
   ArrowLeft, 
