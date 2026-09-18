@@ -63,6 +63,11 @@
   background-size: cover;
 }
 
+.catalis-sky h1,
+.catalis-sky h2 {
+  color: hsl(var(--catalis-paper));
+}
+
 .catalis-nav {
   width: min(calc(100% - 2rem), 660px);
   min-height: 4.4rem;
@@ -75,8 +80,8 @@
   min-height: 3rem;
   padding-inline: 1.3rem;
   border-radius: 999px;
-  background: hsl(var(--catalis-ink));
-  color: hsl(var(--catalis-paper));
+  background: hsl(var(--catalis-ink)) !important;
+  color: hsl(var(--catalis-paper)) !important;
   font-size: 0.84rem;
   font-weight: 700;
   transition: transform 180ms ease, background-color 180ms ease;
@@ -84,12 +89,12 @@
 
 .catalis-button:hover {
   transform: translateY(-2px);
-  background: hsl(var(--catalis-blue));
+  background: hsl(var(--catalis-blue)) !important;
 }
 
 .catalis-button-light {
-  background: hsl(var(--catalis-paper));
-  color: hsl(var(--catalis-ink));
+  background: hsl(var(--catalis-paper)) !important;
+  color: hsl(var(--catalis-ink)) !important;
 }
 
 .catalis-panel {
