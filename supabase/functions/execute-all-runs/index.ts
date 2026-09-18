@@ -247,11 +247,19 @@ class MappingCache {
         }
 
         const accounts: ProviderCandidate[] = []
+        const seen = new Set<string>()
+        const pushCandidate = (c: ProviderCandidate) => {
+          const dedupeKey = `${c.account.id}|${c.providerServiceId}`
+          if (!c.providerServiceId || seen.has(dedupeKey)) return
+          seen.add(dedupeKey)
+          accounts.push(c)
+        }
+
         for (const mapping of sorted) {
           const account = mapping.provider_account as ProviderAccount
           if (account && account.is_active && isValidHttpUrl(account.api_url)) {
             const key = `${account.provider_id}:${mapping.provider_service_id}`
-            accounts.push({
+            pushCandidate({
               account,
               providerServiceId: mapping.provider_service_id,
               minQuantity: minByKey.get(key) || 0,
@@ -261,6 +269,41 @@ class MappingCache {
             console.log(`⚠️ Skipping provider ${account.name}: invalid api_url`)
           }
         }
+
+        // BACKUP ACCOUNTS: other active accounts of the same providers, appended
+        // AFTER every primary mapping so admin priority always wins.
+        const primaryProviderIds = Array.from(new Set(accounts.map(a => a.account.provider_id).filter(Boolean)))
+        if (primaryProviderIds.length > 0) {
+          const { data: backupAccts } = await supabase
+            .from('provider_accounts')
+            .select('*')
+            .in('provider_id', primaryProviderIds)
+            .eq('is_active', true)
+            .order('priority', { ascending: true })
+
+          for (const providerId of primaryProviderIds) {
+            const providerServiceId = accounts.find(a => a.account.provider_id === providerId)?.providerServiceId
+            const minQty = minByKey.get(`${providerId}:${providerServiceId}`) || 0
+            const backups = (backupAccts || [])
+              .filter((acct: any) => acct.provider_id === providerId && isValidHttpUrl(acct.api_url))
+              .sort((a: any, b: any) => {
+                const pa = Number(a.priority ?? 999), pb = Number(b.priority ?? 999)
+                if (pa !== pb) return pa - pb
+                const ua = lastUsedMs(a.last_used_at), ub = lastUsedMs(b.last_used_at)
+                if (ua !== ub) return ua - ub
+                return String(a.name ?? '').localeCompare(String(b.name ?? ''))
+              })
+            for (const acct of backups) {
+              pushCandidate({
+                account: acct as ProviderAccount,
+                providerServiceId: providerServiceId || '',
+                minQuantity: minQty,
+                sortOrder: 998, // after all primaries, before legacy default (999)
+              })
+            }
+          }
+        }
+
         this.cache.set(serviceId, accounts)
       }
     }
