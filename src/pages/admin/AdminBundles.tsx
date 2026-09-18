@@ -1222,8 +1222,14 @@ function ProviderMappingDialog({
 
         // Check BOTH SDK error AND edge function response error
         if (importError) {
-          console.error('Auto-import SDK error:', importError);
-          toast({ title: 'Service import failed', description: importError.message, variant: 'destructive' });
+          // invoke() hides the function's response body behind a generic message — read it.
+          let detail = importError.message;
+          try {
+            const body = await (importError as any)?.context?.json?.();
+            if (body?.error) detail = body.error;
+          } catch { /* keep generic message */ }
+          console.error('Auto-import SDK error:', importError, detail);
+          toast({ title: 'Service import failed', description: detail, variant: 'destructive' });
           return;
         }
 
