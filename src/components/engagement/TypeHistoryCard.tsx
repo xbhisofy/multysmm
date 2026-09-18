@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format, formatDistanceToNow } from "date-fns";
+import { getEffectiveRunStatus } from "@/lib/runStatus";
 import {
   Eye, Heart, MessageCircle, Bookmark, Share2,
   Clock, Play, CheckCircle2, XCircle, Pencil,
@@ -102,20 +103,8 @@ export function TypeHistoryCard({
   };
 
   const getEffectiveStatus = (run: Run): 'pending' | 'started' | 'completed' | 'failed' => {
-    // Target already complete before this run went to provider — show user "Completed".
-    if (isTargetMetAutoCompleted(run)) return 'completed';
-
-    const ps = normalizeProviderStatus(run.provider_status);
-
-    if (ps === 'completed' || ps === 'complete' || ps === 'partial') return 'completed';
-    if (ps === 'pending') return 'pending';
-    if (ps === 'in progress' || ps === 'processing') return 'started';
-    if (ps === 'canceled' || ps === 'cancelled' || ps === 'refunded' || ps === 'failed' || ps === 'error') return 'failed';
-
-    const s = (run.status || '').toString().toLowerCase().trim();
-    if (s === 'processing') return 'started';
-    if (s === 'pending' || s === 'started' || s === 'completed' || s === 'failed') return s as any;
-    return 'pending';
+    const eff = getEffectiveRunStatus(run);
+    return eff === 'cancelled' ? 'failed' : eff;
   };
 
   // Helper to calculate actual delivered from provider data

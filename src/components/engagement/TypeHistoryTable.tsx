@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { format, formatDistanceToNow } from "date-fns";
+import { getEffectiveRunStatus } from "@/lib/runStatus";
 import { 
   Eye, Heart, MessageCircle, Bookmark, Share2,
   Clock, Play, CheckCircle2, XCircle, Pencil
@@ -68,9 +69,9 @@ export function TypeHistoryTable({
   const progress = targetQuantity > 0 ? (deliveredQuantity / targetQuantity) * 100 : 0;
   
   const sortedRuns = [...runs].sort((a, b) => a.run_number - b.run_number);
-  const completedRuns = runs.filter(r => r.status === 'completed');
-  const pendingRuns = runs.filter(r => r.status === 'pending');
-  const startedRuns = runs.filter(r => r.status === 'started');
+  const completedRuns = runs.filter(r => getEffectiveRunStatus(r) === 'completed');
+  const pendingRuns = runs.filter(r => getEffectiveRunStatus(r) === 'pending');
+  const startedRuns = runs.filter(r => getEffectiveRunStatus(r) === 'started');
 
   return (
     <div className="space-y-4">
@@ -133,10 +134,11 @@ export function TypeHistoryTable({
         <ScrollArea className="h-[400px]">
           <div className="divide-y">
             {sortedRuns.map((run) => {
-              const statusConfig = STATUS_CONFIG[run.status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.pending;
+              const effectiveStatus = getEffectiveRunStatus(run);
+              const statusConfig = STATUS_CONFIG[effectiveStatus as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.pending;
               const StatusIcon = statusConfig.icon;
-              const isPending = run.status === 'pending';
-              const isActive = run.status === 'started';
+              const isPending = effectiveStatus === 'pending';
+              const isActive = effectiveStatus === 'started';
               const scheduledDate = new Date(run.scheduled_at);
               const isPast = scheduledDate < new Date() && isPending;
 
@@ -152,9 +154,9 @@ export function TypeHistoryTable({
                   {/* Run Number */}
                   <div className="col-span-1">
                     <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold ${
-                      run.status === 'completed' ? 'bg-green-100 text-green-700 border-2 border-green-300' :
-                      run.status === 'started' ? 'bg-blue-100 text-blue-700 border-2 border-blue-300 animate-pulse' :
-                      run.status === 'failed' ? 'bg-red-100 text-red-700 border-2 border-red-300' :
+                      effectiveStatus === 'completed' ? 'bg-green-100 text-green-700 border-2 border-green-300' :
+                      effectiveStatus === 'started' ? 'bg-blue-100 text-blue-700 border-2 border-blue-300 animate-pulse' :
+                      effectiveStatus === 'failed' ? 'bg-red-100 text-red-700 border-2 border-red-300' :
                       'bg-muted text-muted-foreground border-2 border-border'
                     }`}>
                       {run.run_number}

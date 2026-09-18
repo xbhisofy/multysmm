@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { format, formatDistanceToNow } from "date-fns";
+import { getEffectiveRunStatus } from "@/lib/runStatus";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -95,10 +96,10 @@ export function PerTypeBreakdown({ types, allRuns = [], onTypeClick, itemStatuse
       return { ...run, cumulativeScheduled };
     });
 
-    const completedRuns = history.filter(r => r.status === 'completed');
-    const activeRuns = history.filter(r => r.status === 'started');
-    const pendingRuns = history.filter(r => r.status === 'pending');
-    const failedRuns = history.filter(r => r.status === 'failed');
+    const completedRuns = history.filter(r => getEffectiveRunStatus(r) === 'completed');
+    const activeRuns = history.filter(r => getEffectiveRunStatus(r) === 'started');
+    const pendingRuns = history.filter(r => getEffectiveRunStatus(r) === 'pending');
+    const failedRuns = history.filter(r => getEffectiveRunStatus(r) === 'failed');
 
     return {
       ...typeData,

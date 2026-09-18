@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { getEffectiveRunStatus } from "@/lib/runStatus";
 import { 
   Loader2, 
   ArrowLeft, 
@@ -125,7 +126,7 @@ export default function EngagementOrderDetail() {
     if (!order) return;
     const isActive = order.status === 'processing' || order.status === 'pending';
     const hasActiveRuns = order.items?.some((item: any) =>
-      item.runs?.some((run: any) => run.status === 'started')
+      item.runs?.some((run: any) => getEffectiveRunStatus(run) === 'started')
     );
     // If a realtime event landed in the last 45s, trust the socket — pause polling.
     const rtRecent = Date.now() - lastRealtimeAt.current < 45000;
@@ -610,10 +611,10 @@ export default function EngagementOrderDetail() {
       return (status === 'cancelled' || status === 'canceled') && message.startsWith('target met');
     };
 
-    const completedRuns = allRuns.filter((r: any) => r.status === 'completed' || isTargetMetAutoCompleted(r));
-    const pendingRuns = allRuns.filter((r: any) => r.status === 'pending');
-    const startedRuns = allRuns.filter((r: any) => r.status === 'started');
-    const failedRuns = allRuns.filter((r: any) => r.status === 'failed');
+    const completedRuns = allRuns.filter((r: any) => getEffectiveRunStatus(r) === 'completed');
+    const pendingRuns = allRuns.filter((r: any) => getEffectiveRunStatus(r) === 'pending');
+    const startedRuns = allRuns.filter((r: any) => getEffectiveRunStatus(r) === 'started');
+    const failedRuns = allRuns.filter((r: any) => getEffectiveRunStatus(r) === 'failed');
     
     // Calculate ACTUAL delivered from provider data (provider_status + remains)
     // IMPORTANT: do NOT trust local `status === 'completed'` when the run was "auto-completed"
