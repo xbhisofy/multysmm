@@ -211,14 +211,18 @@ class MappingCache {
         this.cache.set(serviceId, [])
       } else {
         const sorted = [...mappings].sort((a: any, b: any) => {
-          // STRICT priority: mapping sort_order first, then account.priority — no LRU shuffle
+          // STRICT priority: mapping sort_order first, then account.priority.
           const aSort = Number(a.sort_order ?? 999)
           const bSort = Number(b.sort_order ?? 999)
           if (aSort !== bSort) return aSort - bSort
           const aPri = Number(a.provider_account?.priority ?? 999)
           const bPri = Number(b.provider_account?.priority ?? 999)
           if (aPri !== bPri) return aPri - bPri
-          // Deterministic tiebreak by account name, so order never drifts
+          // Only on an exact priority tie: least-recently-used account first.
+          const aUsed = lastUsedMs(a.provider_account?.last_used_at)
+          const bUsed = lastUsedMs(b.provider_account?.last_used_at)
+          if (aUsed !== bUsed) return aUsed - bUsed
+          // Deterministic final tiebreak by account name, so order never drifts
           return String(a.provider_account?.name ?? '').localeCompare(String(b.provider_account?.name ?? ''))
         })
         
