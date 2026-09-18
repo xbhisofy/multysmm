@@ -609,9 +609,10 @@ const calculateObservedItemDelivery = (runs: any[], itemStartCount: number | nul
     ? Math.max(0, currentPublic - baseline)
     : 0
 
-  // STRICT: take the MAX of all three signals — provider over-delivery is detected
-  // even when its API under-reports.
-  const delivered = Math.max(askedSent, observedByRuns, publicCountDelta)
+  // Only OUR delivery counts. The public count on the post also grows from the
+  // creator's own organic traffic, so publicCountDelta must never complete an
+  // order — it is kept for logging/diagnostics only.
+  const delivered = Math.max(askedSent, observedByRuns)
 
   return {
     askedSent,
