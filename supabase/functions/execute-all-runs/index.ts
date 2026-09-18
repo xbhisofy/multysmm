@@ -2033,8 +2033,25 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         const retryCount = (run.retry_count || 0) + 1
         const lastErr = (lastError || '').toLowerCase()
         const isActiveOrderError = isActiveOrderErrorMsg(lastErr)
-        
-        const postponeMs = isActiveOrderError ? ACTIVE_ORDER_RETRY_MS : TEMPORARY_RETRY_MS
+
+        if (retryCount > MAX_BUSY_RETRIES) {
+          await supabase.from('organic_run_schedule').update({
+            status: 'failed', started_at: null,
+            error_message: `Failed after ${MAX_BUSY_RETRIES} busy retries. Last: ${lastError}`,
+            retry_count: retryCount, last_status_check: new Date().toISOString(),
+          }).eq('id', run.id)
+          failed++
+          console.log(`❌ Run #${run.run_number} failed: busy retry cap (${MAX_BUSY_RETRIES}) reached — ${lastError}`)
+          results.push({ run_id: run.id, type: item.engagement_type, run_number: run.run_number,
+            success: false, error: lastError, will_retry: false, retry_attempt: retryCount })
+          continue
+        }
+
+        // Exponential backoff (capped at 30min) so busy links back off instead of hammering
+        const postponeMs = Math.max(
+          isActiveOrderError ? ACTIVE_ORDER_RETRY_MS : TEMPORARY_RETRY_MS,
+          busyBackoffMs(retryCount - 1),
+        )
         const newScheduledAt = new Date(Date.now() + postponeMs).toISOString()
         
         await supabase.from('organic_run_schedule').update({
