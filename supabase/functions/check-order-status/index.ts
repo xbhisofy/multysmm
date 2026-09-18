@@ -35,7 +35,7 @@ async function syncObservedOverdeliveryGuard(supabase: any, itemId?: string | nu
 
   const { data: item } = await supabase
     .from('engagement_order_items')
-    .select('id, quantity, status, start_count, start_count_captured_at')
+    .select('id, engagement_order_id, quantity, status, start_count, start_count_captured_at')
     .eq('id', itemId)
     .maybeSingle()
 
@@ -115,6 +115,8 @@ async function syncObservedOverdeliveryGuard(supabase: any, itemId?: string | nu
     status: 'completed',
     updated_at: new Date().toISOString(),
   }).eq('id', itemId).neq('status', 'completed')
+
+  await updateEngagementOrderStatus(supabase, item.engagement_order_id, itemId)
 }
 
 function isProviderStatusLookupMiss(errorMsg: string): boolean {
@@ -137,20 +139,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Auth check — service role or shared cron secret only (no anon-key bypass)
-    const authHeader = req.headers.get('Authorization') || ''
-    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
-    const cronSecret = req.headers.get('x-cron-secret') || ''
-    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    const expectedCron = Deno.env.get('CRON_SECRET') ?? ''
-    if (!((serviceKey && token === serviceKey) || (expectedCron && cronSecret === expectedCron))) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      })
-    }
-
-
-    // Check if specific run ID was passed (for on-demand check)
+    // Parse the request first so an authenticated user can refresh one owned run.
     let targetRunId: string | null = null
     let callSource: string = 'unknown'
     let callContext: Record<string, unknown> = {}
@@ -164,7 +153,66 @@ Deno.serve(async (req) => {
         reason: body?.reason ?? null,
       }
     } catch {
-      // No body or invalid JSON - check all
+      // Empty body is valid for trusted system/admin bulk checks.
+    }
+
+    // Auth check — system callers, admins, or the owner of one requested run.
+    const authHeader = req.headers.get('Authorization') || ''
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
+    const cronSecret = req.headers.get('x-cron-secret') || ''
+    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    const expectedCron = Deno.env.get('CRON_SECRET') ?? ''
+    const isSystemCall = Boolean((serviceKey && token === serviceKey) || (expectedCron && cronSecret === expectedCron))
+    let callerId: string | null = null
+    let callerIsAdmin = false
+
+    if (!isSystemCall && token) {
+      const { data: authData } = await supabase.auth.getUser(token)
+      callerId = authData.user?.id || null
+      if (callerId) {
+        const { data: roles } = await supabase.from('user_roles').select('role').eq('user_id', callerId)
+        callerIsAdmin = Boolean(roles?.some((entry: any) => entry.role === 'admin'))
+      }
+    }
+
+    if (!isSystemCall && !callerId) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
+    if (!isSystemCall && !callerIsAdmin) {
+      if (!targetRunId) {
+        return new Response(JSON.stringify({ error: 'A run ID is required' }), {
+          status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+
+      const { data: ownedRun } = await supabase
+        .from('organic_run_schedule')
+        .select('order_id, engagement_order_item_id')
+        .eq('id', targetRunId)
+        .maybeSingle()
+
+      let ownerId: string | null = null
+      if (ownedRun?.order_id) {
+        const { data: legacyOrder } = await supabase.from('orders').select('user_id').eq('id', ownedRun.order_id).maybeSingle()
+        ownerId = legacyOrder?.user_id || null
+      } else if (ownedRun?.engagement_order_item_id) {
+        const { data: item } = await supabase
+          .from('engagement_order_items')
+          .select('engagement_order:engagement_orders(user_id)')
+          .eq('id', ownedRun.engagement_order_item_id)
+          .maybeSingle()
+        const relation = Array.isArray(item?.engagement_order) ? item.engagement_order[0] : item?.engagement_order
+        ownerId = (relation as any)?.user_id || null
+      }
+
+      if (!ownedRun || ownerId !== callerId) {
+        return new Response(JSON.stringify({ error: 'Forbidden' }), {
+          status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
     }
 
     const invocationStartedAt = Date.now()
