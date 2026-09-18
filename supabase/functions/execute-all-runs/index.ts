@@ -956,7 +956,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         .not('engagement_order_item_id', 'is', null)
         .order('completed_at', { ascending: true })
         .limit(50),
-      // 5. Recently busy runs (for cooldown)
+      // 5. Recently busy runs (diagnostics only; never suppress the next cron retry)
       supabase
         .from('organic_run_schedule')
         .select(`provider_account_id, error_message, engagement_order_item:engagement_order_items(engagement_type, engagement_order:engagement_orders(link))`)
@@ -1108,19 +1108,11 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
     })
     console.log(`Processing ${allEngagementRuns.length} runs (${pendingRunsLimitedPerItem.length} pending + ${retryRunsLimitedPerItem.length} retry), total overdue in DB: check query`)
 
-    // PRE-BUILD busy account lookup for recently busy runs (link → Set<accountId>)
-    const recentlyBusyByLinkType = new Map<string, Set<string>>()
-    if (recentlyBusyRuns && recentlyBusyRuns.length > 0) {
-      for (const rbr of recentlyBusyRuns) {
-        if (!rbr.provider_account_id) continue
-        if (isActiveOrderErrorMsg(rbr.error_message)) {
-          const rbrLink = normalizeLink(getNestedEngagementOrderLink(rbr.engagement_order_item))
-          const rbrType = (rbr.engagement_order_item?.engagement_type || '').toLowerCase().trim()
-          const busyKey = `${rbrLink}|${rbrType}`
-          if (!recentlyBusyByLinkType.has(busyKey)) recentlyBusyByLinkType.set(busyKey, new Set())
-          recentlyBusyByLinkType.get(busyKey)!.add(rbr.provider_account_id)
-        }
-      }
+    // A previous "busy" response must not blacklist an account for 15 minutes.
+    // The provider is retried on every cron tick; live started orders are still
+    // protected by the per-provider same-link/type guard below.
+    if (recentlyBusyRuns?.length) {
+      console.log(`ℹ️ ${recentlyBusyRuns.length} recently queued runs will be retried normally`)
     }
 
     // Process each engagement run
@@ -1138,11 +1130,9 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
       const runType = (run.engagement_order_item?.engagement_type || '').toLowerCase()
       const linkTypeKey = `${runLink}|${runType}`
       if (runLink && activeOrderLinkTypes.has(linkTypeKey)) {
-        const newScheduledAt = new Date(Date.now() + ACTIVE_ORDER_RETRY_MS).toISOString()
         await supabase.from('organic_run_schedule').update({
           status: 'pending',
-          scheduled_at: newScheduledAt,
-          error_message: `[Postponed] Active order on link for ${runType}`,
+          error_message: `[Queued] Active order on link for ${runType}`,
           last_status_check: new Date().toISOString(),
         }).eq('id', run.id)
         skipped++
@@ -1364,14 +1354,6 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         if (!busyAccountIds.includes(usedId)) busyAccountIds.push(usedId)
       }
       
-      // From pre-fetched recently busy runs
-      const busyForLinkType = recentlyBusyByLinkType.get(localExecutionKey)
-      if (busyForLinkType) {
-        for (const accId of busyForLinkType) {
-          if (!busyAccountIds.includes(accId)) busyAccountIds.push(accId)
-        }
-      }
-
       // FALLBACK: If this run already failed/cancelled on a provider, exclude it on retry
       // so the system tries a backup provider instead of repeating the same one.
       if (isRetry && run.provider_account_id) {
@@ -1595,20 +1577,18 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
               success: false, error: `All providers busy after ${MAX_BUSY_RETRIES} attempts` })
             continue
           }
-          // POSTPONE (never fail): exponential backoff capped at 30min
-          const postponeMs = busyBackoffMs(busyRetry - 1)
-          const newScheduledAt = new Date(Date.now() + postponeMs).toISOString()
+          // Keep the original schedule visible. Since it remains due, the next
+          // cron tick retries immediately instead of continually moving time ahead.
           await supabase.from('organic_run_schedule').update({
             status: 'pending',
-            scheduled_at: newScheduledAt,
-            error_message: `[Postponed] All providers busy for this link (attempt ${busyRetry}/${MAX_BUSY_RETRIES})`,
+            error_message: `[Queued] All providers busy for this link (attempt ${busyRetry}/${MAX_BUSY_RETRIES})`,
             retry_count: busyRetry,
             last_status_check: new Date().toISOString(),
           }).eq('id', run.id)
           skipped++
-          console.log(`⏳ Run #${run.run_number} postponed ${Math.round(postponeMs / 60000)}min (attempt ${busyRetry}/${MAX_BUSY_RETRIES}, all providers busy)`)
+          console.log(`⏳ Run #${run.run_number} remains queued (attempt ${busyRetry}/${MAX_BUSY_RETRIES}, all providers busy)`)
           results.push({ run_id: run.id, run_number: run.run_number, type: item.engagement_type,
-            success: false, skipped: true, reason: `All providers busy - postponed ${Math.round(postponeMs / 60000)}min`, retry_attempt: busyRetry })
+            success: false, skipped: true, reason: 'All providers busy - remains queued', retry_attempt: busyRetry })
         } else {
           await supabase.from('organic_run_schedule').update({
             status: 'failed', error_message: 'No provider accounts configured',
@@ -1699,11 +1679,9 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
           })
           console.log(`🧩 Run #${run.run_number} merged to ${combinedQty} for ${item.engagement_type} to satisfy provider min ${smallestAccountMin}`)
         } else {
-          const postponeUntil = new Date(Date.now() + ACTIVE_ORDER_RETRY_MS).toISOString()
           await supabase.from('organic_run_schedule').update({
             status: 'pending',
-            scheduled_at: postponeUntil,
-            error_message: `[Waiting for merge] Scheduled ${originalQty} below provider min ${smallestAccountMin}`,
+            error_message: `[Queued for merge] Scheduled ${originalQty} below provider min ${smallestAccountMin}`,
             last_status_check: new Date().toISOString(),
           }).eq('id', run.id)
           skipped++
@@ -2076,17 +2054,11 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
           continue
         }
 
-        // Exponential backoff (capped at 30min) so busy links back off instead of hammering
-        const postponeMs = Math.max(
-          isActiveOrderError ? ACTIVE_ORDER_RETRY_MS : TEMPORARY_RETRY_MS,
-          busyBackoffMs(retryCount - 1),
-        )
-        const newScheduledAt = new Date(Date.now() + postponeMs).toISOString()
-        
+        // Keep it due in the queue. The minute cron is the retry throttle, so
+        // scheduled_at must never drift forward on provider errors.
         await supabase.from('organic_run_schedule').update({
           status: 'pending', started_at: null,
-          scheduled_at: newScheduledAt,
-          error_message: `[Auto-retry #${retryCount}] All ${accountsToTry.length} accounts busy: ${lastError}`,
+          error_message: `[Queued retry #${retryCount}] All ${accountsToTry.length} accounts unavailable: ${lastError}`,
           provider_response: {
             ...(providerResult || {}),
             tried_providers: triedProviderIds,
@@ -2099,7 +2071,8 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         }).eq('id', run.id)
         skipped++
 
-        // BATCH POSTPONE: If active order error, mark link+type and batch-postpone same-type runs for this link
+        // Mark this link+type busy for the rest of this invocation only. Other
+        // due runs stay at their original schedule and retry on the next cron tick.
         if (isActiveOrderError && sameLink) {
           const linkTypeKey = `${sameLink}|${currentTypeNormalized}`
           activeOrderLinkTypes.add(linkTypeKey)
@@ -2107,13 +2080,13 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             supabase,
             sameLink,
             currentTypeNormalized,
-            newScheduledAt,
-            `[Batch postponed] Active order on link for ${currentTypeNormalized}`,
+            run.scheduled_at,
+            `[Queued] Active order on link for ${currentTypeNormalized}`,
           )
-          console.log(`⏳ Link+type batch-postponed ${postponeMs / 60000}min: ${batchCount} matching ${currentTypeNormalized} runs (active order)`)
+          console.log(`⏳ Link+type remains queued: ${batchCount} matching ${currentTypeNormalized} runs (active order)`)
         }
         results.push({ run_id: run.id, type: item.engagement_type, run_number: run.run_number, 
-          success: false, error: lastError, will_retry: true, retry_attempt: retryCount, postponed_min: postponeMs / 60000 })
+          success: false, error: lastError, will_retry: true, retry_attempt: retryCount })
       }
 
       // Minimal delay between runs for max throughput
