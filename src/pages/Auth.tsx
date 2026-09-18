@@ -8,6 +8,8 @@ import { Mail, Lock, User, Loader2, ArrowLeft, Shield, Zap, Eye, EyeOff, ArrowRi
 import { supabase } from '@/integrations/supabase/client';
 import { z } from 'zod';
 import { PageMeta } from '@/components/seo/PageMeta';
+import skyImage from '@/assets/multysmm-sky.jpg';
+import '@/styles/member-experience.css';
 
 const GRADIENT = 'linear-gradient(135deg, #3B2EF0 0%, #F5364B 50%, #FFC629 100%)';
 const ACCENT = '#3B2EF0';
@@ -99,8 +101,8 @@ export default function Auth() {
   const inputClass = "h-12 rounded-xl border-[#DDDCFA] bg-white focus:border-[#3B2EF0] focus:ring-2 focus:ring-[#3B2EF0]/15 text-[#0B0B16] font-medium px-4 placeholder:text-[#bbb] transition-all";
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-12 relative overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #ffffff 0%, #EEEDFF 50%, #EEEDFF 100%)' }}>
+    <div className="member-shell member-auth flex items-center justify-center px-6 py-12 relative overflow-hidden"
+      style={{ '--member-sky-image': `url(${skyImage})` } as React.CSSProperties}>
       {/* glow */}
       <div aria-hidden className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(closest-side, rgba(59,46,240,.18), transparent 70%)', filter: 'blur(40px)' }} />
@@ -112,7 +114,7 @@ export default function Auth() {
         description="Sign in or create your free MultySMM account to launch AI-powered Instagram, YouTube and TikTok growth campaigns. No credit card required."
         canonicalPath="/auth"
       />
-      <div className="w-full max-w-[400px] relative">
+      <div className="member-auth-card relative">
           {/* Logo */}
           <div className="flex items-center justify-center mb-10">
             <img src="/logo.png" alt="MultySMM" className="h-16 w-16 rounded-full object-cover bg-white ring-2 ring-blue-100 shadow-md" />
