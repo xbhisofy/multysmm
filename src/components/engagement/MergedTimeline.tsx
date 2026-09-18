@@ -162,11 +162,21 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
   const refreshAllStatus = async () => {
     setIsGlobalRefreshing(true);
     try {
-      const { data, error } = await supabase.functions.invoke('check-order-status');
+      const refreshableRunIds = runs
+        .filter((run) => getEffectiveStatus(run) === 'started' && run.provider_order_id)
+        .map((run) => run.id);
 
-      if (error) throw error;
+      const results = await Promise.all(
+        refreshableRunIds.map((runId) =>
+          supabase.functions.invoke('check-order-status', {
+            body: { runId, source: 'client-manual-refresh' },
+          })
+        )
+      );
+      const failedResult = results.find((result) => result.error);
+      if (failedResult?.error) throw failedResult.error;
 
-      toast.success(`Checked ${data?.completed + data?.stillProcessing || 0} runs from provider`);
+      toast.success(`Checked ${refreshableRunIds.length} runs from provider`);
       onRefresh?.();
     } catch (err: any) {
       toast.error(`Failed to refresh: ${err.message}`);

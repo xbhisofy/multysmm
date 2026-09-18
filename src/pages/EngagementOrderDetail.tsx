@@ -748,7 +748,7 @@ export default function EngagementOrderDetail() {
   if (totalOriginalQuantity > 0 && liveDelivered >= totalOriginalQuantity) {
     effectiveStatus = 'completed';
   } else if (effectiveStatus !== 'cancelled' && effectiveStatus !== 'failed' && effectiveStatus !== 'paused') {
-    if (hasActive || hasPending || liveDelivered > 0) {
+    if (hasActive || hasPending) {
       effectiveStatus = 'processing';
     }
   }

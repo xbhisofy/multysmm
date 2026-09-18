@@ -21,6 +21,12 @@ export const getEffectiveRunStatus = (run: any): EffectiveRunStatus => {
 
   if (ps === 'completed' || ps === 'complete' || ps === 'success') return 'completed';
   if (ps === 'partial') return 'completed';
+
+  // Some providers leave the text status at "Processing" after delivery, but
+  // remains=0 is their definitive completion signal for an accepted order.
+  const remains = run?.provider_remains;
+  if (run?.provider_order_id && typeof remains === 'number' && remains <= 0) return 'completed';
+
   if (ps === 'pending' || ps === 'awaiting') return 'pending';
   if (ps === 'in progress' || ps === 'inprogress' || ps === 'processing' || ps === 'processing order') {
     return 'started';
@@ -30,9 +36,6 @@ export const getEffectiveRunStatus = (run: any): EffectiveRunStatus => {
   }
 
   // No provider status yet: a dispatched run with 0 remaining is done.
-  const remains = run?.provider_remains;
-  if (run?.provider_order_id && typeof remains === 'number' && remains <= 0) return 'completed';
-
   const s = normalizeProviderStatus(run?.status);
   if (s === 'processing') return 'started';
   if (s === 'cancelled' || s === 'canceled') return 'cancelled';

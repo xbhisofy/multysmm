@@ -876,6 +876,28 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
     let continuationReason: string | null = null
     const results: any[] = []
 
+    // The VPS already invokes this worker every minute. Refresh provider truth
+    // first so externally completed runs are closed before queue decisions.
+    try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 45_000)
+      const statusResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/check-order-status`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''}`,
+        },
+        body: JSON.stringify({ source: 'execute-all-runs', reason: `pre-dispatch-${executionId}` }),
+        signal: controller.signal,
+      })
+      clearTimeout(timeoutId)
+      if (!statusResponse.ok) {
+        console.warn(`⚠️ Provider status pre-sync failed [${executionId}]: ${statusResponse.status}`)
+      }
+    } catch (statusSyncError) {
+      console.warn(`⚠️ Provider status pre-sync unavailable [${executionId}]`, statusSyncError)
+    }
+
     // ==========================================
     // OPTIMIZATION: Single mapping cache for entire invocation
     // ==========================================
@@ -909,7 +931,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
       // 2. Stuck runs for cleanup
       supabase
         .from('organic_run_schedule')
-        .select('id, run_number, started_at, provider_account_id, provider_status, provider_order_id, provider_remains, provider_start_count, quantity_to_send, retry_count')
+        .select('id, run_number, started_at, provider_account_id, provider_status, provider_order_id, provider_remains, provider_start_count, quantity_to_send, retry_count, engagement_order_item_id, engagement_order_item:engagement_order_items(id, engagement_order_id)')
         .eq('status', 'started')
         .or(`started_at.lt.${tenMinAgo},started_at.is.null`),
       // 3. Pending engagement runs
@@ -947,7 +969,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
     if (globalStuckRuns && globalStuckRuns.length > 0) {
       console.log(`🧹 Cleaning ${globalStuckRuns.length} stuck runs`)
       // Batch cleanup in parallel
-      const cleanupPromises = globalStuckRuns.map((stuck: any) => {
+      const cleanupPromises = globalStuckRuns.map(async (stuck: any) => {
         const startedTime = stuck.started_at ? new Date(stuck.started_at).getTime() : Date.now() - 11 * 60 * 1000
         const ageMin = Math.round((Date.now() - startedTime) / 60000)
         
@@ -982,11 +1004,18 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             return null
           }
 
-          return supabase.from('organic_run_schedule').update({
+          const updateResult = await supabase.from('organic_run_schedule').update({
             status: 'completed', completed_at: new Date().toISOString(),
             provider_status: stuck.provider_status || 'Stale',
             error_message: `Auto-completed after ${ageMin}min (status: ${stuck.provider_status || 'unknown'})`,
           }).eq('id', stuck.id)
+          const item = Array.isArray(stuck.engagement_order_item)
+            ? stuck.engagement_order_item[0]
+            : stuck.engagement_order_item
+          if (item?.engagement_order_id) {
+            await updateEngagementOrderStatus(supabase, item.engagement_order_id, item.id)
+          }
+          return updateResult
         }
       })
       await Promise.all(cleanupPromises.filter(Boolean))
@@ -1205,6 +1234,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             await supabase.from('engagement_order_items').update({
               status: 'completed', updated_at: new Date().toISOString(),
             }).eq('id', item.id).neq('status', 'completed')
+            await updateEngagementOrderStatus(supabase, item.engagement_order_id, item.id)
             skipped++
             continue
           }
@@ -1425,8 +1455,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
           // INLINE STATUS REFRESH: don't trust stale DB status — re-poll provider live so we
           // never block the next run just because check-order-status cron hasn't run yet.
           stuckRun = await inlineRefreshRunStatus(supabase, stuckRun)
-          const terminalStatuses = ['Completed', 'Complete', 'Partial', 'Refunded', 'Canceled', 'Cancelled', 'Error', 'Failed', 'Success', 'Refund', 'Canscelled']
-          const isTerminal = stuckRun.provider_status && terminalStatuses.includes(stuckRun.provider_status)
+          const isTerminal = isTerminalProviderStatus(stuckRun.provider_status)
           const hasNoRemains = typeof stuckRun.provider_remains === 'number' && stuckRun.provider_remains <= 0 && !!stuckRun.provider_order_id
           
           const startedAt = new Date(stuckRun.started_at || 0)
@@ -1453,6 +1482,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
                   ? `Auto-completed (provider remains reached 0)`
                   : `Auto-completed (status: ${stuckRun.provider_status})`,
               }).eq('id', stuckRun.id)
+              await updateEngagementOrderStatus(supabase, item.engagement_order_id, item.id)
             }
           } else if (stuckRun.provider_account_id) {
             if (hasUncertainDispatch(stuckRun)) {
