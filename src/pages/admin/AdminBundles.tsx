@@ -1247,7 +1247,9 @@ function ProviderMappingDialog({
           .select('id')
           .eq('provider_id', acct.provider_id)
           .eq('provider_service_id', data.serviceId.trim())
-          .single();
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
 
         console.log('[ProviderMapping] DB lookup result:', importedService, 'Error:', lookupError);
 
