@@ -154,9 +154,9 @@ export function TypeHistoryTable({
                   {/* Run Number */}
                   <div className="col-span-1">
                     <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold ${
-                      run.status === 'completed' ? 'bg-green-100 text-green-700 border-2 border-green-300' :
-                      run.status === 'started' ? 'bg-blue-100 text-blue-700 border-2 border-blue-300 animate-pulse' :
-                      run.status === 'failed' ? 'bg-red-100 text-red-700 border-2 border-red-300' :
+                      effectiveStatus === 'completed' ? 'bg-green-100 text-green-700 border-2 border-green-300' :
+                      effectiveStatus === 'started' ? 'bg-blue-100 text-blue-700 border-2 border-blue-300 animate-pulse' :
+                      effectiveStatus === 'failed' ? 'bg-red-100 text-red-700 border-2 border-red-300' :
                       'bg-muted text-muted-foreground border-2 border-border'
                     }`}>
                       {run.run_number}
