@@ -94,12 +94,10 @@ async function syncObservedOverdeliveryGuard(supabase: any, itemId?: string | nu
     ? Math.max(0, currentPublic - baseline)
     : 0
 
-  // STRICT: take MAX of all three signals
-  const delivered = Math.max(askedSent, observedByRuns, publicCountDelta)
-  const decision = (
-    (currentPublic !== null && baseline !== null && currentPublic >= (baseline + orderedQty))
-    || delivered >= orderedQty
-  ) ? 'auto_complete' : 'continue'
+  // Only OUR delivery counts. Public count growth (organic traffic on the post)
+  // must never auto-complete an order — it is logged for diagnostics only.
+  const delivered = Math.max(askedSent, observedByRuns)
+  const decision = delivered >= orderedQty ? 'auto_complete' : 'continue'
 
   console.log(`🔎 [check-order-status] Guard item=${itemId} start=${baseline ?? 'null'} cur=${currentPublic ?? 'null'} publicΔ=${publicCountDelta} asked=${askedSent} obs=${observedByRuns} delivered=${delivered} target=${orderedQty} decision=${decision}`)
 
