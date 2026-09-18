@@ -1553,18 +1553,33 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
       
       if (accountsToTry.length === 0) {
         if (mappingCache.hasAnyForService(item.service.id)) {
-          // POSTPONE: All providers busy — push scheduled_at forward so we don't waste cycles
-          const postponeMs = ACTIVE_ORDER_RETRY_MS
+          const busyRetry = (run.retry_count || 0) + 1
+          if (busyRetry > MAX_BUSY_RETRIES) {
+            await supabase.from('organic_run_schedule').update({
+              status: 'failed',
+              error_message: `All providers busy after ${MAX_BUSY_RETRIES} postpone attempts`,
+              last_status_check: new Date().toISOString(),
+            }).eq('id', run.id)
+            failed++
+            console.log(`❌ Run #${run.run_number} failed: busy retry cap (${MAX_BUSY_RETRIES}) reached`)
+            results.push({ run_id: run.id, run_number: run.run_number, type: item.engagement_type,
+              success: false, error: `All providers busy after ${MAX_BUSY_RETRIES} attempts` })
+            continue
+          }
+          // POSTPONE (never fail): exponential backoff capped at 30min
+          const postponeMs = busyBackoffMs(busyRetry - 1)
           const newScheduledAt = new Date(Date.now() + postponeMs).toISOString()
           await supabase.from('organic_run_schedule').update({
+            status: 'pending',
             scheduled_at: newScheduledAt,
-            error_message: `[Postponed] All providers busy for this link`,
+            error_message: `[Postponed] All providers busy for this link (attempt ${busyRetry}/${MAX_BUSY_RETRIES})`,
+            retry_count: busyRetry,
             last_status_check: new Date().toISOString(),
           }).eq('id', run.id)
           skipped++
-          console.log(`⏳ Run #${run.run_number} postponed ${postponeMs / 60000}min (all providers pre-filtered as busy)`)
+          console.log(`⏳ Run #${run.run_number} postponed ${Math.round(postponeMs / 60000)}min (attempt ${busyRetry}/${MAX_BUSY_RETRIES}, all providers busy)`)
           results.push({ run_id: run.id, run_number: run.run_number, type: item.engagement_type,
-            success: false, skipped: true, reason: `All providers busy - postponed ${postponeMs / 60000}min` })
+            success: false, skipped: true, reason: `All providers busy - postponed ${Math.round(postponeMs / 60000)}min`, retry_attempt: busyRetry })
         } else {
           await supabase.from('organic_run_schedule').update({
             status: 'failed', error_message: 'No provider accounts configured',
