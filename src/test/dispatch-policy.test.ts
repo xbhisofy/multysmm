@@ -85,9 +85,9 @@ describe("all-providers-busy handling", () => {
     if (out.action === "postpone") expect(out.delayMs).toBe(60_000);
   });
 
-  it("backs off exponentially but never beyond 30 minutes", () => {
+  it("keeps a fixed 60s queue re-check instead of growing the delay", () => {
     expect(busyBackoffMs(0)).toBe(60_000);
-    expect(busyBackoffMs(1)).toBeGreaterThan(60_000);
+    expect(busyBackoffMs(1)).toBe(60_000);
     expect(busyBackoffMs(20)).toBe(BUSY_BACKOFF_MAX_MS);
   });
 

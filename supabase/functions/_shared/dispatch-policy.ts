@@ -2,14 +2,12 @@
 // Kept dependency-free so they can be unit tested outside Deno.
 
 export const BUSY_BACKOFF_BASE_MS = 60 * 1000
-export const BUSY_BACKOFF_MAX_MS = 30 * 60 * 1000
-export const MAX_BUSY_RETRIES = 30
+export const BUSY_BACKOFF_MAX_MS = 60 * 1000
+export const MAX_BUSY_RETRIES = 4320 // ~3 days of minute-by-minute queue waiting
 
-/** Exponential backoff for busy providers: ~60s, growing, hard-capped at 30 minutes. */
-export function busyBackoffMs(retryCount: number): number {
-  const attempt = Math.max(0, Number(retryCount || 0))
-  const delay = BUSY_BACKOFF_BASE_MS * Math.pow(1.6, attempt)
-  return Math.min(BUSY_BACKOFF_MAX_MS, Math.round(delay))
+/** Busy providers: fixed 60s re-check, so a queued run dispatches as soon as one frees up. */
+export function busyBackoffMs(_retryCount: number): number {
+  return BUSY_BACKOFF_BASE_MS
 }
 
 /** Least-recently-used ordering key (never-used accounts sort first). */
