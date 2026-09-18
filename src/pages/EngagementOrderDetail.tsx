@@ -610,10 +610,10 @@ export default function EngagementOrderDetail() {
       return (status === 'cancelled' || status === 'canceled') && message.startsWith('target met');
     };
 
-    const completedRuns = allRuns.filter((r: any) => r.status === 'completed' || isTargetMetAutoCompleted(r));
-    const pendingRuns = allRuns.filter((r: any) => r.status === 'pending');
-    const startedRuns = allRuns.filter((r: any) => r.status === 'started');
-    const failedRuns = allRuns.filter((r: any) => r.status === 'failed');
+    const completedRuns = allRuns.filter((r: any) => getEffectiveRunStatus(r) === 'completed');
+    const pendingRuns = allRuns.filter((r: any) => getEffectiveRunStatus(r) === 'pending');
+    const startedRuns = allRuns.filter((r: any) => getEffectiveRunStatus(r) === 'started');
+    const failedRuns = allRuns.filter((r: any) => getEffectiveRunStatus(r) === 'failed');
     
     // Calculate ACTUAL delivered from provider data (provider_status + remains)
     // IMPORTANT: do NOT trust local `status === 'completed'` when the run was "auto-completed"
