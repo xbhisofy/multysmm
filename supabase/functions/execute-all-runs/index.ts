@@ -12,6 +12,25 @@ const MAX_RUN_RETRIES = 9999
 const ACTIVE_ORDER_RETRY_MS = 5 * 60 * 1000
 const TEMPORARY_RETRY_MS = 60 * 1000
 
+// Busy-provider backoff: start ~60s, exponential, capped at 30 minutes,
+// and give up after MAX_BUSY_RETRIES attempts so a run can never loop forever.
+const BUSY_BACKOFF_BASE_MS = 60 * 1000
+const BUSY_BACKOFF_MAX_MS = 30 * 60 * 1000
+const MAX_BUSY_RETRIES = 30
+
+function busyBackoffMs(retryCount: number): number {
+  const attempt = Math.max(0, Number(retryCount || 0))
+  const delay = BUSY_BACKOFF_BASE_MS * Math.pow(1.6, attempt)
+  return Math.min(BUSY_BACKOFF_MAX_MS, Math.round(delay))
+}
+
+// Least-recently-used tiebreak (nulls = never used = first)
+function lastUsedMs(value: string | null | undefined): number {
+  if (!value) return 0
+  const t = new Date(value).getTime()
+  return Number.isFinite(t) ? t : 0
+}
+
 // Inline status-check cache for this execution (avoids re-polling same account row).
 const inlineProviderAccountCache = new Map<string, { api_key: string; api_url: string } | null>()
 const TERMINAL_PROVIDER_STATUSES = new Set([
