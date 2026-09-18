@@ -6,8 +6,8 @@ import { cn } from '@/lib/utils';
 
 interface SidebarProps { onClose?: () => void; }
 
-const GRADIENT = 'linear-gradient(120deg, #3B2EF0 0%, #F5364B 55%, #FFC629 100%)';
-const DISPLAY = "'Syne', system-ui, sans-serif";
+const GRADIENT = 'var(--member-action-gradient)';
+const DISPLAY = "Georgia, 'Times New Roman', serif";
 
 const userNavItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
@@ -51,7 +51,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           {/* Identity row */}
           <div className="relative px-4 pt-4 pb-3 flex items-center gap-3">
             <div className="relative shrink-0">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-[13px] font-bold text-white"
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-[13px] font-bold text-primary-foreground"
                 style={{ background: GRADIENT }}>
                 {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || 'U'}
               </div>
@@ -62,7 +62,7 @@ export function Sidebar({ onClose }: SidebarProps) {
                 <p className="text-[13px] font-semibold truncate leading-tight" style={{ color: '#0F172A' }}>
                   {profile.full_name || 'User'}
                 </p>
-                <span className="text-[8px] font-bold px-1.5 py-[2px] rounded tracking-wider text-white"
+                <span className="text-[8px] font-bold px-1.5 py-[2px] rounded tracking-wider text-primary-foreground"
                   style={{ background: GRADIENT }}>PRO</span>
               </div>
               <p className="text-[10.5px] truncate mt-0.5" style={{ color: '#94A3B8' }}>{profile.email}</p>
@@ -90,7 +90,7 @@ export function Sidebar({ onClose }: SidebarProps) {
               </div>
             </div>
             <Link to="/wallet" onClick={onClose}
-              className="group flex items-center justify-center gap-2 w-full h-10 rounded-xl text-[12.5px] font-semibold text-white transition-all active:scale-[.98]"
+              className="group flex items-center justify-center gap-2 w-full h-10 rounded-xl text-[12.5px] font-semibold text-primary-foreground transition-all active:scale-[.98]"
               style={{ background: GRADIENT, boxShadow: '0 10px 22px -8px rgba(245,54,75,.50)' }}>
               <span className="tracking-wide">Add Funds</span>
               <Rocket className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -116,7 +116,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           return (
             <Link key={item.path} to={item.path} onClick={onClose}
               className={cn('flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium mb-0.5 transition-all duration-150',
-                !isActive && 'hover:bg-[#EFF6FF]'
+                !isActive && 'hover:bg-secondary'
               )}
               style={{
                 background: isActive ? '#EFF6FF' : 'transparent',
@@ -128,7 +128,7 @@ export function Sidebar({ onClose }: SidebarProps) {
               <item.icon className="w-4 h-4" style={{ color: isActive ? '#3B2EF0' : '#94A3B8' }} />
               <span className="flex-1">{item.label}</span>
               {(item as any).highlight && !isActive && (
-                <span className="text-[8px] px-1.5 py-0.5 rounded-full font-bold text-white" style={{ background: GRADIENT }}>HOT</span>
+                 <span className="text-[8px] px-1.5 py-0.5 rounded-full font-bold text-primary-foreground" style={{ background: GRADIENT }}>HOT</span>
               )}
             </Link>
           );

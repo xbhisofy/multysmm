@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { Menu } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 
-const GRADIENT = 'linear-gradient(120deg, #3B2EF0 0%, #F5364B 55%, #FFC629 100%)';
-
 export function MobileBottomNav() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -24,7 +22,7 @@ export function MobileBottomNav() {
 
       {sidebarOpen && (
         <>
-          <div className="fixed inset-0 bg-black/30 z-50 lg:hidden backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+          <div className="fixed inset-0 bg-foreground/30 z-50 lg:hidden backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
           <div className="fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[300px] lg:hidden shadow-2xl">
             <Sidebar onClose={() => setSidebarOpen(false)} />
           </div>
