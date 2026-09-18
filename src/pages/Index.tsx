@@ -66,7 +66,7 @@ const Index = () => {
       <nav className="brutal-nav">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
           <Link to="/" className="flex items-center gap-3" aria-label="MultySMM home">
-            <img src="/logo.png" alt="" className="h-9 w-9 border-2 border-foreground object-cover" />
+            <img src="/logo.png" alt="" className="h-9 w-9 border-2 border-[hsl(var(--ink))] object-cover" />
             <span className="brutal-title text-lg">MultySMM</span>
           </Link>
           <div className="hidden items-center gap-8 md:flex">
@@ -82,7 +82,7 @@ const Index = () => {
             <Link to="/auth" className="brutal-btn hidden px-6 py-3 text-sm sm:inline-flex">Launch</Link>
             <button
               type="button"
-              className="border-2 border-foreground p-2 md:hidden"
+              className="border-2 border-[hsl(var(--ink))] p-2 md:hidden"
               aria-label="Toggle navigation"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
@@ -92,12 +92,12 @@ const Index = () => {
           </div>
         </div>
         {menuOpen && (
-          <div className="grid border-t-2 border-foreground md:hidden">
+          <div className="grid border-t-2 border-[hsl(var(--ink))] md:hidden">
             {navLinks.map(([label, href]) =>
               href.startsWith('#') ? (
-                <a key={label} href={href} onClick={() => setMenuOpen(false)} className="border-b border-foreground/20 px-5 py-3 text-sm font-bold uppercase">{label}</a>
+                <a key={label} href={href} onClick={() => setMenuOpen(false)} className="border-b border-[hsl(var(--ink))]/20 px-5 py-3 text-sm font-bold uppercase">{label}</a>
               ) : (
-                <Link key={label} to={href} onClick={() => setMenuOpen(false)} className="border-b border-foreground/20 px-5 py-3 text-sm font-bold uppercase">{label}</Link>
+                <Link key={label} to={href} onClick={() => setMenuOpen(false)} className="border-b border-[hsl(var(--ink))]/20 px-5 py-3 text-sm font-bold uppercase">{label}</Link>
               ),
             )}
             <Link to="/auth" onClick={() => setMenuOpen(false)} className="brutal-btn justify-center">Launch platform</Link>
@@ -108,7 +108,7 @@ const Index = () => {
       <main className="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-12">
         <div className="brutal-frame grid grid-cols-12 gap-0 overflow-hidden">
           {/* HERO */}
-          <section className="brutal-cell col-span-12 flex flex-col justify-between border-b-2 border-foreground p-8 md:col-span-8 md:border-r-2 md:p-16">
+          <section className="brutal-cell col-span-12 flex flex-col justify-between border-b-2 border-[hsl(var(--ink))] p-8 md:col-span-8 md:border-r-2 md:p-16">
             <div>
               <span className="brutal-tag mb-8">Human intelligence only</span>
               <h1 className="brutal-display mb-8 text-5xl md:text-7xl lg:text-8xl">
@@ -130,7 +130,7 @@ const Index = () => {
             {stats.map(({ value, label, tone }, i) => (
               <div
                 key={label}
-                className={`${tone === 'signal' ? 'brutal-cell-signal items-center text-center' : tone === 'grey' ? 'brutal-cell-grey' : 'brutal-cell'} flex flex-col justify-center border-b-2 border-foreground p-8 ${i === 2 ? 'md:border-b-0' : ''}`}
+                className={`${tone === 'signal' ? 'brutal-cell-signal items-center text-center' : tone === 'grey' ? 'brutal-cell-grey' : 'brutal-cell'} flex flex-col justify-center border-b-2 border-[hsl(var(--ink))] p-8 ${i === 2 ? 'md:border-b-0' : ''}`}
               >
                 <span className="brutal-title text-4xl md:text-5xl">{value}</span>
                 <span className="mt-1 text-sm font-bold uppercase tracking-tight">{label}</span>
@@ -139,14 +139,14 @@ const Index = () => {
           </div>
 
           {/* FEATURES */}
-          <section id="features" className="col-span-12 grid grid-cols-1 gap-[2px] bg-foreground md:grid-cols-3">
+          <section id="features" className="col-span-12 grid grid-cols-1 gap-[2px] bg-[hsl(var(--ink))] md:grid-cols-3">
             {features.map(({ title, text, mark }) => (
               <article key={title} className="brutal-cell brutal-tile p-8 md:p-12">
                 <div
-                  className={`mb-6 flex h-12 w-12 items-center justify-center ${mark === 'signal' ? 'bg-[hsl(var(--signal))]' : mark === 'ink' ? 'bg-foreground' : 'border-2 border-[hsl(var(--signal))]'}`}
+                  className={`mb-6 flex h-12 w-12 items-center justify-center ${mark === 'signal' ? 'bg-[hsl(var(--signal))]' : mark === 'ink' ? 'bg-[hsl(var(--ink))]' : 'border-2 border-[hsl(var(--signal))]'}`}
                 >
-                  {mark === 'signal' && <span className="h-6 w-6 border-2 border-background" />}
-                  {mark === 'ink' && <span className="h-[2px] w-6 bg-background" />}
+                  {mark === 'signal' && <span className="h-6 w-6 border-2 border-[hsl(var(--paper))]" />}
+                  {mark === 'ink' && <span className="h-[2px] w-6 bg-[hsl(var(--paper))]" />}
                   {mark === 'outline' && <span className="h-2 w-2 rounded-full bg-[hsl(var(--signal))]" />}
                 </div>
                 <h3 className="brutal-title mb-4 text-2xl">{title}</h3>
@@ -156,7 +156,7 @@ const Index = () => {
           </section>
 
           {/* MARQUEE */}
-          <div className="brutal-cell-ink col-span-12 overflow-hidden border-y-2 border-foreground py-5">
+          <div className="brutal-cell-ink col-span-12 overflow-hidden border-y-2 border-[hsl(var(--ink))] py-5">
             <div className="brutal-marquee-track">
               {[...marquee, ...marquee].map((word, i) => (
                 <span key={`${word}-${i}`} className="flex items-center gap-8">
@@ -168,7 +168,7 @@ const Index = () => {
           </div>
 
           {/* ABOUT + TOOLS */}
-          <section id="about" className="brutal-cell-grey col-span-12 border-b-2 border-foreground p-8 md:col-span-5 md:border-b-0 md:border-r-2 md:p-12">
+          <section id="about" className="brutal-cell-grey col-span-12 border-b-2 border-[hsl(var(--ink))] p-8 md:col-span-5 md:border-b-0 md:border-r-2 md:p-12">
             <span className="brutal-tag mb-6">About us</span>
             <h2 className="brutal-title mb-6 text-3xl md:text-4xl">Real people. Real content. Real growth.</h2>
             <p className="text-base opacity-80">
@@ -178,7 +178,7 @@ const Index = () => {
             <Link to="/auth" className="brutal-btn brutal-btn-ghost mt-8 text-sm">Create account <ArrowRight className="h-4 w-4" /></Link>
           </section>
 
-          <section className="col-span-12 grid grid-cols-1 gap-[2px] bg-foreground md:col-span-7 md:grid-cols-2">
+          <section className="col-span-12 grid grid-cols-1 gap-[2px] bg-[hsl(var(--ink))] md:col-span-7 md:grid-cols-2">
             {tools.map(([num, title, text]) => (
               <article key={title} className="brutal-cell brutal-tile p-8">
                 <span className="brutal-title text-3xl text-[hsl(var(--signal))]">{num}</span>
@@ -189,15 +189,15 @@ const Index = () => {
           </section>
 
           {/* PRICING */}
-          <section id="pricing" className="col-span-12 border-t-2 border-foreground">
-            <div className="brutal-cell flex flex-col gap-4 border-b-2 border-foreground p-8 md:flex-row md:items-end md:justify-between md:p-12">
+          <section id="pricing" className="col-span-12 border-t-2 border-[hsl(var(--ink))]">
+            <div className="brutal-cell flex flex-col gap-4 border-b-2 border-[hsl(var(--ink))] p-8 md:flex-row md:items-end md:justify-between md:p-12">
               <div>
                 <span className="brutal-tag mb-4">Wallet options</span>
                 <h2 className="brutal-title text-3xl md:text-5xl">Simple, transparent pricing</h2>
               </div>
               <p className="max-w-sm text-base opacity-80">Top up when you need to. Your balance is only used for the orders you place.</p>
             </div>
-            <div className="grid grid-cols-1 gap-[2px] bg-foreground md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-[2px] bg-[hsl(var(--ink))] md:grid-cols-3">
               {plans.map((plan) => (
                 <article
                   key={plan.name}
@@ -229,13 +229,13 @@ const Index = () => {
           </section>
 
           {/* CTA */}
-          <section className="brutal-cell-signal col-span-12 flex flex-col items-start gap-6 border-t-2 border-foreground p-8 md:flex-row md:items-center md:justify-between md:p-14">
+          <section className="brutal-cell-signal col-span-12 flex flex-col items-start gap-6 border-t-2 border-[hsl(var(--ink))] p-8 md:flex-row md:items-center md:justify-between md:p-14">
             <h2 className="brutal-title max-w-xl text-3xl md:text-5xl">Ready to grow without bots?</h2>
             <Link to="/auth" className="brutal-btn text-base">Start now <ArrowRight className="h-4 w-4" /></Link>
           </section>
 
           {/* FOOTER */}
-          <footer id="footer" className="brutal-cell-ink col-span-12 border-t-2 border-foreground p-8 md:p-12">
+          <footer id="footer" className="brutal-cell-ink col-span-12 border-t-2 border-[hsl(var(--ink))] p-8 md:p-12">
             <div className="grid gap-10 md:grid-cols-[1.4fr_2fr]">
               <div>
                 <Link to="/" className="flex items-center gap-3">
@@ -271,7 +271,7 @@ const Index = () => {
                 </div>
               </div>
             </div>
-            <div className="mt-10 border-t border-background/20 pt-5 text-xs opacity-60">
+            <div className="mt-10 border-t border-[hsl(var(--paper))]/20 pt-5 text-xs opacity-60">
               © {new Date().getFullYear()} MultySMM. All rights reserved.
             </div>
           </footer>
