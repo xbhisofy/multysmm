@@ -1607,6 +1607,9 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         const aPri = Number(a.account?.priority ?? 999)
         const bPri = Number(b.account?.priority ?? 999)
         if (aPri !== bPri) return aPri - bPri
+        const aUsedQ = lastUsedMs(a.account?.last_used_at)
+        const bUsedQ = lastUsedMs(b.account?.last_used_at)
+        if (aUsedQ !== bUsedQ) return aUsedQ - bUsedQ
         return String(a.account?.name ?? '').localeCompare(String(b.account?.name ?? ''))
       })
       const smallestAccountMin = accountsToTry.reduce((min, entry) => {
