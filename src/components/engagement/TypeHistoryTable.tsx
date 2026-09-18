@@ -68,9 +68,9 @@ export function TypeHistoryTable({
   const progress = targetQuantity > 0 ? (deliveredQuantity / targetQuantity) * 100 : 0;
   
   const sortedRuns = [...runs].sort((a, b) => a.run_number - b.run_number);
-  const completedRuns = runs.filter(r => r.status === 'completed');
-  const pendingRuns = runs.filter(r => r.status === 'pending');
-  const startedRuns = runs.filter(r => r.status === 'started');
+  const completedRuns = runs.filter(r => getEffectiveRunStatus(r) === 'completed');
+  const pendingRuns = runs.filter(r => getEffectiveRunStatus(r) === 'pending');
+  const startedRuns = runs.filter(r => getEffectiveRunStatus(r) === 'started');
 
   return (
     <div className="space-y-4">
