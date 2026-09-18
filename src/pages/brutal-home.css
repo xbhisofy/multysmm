@@ -1,0 +1,125 @@
+/* Brutalist grid homepage — scoped tokens (ink / paper / grey / signal red) */
+
+.brutal-page {
+  --ink: 0 0% 7%;
+  --paper: 0 0% 100%;
+  --grey: 0 0% 93%;
+  --signal: 4 100% 60%;
+
+  background: hsl(var(--grey));
+  color: hsl(var(--ink));
+  font-family: 'Hind', system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.brutal-page ::selection {
+  background: hsl(var(--signal));
+  color: hsl(var(--paper));
+}
+
+.brutal-display,
+.brutal-title {
+  font-family: 'Archivo Black', 'Arial Black', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+}
+
+.brutal-frame {
+  border: 2px solid hsl(var(--ink));
+  background: hsl(var(--ink));
+  box-shadow: 14px 14px 0 0 hsl(var(--ink));
+}
+
+@media (max-width: 767px) {
+  .brutal-frame { box-shadow: 8px 8px 0 0 hsl(var(--ink)); }
+}
+
+.brutal-cell {
+  background: hsl(var(--paper));
+}
+
+.brutal-cell-grey { background: hsl(var(--grey)); }
+.brutal-cell-ink { background: hsl(var(--ink)); color: hsl(var(--paper)); }
+.brutal-cell-signal { background: hsl(var(--signal)); color: hsl(var(--paper)); }
+
+.brutal-hairline { border-color: hsl(var(--ink)); }
+
+.brutal-tag {
+  display: inline-block;
+  background: hsl(var(--signal));
+  color: hsl(var(--paper));
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+}
+
+.brutal-btn {
+  font-family: 'Archivo Black', 'Arial Black', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  background: hsl(var(--ink));
+  color: hsl(var(--paper));
+  padding: 1rem 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+.brutal-btn:hover { background: hsl(var(--signal)); }
+.brutal-btn:active { transform: translate(2px, 2px); }
+
+.brutal-btn-ghost {
+  background: transparent;
+  color: hsl(var(--ink));
+  border: 2px solid hsl(var(--ink));
+}
+
+.brutal-btn-ghost:hover { background: hsl(var(--ink)); color: hsl(var(--paper)); }
+
+.brutal-link {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.brutal-link:hover { color: hsl(var(--signal)); }
+
+.brutal-tile {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.brutal-tile:hover {
+  background: hsl(var(--grey));
+  transform: translateY(-3px);
+}
+
+.brutal-marquee-track {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  animation: brutal-marquee 24s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes brutal-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brutal-marquee-track { animation: none; }
+  .brutal-tile:hover { transform: none; }
+}
+
+.brutal-nav {
+  border-bottom: 2px solid hsl(var(--ink));
+  background: hsl(var(--paper));
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
