@@ -10,9 +10,9 @@ import skyImage from '@/assets/multysmm-sky.jpg';
 import './catalis-home.css';
 
 const features = [
-  { icon: Eye, title: 'Precision views', text: 'Build reach with controlled, human-paced delivery across your best content.' },
-  { icon: Heart, title: 'Meaningful engagement', text: 'Combine likes, saves and shares in one clear campaign without manual work.' },
-  { icon: MessageCircle, title: 'Natural conversations', text: 'Schedule comments at the right pace to keep every post feeling authentic.' },
+  { icon: Eye, title: 'Real audience reach', text: 'Build visibility through creator-led clipping and genuine content discovery.' },
+  { icon: Heart, title: 'Organic engagement', text: 'Grow through authentic likes, saves and shares—not bot-generated activity.' },
+  { icon: MessageCircle, title: 'Human interactions', text: 'Create natural conversations with engagement designed to feel genuine.' },
   { icon: BarChart3, title: 'Growth analytics', text: 'Follow orders, delivery and performance from one calm, focused dashboard.' },
 ];
 
@@ -73,13 +73,13 @@ const Index = () => {
 
         <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-5 pb-52 pt-40 text-center md:pt-36">
           <span className="catalis-kicker mb-6 border-primary-foreground/30 bg-primary-foreground/15 text-primary-foreground">
-            <Sparkles className="h-3 w-3" /> Strategy to success
+            <Sparkles className="h-3 w-3" /> No bots. Real engagement.
           </span>
           <h1 className="catalis-display mb-6 text-primary-foreground">
-            Build and <em>grow</em> with smarter social tools
+            Grow through <em>organic</em> social engagement
           </h1>
           <p className="mb-8 max-w-xl text-sm leading-6 text-primary-foreground md:text-base">
-            Scale your social presence with flexible engagement, intelligent scheduling and one simple dashboard.
+            Get creator-led clipping and human-paced engagement designed for authentic growth—not automated bot activity.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button asChild className="catalis-button"><Link to="/auth">Get Started</Link></Button>
@@ -110,7 +110,7 @@ const Index = () => {
           <div className="mx-auto max-w-5xl text-center">
             <span className="catalis-kicker mb-6"><Sparkles className="h-3 w-3 text-primary" /> About us</span>
             <h2 className="catalis-heading mx-auto max-w-5xl">
-              We are passionate about empowering creators and businesses to take control of their <em>social growth.</em>
+              We help creators and businesses grow through <em>real people, real content and organic engagement.</em>
             </h2>
           </div>
           <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-10 border-y py-10 md:grid-cols-3 md:gap-6">
