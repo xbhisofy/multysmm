@@ -1537,6 +1537,9 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         const aPri = Number(a.account?.priority ?? 999)
         const bPri = Number(b.account?.priority ?? 999)
         if (aPri !== bPri) return aPri - bPri
+        const aUsed = lastUsedMs(a.account?.last_used_at)
+        const bUsed = lastUsedMs(b.account?.last_used_at)
+        if (aUsed !== bUsed) return aUsed - bUsed
         return String(a.account?.name ?? '').localeCompare(String(b.account?.name ?? ''))
       })
       if (defaultProvider && !accountsToTry.some(a => a.account.id === defaultProvider!.id)) {
