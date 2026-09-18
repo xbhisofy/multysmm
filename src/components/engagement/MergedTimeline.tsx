@@ -69,23 +69,8 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
     return (status === 'cancelled' || status === 'canceled') && message.startsWith('target met');
   };
 
-  const getEffectiveStatus = (run: MergedRun): 'pending' | 'started' | 'completed' | 'failed' | 'cancelled' => {
-    // Target already complete before this run went to provider — show user "Completed".
-    if (isTargetMetAutoCompleted(run)) return 'completed';
-
-    const ps = normalizeProviderStatus(run.provider_status);
-
-    if (ps === 'completed' || ps === 'complete' || ps === 'partial') return 'completed';
-    if (ps === 'pending') return 'pending';
-    if (ps === 'in progress' || ps === 'processing') return 'started';
-    if (ps === 'canceled' || ps === 'cancelled' || ps === 'refunded' || ps === 'failed' || ps === 'error') return 'failed';
-
-    const s = (run.status || '').toString().toLowerCase().trim();
-    if (s === 'processing') return 'started';
-    if (s === 'cancelled' || s === 'canceled') return 'cancelled';
-    if (s === 'pending' || s === 'started' || s === 'completed' || s === 'failed') return s as any;
-    return 'pending';
-  };
+  const getEffectiveStatus = (run: MergedRun): 'pending' | 'started' | 'completed' | 'failed' | 'cancelled' =>
+    getEffectiveRunStatus(run);
 
   const getDeliveredFromProvider = (run: MergedRun): number => {
     const ps = normalizeProviderStatus(run.provider_status);
