@@ -379,6 +379,8 @@ async function claimRunLock(params: {
     .update(params.updates)
     .eq('id', params.runId)
     .eq('status', params.expectedStatus)
+    // Duplicate safety: never claim a run that already holds a provider order
+    .is('provider_order_id', null)
     .select('id, status')
     .maybeSingle()
 
