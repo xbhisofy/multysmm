@@ -1,0 +1,154 @@
+.catalis-page {
+  --catalis-sky: 202 62% 61%;
+  --catalis-blue: 216 100% 50%;
+  --catalis-ink: 0 0% 7%;
+  --catalis-copy: 0 0% 31%;
+  --catalis-paper: 0 0% 100%;
+  --catalis-soft: 0 0% 96%;
+  --catalis-line: 0 0% 89%;
+  min-height: 100vh;
+  background: hsl(var(--catalis-paper));
+  color: hsl(var(--catalis-ink));
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.catalis-page * {
+  letter-spacing: 0;
+}
+
+.catalis-page h1,
+.catalis-page h2,
+.catalis-page h3,
+.catalis-page h4 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: hsl(var(--catalis-ink));
+}
+
+.catalis-display {
+  font-size: clamp(3rem, 6vw, 5.8rem);
+  line-height: 0.96;
+}
+
+.catalis-heading {
+  font-size: clamp(2.4rem, 5vw, 4.65rem);
+  line-height: 1;
+}
+
+.catalis-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 1.8rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid hsl(var(--catalis-line));
+  border-radius: 999px;
+  background: hsl(var(--catalis-paper) / 0.72);
+  color: hsl(var(--catalis-copy));
+  font-size: 0.69rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.catalis-shell {
+  width: min(100% - 1.25rem, 1220px);
+  margin-inline: auto;
+}
+
+.catalis-sky {
+  background-color: hsl(var(--catalis-sky));
+  background-image: linear-gradient(hsl(var(--catalis-sky) / 0.12), hsl(var(--catalis-sky) / 0.12)), var(--catalis-sky-image);
+  background-position: center;
+  background-size: cover;
+}
+
+.catalis-sky h1,
+.catalis-sky h2 {
+  color: hsl(var(--catalis-paper));
+}
+
+.catalis-nav {
+  width: min(calc(100% - 2rem), 660px);
+  min-height: 4.4rem;
+  border-radius: 0 0 1.4rem 1.4rem;
+  background: hsl(var(--catalis-paper));
+  box-shadow: 0 8px 22px hsl(var(--catalis-ink) / 0.06);
+}
+
+.catalis-button {
+  min-height: 3rem;
+  padding-inline: 1.3rem;
+  border-radius: 999px;
+  background: hsl(var(--catalis-ink)) !important;
+  color: hsl(var(--catalis-paper)) !important;
+  font-size: 0.84rem;
+  font-weight: 700;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.catalis-button:hover {
+  transform: translateY(-2px);
+  background: hsl(var(--catalis-blue)) !important;
+}
+
+.catalis-button-light {
+  background: hsl(var(--catalis-paper)) !important;
+  color: hsl(var(--catalis-ink)) !important;
+}
+
+.catalis-panel {
+  border-radius: 1.6rem;
+  background: hsl(var(--catalis-paper));
+}
+
+.catalis-soft-panel {
+  border-radius: 1.3rem;
+  background: hsl(var(--catalis-soft));
+}
+
+.catalis-mini-chart {
+  display: flex;
+  align-items: end;
+  gap: 0.55rem;
+  height: 7.5rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: hsl(var(--catalis-paper));
+}
+
+.catalis-mini-chart span {
+  flex: 1;
+  min-width: 0.65rem;
+  border-radius: 999px 999px 0.5rem 0.5rem;
+  background: hsl(var(--catalis-blue));
+}
+
+.catalis-float {
+  animation: catalis-float 5s ease-in-out infinite;
+}
+
+@keyframes catalis-float {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-10px) rotate(-4deg); }
+}
+
+@media (max-width: 767px) {
+  .catalis-nav {
+    width: calc(100% - 1.25rem);
+    border-radius: 0 0 1rem 1rem;
+  }
+
+  .catalis-display {
+    font-size: clamp(2.7rem, 13vw, 4.2rem);
+  }
+
+  .catalis-heading {
+    font-size: clamp(2.25rem, 11vw, 3.6rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .catalis-float { animation: none; }
+  .catalis-button { transition: none; }
+}
