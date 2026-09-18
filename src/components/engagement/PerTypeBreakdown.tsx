@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { format, formatDistanceToNow } from "date-fns";
+import { getEffectiveRunStatus } from "@/lib/runStatus";
 import {
   AlertDialog,
   AlertDialogAction,
