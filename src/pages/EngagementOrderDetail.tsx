@@ -126,7 +126,7 @@ export default function EngagementOrderDetail() {
     if (!order) return;
     const isActive = order.status === 'processing' || order.status === 'pending';
     const hasActiveRuns = order.items?.some((item: any) =>
-      item.runs?.some((run: any) => run.status === 'started')
+      item.runs?.some((run: any) => getEffectiveRunStatus(run) === 'started')
     );
     // If a realtime event landed in the last 45s, trust the socket — pause polling.
     const rtRecent = Date.now() - lastRealtimeAt.current < 45000;
