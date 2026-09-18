@@ -7,7 +7,7 @@ WITH restored AS (
   SET status = 'pending',
       completed_at = NULL,
       error_message = NULL,
-      scheduled_at = GREATEST(r.scheduled_at, now() + (r.run_number * interval '1 minute'))
+      scheduled_at = LEAST(r.scheduled_at, now())
   WHERE r.status = 'cancelled'
     AND lower(coalesce(r.error_message, '')) LIKE 'target met%'
     AND r.provider_order_id IS NULL
