@@ -95,10 +95,10 @@ export function PerTypeBreakdown({ types, allRuns = [], onTypeClick, itemStatuse
       return { ...run, cumulativeScheduled };
     });
 
-    const completedRuns = history.filter(r => r.status === 'completed');
-    const activeRuns = history.filter(r => r.status === 'started');
-    const pendingRuns = history.filter(r => r.status === 'pending');
-    const failedRuns = history.filter(r => r.status === 'failed');
+    const completedRuns = history.filter(r => getEffectiveRunStatus(r) === 'completed');
+    const activeRuns = history.filter(r => getEffectiveRunStatus(r) === 'started');
+    const pendingRuns = history.filter(r => getEffectiveRunStatus(r) === 'pending');
+    const failedRuns = history.filter(r => getEffectiveRunStatus(r) === 'failed');
 
     return {
       ...typeData,
