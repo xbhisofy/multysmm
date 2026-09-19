@@ -1804,6 +1804,9 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             const prLink = normalizeLink(getNestedEngagementOrderLink(pr.engagement_order_item))
             const prType = (pr.engagement_order_item?.engagement_type || '').toLowerCase().trim()
             if (prLink !== sameLink || prType !== currentTypeNormalized) return false
+            // A run stuck as "started" for 3h+ must not block the queue forever.
+            const prStartedMs = pr.started_at ? new Date(pr.started_at).getTime() : 0
+            if (prStartedMs && Date.now() - prStartedMs >= 180 * 60 * 1000) return false
             return isConflictingProviderOrder({ status: pr.status, providerStatus: pr.provider_status })
           })
 
