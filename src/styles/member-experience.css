@@ -81,7 +81,7 @@
 
 .member-page button[class*="bg-gradient"],
 .member-page a[class*="bg-gradient"] {
-  background: hsl(var(--member-ink)) !important;
+  background: var(--member-action-gradient) !important;
   color: hsl(var(--member-paper)) !important;
 }
 
