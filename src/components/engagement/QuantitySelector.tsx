@@ -23,22 +23,26 @@ const QUICK_OPTIONS = [
 // Quick option button - memoized for performance
 const QuickButton = memo(function QuickButton({ 
   option, 
-  isSelected, 
+  isSelected,
+  disabled,
   onClick 
 }: { 
   option: { label: string; value: number }; 
-  isSelected: boolean; 
+  isSelected: boolean;
+  disabled?: boolean;
   onClick: () => void;
 }) {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className={cn(
         "px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl font-bold text-sm transition-colors",
         "border-2 will-change-transform",
         isSelected
           ? "bg-foreground text-background border-foreground"
-          : "bg-secondary text-foreground border-border hover:border-foreground/50 hover:bg-muted"
+          : "bg-secondary text-foreground border-border hover:border-foreground/50 hover:bg-muted",
+        disabled && "opacity-40 cursor-not-allowed hover:border-border hover:bg-secondary"
       )}
     >
       {option.label}
