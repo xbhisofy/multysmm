@@ -8,7 +8,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { getEffectiveRunStatus } from "@/lib/runStatus";
 import {
   Eye, Heart, MessageCircle, Bookmark, Share2,
-  Clock, Play, CheckCircle2, XCircle, Pencil,
+  Clock, Play, CheckCircle2, XCircle,
   ChevronDown, ChevronUp, ExternalLink, RefreshCw, Zap, CalendarClock,
   Pause, PlayCircle, Ban, RefreshCw as Repost, Repeat, UserPlus, Bell, Clock as ClockIcon
 } from "lucide-react";
