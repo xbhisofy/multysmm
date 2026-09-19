@@ -64,6 +64,58 @@ const TIME_PRESETS = [
   { value: -1, label: 'Custom' },
 ];
 
+// Per-type accent palette — har engagement type ka apna rang
+const TYPE_PALETTE: Record<string, {
+  iconBox: string;   // icon chip bg + text
+  card: string;      // card border + soft tint when active
+  input: string;     // quantity input accent
+  bar: string;       // settings toggle bar tint
+}> = {
+  views: {
+    iconBox: 'bg-sky-100 text-sky-600',
+    card: 'border-sky-200 bg-gradient-to-br from-sky-50/80 to-card',
+    input: 'border-sky-300 bg-sky-50/60 focus-visible:ring-sky-400',
+    bar: 'border-sky-200/70 bg-sky-50/50 hover:bg-sky-100/60',
+  },
+  likes: {
+    iconBox: 'bg-rose-100 text-rose-600',
+    card: 'border-rose-200 bg-gradient-to-br from-rose-50/80 to-card',
+    input: 'border-rose-300 bg-rose-50/60 focus-visible:ring-rose-400',
+    bar: 'border-rose-200/70 bg-rose-50/50 hover:bg-rose-100/60',
+  },
+  comments: {
+    iconBox: 'bg-violet-100 text-violet-600',
+    card: 'border-violet-200 bg-gradient-to-br from-violet-50/80 to-card',
+    input: 'border-violet-300 bg-violet-50/60 focus-visible:ring-violet-400',
+    bar: 'border-violet-200/70 bg-violet-50/50 hover:bg-violet-100/60',
+  },
+  saves: {
+    iconBox: 'bg-amber-100 text-amber-600',
+    card: 'border-amber-200 bg-gradient-to-br from-amber-50/80 to-card',
+    input: 'border-amber-300 bg-amber-50/60 focus-visible:ring-amber-400',
+    bar: 'border-amber-200/70 bg-amber-50/50 hover:bg-amber-100/60',
+  },
+  shares: {
+    iconBox: 'bg-emerald-100 text-emerald-600',
+    card: 'border-emerald-200 bg-gradient-to-br from-emerald-50/80 to-card',
+    input: 'border-emerald-300 bg-emerald-50/60 focus-visible:ring-emerald-400',
+    bar: 'border-emerald-200/70 bg-emerald-50/50 hover:bg-emerald-100/60',
+  },
+  reposts: {
+    iconBox: 'bg-teal-100 text-teal-600',
+    card: 'border-teal-200 bg-gradient-to-br from-teal-50/80 to-card',
+    input: 'border-teal-300 bg-teal-50/60 focus-visible:ring-teal-400',
+    bar: 'border-teal-200/70 bg-teal-50/50 hover:bg-teal-100/60',
+  },
+  followers: {
+    iconBox: 'bg-indigo-100 text-indigo-600',
+    card: 'border-indigo-200 bg-gradient-to-br from-indigo-50/80 to-card',
+    input: 'border-indigo-300 bg-indigo-50/60 focus-visible:ring-indigo-400',
+    bar: 'border-indigo-200/70 bg-indigo-50/50 hover:bg-indigo-100/60',
+  },
+};
+const DEFAULT_PALETTE = TYPE_PALETTE.views;
+
 export function EngagementTypeCard({
   type,
   config,
@@ -116,6 +168,7 @@ export function EngagementTypeCard({
 
   const engagementConfig = ENGAGEMENT_CONFIG[type];
   const Icon = iconMap[engagementConfig?.icon as keyof typeof iconMap] || Eye;
+  const palette = TYPE_PALETTE[type] || DEFAULT_PALETTE;
 
   // Get provider limits
   const providerMin = minQuantity ?? PROVIDER_MINIMUMS[type] ?? 10;
@@ -318,6 +371,7 @@ export function EngagementTypeCard({
     <Card className={cn(
       "rounded-xl border bg-card shadow-sm",
       hasError ? "border-destructive/40" : "border-border",
+      config.enabled && !hasError && palette.card,
       !config.enabled && "opacity-70"
     )}>
       <CardContent className="p-3 overflow-hidden">
@@ -326,13 +380,10 @@ export function EngagementTypeCard({
           {/* Left: Icon + Label */}
           <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
             <div className={cn(
-              "p-1.5 rounded-lg shrink-0 bg-muted/60",
-              config.enabled ? "text-primary" : "text-muted-foreground"
+              "p-1.5 rounded-lg shrink-0",
+              config.enabled ? palette.iconBox : "bg-muted/60 text-muted-foreground"
             )}>
-              <Icon className={cn(
-                "h-3.5 w-3.5 sm:h-4 sm:w-4",
-                config.enabled ? "text-primary" : "text-muted-foreground"
-              )} />
+              <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
@@ -362,6 +413,7 @@ export function EngagementTypeCard({
                 onBlur={handleQuantityBlur}
                 className={cn(
                   "w-14 sm:w-20 h-7 sm:h-8 text-xs sm:text-sm text-right bg-secondary border border-border text-foreground font-medium px-1.5 rounded-lg",
+                  !hasError && palette.input,
                   hasError && "border-destructive"
                 )}
               />
@@ -388,7 +440,10 @@ export function EngagementTypeCard({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="group mt-2 w-full flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/25 hover:bg-muted/45 transition-colors px-3 py-2 text-left"
+                className={cn(
+                  "group mt-2 w-full flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/25 hover:bg-muted/45 transition-colors px-3 py-2 text-left",
+                  palette.bar
+                )}
               >
                 <span className="flex-1 min-w-0">
                   <span className="block text-[13px] font-medium text-foreground leading-tight">
