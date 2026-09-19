@@ -7,4 +7,3 @@
 - [x] Synchronize live provider completion status and stop completed orders displaying as processing.
 
 - [x] Restore automatic dispatch by allowing queued busy runs to retry providers on every cron cycle.
-- [x] Homepage font: simple bold sans (reference image-84 style)
