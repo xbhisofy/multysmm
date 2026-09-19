@@ -46,8 +46,8 @@ export default function ContactUs() {
                 </div>
                 <h3 className="font-semibold">Telegram Support</h3>
               </div>
-              <a href="https://t.me/multysmm" target="_blank" rel="noreferrer" className="text-sm text-sky-500 hover:underline">
-                @multysmm
+              <a href="https://t.me/x07neo" target="_blank" rel="noreferrer" className="text-sm text-sky-500 hover:underline">
+                @x07neo
               </a>
               <p className="text-xs text-muted-foreground mt-2">Fastest way to reach us. Available 7 days a week.</p>
             </div>
