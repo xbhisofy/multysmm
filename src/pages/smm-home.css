@@ -9,16 +9,15 @@
   min-height: 100vh;
   background: hsl(var(--smm-paper));
   color: hsl(var(--smm-ink));
-  font-family: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
+  font-family: "DM Sans", "Segoe UI", Arial, sans-serif;
 }
 
 .smm-home h1,
 .smm-home h2,
 .smm-home h3 {
-  font-family: "Syne", "Plus Jakarta Sans", "Segoe UI", sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.12;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
   color: hsl(var(--smm-ink));
 }
 
