@@ -19,56 +19,56 @@ const navLinks = [
 const features = [
   {
     icon: Zap,
-    title: 'Instant Start',
-    text: 'Most orders begin within minutes. Creator-led clipping and real engagement start moving right away.',
+    title: 'Real People, Not Bots',
+    text: 'Every like, view and follow comes from real accounts and creator-driven clipping — never bot farms or fake traffic.',
   },
   {
     icon: ShieldCheck,
-    title: 'Best Quality',
-    text: '65+ carefully managed services focused on organic reach and genuine audience interactions.',
+    title: 'Human-Paced Delivery',
+    text: 'Engagement arrives in natural waves that match how a real post spreads, so your growth curve stays believable.',
   },
   {
     icon: Headphones,
-    title: '24/7 Support',
-    text: 'Our team is always ready to help you track orders, add funds or pick the right service.',
+    title: 'Built for Serious Growth',
+    text: 'Live tracking, smart routing and 24/7 support — the heavyweight setup ordinary panels simply cannot match.',
   },
 ];
 
 const platforms = ['YouTube', 'Instagram', 'Twitter', 'TikTok', 'Telegram', 'Facebook'];
 
 const services = [
-  { icon: Instagram, name: 'Instagram', tags: ['Followers', 'Likes'], featured: true },
-  { icon: Facebook, name: 'Facebook', tags: ['Likes', 'Comments'] },
-  { icon: Youtube, name: 'YouTube', tags: ['Subscribers', 'Views'] },
+  { icon: Instagram, name: 'Instagram', tags: ['Real Followers', 'Organic Likes'], featured: true },
+  { icon: Facebook, name: 'Facebook', tags: ['Page Reach', 'Comments'] },
+  { icon: Youtube, name: 'YouTube', tags: ['Watch Time', 'Real Views'] },
   { icon: Twitter, name: 'Twitter', tags: ['Followers', 'Reposts'] },
   { icon: Send, name: 'Telegram', tags: ['Members', 'Reactions'] },
-  { icon: Play, name: 'TikTok', tags: ['Followers', 'Views'] },
+  { icon: Play, name: 'TikTok', tags: ['Clipping Reach', 'Views'] },
 ];
 
 const faqs = [
   {
-    q: 'What is MultySMM?',
-    a: 'MultySMM is a social growth panel where you order creator-led engagement—likes, views, followers and more—managed from one simple dashboard.',
+    q: 'How is this different from a normal SMM panel?',
+    a: 'Normal panels resell bot numbers. We run real organic engagement — creator clipping and genuine accounts interacting with your content, delivered at human speed.',
   },
   {
-    q: 'How do I place an order?',
-    a: 'Add funds to your wallet, paste your content link, choose a service and quantity, then place the order. You can watch progress live.',
+    q: 'Is the engagement really organic?',
+    a: 'Yes. Reach comes from real audiences and creator-led distribution. No bot bursts, no fake spikes, nothing that looks machine-made on your profile.',
   },
   {
-    q: 'Is MultySMM safe for my account?',
-    a: 'Yes. Delivery is human-paced and designed to look natural—no bot bursts, no sudden spikes that put accounts at risk.',
+    q: 'How do I start a campaign?',
+    a: 'Add funds, paste your content link, pick the engagement type and volume, and launch. Progress updates live in your dashboard.',
   },
   {
-    q: 'What is the difference between refill and non-refill services?',
-    a: 'Refill services replace drops within the refill window automatically. Non-refill services are cheaper but drops are not replaced.',
+    q: 'Is it safe for my account?',
+    a: 'It is built to be. Delivery is spread naturally over time so platforms see normal growth, not a sudden unnatural jump.',
   },
   {
-    q: 'How fast is delivery?',
-    a: 'Most orders start within minutes. Larger orders are spread over time so growth looks organic.',
+    q: 'How fast does it start?',
+    a: 'Most campaigns begin within minutes. Bigger volumes are paced over hours or days so the growth stays organic.',
   },
   {
     q: 'Which payment methods do you support?',
-    a: 'You can top up your wallet with UPI and popular payment options—balance is only used for orders you place.',
+    a: 'You can top up your wallet with UPI and popular payment options — balance is only used for campaigns you launch.',
   },
 ];
 
