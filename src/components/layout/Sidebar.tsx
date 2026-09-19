@@ -30,7 +30,7 @@ export function Sidebar({ onClose }: SidebarProps) {
   const { formatPrice, currency, currencyInfo, setCurrency } = useCurrency();
 
   return (
-    <div className="member-sidebar h-full w-full overflow-hidden flex flex-col" style={{ background: '#fff', borderRight: '1px solid rgba(59,46,240,.10)' }}>
+    <div className="member-sidebar h-full w-full overflow-hidden flex flex-col" style={{ background: '#F4F6FF', borderRight: '1px solid rgba(59,46,240,.08)' }}>
       {/* Close button (mobile) */}
       <div className="flex items-center justify-end px-3 pt-2 lg:hidden">
         <button onClick={onClose} aria-label="Close navigation menu" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>
@@ -101,7 +101,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 pb-3 scrollbar-thin">
-        <p className="px-3 mb-2 text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: '#94A3B8' }}>Menu</p>
+        <p className="px-3 mb-2.5 text-[10px] font-extrabold uppercase tracking-[0.22em]" style={{ color: '#A5B4FC' }}>Menu</p>
         {userNavItems.map((item) => {
           const currentFull = location.pathname + location.search;
           const isMassLink = item.path.includes('mode=mass');
@@ -115,17 +115,21 @@ export function Sidebar({ onClose }: SidebarProps) {
               : location.pathname === item.path;
           return (
             <Link key={item.path} to={item.path} onClick={onClose}
-              className={cn('flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium mb-0.5 transition-all duration-150',
-                !isActive && 'hover:bg-secondary'
+              className={cn('flex items-center gap-3 px-4 py-3 rounded-2xl text-[13.5px] mb-2 transition-all duration-150 active:scale-[.98]',
+                !isActive && 'hover:translate-x-0.5'
               )}
               style={{
-                background: isActive ? '#EFF6FF' : 'transparent',
-                color: isActive ? '#3B2EF0' : '#475569',
-                border: isActive ? '1px solid rgba(59,46,240,.22)' : '1px solid transparent',
-                fontWeight: isActive ? 600 : 500,
+                background: isActive ? GRADIENT : '#FFFFFF',
+                color: isActive ? '#FFFFFF' : '#334155',
+                border: isActive ? '1px solid transparent' : '1px solid rgba(59,46,240,.10)',
+                boxShadow: isActive
+                  ? '0 10px 20px -8px rgba(59,46,240,.45)'
+                  : '0 2px 8px -4px rgba(15,23,42,.08)',
+                fontWeight: isActive ? 800 : 600,
+                letterSpacing: '-0.01em',
               }}
             >
-              <item.icon className="w-4 h-4" style={{ color: isActive ? '#3B2EF0' : '#94A3B8' }} />
+              <item.icon className="w-[18px] h-[18px]" style={{ color: isActive ? '#FFFFFF' : '#7C8CF8' }} />
               <span className="flex-1">{item.label}</span>
               {(item as any).highlight && !isActive && (
                  <span className="text-[8px] px-1.5 py-0.5 rounded-full font-bold text-primary-foreground" style={{ background: GRADIENT }}>HOT</span>
@@ -142,14 +146,17 @@ export function Sidebar({ onClose }: SidebarProps) {
               const isActive = location.pathname.startsWith(item.path);
               return (
                 <Link key={item.path} to={item.path} onClick={onClose}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium mb-0.5 transition-all duration-150"
+                  className="flex items-center gap-3 px-4 py-3 rounded-2xl text-[13.5px] mb-2 transition-all duration-150 active:scale-[.98]"
                   style={{
-                    background: isActive ? '#FDF4FF' : 'transparent',
-                    color: isActive ? '#A21CAF' : '#475569',
-                    border: isActive ? '1px solid rgba(245,54,75,.25)' : '1px solid transparent',
+                    background: isActive ? GRADIENT : '#FFFFFF',
+                    color: isActive ? '#FFFFFF' : '#334155',
+                    border: isActive ? '1px solid transparent' : '1px solid rgba(59,46,240,.10)',
+                    boxShadow: isActive ? '0 10px 20px -8px rgba(59,46,240,.45)' : '0 2px 8px -4px rgba(15,23,42,.08)',
+                    fontWeight: isActive ? 800 : 600,
+                    letterSpacing: '-0.01em',
                   }}
                 >
-                  <item.icon className="w-4 h-4" style={{ color: isActive ? '#F5364B' : '#94A3B8' }} />
+                  <item.icon className="w-[18px] h-[18px]" style={{ color: isActive ? '#FFFFFF' : '#7C8CF8' }} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -160,13 +167,13 @@ export function Sidebar({ onClose }: SidebarProps) {
 
       {/* Currency */}
       <div className="px-3 pb-2">
-        <label className="relative w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-[12px] font-medium cursor-pointer"
-          style={{ color: '#475569', background: '#F8FAFF', border: '1px solid rgba(59,46,240,.12)' }}>
-          <div className="flex items-center gap-2">
+        <label className="relative w-full flex items-center justify-between gap-2 px-4 py-3 rounded-2xl text-[13px] font-semibold cursor-pointer"
+          style={{ color: '#334155', background: '#FFFFFF', border: '1px solid rgba(59,46,240,.10)', boxShadow: '0 2px 8px -4px rgba(15,23,42,.08)' }}>
+          <div className="flex items-center gap-2.5">
             <span className="text-base">{currencyInfo.flag}</span>
             <span className="uppercase tracking-wider">{currency}</span>
           </div>
-          <span className="text-[10px] opacity-70">{currencyInfo.symbol}</span>
+          <span className="text-[11px] font-bold" style={{ color: '#7C8CF8' }}>{currencyInfo.symbol}</span>
           <select
             value={currency}
             onChange={(e) => setCurrency(e.target.value as any)}
@@ -180,12 +187,26 @@ export function Sidebar({ onClose }: SidebarProps) {
         </label>
       </div>
 
-
+      {/* Telegram card */}
+      <div className="px-3 pb-2">
+        <a href="https://t.me/x07neo" target="_blank" rel="noopener noreferrer"
+          className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-150 hover:translate-x-0.5"
+          style={{ background: '#FFFFFF', border: '1px solid rgba(59,46,240,.14)', boxShadow: '0 2px 8px -4px rgba(15,23,42,.08)' }}>
+          <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: GRADIENT }}>
+            <Send className="w-4 h-4" style={{ color: '#fff' }} />
+          </span>
+          <span className="min-w-0">
+            <span className="block text-[13px] font-bold leading-tight" style={{ color: '#0F172A' }}>Join our Telegram</span>
+            <span className="block text-[11px] mt-0.5" style={{ color: '#94A3B8' }}>Updates & support</span>
+          </span>
+        </a>
+      </div>
 
       {/* Sign out */}
-      <div className="p-3" style={{ borderTop: '1px solid rgba(59,46,240,.10)' }}>
-        <button onClick={() => signOut()} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12px] font-medium transition-colors hover:bg-red-50" style={{ color: '#64748B' }}>
-          <LogOut className="w-3.5 h-3.5" style={{ color: '#F5364B' }} />
+      <div className="p-3">
+        <button onClick={() => signOut()} className="w-full flex items-center justify-center gap-2.5 px-4 py-3 rounded-2xl text-[13.5px] font-bold transition-all active:scale-[.98] hover:bg-red-50"
+          style={{ color: '#EF4444', background: '#FFFFFF', border: '1px solid rgba(239,68,68,.18)', boxShadow: '0 2px 8px -4px rgba(15,23,42,.08)' }}>
+          <LogOut className="w-4 h-4" />
           <span>Sign out</span>
         </button>
       </div>
