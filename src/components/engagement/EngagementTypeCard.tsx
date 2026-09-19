@@ -451,22 +451,26 @@ export function EngagementTypeCard({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className={cn(
-                  "group mt-2 w-full flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/25 hover:bg-muted/45 transition-colors px-3 py-2 text-left",
-                  palette.bar
-                )}
+                className="group mt-2.5 w-full flex items-center justify-between gap-3 rounded-xl border border-emerald-100 bg-emerald-50/60 hover:bg-emerald-50 transition-colors px-3 py-2.5 text-left"
               >
-                <span className="flex-1 min-w-0">
-                  <span className="block text-[13px] font-medium text-foreground leading-tight">
-                    Settings
+                <span className="flex items-center gap-2.5 flex-1 min-w-0">
+                  <span className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                    <Timer className="h-4 w-4 text-emerald-600" />
                   </span>
-                  {scheduleData && (
-                    <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5 font-normal">
-                      {scheduleData.runCount} batches · ~{formatDuration(scheduleData.duration)}
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-[13px] font-semibold text-foreground leading-tight">
+                      Tap to customise delivery
                     </span>
-                  )}
+                    <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5 font-normal">
+                      {scheduleData
+                        ? `${scheduleData.runCount} batches · ~${formatDuration(scheduleData.duration)}`
+                        : "Set delivery time, number of runs, variance & peak hours"}
+                    </span>
+                  </span>
                 </span>
-                <span className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground shrink-0">
+                <span className="flex items-center gap-1 text-[11px] font-bold tracking-wide text-emerald-600 shrink-0">
+                  <span className="group-data-[state=open]:hidden">OPEN</span>
+                  <span className="hidden group-data-[state=open]:inline">CLOSE</span>
                   <ChevronDown className="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform" />
                 </span>
               </button>
