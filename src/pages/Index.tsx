@@ -79,8 +79,8 @@ const Index = () => {
   return (
     <div id="home" className="smm-home">
       <PageMeta
-        title="MultySMM — Best & Fastest SMM Panel for Resellers"
-        description="Trusted social media growth panel. Best quality services, fastest start and the cheapest prices for resellers."
+        title="MultySMM — Real Organic Engagement, Not Another SMM Panel"
+        description="Get real organic engagement from genuine audiences and creator-led clipping. Human-paced delivery, live tracking and serious growth on every platform."
         canonicalPath="/"
         breadcrumbs={[{ name: 'Home', path: '/' }]}
       />
