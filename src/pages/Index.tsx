@@ -288,7 +288,7 @@ const Index = () => {
               <strong className="text-lg font-extrabold">MULTY<span className="smm-grad-text">SMM</span></strong>
             </Link>
             <p className="mt-5 max-w-xs text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
-              The best, cheapest and fastest SMM panel for creators, brands and resellers.
+              Real organic engagement for creators and brands — genuine audiences, human pacing, zero bots.
             </p>
             <Link to="/auth" className="smm-btn smm-btn-primary mt-6">Get Started</Link>
           </div>
