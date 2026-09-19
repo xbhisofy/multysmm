@@ -215,6 +215,56 @@ const Index = () => {
         </div>
       </section>
 
+      {/* ================= HOW IT WORKS ================= */}
+      <section id="how" className="py-20 md:py-24" style={{ background: 'hsl(var(--smm-violet-soft) / 0.35)' }}>
+        <div className="smm-wrap">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> How it works</span>
+            <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">
+              One link. <span className="smm-grad-text">Full engagement.</span> Delivered organically.
+            </h2>
+            <p className="mx-auto mt-5 max-w-xl text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
+              Paste your post link once. Views, likes, comments, saves and shares are all delivered automatically by AI —
+              in patterns that look exactly like real users.
+            </p>
+          </div>
+
+          <div className="smm-flow-card mx-auto mt-12 max-w-4xl">
+            <div className="smm-link-bar">
+              <span className="flex items-center gap-2.5 truncate"><LinkIcon className="h-4 w-4 shrink-0" style={{ color: 'hsl(var(--smm-violet-deep))' }} />https://instagram.com/p/your-post...</span>
+              <span className="shrink-0 text-[11px] font-extrabold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-violet-deep))' }}>1 link</span>
+            </div>
+            <div className="my-5 flex justify-center"><ArrowDown className="h-5 w-5" style={{ color: 'hsl(var(--smm-violet))' }} /></div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+              {engagementTiles.map(({ icon: Icon, label }, i) => (
+                <div key={label} className="smm-flow-tile" style={{ animationDelay: `${i * 0.18}s` }}>
+                  <span className="ico"><Icon className="h-5 w-5" /></span>
+                  <div>{label}</div>
+                </div>
+              ))}
+            </div>
+            <p className="mt-6 text-center text-xs" style={{ color: 'hsl(var(--smm-copy))' }}>
+              Everything in one single order — pick and choose what you need.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {howSteps.map(({ icon: Icon, title, text }, i) => (
+              <article key={title} className="smm-step-card">
+                <span className="smm-step-num">{String(i + 1).padStart(2, '0')}</span>
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl" style={{ background: 'hsl(var(--smm-violet-soft))', color: 'hsl(var(--smm-violet-deep))' }}>
+                  <Icon className="h-5 w-5" />
+                </span>
+                <h3 className="mt-5 text-base font-extrabold" style={{ color: 'hsl(var(--smm-ink))' }}>{title}</h3>
+                <p className="mt-2 text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>{text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+
       {/* ================= FEATURES ================= */}
       <section id="pricing" className="smm-wrap py-20 md:py-24">
         <div className="mx-auto max-w-2xl text-center">
