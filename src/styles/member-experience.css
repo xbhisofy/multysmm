@@ -45,9 +45,9 @@
 .member-page h2,
 .member-page h3,
 .member-page h4 {
-  font-family: Georgia, "Times New Roman", serif !important;
-  font-weight: 400 !important;
-  letter-spacing: 0 !important;
+  font-family: "DM Sans", "Segoe UI", Arial, sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
 }
 
 .member-page :is(.glass-card, .glass-panel, .three-d-card, [class*="bg-card"]) {
