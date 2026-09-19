@@ -24,7 +24,7 @@ import {
   interpolateCurve 
 } from "@/lib/curve-to-schedule";
 import { format } from "date-fns";
-import { Clock, TrendingUp, Zap, Timer, Calendar, Pencil, Check, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Clock, TrendingUp, Zap, Timer, Calendar, ChevronDown, ChevronUp } from "lucide-react";
 
 type Platform = 'instagram' | 'tiktok' | 'youtube' | 'twitter' | 'facebook';
 

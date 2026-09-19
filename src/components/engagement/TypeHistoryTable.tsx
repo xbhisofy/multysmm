@@ -6,7 +6,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { getEffectiveRunStatus } from "@/lib/runStatus";
 import { 
   Eye, Heart, MessageCircle, Bookmark, Share2,
-  Clock, Play, CheckCircle2, XCircle, Pencil
+  Clock, Play, CheckCircle2, XCircle
 } from "lucide-react";
 
 const ENGAGEMENT_CONFIG: Record<string, { icon: typeof Eye; color: string; bg: string; border: string; label: string; emoji: string }> = {

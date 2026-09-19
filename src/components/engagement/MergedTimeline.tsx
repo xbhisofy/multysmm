@@ -4,7 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { format, formatDistanceToNow } from "date-fns";
 import {
   Eye, Heart, MessageCircle, Bookmark, Share2,
-  Clock, Play, CheckCircle2, XCircle, Pencil, Timer, RefreshCw, Loader2, TrendingUp, CalendarClock
+  Clock, Play, CheckCircle2, XCircle, Timer, RefreshCw, Loader2, TrendingUp, CalendarClock
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
