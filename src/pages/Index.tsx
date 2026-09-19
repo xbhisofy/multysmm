@@ -162,15 +162,15 @@ const Index = () => {
         <div className="flex flex-wrap items-center justify-center gap-x-14 gap-y-6">
           <div className="text-center">
             <div className="smm-stat-value">4516+</div>
-            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Active Members</div>
+            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Creators Growing</div>
           </div>
           <div className="text-center">
             <div className="smm-stat-value">511516+</div>
-            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Total Orders</div>
+            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Organic Campaigns</div>
           </div>
           <div className="text-center">
-            <div className="smm-stat-value">24/7</div>
-            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Live Support</div>
+            <div className="smm-stat-value">0%</div>
+            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Bot Traffic</div>
           </div>
         </div>
       </section>
