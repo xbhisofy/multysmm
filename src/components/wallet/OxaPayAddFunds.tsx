@@ -20,7 +20,17 @@ export default function OxaPayAddFunds() {
       const { data, error } = await supabase.functions.invoke('oxapay-create-invoice', {
         body: { amount_inr: amt, return_origin: window.location.origin },
       });
-      if (error) throw new Error(error.message);
+      if (error) {
+        let detail = error.message;
+        try {
+          const res = (error as any)?.context;
+          if (res && typeof res.json === 'function') {
+            const body = await res.json();
+            if (body?.error) detail = body.error;
+          }
+        } catch (_) { /* keep default */ }
+        throw new Error(detail);
+      }
       const payUrl = (data as any)?.payment_url;
       if (!payUrl) throw new Error('Gateway did not return a payment URL');
       window.location.href = payUrl;
