@@ -38,17 +38,38 @@
 }
 
 .member-bottom-nav-item {
-  color: hsl(var(--member-ink) / 0.45);
+  --tab-color: hsl(var(--member-ink) / 0.45);
+  --tab-soft: transparent;
+  color: hsl(var(--member-ink) / 0.5);
   text-decoration: none;
   transition: color 0.15s ease;
 }
 
+.member-bottom-nav-icon {
+  background: var(--tab-soft);
+  color: var(--tab-color);
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.member-bottom-nav-item .lucide {
+  color: var(--tab-color);
+  stroke-width: 2.6;
+}
+
 .member-bottom-nav-item.is-active {
-  color: hsl(var(--member-blue));
+  color: var(--tab-color);
+}
+
+.member-bottom-nav-item.is-active .member-bottom-nav-icon {
+  background: var(--tab-color);
+  color: #fff;
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 8px 18px -6px var(--tab-color);
 }
 
 .member-bottom-nav-item.is-active .lucide {
-  filter: drop-shadow(0 4px 10px hsl(var(--member-blue) / 0.35));
+  color: #fff;
+  filter: none;
 }
 
 
