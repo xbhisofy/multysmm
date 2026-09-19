@@ -558,7 +558,8 @@ serve(async (req) => {
 
           let idealRuns = Math.round((engagement.quantity / 1000) * config.runsPerThousand)
           const maxPosForQty = Math.max(1, Math.floor(engagement.quantity / providerMin))
-          const absoluteMaxRuns = Math.max(1, Math.floor(maxPosForQty * 0.8))
+          // EXACT user choice: har run kam se kam providerMin le sakta hai — bas wahi asli limit hai
+          const absoluteMaxRuns = maxPosForQty
           
           let targetRuns: number
           let timeLimitApplied = false
@@ -570,7 +571,8 @@ serve(async (req) => {
             
             let initialTarget = requestedRunCount ?? Math.min(maxPosRuns, Math.max(config.minRunsPerOrder, Math.min(config.maxRunsPerOrder, idealRuns)))
             // Clamp targetRuns first so baseInterval spans the entire time limit
-            targetRuns = Math.min(initialTarget, absoluteMaxRuns)
+            // maxPosRuns cap ensures interval kabhi 5 min se neeche nahi jaata
+            targetRuns = Math.min(initialTarget, absoluteMaxRuns, Math.max(1, maxPosRuns))
             if (targetRuns < 2 && engagement.quantity >= providerMin * 2) targetRuns = 2
             
             const avgNeeded = Math.ceil(engagement.quantity / targetRuns)
@@ -587,6 +589,13 @@ serve(async (req) => {
               baseInterval = requestedIntervalMinutes
               intervalRange = 0
               timeLimitApplied = Boolean(requestedRunCount)
+            } else if (requestedRunCount && targetRuns > 1) {
+              // User ne sirf runs choose kiye, delivery time nahi — runs ko ek
+              // sensible 24h window me spread karo (warna default interval se
+              // schedule kayi din tak stretch ho jaata tha)
+              baseInterval = Math.max(5, (24 * 60) / (targetRuns - 1))
+              intervalRange = baseInterval * 0.15
+              timeLimitApplied = true
             }
           }
 

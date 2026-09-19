@@ -1557,9 +1557,14 @@ export default function EngagementOrder() {
             <QuantitySelector
               value={baseQuantity}
               onChange={setBaseQuantity}
-              min={100}
-              max={1000000}
+              min={Math.max(1, engagements?.views?.minQuantity ?? 100)}
+              max={Math.max(1000000, engagements?.views?.maxQuantity ?? 1000000)}
             />
+            {(engagements?.views?.minQuantity ?? 0) > 0 && (
+              <p className="text-[11px] text-muted-foreground mt-2">
+                Provider minimum {engagements.views.minQuantity.toLocaleString()} views — isse kam order provider accept nahi karega.
+              </p>
+            )}
           </CardContent>
         </Card>
 
