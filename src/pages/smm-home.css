@@ -12,13 +12,13 @@
   font-family: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
 }
 
-.smm-home * { letter-spacing: 0; }
-
 .smm-home h1,
 .smm-home h2,
 .smm-home h3 {
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-family: "Syne", "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
   color: hsl(var(--smm-ink));
 }
 
