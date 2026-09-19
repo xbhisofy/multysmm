@@ -413,6 +413,7 @@ export function EngagementTypeCard({
                 onBlur={handleQuantityBlur}
                 className={cn(
                   "w-14 sm:w-20 h-7 sm:h-8 text-xs sm:text-sm text-right bg-secondary border border-border text-foreground font-medium px-1.5 rounded-lg",
+                  !hasError && palette.input,
                   hasError && "border-destructive"
                 )}
               />
