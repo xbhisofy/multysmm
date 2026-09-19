@@ -86,7 +86,7 @@
 }
 
 .member-sidebar {
-  --sidebar-ink: 215 35% 14%;
+  --sidebar-ink: 255 30% 14%;
   background: hsl(var(--member-paper)) !important;
   border-right: 1px solid hsl(var(--member-line)) !important;
   color: hsl(var(--sidebar-ink));
