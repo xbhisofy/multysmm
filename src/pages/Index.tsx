@@ -19,56 +19,56 @@ const navLinks = [
 const features = [
   {
     icon: Zap,
-    title: 'Instant Start',
-    text: 'Most orders begin within minutes. Creator-led clipping and real engagement start moving right away.',
+    title: 'Real People, Not Bots',
+    text: 'Every like, view and follow comes from real accounts and creator-driven clipping — never bot farms or fake traffic.',
   },
   {
     icon: ShieldCheck,
-    title: 'Best Quality',
-    text: '65+ carefully managed services focused on organic reach and genuine audience interactions.',
+    title: 'Human-Paced Delivery',
+    text: 'Engagement arrives in natural waves that match how a real post spreads, so your growth curve stays believable.',
   },
   {
     icon: Headphones,
-    title: '24/7 Support',
-    text: 'Our team is always ready to help you track orders, add funds or pick the right service.',
+    title: 'Built for Serious Growth',
+    text: 'Live tracking, smart routing and 24/7 support — the heavyweight setup ordinary panels simply cannot match.',
   },
 ];
 
 const platforms = ['YouTube', 'Instagram', 'Twitter', 'TikTok', 'Telegram', 'Facebook'];
 
 const services = [
-  { icon: Instagram, name: 'Instagram', tags: ['Followers', 'Likes'], featured: true },
-  { icon: Facebook, name: 'Facebook', tags: ['Likes', 'Comments'] },
-  { icon: Youtube, name: 'YouTube', tags: ['Subscribers', 'Views'] },
+  { icon: Instagram, name: 'Instagram', tags: ['Real Followers', 'Organic Likes'], featured: true },
+  { icon: Facebook, name: 'Facebook', tags: ['Page Reach', 'Comments'] },
+  { icon: Youtube, name: 'YouTube', tags: ['Watch Time', 'Real Views'] },
   { icon: Twitter, name: 'Twitter', tags: ['Followers', 'Reposts'] },
   { icon: Send, name: 'Telegram', tags: ['Members', 'Reactions'] },
-  { icon: Play, name: 'TikTok', tags: ['Followers', 'Views'] },
+  { icon: Play, name: 'TikTok', tags: ['Clipping Reach', 'Views'] },
 ];
 
 const faqs = [
   {
-    q: 'What is MultySMM?',
-    a: 'MultySMM is a social growth panel where you order creator-led engagement—likes, views, followers and more—managed from one simple dashboard.',
+    q: 'How is this different from a normal SMM panel?',
+    a: 'Normal panels resell bot numbers. We run real organic engagement — creator clipping and genuine accounts interacting with your content, delivered at human speed.',
   },
   {
-    q: 'How do I place an order?',
-    a: 'Add funds to your wallet, paste your content link, choose a service and quantity, then place the order. You can watch progress live.',
+    q: 'Is the engagement really organic?',
+    a: 'Yes. Reach comes from real audiences and creator-led distribution. No bot bursts, no fake spikes, nothing that looks machine-made on your profile.',
   },
   {
-    q: 'Is MultySMM safe for my account?',
-    a: 'Yes. Delivery is human-paced and designed to look natural—no bot bursts, no sudden spikes that put accounts at risk.',
+    q: 'How do I start a campaign?',
+    a: 'Add funds, paste your content link, pick the engagement type and volume, and launch. Progress updates live in your dashboard.',
   },
   {
-    q: 'What is the difference between refill and non-refill services?',
-    a: 'Refill services replace drops within the refill window automatically. Non-refill services are cheaper but drops are not replaced.',
+    q: 'Is it safe for my account?',
+    a: 'It is built to be. Delivery is spread naturally over time so platforms see normal growth, not a sudden unnatural jump.',
   },
   {
-    q: 'How fast is delivery?',
-    a: 'Most orders start within minutes. Larger orders are spread over time so growth looks organic.',
+    q: 'How fast does it start?',
+    a: 'Most campaigns begin within minutes. Bigger volumes are paced over hours or days so the growth stays organic.',
   },
   {
     q: 'Which payment methods do you support?',
-    a: 'You can top up your wallet with UPI and popular payment options—balance is only used for orders you place.',
+    a: 'You can top up your wallet with UPI and popular payment options — balance is only used for campaigns you launch.',
   },
 ];
 
@@ -79,8 +79,8 @@ const Index = () => {
   return (
     <div id="home" className="smm-home">
       <PageMeta
-        title="MultySMM — Best & Fastest SMM Panel for Resellers"
-        description="Trusted social media growth panel. Best quality services, fastest start and the cheapest prices for resellers."
+        title="MultySMM — Real Organic Engagement, Not Another SMM Panel"
+        description="Get real organic engagement from genuine audiences and creator-led clipping. Human-paced delivery, live tracking and serious growth on every platform."
         canonicalPath="/"
         breadcrumbs={[{ name: 'Home', path: '/' }]}
       />
@@ -134,18 +134,18 @@ const Index = () => {
       <section className="smm-hero">
         <div className="smm-hero-grid" />
         <div className="smm-wrap relative z-10 flex flex-col items-center px-2 pb-10 pt-16 text-center md:pt-20">
-          <span className="smm-kicker mb-6"><Sparkles className="h-3.5 w-3.5" /> No bots. Real engagement.</span>
+          <span className="smm-kicker mb-6"><Sparkles className="h-3.5 w-3.5" /> Not an SMM panel. Real organic engagement.</span>
           <h1 className="max-w-3xl text-4xl leading-[1.05] sm:text-5xl md:text-6xl">
-            <span className="smm-grad-text">Best, Cheapest &amp; Fastest</span>
+            <span className="smm-grad-text">Real Organic Engagement</span>
             <br />
-            SMM Panel for Resellers
+            From Real People
           </h1>
           <p className="mt-6 max-w-xl text-sm leading-6 md:text-base" style={{ color: 'hsl(var(--smm-copy))' }}>
-            Trusted growth provider for every platform. Top-quality social media marketing with human-paced delivery and the lowest prices on every service.
+            Thousands of SMM panels sell bot numbers. We deliver genuine audience reach — creator-led clipping and real accounts engaging your content at human speed, on every platform.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link to="/auth" className="smm-btn smm-btn-primary">Get Started <ArrowRight className="h-4 w-4" /></Link>
-            <a href="#services" className="smm-btn smm-btn-ghost">View Services</a>
+            <Link to="/auth" className="smm-btn smm-btn-primary">Start Growing Organically <ArrowRight className="h-4 w-4" /></Link>
+            <a href="#services" className="smm-btn smm-btn-ghost">See How It Works</a>
           </div>
           <img
             src={heroImage}
@@ -162,15 +162,15 @@ const Index = () => {
         <div className="flex flex-wrap items-center justify-center gap-x-14 gap-y-6">
           <div className="text-center">
             <div className="smm-stat-value">4516+</div>
-            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Active Members</div>
+            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Creators Growing</div>
           </div>
           <div className="text-center">
             <div className="smm-stat-value">511516+</div>
-            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Total Orders</div>
+            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Organic Campaigns</div>
           </div>
           <div className="text-center">
-            <div className="smm-stat-value">24/7</div>
-            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Live Support</div>
+            <div className="smm-stat-value">0%</div>
+            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Bot Traffic</div>
           </div>
         </div>
       </section>
@@ -186,10 +186,10 @@ const Index = () => {
       {/* ================= FEATURES ================= */}
       <section id="pricing" className="smm-wrap py-20 md:py-24">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> Features</span>
-          <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Why should you use <span className="smm-grad-text">our services?</span></h2>
+          <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> The difference</span>
+          <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Why creators leave <span className="smm-grad-text">ordinary panels</span></h2>
           <p className="mx-auto mt-5 max-w-lg text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
-            Grow smarter with real audience reach, transparent tracking and support whenever you need it.
+            Bot numbers fade and hurt your reach. Real organic engagement compounds — and that is the only thing we deliver.
           </p>
         </div>
         <div className="mt-12 grid gap-5 md:grid-cols-3">
@@ -207,10 +207,10 @@ const Index = () => {
       <section id="services" className="py-20 md:py-24" style={{ background: 'hsl(var(--smm-violet-soft) / 0.55)' }}>
         <div className="smm-wrap">
           <div className="mx-auto max-w-2xl text-center">
-            <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> Services</span>
-            <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Explore our <span className="smm-grad-text">best services</span></h2>
+            <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> Platforms</span>
+            <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Organic growth on <span className="smm-grad-text">every platform</span></h2>
             <p className="mx-auto mt-5 max-w-lg text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
-              Every major platform, every engagement type—ready to order in a few clicks.
+              Real audiences, creator clipping and natural pacing — pick your platform and launch in a few clicks.
             </p>
           </div>
           <div className="mx-auto mt-12 grid max-w-3xl gap-3">
@@ -236,9 +236,9 @@ const Index = () => {
       <section id="faq" className="smm-wrap py-20 md:py-24">
         <div className="mx-auto max-w-2xl text-center">
           <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> FAQ</span>
-          <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Questions about <span className="smm-grad-text">our services?</span></h2>
+          <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Questions about <span className="smm-grad-text">organic growth?</span></h2>
           <p className="mx-auto mt-5 max-w-lg text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
-            Quick answers about ordering, safety, delivery speed and payments.
+            Quick answers about how real engagement works, safety, pacing and payments.
           </p>
         </div>
         <div className="mx-auto mt-12 grid max-w-3xl gap-3 md:grid-cols-2 md:items-start">
@@ -268,9 +268,9 @@ const Index = () => {
         <div className="smm-cta relative z-0 px-6 py-16 text-center md:py-20">
           <div className="relative z-10 mx-auto max-w-2xl">
             <Clock3 className="mx-auto mb-5 h-8 w-8" style={{ color: '#fff' }} />
-            <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl" style={{ color: '#fff' }}>Start growing in the next minute</h2>
+            <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl" style={{ color: '#fff' }}>Real growth starts in the next minute</h2>
             <p className="mx-auto mt-5 max-w-md text-sm leading-6" style={{ color: 'hsl(0 0% 100% / 0.85)' }}>
-              Create your account, add funds and launch your first campaign from one simple dashboard.
+              Create your account, add funds and launch your first fully organic campaign from one dashboard.
             </p>
             <Link to="/auth" className="smm-btn mt-8 inline-flex" style={{ background: '#fff', color: 'hsl(var(--smm-violet-deep))' }}>
               Create Free Account <ArrowRight className="h-4 w-4" />
@@ -288,7 +288,7 @@ const Index = () => {
               <strong className="text-lg font-extrabold">MULTY<span className="smm-grad-text">SMM</span></strong>
             </Link>
             <p className="mt-5 max-w-xs text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
-              The best, cheapest and fastest SMM panel for creators, brands and resellers.
+              Real organic engagement for creators and brands — genuine audiences, human pacing, zero bots.
             </p>
             <Link to="/auth" className="smm-btn smm-btn-primary mt-6">Get Started</Link>
           </div>
