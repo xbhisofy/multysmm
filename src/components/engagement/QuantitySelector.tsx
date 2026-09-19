@@ -139,6 +139,7 @@ export const QuantitySelector = memo(function QuantitySelector({
             key={option.value}
             option={option}
             isSelected={value === option.value}
+            disabled={option.value < min}
             onClick={() => handleQuickSelect(option.value)}
           />
         ))}
