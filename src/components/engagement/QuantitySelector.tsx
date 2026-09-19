@@ -108,13 +108,14 @@ export const QuantitySelector = memo(function QuantitySelector({
     }
   }, [localValue, onChange, min, max]);
 
-  // Quick button handler
+  // Quick button handler — provider minimum hamesha respect hota hai
   const handleQuickSelect = useCallback((optionValue: number) => {
     if (timerRef.current) clearTimeout(timerRef.current);
     isTypingRef.current = false;
-    setLocalValue(optionValue.toString());
-    onChange(optionValue);
-  }, [onChange]);
+    const clamped = Math.min(max, Math.max(min, optionValue));
+    setLocalValue(clamped.toString());
+    onChange(clamped);
+  }, [onChange, min, max]);
 
   return (
     <div className="space-y-4">
