@@ -504,13 +504,18 @@ export default function EngagementOrder() {
         const hasProviderService = Boolean(resolvedServiceId);
         const serviceJustResolved = Boolean(prev[type] && !prev[type].serviceId && serviceData?.serviceId);
 
-        // Respect user's base quantity exactly — no auto bump to provider minimum.
-        // If it's below provider min, the per-card warning will appear.
-        const quantity = ratioQuantity;
+        // Provider minimum se kam order kabhi nahi — ratio se computed quantity
+        // min (10 likes, 100 views...) se neeche aaye to min pe bump kar do.
+        const svcMin = serviceData?.minQuantity ?? prev[type]?.minQuantity ?? 0;
+        const quantity = svcMin > 0 && ratioQuantity > 0
+          ? Math.max(ratioQuantity, svcMin)
+          : ratioQuantity;
 
         const isUserEdited = userEditedQtyRef.current.has(type);
+        const editedQty = prev[type]?.quantity ?? 0;
+        const editedClamped = svcMin > 0 && editedQty > 0 ? Math.max(editedQty, svcMin) : editedQty;
         const finalQuantity = isUserEdited && prev[type]
-          ? prev[type].quantity
+          ? editedClamped
           : ((isAutoRatios || !prev[type]) ? quantity : prev[type].quantity);
         const finalPrice = serviceData
           ? (finalQuantity / 1000) * serviceData.pricePerK
