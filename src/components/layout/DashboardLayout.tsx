@@ -4,7 +4,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { Sidebar } from './Sidebar';
 import { MobileBottomNav } from './MobileBottomNav';
 import { PopupAdDialog } from '@/components/PopupAdDialog';
-import skyImage from '@/assets/multysmm-sky.jpg';
 import '@/styles/member-experience.css';
 
 interface DashboardLayoutProps { children: ReactNode; }
@@ -18,7 +17,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [user, isLoading, navigate]);
 
   return (
-    <div className="member-shell" style={{ '--member-sky-image': `url(${skyImage})` } as React.CSSProperties}>
+    <div className="member-shell">
       <aside className="fixed inset-y-0 left-0 z-40 w-[260px] hidden lg:block">
         <Sidebar />
       </aside>

@@ -43,11 +43,8 @@
 }
 
 .member-page > div > div:first-child:is(.glass-card, [class*="rounded-2xl"], [class*="rounded-3xl"]) {
-  background-image:
-    linear-gradient(90deg, hsl(var(--member-paper) / 0.96), hsl(var(--member-paper) / 0.76)),
-    var(--member-sky-image) !important;
-  background-position: center;
-  background-size: cover;
+  background-color: hsl(var(--member-paper) / 0.96) !important;
+  background-image: none !important;
 }
 
 .member-page :is(.rounded-xl, .rounded-2xl, .rounded-3xl) {
