@@ -11,10 +11,10 @@ import { PageMeta } from '@/components/seo/PageMeta';
 import skyImage from '@/assets/multysmm-sky.jpg';
 import '@/styles/member-experience.css';
 
-const GRADIENT = 'linear-gradient(135deg, #3B2EF0 0%, #F5364B 50%, #FFC629 100%)';
-const ACCENT = '#3B2EF0';
-const MAGENTA = '#F5364B';
-const PURPLE = '#FFC629';
+const GRADIENT = 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #C084FC 100%)';
+const ACCENT = '#7C3AED';
+const MAGENTA = '#A855F7';
+const PURPLE = '#C084FC';
 
 
 
@@ -98,16 +98,16 @@ export default function Auth() {
     } finally { setIsSubmitting(false); }
   };
 
-  const inputClass = "h-12 rounded-xl border-[#DDDCFA] bg-white focus:border-[#3B2EF0] focus:ring-2 focus:ring-[#3B2EF0]/15 text-[#0B0B16] font-medium px-4 placeholder:text-[#bbb] transition-all";
+  const inputClass = "h-12 rounded-xl border-[#E9E5FB] bg-white focus:border-[#7C3AED] focus:ring-2 focus:ring-[#7C3AED]/15 text-[#0B0B16] font-medium px-4 placeholder:text-[#bbb] transition-all";
 
   return (
     <div className="member-shell member-auth flex items-center justify-center px-6 py-12 relative overflow-hidden"
       style={{ '--member-sky-image': `url(${skyImage})` } as React.CSSProperties}>
       {/* glow */}
       <div aria-hidden className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(closest-side, rgba(59,46,240,.18), transparent 70%)', filter: 'blur(40px)' }} />
+        style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.16), transparent 70%)', filter: 'blur(40px)' }} />
       <div aria-hidden className="absolute bottom-[-200px] right-[-100px] w-[500px] h-[500px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(closest-side, rgba(245,54,75,.18), transparent 70%)', filter: 'blur(40px)' }} />
+        style={{ background: 'radial-gradient(closest-side, rgba(168,85,247,.14), transparent 70%)', filter: 'blur(40px)' }} />
 
       <PageMeta
         title={isLogin ? 'Sign in — MultySMM' : 'Create your account — MultySMM'}
@@ -134,13 +134,13 @@ export default function Auth() {
 
           {showVerifyEmail ? (
             <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: '#EEEDFF' }}>
-                <Mail className="w-7 h-7" style={{ color: '#3B2EF0' }} />
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: '#F3EFFE' }}>
+                <Mail className="w-7 h-7" style={{ color: '#7C3AED' }} />
               </div>
               <h3 className="text-xl font-bold mb-2" style={{ color: '#0B0B16' }}>Check your inbox</h3>
               <p className="text-[13px] mb-2" style={{ color: '#475569' }}>Verification link sent to:</p>
               <p className="text-[13px] font-semibold mb-6" style={{ color: '#0B0B16' }}>{email}</p>
-              <button onClick={() => { setShowVerifyEmail(false); setIsLogin(true); }} className="text-[13px] font-bold" style={{ color: '#3B2EF0' }}>
+              <button onClick={() => { setShowVerifyEmail(false); setIsLogin(true); }} className="text-[13px] font-bold" style={{ color: '#7C3AED' }}>
                 ← Back to login
               </button>
             </div>
@@ -153,10 +153,10 @@ export default function Auth() {
                     <Input type="email" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
                   </div>
                   {error && <p className="text-[13px] font-medium" style={{ color: '#ef4444' }}>{error}</p>}
-                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#3B2EF0' }}>{successMessage}</p>}
+                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#7C3AED' }}>{successMessage}</p>}
                   <button type="submit" disabled={isSubmitting}
                     className="w-full h-12 rounded-xl text-[13.5px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-70"
-                    style={{ background: GRADIENT, boxShadow: '0 12px 28px -8px rgba(59,46,240,.45)' }}>
+                    style={{ background: GRADIENT, boxShadow: '0 12px 28px -8px rgba(124,58,237,.45)' }}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Send reset link <ArrowRight className="w-3.5 h-3.5" /></>}
                   </button>
                   <button type="button" onClick={() => setIsForgotPassword(false)} className="w-full text-center text-[13px] font-medium" style={{ color: '#475569' }}>
@@ -179,7 +179,7 @@ export default function Auth() {
                     <div className="flex items-center justify-between mb-1.5">
                       <Label className="text-[12px] font-semibold" style={{ color: '#475569', textTransform: 'none', letterSpacing: 'normal' }}>Password</Label>
                       {isLogin && (
-                        <button type="button" onClick={() => setIsForgotPassword(true)} className="text-[11px] font-semibold" style={{ color: '#3B2EF0' }}>
+                        <button type="button" onClick={() => setIsForgotPassword(true)} className="text-[11px] font-semibold" style={{ color: '#7C3AED' }}>
                           Forgot password?
                         </button>
                       )}
@@ -193,17 +193,17 @@ export default function Auth() {
                   </div>
 
                   {error && <p className="text-[13px] font-medium" style={{ color: '#ef4444' }}>{error}</p>}
-                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#3B2EF0' }}>{successMessage}</p>}
+                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#7C3AED' }}>{successMessage}</p>}
 
                   <button type="submit" disabled={isSubmitting}
                     className="w-full h-12 rounded-xl text-[13.5px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-70 transition-transform hover:-translate-y-0.5"
-                    style={{ background: GRADIENT, boxShadow: '0 12px 28px -8px rgba(59,46,240,.45)' }}>
+                    style={{ background: GRADIENT, boxShadow: '0 12px 28px -8px rgba(124,58,237,.45)' }}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{isLogin ? 'Sign in' : 'Create account'} <ArrowRight className="w-3.5 h-3.5" /></>}
                   </button>
 
                   <p className="text-center text-[13px]" style={{ color: '#475569' }}>
                     {isLogin ? "Don't have an account? " : 'Already have an account? '}
-                    <button type="button" onClick={() => { setIsLogin(!isLogin); setError(''); setSuccessMessage(''); }} className="font-bold" style={{ color: '#3B2EF0' }}>
+                    <button type="button" onClick={() => { setIsLogin(!isLogin); setError(''); setSuccessMessage(''); }} className="font-bold" style={{ color: '#7C3AED' }}>
                       {isLogin ? 'Sign up' : 'Sign in'}
                     </button>
                   </p>
