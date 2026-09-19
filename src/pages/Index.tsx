@@ -5,7 +5,6 @@ import {
   Minus, Play, Plus, Send, ShieldCheck, Sparkles, Twitter, X, Youtube, Zap,
 } from 'lucide-react';
 import { PageMeta } from '@/components/seo/PageMeta';
-import heroImage from '@/assets/smm-hero.png';
 import './smm-home.css';
 
 const navLinks = [
@@ -147,13 +146,46 @@ const Index = () => {
             <Link to="/auth" className="smm-btn smm-btn-primary">Start Growing Organically <ArrowRight className="h-4 w-4" /></Link>
             <a href="#services" className="smm-btn smm-btn-ghost">See How It Works</a>
           </div>
-          <img
-            src={heroImage}
-            alt="Social media growth illustration"
-            width={1024}
-            height={1024}
-            className="smm-hero-img mt-6 w-[min(86%,560px)]"
-          />
+          <div className="smm-phone-scene">
+            <div className="smm-phone">
+              <div className="smm-phone-notch" />
+              <div className="smm-phone-screen">
+                <div className="smm-phone-title">Organic Reach</div>
+                <div className="smm-phone-count">
+                  24,816
+                  <span>▲ +312% real engagement</span>
+                </div>
+                <svg className="smm-phone-chart" viewBox="0 0 260 150" fill="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="smmArea" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#fff" stopOpacity="0.35" />
+                      <stop offset="100%" stopColor="#fff" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  {[30, 60, 90, 120].map((y) => (
+                    <line key={y} x1="0" x2="260" y1={y} y2={y} stroke="#fff" strokeOpacity="0.12" strokeDasharray="3 5" />
+                  ))}
+                  <path
+                    className="smm-graph-area"
+                    d="M0 128 C 26 126 38 108 58 102 S 92 110 112 90 S 148 94 168 66 S 208 70 228 38 S 252 26 260 16 L 260 150 L 0 150 Z"
+                    fill="url(#smmArea)"
+                  />
+                  <path
+                    className="smm-graph-line"
+                    d="M0 128 C 26 126 38 108 58 102 S 92 110 112 90 S 148 94 168 66 S 208 70 228 38 S 252 26 260 16"
+                    stroke="#fff"
+                    strokeWidth="3.5"
+                    strokeLinecap="round"
+                  />
+                  <circle className="smm-graph-dot" cx="228" cy="38" r="5" fill="#fff" />
+                  <circle className="smm-graph-dot" cx="228" cy="38" r="10" fill="#fff" opacity="0.25" />
+                </svg>
+              </div>
+            </div>
+            <span className="smm-live-chip"><span className="dot" /> Live organic delivery</span>
+            <span className="smm-float-chip left"><Instagram className="h-3.5 w-3.5" style={{ color: 'hsl(var(--smm-violet))' }} /> +2,480 <span className="up">views</span></span>
+            <span className="smm-float-chip right"><Zap className="h-3.5 w-3.5" style={{ color: 'hsl(150 75% 40%)' }} /> +916 <span className="up">likes</span></span>
+          </div>
         </div>
       </section>
 
