@@ -112,8 +112,9 @@ Deno.serve(async (req) => {
     });
     if (insErr) throw insErr;
 
-    const returnUrl = `${returnOrigin}/wallet?oxapay=success&oxapay_order_id=${orderId}`;
-    const callbackUrl = `${supabaseUrl}/functions/v1/oxapay-webhook`;
+    // Callback must be publicly reachable (OxaPay servers call it).
+    const publicBase = Deno.env.get("PUBLIC_FUNCTIONS_URL") || `${supabaseUrl}/functions/v1`;
+    const callbackUrl = `${publicBase}/oxapay-webhook`;
 
     const payload = {
       amount: amountUsd,
