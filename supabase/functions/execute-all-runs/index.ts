@@ -1,6 +1,5 @@
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { attemptedProviderExclusions, isConflictingProviderOrder } from '../_shared/dispatch-policy.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -35,6 +34,31 @@ const inlineProviderAccountCache = new Map<string, { api_key: string; api_url: s
 const TERMINAL_PROVIDER_STATUSES = new Set([
   'completed','complete','partial','refunded','canceled','cancelled','error','failed','success','refund','canscelled',
 ])
+
+// Keep these critical boot-time helpers local. Self-hosted function volumes can
+// briefly contain mixed revisions during deploy; a stale shared module must not
+// prevent the entire scheduler from starting.
+function attemptedProviderExclusions(
+  runStatus: string | null | undefined,
+  attemptedProviderIds: unknown,
+): string[] {
+  if ((runStatus || '').toLowerCase() !== 'failed' || !Array.isArray(attemptedProviderIds)) return []
+  return attemptedProviderIds.filter((id): id is string => typeof id === 'string' && id.length > 0)
+}
+
+const ACTIVE_PROVIDER_STATUSES = new Set([
+  'pending', 'in progress', 'processing', 'processing order', 'inprogress', 'awaiting',
+])
+
+function isConflictingProviderOrder(run: {
+  status?: string | null
+  providerStatus?: string | null
+}): boolean {
+  if ((run.status || '').toLowerCase().trim() !== 'started') return false
+  const providerStatus = (run.providerStatus || '').toLowerCase().trim()
+  if (TERMINAL_PROVIDER_STATUSES.has(providerStatus)) return false
+  return !providerStatus || ACTIVE_PROVIDER_STATUSES.has(providerStatus)
+}
 
 async function inlineRefreshRunStatus(supabase: SupabaseClient, run: any): Promise<any> {
   try {
