@@ -1234,7 +1234,7 @@ export default function EngagementOrder() {
               }}
               className={`group relative text-left rounded-xl p-3.5 sm:p-4 transition-all border ${
                 isOrganicMode
-                  ? 'border-fuchsia-500/50 bg-gradient-to-br from-fuchsia-500/[0.10] to-fuchsia-500/[0.03] shadow-[0_6px_20px_-12px_rgba(124,58,237,0.55)]'
+                  ? 'border-fuchsia-500/50 bg-fuchsia-500/[0.07] shadow-[0_6px_20px_-12px_rgba(124,58,237,0.55)]'
                   : 'border-border bg-background hover:border-fuchsia-400/40 hover:bg-fuchsia-50/40 dark:hover:bg-fuchsia-500/5'
               }`}
             >
@@ -1282,7 +1282,7 @@ export default function EngagementOrder() {
               }}
               className={`group relative text-left rounded-xl p-3.5 sm:p-4 transition-all border ${
                 isAutoRatios
-                  ? 'border-primary/50 bg-gradient-to-br from-primary/[0.09] to-primary/[0.03] shadow-[0_6px_20px_-12px_rgba(249,115,22,0.5)]'
+                  ? 'border-primary/50 bg-primary/[0.07] shadow-[0_6px_20px_-12px_rgba(249,115,22,0.5)]'
                   : 'border-border bg-background hover:border-primary/30 hover:bg-muted/40'
               }`}
             >
