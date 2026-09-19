@@ -334,14 +334,22 @@ export function EngagementTypeCard({
         <div className="flex items-center justify-between gap-1.5 sm:gap-2 min-w-0">
           {/* Left: Icon + Label */}
           <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
-            <Icon className={cn(
-              "h-4 w-4 sm:h-[18px] sm:w-[18px] shrink-0",
-              config.enabled ? "text-violet-500" : "text-muted-foreground"
-            )} />
+            <span className={cn(
+              "w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center shrink-0",
+              config.enabled ? "bg-violet-100" : "bg-secondary"
+            )}>
+              <Icon className={cn(
+                "h-4 w-4 sm:h-[18px] sm:w-[18px]",
+                config.enabled ? "text-violet-600" : "text-muted-foreground"
+              )} />
+            </span>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
-                  <span className={cn(
-                  "text-sm sm:text-[15px] font-bold truncate",
+                {/* Decorative avatar + sparkle, green design jaisa */}
+                <span className="w-4 h-4 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-500 border border-white shadow-sm shrink-0" aria-hidden />
+                <Sparkles className="h-3 w-3 text-violet-400 shrink-0" aria-hidden />
+                <span className={cn(
+                  "text-sm sm:text-[15px] font-extrabold truncate tracking-tight",
                   config.enabled ? "text-violet-600" : "text-foreground"
                 )}>
                   {engagementConfig.label}
@@ -388,7 +396,7 @@ export function EngagementTypeCard({
         )}
 
         {config.enabled && !hasError && providerMin > 0 && (
-          <div className="mt-1.5 text-[11px] text-muted-foreground">
+          <div className="mt-1.5 text-[11.5px] font-medium text-slate-500">
             Min: {providerMin.toLocaleString()} • Max: {providerMax.toLocaleString()}
           </div>
         )}
@@ -402,8 +410,9 @@ export function EngagementTypeCard({
                 className="group mt-2.5 w-full flex items-center justify-between gap-3 rounded-xl border border-violet-100 bg-violet-50/60 hover:bg-violet-50 transition-colors px-3 py-2.5 text-left"
               >
                 <span className="flex items-center gap-2.5 flex-1 min-w-0">
-                  <span className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center shrink-0">
+                  <span className="relative w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center shrink-0">
                     <Timer className="h-4 w-4 text-violet-600" />
+                    <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-violet-500 border-2 border-white" aria-hidden />
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-[13px] font-semibold text-foreground leading-tight">
