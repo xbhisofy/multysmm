@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Menu, Zap, History, Wallet, Settings } from 'lucide-react';
 import { Sidebar } from './Sidebar';
