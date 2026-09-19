@@ -371,6 +371,7 @@ export function EngagementTypeCard({
     <Card className={cn(
       "rounded-xl border bg-card shadow-sm",
       hasError ? "border-destructive/40" : "border-border",
+      config.enabled && !hasError && palette.card,
       !config.enabled && "opacity-70"
     )}>
       <CardContent className="p-3 overflow-hidden">
@@ -379,13 +380,10 @@ export function EngagementTypeCard({
           {/* Left: Icon + Label */}
           <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
             <div className={cn(
-              "p-1.5 rounded-lg shrink-0 bg-muted/60",
-              config.enabled ? "text-primary" : "text-muted-foreground"
+              "p-1.5 rounded-lg shrink-0",
+              config.enabled ? palette.iconBox : "bg-muted/60 text-muted-foreground"
             )}>
-              <Icon className={cn(
-                "h-3.5 w-3.5 sm:h-4 sm:w-4",
-                config.enabled ? "text-primary" : "text-muted-foreground"
-              )} />
+              <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
