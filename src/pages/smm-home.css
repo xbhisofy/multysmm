@@ -377,6 +377,7 @@
 
 .smm-phone-chart {
   margin-top: auto;
+  margin-bottom: 8%;
   width: 100%;
 }
 
@@ -399,8 +400,8 @@
 
 .smm-live-chip {
   position: absolute;
-  top: 14%;
-  right: -14px;
+  top: -16px;
+  right: 4%;
   z-index: 4;
   display: inline-flex;
   align-items: center;
