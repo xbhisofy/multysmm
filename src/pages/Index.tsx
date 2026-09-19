@@ -162,7 +162,7 @@ const Index = () => {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link to="/auth" className="smm-btn smm-btn-primary">Start Growing Organically <ArrowRight className="h-4 w-4" /></Link>
-            <a href="#services" className="smm-btn smm-btn-ghost">See How It Works</a>
+            <a href="#how" className="smm-btn smm-btn-ghost">See How It Works</a>
           </div>
           <div className="smm-phone-scene">
             <div className="smm-phone">
