@@ -1363,12 +1363,17 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         }
       }
 
-      // FALLBACK: Exclude every provider already attempted for this run
-      // (tracked in provider_response.tried_providers by check-order-status).
-      const triedProviders: string[] = Array.isArray(run.provider_response?.tried_providers)
-        ? run.provider_response.tried_providers : []
-      for (const tp of triedProviders) {
-        if (tp && !busyAccountIds.includes(tp)) busyAccountIds.push(tp)
+      // A queued/busy run MUST retry its providers on the next cron tick.
+      // `tried_providers` is attempt history, not a permanent blacklist. Applying
+      // it to pending runs made the try-list empty forever after one busy cycle.
+      // Keep the exclusion only for an explicit failed-run fallback, where the
+      // scheduler is intentionally moving away from a provider that already failed.
+      if (isRetry) {
+        const triedProviders: string[] = Array.isArray(run.provider_response?.tried_providers)
+          ? run.provider_response.tried_providers : []
+        for (const tp of triedProviders) {
+          if (tp && !busyAccountIds.includes(tp)) busyAccountIds.push(tp)
+        }
       }
 
       // FALLBACK: Also exclude any provider_account_id that already failed/cancelled
