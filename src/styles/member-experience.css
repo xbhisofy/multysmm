@@ -132,7 +132,7 @@
   box-shadow: 0 12px 34px hsl(var(--member-ink) / 0.08) !important;
 }
 
-.member-sidebar nav a:hover { background: hsl(var(--member-soft)) !important; }
+.member-sidebar nav a:not([style*="gradient"]):hover { background: hsl(var(--member-soft)) !important; }
 
 .member-sidebar nav a[style*="background: rgb(239, 246, 255)"],
 .member-sidebar nav a[style*="#EFF6FF"] {
