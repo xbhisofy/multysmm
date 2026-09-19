@@ -558,7 +558,8 @@ serve(async (req) => {
 
           let idealRuns = Math.round((engagement.quantity / 1000) * config.runsPerThousand)
           const maxPosForQty = Math.max(1, Math.floor(engagement.quantity / providerMin))
-          const absoluteMaxRuns = Math.max(1, Math.floor(maxPosForQty * 0.8))
+          // EXACT user choice: har run kam se kam providerMin le sakta hai — bas wahi asli limit hai
+          const absoluteMaxRuns = maxPosForQty
           
           let targetRuns: number
           let timeLimitApplied = false
