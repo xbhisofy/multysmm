@@ -4,10 +4,10 @@ import { Menu, Zap, History, Wallet, Settings } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 
 const items = [
-  { to: '/engagement-order', label: 'Order', icon: Zap },
-  { to: '/orders', label: 'History', icon: History },
-  { to: '/wallet', label: 'Wallet', icon: Wallet },
-  { to: '/settings', label: 'Settings', icon: Settings },
+  { to: '/engagement-order', label: 'Order', icon: Zap, color: '#7C3AED', soft: '#F1EBFE' },
+  { to: '/orders', label: 'History', icon: History, color: '#0EA5E9', soft: '#E8F5FE' },
+  { to: '/wallet', label: 'Wallet', icon: Wallet, color: '#10B981', soft: '#E7F8F1' },
+  { to: '/settings', label: 'Settings', icon: Settings, color: '#F59E0B', soft: '#FDF3E2' },
 ];
 
 export function MobileBottomNav() {
@@ -30,14 +30,17 @@ export function MobileBottomNav() {
 
       <nav className="member-bottom-nav fixed bottom-0 left-0 right-0 z-40 lg:hidden" aria-label="Primary">
         <div className="member-bottom-nav-inner flex items-stretch justify-around">
-          {items.map(({ to, label, icon: Icon }) => (
+          {items.map(({ to, label, icon: Icon, color, soft }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) => `member-bottom-nav-item flex flex-col items-center justify-center gap-1 flex-1 py-2 ${isActive ? 'is-active' : ''}`}
+              style={{ '--tab-color': color, '--tab-soft': soft } as React.CSSProperties}
             >
-              <Icon className="w-5 h-5" strokeWidth={2.2} />
-              <span className="text-[10px] font-bold tracking-tight">{label}</span>
+              <span className="member-bottom-nav-icon flex items-center justify-center w-9 h-9 rounded-xl">
+                <Icon className="w-[22px] h-[22px]" strokeWidth={2.6} />
+              </span>
+              <span className="text-[11px] font-extrabold tracking-tight">{label}</span>
             </NavLink>
           ))}
         </div>
