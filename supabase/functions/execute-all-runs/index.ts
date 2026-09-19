@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { attemptedProviderExclusions, isConflictingProviderOrder } from '../_shared/dispatch-policy.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -1363,12 +1364,16 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         }
       }
 
-      // FALLBACK: Exclude every provider already attempted for this run
-      // (tracked in provider_response.tried_providers by check-order-status).
-      const triedProviders: string[] = Array.isArray(run.provider_response?.tried_providers)
-        ? run.provider_response.tried_providers : []
-      for (const tp of triedProviders) {
-        if (tp && !busyAccountIds.includes(tp)) busyAccountIds.push(tp)
+      // A queued/busy run MUST retry its providers on the next cron tick.
+      // `tried_providers` is attempt history, not a permanent blacklist. Applying
+      // it to pending runs made the try-list empty forever after one busy cycle.
+      // Keep the exclusion only for an explicit failed-run fallback, where the
+      // scheduler is intentionally moving away from a provider that already failed.
+      if (isRetry) {
+        const triedProviders = attemptedProviderExclusions(run.status, run.provider_response?.tried_providers)
+        for (const tp of triedProviders) {
+          if (tp && !busyAccountIds.includes(tp)) busyAccountIds.push(tp)
+        }
       }
 
       // FALLBACK: Also exclude any provider_account_id that already failed/cancelled
@@ -1773,6 +1778,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             .select('id, status, provider_status, provider_order_id, provider_account_id, provider_account_name, started_at, engagement_order_item:engagement_order_items(engagement_type, engagement_order:engagement_orders(link))')
             .not('provider_order_id', 'is', null)
             .eq('provider_account_id', selectedAccount.id)
+             .eq('status', 'started')
             .gte('started_at', lookbackIso)
             .order('started_at', { ascending: false })
             .limit(100)
@@ -1783,9 +1789,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             const prLink = normalizeLink(getNestedEngagementOrderLink(pr.engagement_order_item))
             const prType = (pr.engagement_order_item?.engagement_type || '').toLowerCase().trim()
             if (prLink !== sameLink || prType !== currentTypeNormalized) return false
-            if (pr.status === 'started' && !isTerminalProviderStatus(pr.provider_status)) return true
-            if (isActiveProviderStatus(pr.provider_status)) return true
-            return false
+            return isConflictingProviderOrder({ status: pr.status, providerStatus: pr.provider_status })
           })
 
           if (conflictingRun) {
