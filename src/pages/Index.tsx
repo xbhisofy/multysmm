@@ -207,10 +207,10 @@ const Index = () => {
       <section id="services" className="py-20 md:py-24" style={{ background: 'hsl(var(--smm-violet-soft) / 0.55)' }}>
         <div className="smm-wrap">
           <div className="mx-auto max-w-2xl text-center">
-            <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> Services</span>
-            <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Explore our <span className="smm-grad-text">best services</span></h2>
+            <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> Platforms</span>
+            <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Organic growth on <span className="smm-grad-text">every platform</span></h2>
             <p className="mx-auto mt-5 max-w-lg text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
-              Every major platform, every engagement type—ready to order in a few clicks.
+              Real audiences, creator clipping and natural pacing — pick your platform and launch in a few clicks.
             </p>
           </div>
           <div className="mx-auto mt-12 grid max-w-3xl gap-3">
