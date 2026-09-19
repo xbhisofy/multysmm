@@ -325,7 +325,7 @@ export function EngagementTypeCard({
 
   return (
     <Card className={cn(
-      "rounded-2xl border bg-card shadow-[0_2px_12px_-4px_rgba(16,185,129,0.12)]",
+      "rounded-2xl border bg-card shadow-[0_2px_12px_-4px_rgba(139,92,246,0.14)]",
       hasError ? "border-destructive/40" : "border-violet-100",
       !config.enabled && "opacity-60"
     )}>

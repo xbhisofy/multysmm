@@ -1215,8 +1215,8 @@ export default function EngagementOrder() {
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-primary/80">Engagement Console</span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70 px-2 py-0.5 text-[10px] font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200/70 px-2 py-0.5 text-[10px] font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
                   Live
                 </span>
               </div>
