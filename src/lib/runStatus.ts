@@ -17,10 +17,12 @@ export const isTargetMetAutoCompleted = (run: any): boolean => {
 export const getEffectiveRunStatus = (run: any): EffectiveRunStatus => {
   if (isTargetMetAutoCompleted(run)) return 'completed';
 
-  // Provider fields are only meaningful while this run actually holds a provider
-  // order. A re-queued run can still carry a stale provider_status, and trusting
-  // it makes list ("0 active") and detail ("1 in progress") counters disagree.
-  const ps = run?.provider_order_id ? normalizeProviderStatus(run?.provider_status) : '';
+  // A re-queued run (local status pending, no provider order) can still carry a
+  // stale provider_status. Trusting it made the list card say "0 active" while
+  // the detail page said "1 in progress", so ignore provider data in that case.
+  const localStatus = normalizeProviderStatus(run?.status);
+  const providerDataTrusted = !!run?.provider_order_id || (localStatus !== 'pending' && localStatus !== 'failed');
+  const ps = providerDataTrusted ? normalizeProviderStatus(run?.provider_status) : '';
 
 
   if (ps === 'completed' || ps === 'complete' || ps === 'success') return 'completed';
