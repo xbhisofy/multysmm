@@ -26,7 +26,7 @@ import { ControlPoint, curveToSchedule } from "@/lib/curve-to-schedule";
 import {
   Eye, Heart, MessageCircle, Bookmark, Share2,
   Clock, AlertTriangle,
-  Timer, Shuffle, Flame, Calendar, ChevronDown, ChevronUp, List, Pencil,
+  Timer, Shuffle, Flame, Calendar, ChevronDown, ChevronUp, List, Pencil, Sparkles,
   UserPlus, Bell, Repeat, RefreshCw
 } from "lucide-react";
 import { format } from "date-fns";
