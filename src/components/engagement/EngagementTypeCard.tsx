@@ -326,7 +326,7 @@ export function EngagementTypeCard({
   return (
     <Card className={cn(
       "rounded-2xl border bg-card shadow-[0_2px_12px_-4px_rgba(16,185,129,0.12)]",
-      hasError ? "border-destructive/40" : "border-emerald-100",
+      hasError ? "border-destructive/40" : "border-violet-100",
       !config.enabled && "opacity-60"
     )}>
       <CardContent className="p-3.5 sm:p-4 overflow-hidden">
@@ -336,18 +336,18 @@ export function EngagementTypeCard({
           <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
             <Icon className={cn(
               "h-4 w-4 sm:h-[18px] sm:w-[18px] shrink-0",
-              config.enabled ? "text-emerald-500" : "text-muted-foreground"
+              config.enabled ? "text-violet-500" : "text-muted-foreground"
             )} />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
                   <span className={cn(
                   "text-sm sm:text-[15px] font-bold truncate",
-                  config.enabled ? "text-emerald-600" : "text-foreground"
+                  config.enabled ? "text-violet-600" : "text-foreground"
                 )}>
                   {engagementConfig.label}
                 </span>
                 {type === 'views' && (
-                  <Badge className="text-[9px] bg-emerald-600 text-white font-bold px-1.5 py-0 rounded border-none normal-case tracking-wide">
+                  <Badge className="text-[9px] bg-violet-600 text-white font-bold px-1.5 py-0 rounded border-none normal-case tracking-wide">
                     BASE
                   </Badge>
                 )}
@@ -366,7 +366,7 @@ export function EngagementTypeCard({
                 onChange={(e) => handleQuantityChange(e.target.value)}
                 onBlur={handleQuantityBlur}
                 className={cn(
-                  "w-16 sm:w-20 h-8 sm:h-9 text-sm sm:text-[15px] text-center bg-stone-100 border border-stone-200 text-foreground font-bold px-2 rounded-full shadow-none focus-visible:ring-emerald-400",
+                  "w-16 sm:w-20 h-8 sm:h-9 text-sm sm:text-[15px] text-center bg-stone-100 border border-stone-200 text-foreground font-bold px-2 rounded-full shadow-none focus-visible:ring-violet-400",
                   hasError && "border-destructive"
                 )}
               />
@@ -375,7 +375,7 @@ export function EngagementTypeCard({
               <Switch
                 checked={config.enabled}
                 onCheckedChange={handleToggle}
-                className="data-[state=checked]:bg-emerald-500"
+                className="data-[state=checked]:bg-violet-500"
               />
             </div>
           </div>
@@ -399,11 +399,11 @@ export function EngagementTypeCard({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="group mt-2.5 w-full flex items-center justify-between gap-3 rounded-xl border border-emerald-100 bg-emerald-50/60 hover:bg-emerald-50 transition-colors px-3 py-2.5 text-left"
+                className="group mt-2.5 w-full flex items-center justify-between gap-3 rounded-xl border border-violet-100 bg-violet-50/60 hover:bg-violet-50 transition-colors px-3 py-2.5 text-left"
               >
                 <span className="flex items-center gap-2.5 flex-1 min-w-0">
-                  <span className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                    <Timer className="h-4 w-4 text-emerald-600" />
+                  <span className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center shrink-0">
+                    <Timer className="h-4 w-4 text-violet-600" />
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-[13px] font-semibold text-foreground leading-tight">
@@ -416,7 +416,7 @@ export function EngagementTypeCard({
                     </span>
                   </span>
                 </span>
-                <span className="flex items-center gap-1 text-[11px] font-bold tracking-wide text-emerald-600 shrink-0">
+                <span className="flex items-center gap-1 text-[11px] font-bold tracking-wide text-violet-600 shrink-0">
                   <span className="group-data-[state=open]:hidden">OPEN</span>
                   <span className="hidden group-data-[state=open]:inline">CLOSE</span>
                   <ChevronDown className="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform" />
@@ -629,8 +629,8 @@ export function EngagementTypeCard({
                       "text-sm font-medium px-2 py-0.5 rounded-lg",
                       variancePercent <= 15 ? "text-red-400 bg-red-500/20"
                         : variancePercent <= 25 ? "text-blue-400 bg-blue-500/20"
-                          : variancePercent <= 35 ? "text-emerald-400 bg-emerald-500/20"
-                            : "text-green-400 bg-green-400/20"
+                          : variancePercent <= 35 ? "text-violet-400 bg-violet-500/20"
+                            : "text-violet-400 bg-violet-400/20"
                     )}>±{variancePercent}%</span>
                   </Label>
                   <p className="text-[10px] text-muted-foreground leading-snug">
@@ -652,8 +652,8 @@ export function EngagementTypeCard({
                           : variancePercent <= 25
                             ? "from-blue-600 to-blue-500"
                             : variancePercent <= 35
-                              ? "from-emerald-600 to-emerald-500"
-                              : "from-green-500 to-green-400"
+                              ? "from-violet-600 to-violet-500"
+                              : "from-violet-500 to-violet-400"
                       )}
                       thumbClassName={cn(
                         "border-3",
@@ -662,8 +662,8 @@ export function EngagementTypeCard({
                           : variancePercent <= 25
                             ? "border-blue-500 shadow-blue-500/30"
                             : variancePercent <= 35
-                              ? "border-emerald-500 shadow-emerald-500/30"
-                              : "border-green-400 shadow-green-400/30"
+                              ? "border-violet-500 shadow-violet-500/30"
+                              : "border-violet-400 shadow-violet-400/30"
                       )}
                     />
                   </div>
@@ -709,8 +709,8 @@ export function EngagementTypeCard({
                             : variancePercent <= 25
                               ? "bg-blue-500"
                               : variancePercent <= 35
-                                ? "bg-emerald-500"
-                                : "bg-green-400"
+                                ? "bg-violet-500"
+                                : "bg-violet-400"
                         )}
                         style={{ width: `${Math.min(100, ((variancePercent - 10) / 40) * 100)}%` }}
                       />
