@@ -236,9 +236,9 @@ const Index = () => {
       <section id="faq" className="smm-wrap py-20 md:py-24">
         <div className="mx-auto max-w-2xl text-center">
           <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> FAQ</span>
-          <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Questions about <span className="smm-grad-text">our services?</span></h2>
+          <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Questions about <span className="smm-grad-text">organic growth?</span></h2>
           <p className="mx-auto mt-5 max-w-lg text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
-            Quick answers about ordering, safety, delivery speed and payments.
+            Quick answers about how real engagement works, safety, pacing and payments.
           </p>
         </div>
         <div className="mx-auto mt-12 grid max-w-3xl gap-3 md:grid-cols-2 md:items-start">
