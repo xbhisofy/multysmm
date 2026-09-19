@@ -82,6 +82,25 @@ export function attemptedProviderExclusions(
   return attemptedProviderIds.filter((id): id is string => typeof id === 'string' && id.length > 0)
 }
 
+const ACTIVE_PROVIDER_STATUSES = new Set([
+  'pending', 'in progress', 'processing', 'processing order', 'inprogress', 'awaiting',
+])
+const TERMINAL_PROVIDER_STATUSES = new Set([
+  'completed', 'complete', 'partial', 'refunded', 'canceled', 'cancelled',
+  'error', 'failed', 'success', 'refund', 'canscelled',
+])
+
+/** Only a locally started, non-terminal provider order can block another send. */
+export function isConflictingProviderOrder(run: {
+  status?: string | null
+  providerStatus?: string | null
+}): boolean {
+  if ((run.status || '').toLowerCase().trim() !== 'started') return false
+  const providerStatus = (run.providerStatus || '').toLowerCase().trim()
+  if (TERMINAL_PROVIDER_STATUSES.has(providerStatus)) return false
+  return !providerStatus || ACTIVE_PROVIDER_STATUSES.has(providerStatus)
+}
+
 const BUSY_ERRORS = [
   'active order with this link', 'wait until order being completed', 'already has an order',
   'order in progress', 'link currently active', 'processing previous order',

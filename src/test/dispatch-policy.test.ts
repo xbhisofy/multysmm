@@ -8,6 +8,7 @@ import {
   MAX_BUSY_RETRIES,
   BUSY_BACKOFF_MAX_MS,
   attemptedProviderExclusions,
+  isConflictingProviderOrder,
   type DispatchCandidate,
 } from "../../supabase/functions/_shared/dispatch-policy";
 
@@ -119,5 +120,16 @@ describe("all-providers-busy handling", () => {
   it("does not permanently blacklist providers after a queued busy attempt", () => {
     expect(attemptedProviderExclusions("pending", ["p1", "p2"])).toEqual([]);
     expect(attemptedProviderExclusions("failed", ["p1", "p2"])).toEqual(["p1", "p2"]);
+  });
+
+  it("ignores stale active provider status on locally finished runs", () => {
+    expect(isConflictingProviderOrder({ status: "completed", providerStatus: "Processing" })).toBe(false);
+    expect(isConflictingProviderOrder({ status: "failed", providerStatus: "Pending" })).toBe(false);
+    expect(isConflictingProviderOrder({ status: "cancelled", providerStatus: "In progress" })).toBe(false);
+  });
+
+  it("blocks only a genuinely started non-terminal provider order", () => {
+    expect(isConflictingProviderOrder({ status: "started", providerStatus: "In progress" })).toBe(true);
+    expect(isConflictingProviderOrder({ status: "started", providerStatus: "Completed" })).toBe(false);
   });
 });

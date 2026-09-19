@@ -1,6 +1,6 @@
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { attemptedProviderExclusions } from '../_shared/dispatch-policy.ts'
+import { attemptedProviderExclusions, isConflictingProviderOrder } from '../_shared/dispatch-policy.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -1778,6 +1778,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             .select('id, status, provider_status, provider_order_id, provider_account_id, provider_account_name, started_at, engagement_order_item:engagement_order_items(engagement_type, engagement_order:engagement_orders(link))')
             .not('provider_order_id', 'is', null)
             .eq('provider_account_id', selectedAccount.id)
+             .eq('status', 'started')
             .gte('started_at', lookbackIso)
             .order('started_at', { ascending: false })
             .limit(100)
@@ -1788,9 +1789,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             const prLink = normalizeLink(getNestedEngagementOrderLink(pr.engagement_order_item))
             const prType = (pr.engagement_order_item?.engagement_type || '').toLowerCase().trim()
             if (prLink !== sameLink || prType !== currentTypeNormalized) return false
-            if (pr.status === 'started' && !isTerminalProviderStatus(pr.provider_status)) return true
-            if (isActiveProviderStatus(pr.provider_status)) return true
-            return false
+            return isConflictingProviderOrder({ status: pr.status, providerStatus: pr.provider_status })
           })
 
           if (conflictingRun) {
