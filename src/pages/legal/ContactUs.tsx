@@ -59,7 +59,7 @@ export default function ContactUs() {
                 </div>
                 <h3 className="font-semibold">Live Chat</h3>
               </div>
-              <a href="https://t.me/multysmm" target="_blank" rel="noreferrer" className="text-sm text-blue-500 hover:underline">
+              <a href="https://t.me/x07neo" target="_blank" rel="noreferrer" className="text-sm text-blue-500 hover:underline">
                 Start chat on Telegram
               </a>
               <p className="text-xs text-muted-foreground mt-2">Chat with our support team for urgent issues.</p>
