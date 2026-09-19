@@ -440,7 +440,10 @@ export function EngagementTypeCard({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="group mt-2 w-full flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/25 hover:bg-muted/45 transition-colors px-3 py-2 text-left"
+                className={cn(
+                  "group mt-2 w-full flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/25 hover:bg-muted/45 transition-colors px-3 py-2 text-left",
+                  palette.bar
+                )}
               >
                 <span className="flex-1 min-w-0">
                   <span className="block text-[13px] font-medium text-foreground leading-tight">
