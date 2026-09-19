@@ -17,7 +17,11 @@ export const isTargetMetAutoCompleted = (run: any): boolean => {
 export const getEffectiveRunStatus = (run: any): EffectiveRunStatus => {
   if (isTargetMetAutoCompleted(run)) return 'completed';
 
-  const ps = normalizeProviderStatus(run?.provider_status);
+  // Provider fields are only meaningful while this run actually holds a provider
+  // order. A re-queued run can still carry a stale provider_status, and trusting
+  // it makes list ("0 active") and detail ("1 in progress") counters disagree.
+  const ps = run?.provider_order_id ? normalizeProviderStatus(run?.provider_status) : '';
+
 
   if (ps === 'completed' || ps === 'complete' || ps === 'success') return 'completed';
   if (ps === 'partial') return 'completed';

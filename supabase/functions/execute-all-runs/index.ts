@@ -981,15 +981,26 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
             error_message: `Ghost run reverted after ${ageMin}min`,
           }).eq('id', stuck.id)
         } else {
+          // A started run holds the per-provider lock for its link+type, so we must
+          // never leave it sitting on a stale "Processing" forever. Re-poll the
+          // provider first, then decide.
+          let cur = stuck
+          if (!isTerminalProviderStatus(cur.provider_status)) {
+            cur = await inlineRefreshRunStatus(supabase, cur)
+          }
+
           // SCAM GUARD: if provider didn't deliver anything (remains == full qty, or start_count null & remains == qty),
           // mark as failed so the scheduler retries on a backup provider instead of silently "completing" a fake order.
-          const qty = stuck.quantity_to_send || 0
-          const remains = typeof stuck.provider_remains === 'number' ? stuck.provider_remains : null
-          const startCount = typeof stuck.provider_start_count === 'number' ? stuck.provider_start_count : null
+          const qty = cur.quantity_to_send || 0
+          const remains = typeof cur.provider_remains === 'number' ? cur.provider_remains : null
+          const startCount = typeof cur.provider_start_count === 'number' ? cur.provider_start_count : null
           const deliveredZero = remains !== null && qty > 0 && remains >= qty && (startCount === null || startCount === 0)
-          const isTerminal = isTerminalProviderStatus(stuck.provider_status)
-          const isActive = isActiveProviderStatus(stuck.provider_status)
-          const retryCount = stuck.retry_count || 0
+          const isTerminal = isTerminalProviderStatus(cur.provider_status)
+          const isActive = isActiveProviderStatus(cur.provider_status)
+          const retryCount = cur.retry_count || 0
+          // Hard ceiling: an order that is still "active" after 3h is blocking the
+          // whole link+type queue. Release the lock so other runs can go out.
+          const isBlockingTooLong = ageMin >= 180
 
           if (deliveredZero && isActive && ageMin < 45) {
             return null
@@ -998,22 +1009,26 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
           if (deliveredZero && !isTerminal && retryCount < 15) {
             return supabase.from('organic_run_schedule').update({
               status: 'failed', completed_at: new Date().toISOString(),
-              error_message: `Auto-retry after ${ageMin}min: provider returned ${stuck.provider_status || 'unknown'} with 0 delivered (remains=${remains}/${qty})`,
-            }).eq('id', stuck.id)
+              error_message: `Auto-retry after ${ageMin}min: provider returned ${cur.provider_status || 'unknown'} with 0 delivered (remains=${remains}/${qty})`,
+            }).eq('id', cur.id)
           }
 
-          if (!isTerminal && isActive) {
+          if (!isTerminal && isActive && !isBlockingTooLong) {
             return null
           }
 
+          const partialDelivered = remains !== null && qty > 0 ? Math.max(0, qty - remains) : null
+          const releaseAsStale = !isTerminal && isActive && isBlockingTooLong
           const updateResult = await supabase.from('organic_run_schedule').update({
             status: 'completed', completed_at: new Date().toISOString(),
-            provider_status: stuck.provider_status || 'Stale',
-            error_message: `Auto-completed after ${ageMin}min (status: ${stuck.provider_status || 'unknown'})`,
-          }).eq('id', stuck.id)
-          const item = Array.isArray(stuck.engagement_order_item)
-            ? stuck.engagement_order_item[0]
-            : stuck.engagement_order_item
+            provider_status: cur.provider_status || 'Stale',
+            error_message: releaseAsStale
+              ? `Auto-closed after ${ageMin}min stuck on ${cur.provider_status || 'unknown'}${partialDelivered !== null ? ` (delivered ${partialDelivered}/${qty})` : ''} — queue released`
+              : `Auto-completed after ${ageMin}min (status: ${cur.provider_status || 'unknown'})`,
+          }).eq('id', cur.id)
+          const item = Array.isArray(cur.engagement_order_item)
+            ? cur.engagement_order_item[0]
+            : cur.engagement_order_item
           if (item?.engagement_order_id) {
             await updateEngagementOrderStatus(supabase, item.engagement_order_id, item.id)
           }
