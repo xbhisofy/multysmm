@@ -134,18 +134,18 @@ const Index = () => {
       <section className="smm-hero">
         <div className="smm-hero-grid" />
         <div className="smm-wrap relative z-10 flex flex-col items-center px-2 pb-10 pt-16 text-center md:pt-20">
-          <span className="smm-kicker mb-6"><Sparkles className="h-3.5 w-3.5" /> No bots. Real engagement.</span>
+          <span className="smm-kicker mb-6"><Sparkles className="h-3.5 w-3.5" /> Not an SMM panel. Real organic engagement.</span>
           <h1 className="max-w-3xl text-4xl leading-[1.05] sm:text-5xl md:text-6xl">
-            <span className="smm-grad-text">Best, Cheapest &amp; Fastest</span>
+            <span className="smm-grad-text">Real Organic Engagement</span>
             <br />
-            SMM Panel for Resellers
+            From Real People
           </h1>
           <p className="mt-6 max-w-xl text-sm leading-6 md:text-base" style={{ color: 'hsl(var(--smm-copy))' }}>
-            Trusted growth provider for every platform. Top-quality social media marketing with human-paced delivery and the lowest prices on every service.
+            Thousands of SMM panels sell bot numbers. We deliver genuine audience reach — creator-led clipping and real accounts engaging your content at human speed, on every platform.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link to="/auth" className="smm-btn smm-btn-primary">Get Started <ArrowRight className="h-4 w-4" /></Link>
-            <a href="#services" className="smm-btn smm-btn-ghost">View Services</a>
+            <Link to="/auth" className="smm-btn smm-btn-primary">Start Growing Organically <ArrowRight className="h-4 w-4" /></Link>
+            <a href="#services" className="smm-btn smm-btn-ghost">See How It Works</a>
           </div>
           <img
             src={heroImage}
