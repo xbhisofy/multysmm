@@ -268,9 +268,9 @@ const Index = () => {
         <div className="smm-cta relative z-0 px-6 py-16 text-center md:py-20">
           <div className="relative z-10 mx-auto max-w-2xl">
             <Clock3 className="mx-auto mb-5 h-8 w-8" style={{ color: '#fff' }} />
-            <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl" style={{ color: '#fff' }}>Start growing in the next minute</h2>
+            <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl" style={{ color: '#fff' }}>Real growth starts in the next minute</h2>
             <p className="mx-auto mt-5 max-w-md text-sm leading-6" style={{ color: 'hsl(0 0% 100% / 0.85)' }}>
-              Create your account, add funds and launch your first campaign from one simple dashboard.
+              Create your account, add funds and launch your first fully organic campaign from one dashboard.
             </p>
             <Link to="/auth" className="smm-btn mt-8 inline-flex" style={{ background: '#fff', color: 'hsl(var(--smm-violet-deep))' }}>
               Create Free Account <ArrowRight className="h-4 w-4" />
