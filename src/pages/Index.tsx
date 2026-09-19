@@ -1,242 +1,327 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ArrowRight, BarChart3, Check, ChevronDown, Eye, Heart, LockKeyhole,
-  Menu, MessageCircle, Play, Rocket, ShieldCheck, Sparkles, X, Zap,
+  ArrowRight, ChevronDown, Clock3, Facebook, Headphones, Instagram, Menu,
+  Minus, Play, Plus, Send, ShieldCheck, Sparkles, Twitter, X, Youtube, Zap,
 } from 'lucide-react';
 import { PageMeta } from '@/components/seo/PageMeta';
-import { Button } from '@/components/ui/button';
-import skyImage from '@/assets/multysmm-sky.jpg';
-import './catalis-home.css';
+import heroImage from '@/assets/smm-hero.png';
+import './smm-home.css';
 
-const features = [
-  { icon: Eye, title: 'Real audience reach', text: 'Build visibility through creator-led clipping and genuine content discovery.' },
-  { icon: Heart, title: 'Organic engagement', text: 'Grow through authentic likes, saves and shares—not bot-generated activity.' },
-  { icon: MessageCircle, title: 'Human interactions', text: 'Create natural conversations with engagement designed to feel genuine.' },
-  { icon: BarChart3, title: 'Growth analytics', text: 'Follow orders, delivery and performance from one calm, focused dashboard.' },
+const navLinks = [
+  { label: 'Home', href: '#home' },
+  { label: 'Services', href: '#services' },
+  { label: 'Pricing', href: '#pricing' },
+  { label: 'FAQ', href: '#faq' },
+  { label: 'Contact', href: '#contact' },
 ];
 
-const plans = [
-  { name: 'Starter', price: '$10', detail: 'For first campaigns', items: ['All major platforms', 'Live order tracking', 'AI delivery schedule', 'Wallet access'] },
-  { name: 'Growth', price: '$50', detail: 'For active creators', items: ['Everything in Starter', 'Engagement bundles', 'Priority processing', 'Advanced analytics'] },
-  { name: 'Scale', price: '$100', detail: 'For growing teams', items: ['Everything in Growth', 'API access', 'High-volume ordering', 'Priority support'] },
+const features = [
+  {
+    icon: Zap,
+    title: 'Instant Start',
+    text: 'Most orders begin within minutes. Creator-led clipping and real engagement start moving right away.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Best Quality',
+    text: '65+ carefully managed services focused on organic reach and genuine audience interactions.',
+  },
+  {
+    icon: Headphones,
+    title: '24/7 Support',
+    text: 'Our team is always ready to help you track orders, add funds or pick the right service.',
+  },
+];
+
+const platforms = ['YouTube', 'Instagram', 'Twitter', 'TikTok', 'Telegram', 'Facebook'];
+
+const services = [
+  { icon: Instagram, name: 'Instagram', tags: ['Followers', 'Likes'], featured: true },
+  { icon: Facebook, name: 'Facebook', tags: ['Likes', 'Comments'] },
+  { icon: Youtube, name: 'YouTube', tags: ['Subscribers', 'Views'] },
+  { icon: Twitter, name: 'Twitter', tags: ['Followers', 'Reposts'] },
+  { icon: Send, name: 'Telegram', tags: ['Members', 'Reactions'] },
+  { icon: Play, name: 'TikTok', tags: ['Followers', 'Views'] },
+];
+
+const faqs = [
+  {
+    q: 'What is MultySMM?',
+    a: 'MultySMM is a social growth panel where you order creator-led engagement—likes, views, followers and more—managed from one simple dashboard.',
+  },
+  {
+    q: 'How do I place an order?',
+    a: 'Add funds to your wallet, paste your content link, choose a service and quantity, then place the order. You can watch progress live.',
+  },
+  {
+    q: 'Is MultySMM safe for my account?',
+    a: 'Yes. Delivery is human-paced and designed to look natural—no bot bursts, no sudden spikes that put accounts at risk.',
+  },
+  {
+    q: 'What is the difference between refill and non-refill services?',
+    a: 'Refill services replace drops within the refill window automatically. Non-refill services are cheaper but drops are not replaced.',
+  },
+  {
+    q: 'How fast is delivery?',
+    a: 'Most orders start within minutes. Larger orders are spread over time so growth looks organic.',
+  },
+  {
+    q: 'Which payment methods do you support?',
+    a: 'You can top up your wallet with UPI and popular payment options—balance is only used for orders you place.',
+  },
 ];
 
 const Index = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <div className="catalis-page" style={{ '--catalis-sky-image': `url(${skyImage})` } as React.CSSProperties}>
+    <div id="home" className="smm-home">
       <PageMeta
-        title="MultySMM — Smarter Social Media Growth"
-        description="Plan and manage safe, human-paced social media growth with MultySMM."
+        title="MultySMM — Best & Fastest SMM Panel for Resellers"
+        description="Trusted social media growth panel. Best quality services, fastest start and the cheapest prices for resellers."
         canonicalPath="/"
         breadcrumbs={[{ name: 'Home', path: '/' }]}
       />
 
-      <header className="catalis-shell catalis-sky relative min-h-[720px] overflow-hidden rounded-b-[1.7rem] md:min-h-[760px]">
-        <nav className="catalis-nav absolute left-1/2 top-0 z-30 -translate-x-1/2 px-4 md:px-6">
-          <div className="flex h-full min-h-[4.4rem] items-center justify-between gap-4">
-            <Link to="/" aria-label="MultySMM home" className="flex items-center gap-2.5 shrink-0">
-              <img src="/logo.png" alt="" className="h-9 w-9 rounded-full object-cover" />
-              <span className="hidden text-sm font-bold sm:inline">MultySMM</span>
-            </Link>
-            <div className="hidden items-center gap-7 md:flex">
-              <a href="#about" className="text-xs text-muted-foreground hover:text-foreground">About us</a>
-              <a href="#features" className="text-xs text-muted-foreground hover:text-foreground">Features</a>
-              <a href="#pricing" className="text-xs text-muted-foreground hover:text-foreground">Pricing</a>
-              <a href="#footer" className="text-xs text-muted-foreground hover:text-foreground">Pages <ChevronDown className="ml-1 inline h-3 w-3" /></a>
-            </div>
-            <Button asChild className="catalis-button hidden sm:inline-flex">
-              <Link to="/auth">Get Started</Link>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              aria-label="Toggle navigation"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              {menuOpen ? <X /> : <Menu />}
-            </Button>
+      {/* ================= NAV ================= */}
+      <header className="smm-nav">
+        <div className="smm-wrap flex min-h-[4.6rem] items-center justify-between gap-4">
+          <Link to="/" aria-label="MultySMM home" className="flex items-center gap-2.5">
+            <img src="/logo.png" alt="" className="h-9 w-9 rounded-xl object-cover" />
+            <span className="text-base font-extrabold tracking-tight">MULTY<span className="smm-grad-text">SMM</span></span>
+          </Link>
+
+          <nav className="hidden items-center gap-7 lg:flex">
+            {navLinks.map(({ label, href }, i) => (
+              <a key={label} href={href} className={`smm-nav-link ${i === 0 ? 'is-active' : ''}`}>{label}</a>
+            ))}
+          </nav>
+
+          <div className="hidden items-center gap-3 sm:flex">
+            <Link to="/auth" className="smm-btn smm-btn-ghost">Login</Link>
+            <Link to="/auth" className="smm-btn smm-btn-primary">Register</Link>
           </div>
-          {menuOpen && (
-            <div className="grid gap-1 border-t py-3 md:hidden">
-              {[['About us', '#about'], ['Features', '#features'], ['Pricing', '#pricing']].map(([label, href]) => (
-                <a key={label} href={href} onClick={() => setMenuOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted">{label}</a>
+
+          <button
+            className="flex h-10 w-10 items-center justify-center rounded-xl border lg:hidden"
+            style={{ borderColor: 'hsl(var(--smm-line))' }}
+            aria-label="Toggle navigation"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+
+        {menuOpen && (
+          <div className="border-t px-5 py-4 lg:hidden" style={{ borderColor: 'hsl(var(--smm-line))' }}>
+            <div className="grid gap-1">
+              {navLinks.map(({ label, href }) => (
+                <a key={label} href={href} onClick={() => setMenuOpen(false)} className="rounded-lg px-3 py-2.5 text-sm font-semibold hover:bg-[hsl(var(--smm-violet-soft))]">{label}</a>
               ))}
-              <Link to="/auth" className="rounded-md px-3 py-2 text-sm font-bold">Log in</Link>
-            </div>
-          )}
-        </nav>
-
-        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-5 pb-52 pt-40 text-center md:pt-36">
-          <span className="catalis-kicker mb-6 border-primary-foreground/30 bg-primary-foreground/15 text-primary-foreground">
-            <Sparkles className="h-3 w-3" /> No bots. Real engagement.
-          </span>
-          <h1 className="catalis-display mb-6 text-primary-foreground">
-            Grow through <em>organic</em> social engagement
-          </h1>
-          <p className="mb-8 max-w-xl text-sm leading-6 text-primary-foreground md:text-base">
-            Get creator-led clipping and human-paced engagement designed for authentic growth—not automated bot activity.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button asChild className="catalis-button"><Link to="/auth">Get Started</Link></Button>
-            <Button asChild className="catalis-button catalis-button-light"><a href="#about">Learn More</a></Button>
-          </div>
-        </div>
-
-        <div className="absolute inset-x-0 bottom-[-4.5rem] z-20 mx-auto h-72 max-w-3xl">
-          <div className="catalis-panel catalis-float absolute left-[4%] top-16 hidden w-64 p-5 shadow-xl sm:block">
-            <div className="text-sm font-bold">Engagement</div>
-            <div className="mt-2 font-serif text-4xl">85%</div>
-            <div className="catalis-mini-chart mt-3 h-20 bg-muted">
-              {[35, 60, 45, 74, 56, 92].map((height) => <span key={height} style={{ height: `${height}%` }} />)}
+              <div className="mt-3 flex gap-3">
+                <Link to="/auth" className="smm-btn smm-btn-ghost flex-1">Login</Link>
+                <Link to="/auth" className="smm-btn smm-btn-primary flex-1">Register</Link>
+              </div>
             </div>
           </div>
-          <div className="catalis-panel absolute left-1/2 top-0 w-[min(88%,360px)] -translate-x-1/2 p-5 shadow-2xl">
-            <div className="flex items-center justify-between"><strong>Growth score</strong><span className="rounded-full bg-muted px-3 py-1 text-[10px]">Monthly</span></div>
-            <div className="catalis-mini-chart mt-5 h-40 bg-muted">
-              {[32, 54, 46, 68, 82, 74, 96].map((height) => <span key={height} style={{ height: `${height}%` }} />)}
-            </div>
-            <div className="mt-4 flex items-center justify-between"><span className="text-xs text-muted-foreground">Campaign health</span><strong className="font-serif text-3xl">80%</strong></div>
-          </div>
-        </div>
+        )}
       </header>
 
-      <main>
-        <section id="about" className="px-5 pb-20 pt-36 md:pb-28 md:pt-44">
-          <div className="mx-auto max-w-5xl text-center">
-            <span className="catalis-kicker mb-6"><Sparkles className="h-3 w-3 text-primary" /> About us</span>
-            <h2 className="catalis-heading mx-auto max-w-5xl">
-              We help creators and businesses grow through <em>real people, real content and organic engagement.</em>
-            </h2>
+      {/* ================= HERO ================= */}
+      <section className="smm-hero">
+        <div className="smm-hero-grid" />
+        <div className="smm-wrap relative z-10 flex flex-col items-center px-2 pb-10 pt-16 text-center md:pt-20">
+          <span className="smm-kicker mb-6"><Sparkles className="h-3.5 w-3.5" /> No bots. Real engagement.</span>
+          <h1 className="max-w-3xl text-4xl leading-[1.05] sm:text-5xl md:text-6xl">
+            <span className="smm-grad-text">Best, Cheapest &amp; Fastest</span>
+            <br />
+            SMM Panel for Resellers
+          </h1>
+          <p className="mt-6 max-w-xl text-sm leading-6 md:text-base" style={{ color: 'hsl(var(--smm-copy))' }}>
+            Trusted growth provider for every platform. Top-quality social media marketing with human-paced delivery and the lowest prices on every service.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link to="/auth" className="smm-btn smm-btn-primary">Get Started <ArrowRight className="h-4 w-4" /></Link>
+            <a href="#services" className="smm-btn smm-btn-ghost">View Services</a>
           </div>
-          <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-10 border-y py-10 md:grid-cols-3 md:gap-6">
-            {[
-              ['80%', 'Less time spent managing orders'],
-              ['50K+', 'Successful orders delivered'],
-              ['24/7', 'Monitoring and customer support'],
-            ].map(([value, label]) => (
-              <div key={value} className="flex items-center justify-center gap-5">
-                <span className="font-serif text-6xl leading-none">{value}</span>
-                <span className="max-w-32 text-sm leading-5 text-muted-foreground">{label}</span>
-              </div>
-            ))}
-          </div>
-        </section>
+          <img
+            src={heroImage}
+            alt="Social media growth illustration"
+            width={1024}
+            height={1024}
+            className="smm-hero-img mt-6 w-[min(86%,560px)]"
+          />
+        </div>
+      </section>
 
-        <section id="features" className="catalis-shell catalis-sky rounded-[1.7rem] px-5 py-16 md:px-10 md:py-24">
-          <div className="mx-auto max-w-4xl text-center text-primary-foreground">
-            <span className="catalis-kicker mb-6 border-primary-foreground/30 bg-primary-foreground/15 text-primary-foreground"><Sparkles className="h-3 w-3" /> Benefits</span>
-            <h2 className="catalis-heading text-primary-foreground">Make social growth easy. Simplify <em>your journey.</em></h2>
-            <p className="mx-auto mt-6 max-w-lg text-sm leading-6">Adapt quickly, scale campaigns and keep every order clear from start to finish.</p>
+      {/* ================= STATS + PLATFORMS ================= */}
+      <section className="smm-wrap -mt-2 pb-4">
+        <div className="flex flex-wrap items-center justify-center gap-x-14 gap-y-6">
+          <div className="text-center">
+            <div className="smm-stat-value">4516+</div>
+            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Active Members</div>
           </div>
-          <div className="mx-auto mt-14 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {features.map(({ icon: Icon, title, text }) => (
-              <article key={title} className="catalis-panel min-h-64 p-7 md:p-8">
-                <div className="mb-10 flex h-11 w-11 items-center justify-center rounded-full bg-muted text-primary"><Icon className="h-5 w-5" /></div>
-                <h3 className="mb-3 text-2xl leading-tight">{title}</h3>
-                <p className="text-sm leading-5 text-muted-foreground">{text}</p>
-              </article>
-            ))}
+          <div className="text-center">
+            <div className="smm-stat-value">511516+</div>
+            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Total Orders</div>
           </div>
-          <div className="mt-10 text-center"><Button asChild className="catalis-button"><Link to="/auth">Get Started</Link></Button></div>
-        </section>
-
-        <section className="px-5 py-20 md:py-28">
-          <div className="mx-auto max-w-4xl text-center">
-            <span className="catalis-kicker mb-6"><Sparkles className="h-3 w-3 text-primary" /> Features</span>
-            <h2 className="catalis-heading">Empowering and <em>strengthening</em> your social success</h2>
-            <p className="mx-auto mt-6 max-w-xl text-sm leading-6 text-muted-foreground">Powerful tools for planning, ordering and tracking social engagement without the usual complexity.</p>
-            <Button asChild className="catalis-button mt-7"><Link to="/auth">Start Growing</Link></Button>
-          </div>
-          <div className="mx-auto mt-14 grid max-w-4xl gap-4 md:grid-cols-2">
-            {[
-              { tag: 'CLEAN INTERFACE', title: 'Intuitive order flow', icon: Play, text: 'Move from link to live campaign in a few clear steps.' },
-              { tag: 'FASTER', title: 'Automated processes', icon: Zap, text: 'Smart schedules handle delivery while you focus on content.' },
-              { tag: 'SECURE', title: 'Protected transactions', icon: LockKeyhole, text: 'Your account and wallet activity stay protected.' },
-              { tag: 'TRUSTED TOOLS', title: 'Reliable monitoring', icon: ShieldCheck, text: 'See status, progress and results without chasing updates.' },
-            ].map(({ tag, title, icon: Icon, text }) => (
-              <article key={title} className="catalis-soft-panel flex min-h-80 flex-col p-7 md:p-9">
-                <span className="mb-4 w-fit rounded-full bg-background px-3 py-1 text-[10px] font-bold text-primary">{tag}</span>
-                <h3 className="text-3xl">{title}</h3>
-                <div className="mt-auto flex items-end gap-5 pt-12">
-                  <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-background text-primary"><Icon className="h-8 w-8" /></div>
-                  <p className="text-sm leading-5 text-muted-foreground">{text}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section id="pricing" className="catalis-sky px-5 py-20 md:py-28">
-          <div className="mx-auto max-w-4xl text-center text-primary-foreground">
-            <span className="catalis-kicker mb-6 border-primary-foreground/30 bg-primary-foreground/15 text-primary-foreground"><Sparkles className="h-3 w-3" /> Wallet options</span>
-            <h2 className="catalis-heading text-primary-foreground">Simple, transparent <em>growth</em></h2>
-            <p className="mt-6 text-sm">Add funds when you need them. Your balance is used only for orders you place.</p>
-          </div>
-          <div className="mx-auto mt-14 grid max-w-4xl gap-4 md:grid-cols-3">
-            {plans.map((plan) => (
-              <article key={plan.name} className="catalis-panel flex min-h-[460px] flex-col p-7 md:p-8">
-                <div className="mb-7 flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-full bg-muted text-primary"><Sparkles className="h-5 w-5" /></span><h3 className="text-2xl">{plan.name}</h3></div>
-                <div className="font-serif text-5xl">{plan.price}</div>
-                <p className="mt-2 text-sm text-muted-foreground">{plan.detail}</p>
-                <div className="mt-8 space-y-4">
-                  {plan.items.map((item) => <div key={item} className="flex gap-3 text-sm"><Check className="h-5 w-5 rounded-full bg-foreground p-1 text-background" />{item}</div>)}
-                </div>
-                <Button asChild className="catalis-button mt-auto"><Link to="/auth">Get Started <ArrowRight /></Link></Button>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="px-5 py-20 md:py-28">
-          <div className="mx-auto max-w-5xl text-center">
-            <span className="catalis-kicker mb-6"><Sparkles className="h-3 w-3 text-primary" /> Built for you</span>
-            <h2 className="catalis-heading">One platform for every <em>growth stage</em></h2>
-            <p className="mx-auto mt-6 max-w-xl text-sm text-muted-foreground">A focused experience for independent creators, growing brands and busy agencies.</p>
-          </div>
-          <div className="mx-auto mt-14 grid max-w-5xl gap-4 md:grid-cols-3">
-            {[
-              ['“', 'Creators', 'Simple ordering and visible progress for every campaign.'],
-              ['“', 'Brands', 'Structured engagement plans that keep launches moving.'],
-              ['“', 'Agencies', 'High-volume tools for managing multiple client campaigns.'],
-            ].map(([quote, name, text]) => (
-              <article key={name} className="catalis-soft-panel min-h-72 p-8 text-left">
-                <div className="font-serif text-6xl leading-none">{quote}</div>
-                <p className="mt-5 text-sm leading-6 text-muted-foreground">{text}</p>
-                <h3 className="mt-10 text-2xl">{name}</h3>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="catalis-shell catalis-sky relative min-h-[340px] overflow-hidden rounded-[1.7rem] px-5 py-20 text-center text-primary-foreground">
-          <div className="relative z-10 mx-auto max-w-3xl">
-            <Rocket className="mx-auto mb-5 h-8 w-8" />
-            <h2 className="catalis-heading text-primary-foreground">Ready to grow with clarity?</h2>
-            <p className="mx-auto mt-5 max-w-lg text-sm leading-6">Create your account and launch your next social campaign from one simple place.</p>
-            <Button asChild className="catalis-button mt-7"><Link to="/auth">Get Started</Link></Button>
-          </div>
-        </section>
-      </main>
-
-      <footer id="footer" className="px-5 py-16 md:py-20">
-        <div className="mx-auto grid max-w-4xl gap-12 md:grid-cols-[1.4fr_2fr]">
-          <div>
-            <Link to="/" className="flex items-center gap-3"><img src="/logo.png" alt="" className="h-10 w-10 rounded-full object-cover" /><strong className="font-serif text-2xl">MultySMM</strong></Link>
-            <p className="mt-7 max-w-xs text-sm leading-6 text-muted-foreground">Smarter social growth, clear campaign control and support when you need it.</p>
-            <Button asChild className="catalis-button mt-7"><Link to="/auth">Get Started</Link></Button>
-          </div>
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
-            <div><h4 className="mb-5 font-bold">Product</h4><div className="space-y-3 text-sm text-muted-foreground"><a href="#features" className="block">Features</a><a href="#pricing" className="block">Pricing</a><Link to="/api-access" className="block">API access</Link></div></div>
-            <div><h4 className="mb-5 font-bold">Company</h4><div className="space-y-3 text-sm text-muted-foreground"><Link to="/about" className="block">About us</Link><Link to="/contact" className="block">Contact</Link><Link to="/support" className="block">Support</Link></div></div>
-            <div><h4 className="mb-5 font-bold">Legal</h4><div className="space-y-3 text-sm text-muted-foreground"><Link to="/terms" className="block">Terms</Link><Link to="/privacy" className="block">Privacy</Link><Link to="/refund" className="block">Refunds</Link></div></div>
+          <div className="text-center">
+            <div className="smm-stat-value">24/7</div>
+            <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: 'hsl(var(--smm-copy))' }}>Live Support</div>
           </div>
         </div>
-        <div className="mx-auto mt-14 max-w-4xl border-t pt-6 text-xs text-muted-foreground">© {new Date().getFullYear()} MultySMM. All rights reserved.</div>
+      </section>
+
+      <section className="smm-platforms mt-10 py-7">
+        <div className="smm-wrap flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+          {platforms.map((name) => (
+            <span key={name} className="smm-platform"><span className="h-2 w-2 rounded-full" style={{ background: 'hsl(var(--smm-violet))' }} />{name}</span>
+          ))}
+        </div>
+      </section>
+
+      {/* ================= FEATURES ================= */}
+      <section id="pricing" className="smm-wrap py-20 md:py-24">
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> Features</span>
+          <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Why should you use <span className="smm-grad-text">our services?</span></h2>
+          <p className="mx-auto mt-5 max-w-lg text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
+            Grow smarter with real audience reach, transparent tracking and support whenever you need it.
+          </p>
+        </div>
+        <div className="mt-12 grid gap-5 md:grid-cols-3">
+          {features.map(({ icon: Icon, title, text }) => (
+            <article key={title} className="smm-feature-card">
+              <div className="smm-feature-icon"><Icon className="h-5 w-5" /></div>
+              <h3 className="mt-7 text-xl font-extrabold" style={{ color: '#fff' }}>{title}</h3>
+              <p className="mt-3 text-sm leading-6" style={{ color: 'hsl(0 0% 100% / 0.85)' }}>{text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* ================= SERVICES ================= */}
+      <section id="services" className="py-20 md:py-24" style={{ background: 'hsl(var(--smm-violet-soft) / 0.55)' }}>
+        <div className="smm-wrap">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> Services</span>
+            <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Explore our <span className="smm-grad-text">best services</span></h2>
+            <p className="mx-auto mt-5 max-w-lg text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
+              Every major platform, every engagement type—ready to order in a few clicks.
+            </p>
+          </div>
+          <div className="mx-auto mt-12 grid max-w-3xl gap-3">
+            {services.map(({ icon: Icon, name, tags, featured }) => (
+              <Link key={name} to="/auth" className={`smm-service-row ${featured ? 'is-featured' : ''}`}>
+                <span className="flex items-center gap-3.5">
+                  <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${featured ? 'bg-white/20' : ''}`} style={featured ? undefined : { background: 'hsl(var(--smm-violet-soft))', color: 'hsl(var(--smm-violet-deep))' }}>
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <span className="text-base font-extrabold">{name}</span>
+                </span>
+                <span className="flex items-center gap-2">
+                  {tags.map((tag) => <span key={tag} className="smm-tag hidden sm:inline-flex">{tag}</span>)}
+                  <ArrowRight className="h-4 w-4 opacity-60" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= FAQ ================= */}
+      <section id="faq" className="smm-wrap py-20 md:py-24">
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> FAQ</span>
+          <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Questions about <span className="smm-grad-text">our services?</span></h2>
+          <p className="mx-auto mt-5 max-w-lg text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
+            Quick answers about ordering, safety, delivery speed and payments.
+          </p>
+        </div>
+        <div className="mx-auto mt-12 grid max-w-3xl gap-3 md:grid-cols-2 md:items-start">
+          {faqs.map(({ q, a }, i) => {
+            const open = openFaq === i;
+            return (
+              <div key={q} className="smm-faq-item" data-open={open}>
+                <button
+                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                  onClick={() => setOpenFaq(open ? null : i)}
+                  aria-expanded={open}
+                >
+                  <span className="text-sm font-bold">{q}</span>
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg" style={{ background: 'hsl(var(--smm-violet-soft))', color: 'hsl(var(--smm-violet-deep))' }}>
+                    {open ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                  </span>
+                </button>
+                {open && <p className="px-5 pb-5 text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>{a}</p>}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ================= CTA ================= */}
+      <section id="contact" className="smm-wrap pb-20 md:pb-24">
+        <div className="smm-cta relative z-0 px-6 py-16 text-center md:py-20">
+          <div className="relative z-10 mx-auto max-w-2xl">
+            <Clock3 className="mx-auto mb-5 h-8 w-8" style={{ color: '#fff' }} />
+            <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl" style={{ color: '#fff' }}>Start growing in the next minute</h2>
+            <p className="mx-auto mt-5 max-w-md text-sm leading-6" style={{ color: 'hsl(0 0% 100% / 0.85)' }}>
+              Create your account, add funds and launch your first campaign from one simple dashboard.
+            </p>
+            <Link to="/auth" className="smm-btn mt-8 inline-flex" style={{ background: '#fff', color: 'hsl(var(--smm-violet-deep))' }}>
+              Create Free Account <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= FOOTER ================= */}
+      <footer className="smm-footer py-14">
+        <div className="smm-wrap grid gap-10 md:grid-cols-[1.4fr_2fr]">
+          <div>
+            <Link to="/" className="flex items-center gap-2.5">
+              <img src="/logo.png" alt="" className="h-10 w-10 rounded-xl object-cover" />
+              <strong className="text-lg font-extrabold">MULTY<span className="smm-grad-text">SMM</span></strong>
+            </Link>
+            <p className="mt-5 max-w-xs text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
+              The best, cheapest and fastest SMM panel for creators, brands and resellers.
+            </p>
+            <Link to="/auth" className="smm-btn smm-btn-primary mt-6">Get Started</Link>
+          </div>
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+            <div>
+              <h4 className="mb-4 text-sm font-extrabold">Product</h4>
+              <div className="space-y-2.5 text-sm" style={{ color: 'hsl(var(--smm-copy))' }}>
+                <a href="#services" className="block">Services</a>
+                <a href="#faq" className="block">FAQ</a>
+                <Link to="/api-access" className="block">API access</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="mb-4 text-sm font-extrabold">Company</h4>
+              <div className="space-y-2.5 text-sm" style={{ color: 'hsl(var(--smm-copy))' }}>
+                <Link to="/about" className="block">About us</Link>
+                <Link to="/contact" className="block">Contact</Link>
+                <Link to="/support" className="block">Support</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="mb-4 text-sm font-extrabold">Legal</h4>
+              <div className="space-y-2.5 text-sm" style={{ color: 'hsl(var(--smm-copy))' }}>
+                <Link to="/terms" className="block">Terms</Link>
+                <Link to="/privacy" className="block">Privacy</Link>
+                <Link to="/refund" className="block">Refunds</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="smm-wrap mt-12 border-t pt-6 text-xs" style={{ borderColor: 'hsl(var(--smm-line))', color: 'hsl(var(--smm-copy))' }}>
+          © {new Date().getFullYear()} MultySMM. All rights reserved.
+        </div>
       </footer>
     </div>
   );
