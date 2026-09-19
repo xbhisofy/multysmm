@@ -297,6 +297,13 @@ export function EngagementTypeCard({
     }
   };
 
+  const clampToProviderMin = useCallback((qty: number) => {
+    // Provider minimum se kam kabhi allow nahi — min (10 likes, 100 views...) se
+    // neeche type karo to apne aap min pe snap ho jaye.
+    if (providerMin > 0 && qty > 0 && qty < providerMin) return providerMin;
+    return qty;
+  }, [providerMin]);
+
   const handleQuantityChange = useCallback((value: string) => {
     const cleaned = value.replace(/[^0-9]/g, '');
     setLocalQtyValue(cleaned);
@@ -305,26 +312,27 @@ export function EngagementTypeCard({
     if (qtyTimerRef.current) clearTimeout(qtyTimerRef.current);
 
     qtyTimerRef.current = setTimeout(() => {
-      const quantity = parseInt(cleaned) || 0;
+      const quantity = clampToProviderMin(parseInt(cleaned) || 0);
       const effectivePricePerK = pricePerK > 0
         ? pricePerK
         : (config.quantity > 0 ? (config.price * 1000) / config.quantity : 0);
       const newPrice = effectivePricePerK > 0 ? (quantity / 1000) * effectivePricePerK : 0;
+      if (quantity !== (parseInt(cleaned) || 0)) setLocalQtyValue(quantity.toString());
       onChange({ ...config, quantity, price: newPrice });
     }, 500);
-  }, [pricePerK, config, onChange]);
+  }, [pricePerK, config, onChange, clampToProviderMin]);
 
   const handleQuantityBlur = useCallback(() => {
     if (qtyTimerRef.current) clearTimeout(qtyTimerRef.current);
     isQtyTypingRef.current = false;
-    const quantity = parseInt(localQtyValue) || 0;
+    const quantity = clampToProviderMin(parseInt(localQtyValue) || 0);
     const effectivePricePerK = pricePerK > 0
       ? pricePerK
       : (config.quantity > 0 ? (config.price * 1000) / config.quantity : 0);
     const newPrice = effectivePricePerK > 0 ? (quantity / 1000) * effectivePricePerK : 0;
     setLocalQtyValue(quantity.toString());
     onChange({ ...config, quantity, price: newPrice });
-  }, [localQtyValue, pricePerK, config, onChange]);
+  }, [localQtyValue, pricePerK, config, onChange, clampToProviderMin]);
 
   const handleTimeLimitChange = (value: number) => {
     // -1 means "Custom" button was clicked - enter custom mode
