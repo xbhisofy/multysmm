@@ -37,6 +37,22 @@ const features = [
 
 const platforms = ['YouTube', 'Instagram', 'Twitter', 'TikTok', 'Telegram', 'Facebook'];
 
+const engagementTiles = [
+  { icon: Eye, label: 'Views' },
+  { icon: Heart, label: 'Likes' },
+  { icon: MessageCircle, label: 'Comments' },
+  { icon: Bookmark, label: 'Saves' },
+  { icon: Share2, label: 'Shares' },
+];
+
+const howSteps = [
+  { icon: LinkIcon, title: 'Paste your link', text: 'Drop in any Instagram, YouTube, TikTok or Facebook post link — that is all we need.' },
+  { icon: Sparkles, title: 'Pick engagement', text: 'Toggle views, likes, comments, saves and shares in one single order.' },
+  { icon: Brain, title: 'AI plans delivery', text: 'Our AI builds a natural delivery schedule with human-like gaps and ±50% variation.' },
+  { icon: TrendingUp, title: 'Grow naturally', text: 'Real engagement trickles in over hours, and you watch every step live in your dashboard.' },
+];
+
+
 const services = [
   { icon: Instagram, name: 'Instagram', tags: ['Real Followers', 'Organic Likes'], featured: true },
   { icon: Facebook, name: 'Facebook', tags: ['Page Reach', 'Comments'] },
