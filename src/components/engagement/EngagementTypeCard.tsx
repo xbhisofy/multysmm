@@ -377,32 +377,30 @@ export function EngagementTypeCard({
 
   return (
     <Card className={cn(
-      "rounded-xl border bg-card shadow-sm",
-      hasError ? "border-destructive/40" : "border-border",
-      config.enabled && !hasError && palette.card,
-      !config.enabled && "opacity-70"
+      "rounded-2xl border bg-card shadow-[0_2px_12px_-4px_rgba(16,185,129,0.12)]",
+      hasError ? "border-destructive/40" : "border-emerald-100",
+      !config.enabled && "opacity-60"
     )}>
-      <CardContent className="p-3 overflow-hidden">
+      <CardContent className="p-3.5 sm:p-4 overflow-hidden">
         {/* Header Row - compact single line */}
         <div className="flex items-center justify-between gap-1.5 sm:gap-2 min-w-0">
           {/* Left: Icon + Label */}
           <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
-            <div className={cn(
-              "p-1.5 rounded-lg shrink-0",
-              config.enabled ? palette.iconBox : "bg-muted/60 text-muted-foreground"
-            )}>
-              <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            </div>
+            <Icon className={cn(
+              "h-4 w-4 sm:h-[18px] sm:w-[18px] shrink-0",
+              config.enabled ? "text-emerald-500" : "text-muted-foreground"
+            )} />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
                   <span className={cn(
-                  "text-sm sm:text-[15px] font-medium truncate text-foreground"
+                  "text-sm sm:text-[15px] font-bold truncate",
+                  config.enabled ? "text-emerald-600" : "text-foreground"
                 )}>
                   {engagementConfig.label}
                 </span>
                 {type === 'views' && (
-                  <Badge className="text-[9px] bg-primary/10 text-primary font-medium px-1.5 py-0 rounded-full border-none normal-case tracking-normal">
-                    Base
+                  <Badge className="text-[9px] bg-emerald-600 text-white font-bold px-1.5 py-0 rounded border-none normal-case tracking-wide">
+                    BASE
                   </Badge>
                 )}
               </div>
@@ -410,7 +408,7 @@ export function EngagementTypeCard({
           </div>
 
           {/* Right: Input + Switch */}
-          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {config.enabled && (
               <Input
                 type="text"
@@ -420,8 +418,7 @@ export function EngagementTypeCard({
                 onChange={(e) => handleQuantityChange(e.target.value)}
                 onBlur={handleQuantityBlur}
                 className={cn(
-                  "w-14 sm:w-20 h-7 sm:h-8 text-xs sm:text-sm text-right bg-secondary border border-border text-foreground font-medium px-1.5 rounded-lg",
-                  !hasError && palette.input,
+                  "w-16 sm:w-20 h-8 sm:h-9 text-sm sm:text-[15px] text-center bg-stone-100 border border-stone-200 text-foreground font-bold px-2 rounded-full shadow-none focus-visible:ring-emerald-400",
                   hasError && "border-destructive"
                 )}
               />
@@ -430,7 +427,7 @@ export function EngagementTypeCard({
               <Switch
                 checked={config.enabled}
                 onCheckedChange={handleToggle}
-                className="data-[state=checked]:bg-primary"
+                className="data-[state=checked]:bg-emerald-500"
               />
             </div>
           </div>
@@ -444,7 +441,7 @@ export function EngagementTypeCard({
 
         {config.enabled && !hasError && providerMin > 0 && (
           <div className="mt-1.5 text-[11px] text-muted-foreground">
-            Minimum {providerMin.toLocaleString()} — isse kam order nahi hoga
+            Min: {providerMin.toLocaleString()} • Max: {providerMax.toLocaleString()}
           </div>
         )}
 
