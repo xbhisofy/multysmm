@@ -70,6 +70,18 @@ export function buildTryList(
     })
 }
 
+/**
+ * Provider attempt history only excludes accounts for an explicit failed-run
+ * fallback. Pending busy runs must retry every account on the next cron tick.
+ */
+export function attemptedProviderExclusions(
+  runStatus: string | null | undefined,
+  attemptedProviderIds: unknown,
+): string[] {
+  if ((runStatus || '').toLowerCase() !== 'failed' || !Array.isArray(attemptedProviderIds)) return []
+  return attemptedProviderIds.filter((id): id is string => typeof id === 'string' && id.length > 0)
+}
+
 const BUSY_ERRORS = [
   'active order with this link', 'wait until order being completed', 'already has an order',
   'order in progress', 'link currently active', 'processing previous order',

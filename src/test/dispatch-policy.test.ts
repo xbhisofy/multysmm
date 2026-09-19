@@ -7,6 +7,7 @@ import {
   busyBackoffMs,
   MAX_BUSY_RETRIES,
   BUSY_BACKOFF_MAX_MS,
+  attemptedProviderExclusions,
   type DispatchCandidate,
 } from "../../supabase/functions/_shared/dispatch-policy";
 
@@ -113,5 +114,10 @@ describe("all-providers-busy handling", () => {
       ["p2"],
     );
     expect(freed.map((c) => c.accountId)).toEqual(["p1"]);
+  });
+
+  it("does not permanently blacklist providers after a queued busy attempt", () => {
+    expect(attemptedProviderExclusions("pending", ["p1", "p2"])).toEqual([]);
+    expect(attemptedProviderExclusions("failed", ["p1", "p2"])).toEqual(["p1", "p2"]);
   });
 });

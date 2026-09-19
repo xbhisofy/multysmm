@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { attemptedProviderExclusions } from '../_shared/dispatch-policy.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -1369,8 +1370,7 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
       // Keep the exclusion only for an explicit failed-run fallback, where the
       // scheduler is intentionally moving away from a provider that already failed.
       if (isRetry) {
-        const triedProviders: string[] = Array.isArray(run.provider_response?.tried_providers)
-          ? run.provider_response.tried_providers : []
+        const triedProviders = attemptedProviderExclusions(run.status, run.provider_response?.tried_providers)
         for (const tp of triedProviders) {
           if (tp && !busyAccountIds.includes(tp)) busyAccountIds.push(tp)
         }
