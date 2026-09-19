@@ -139,10 +139,13 @@ function safeReturnUrl(value: unknown, origin: string) {
   return new URL('/wallet', origin)
 }
 
+// Send the user straight back to the site's wallet page.
+// The wallet page reads ?status & ?order_id and syncs the deposit itself.
+// (Routing through the edge function broke on self-hosted setups where
+// SUPABASE_URL is an internal hostname like http://api-gw:8000.)
 function gatewayReturnUrl(returnUrl: URL, status: 'success' | 'failed' | 'timeout', orderId: string) {
-  const url = new URL(`${SUPABASE_URL}/functions/v1/zapupi-return`)
+  const url = new URL(returnUrl.toString())
   url.searchParams.set('status', status)
-  url.searchParams.set('deposit_order_id', orderId)
-  url.searchParams.set('return_url', returnUrl.toString())
+  url.searchParams.set('order_id', orderId)
   return url.toString()
 }
