@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ArrowRight, ChevronDown, Clock3, Facebook, Headphones, Instagram, Menu,
-  Minus, Play, Plus, Send, ShieldCheck, Sparkles, Twitter, X, Youtube, Zap,
+  ArrowDown, ArrowRight, Bookmark, Brain, ChevronDown, Clock3, Eye, Facebook, Headphones, Heart,
+  Instagram, Link as LinkIcon, Menu, MessageCircle, Minus, Play, Plus, Send, Share2, ShieldCheck,
+  Sparkles, TrendingUp, Twitter, X, Youtube, Zap,
 } from 'lucide-react';
+
 import { PageMeta } from '@/components/seo/PageMeta';
 import './smm-home.css';
 
