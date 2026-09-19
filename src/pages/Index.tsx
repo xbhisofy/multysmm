@@ -186,10 +186,10 @@ const Index = () => {
       {/* ================= FEATURES ================= */}
       <section id="pricing" className="smm-wrap py-20 md:py-24">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> Features</span>
-          <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Why should you use <span className="smm-grad-text">our services?</span></h2>
+          <span className="smm-kicker mb-5"><Sparkles className="h-3.5 w-3.5" /> The difference</span>
+          <h2 className="text-3xl leading-tight sm:text-4xl md:text-5xl">Why creators leave <span className="smm-grad-text">ordinary panels</span></h2>
           <p className="mx-auto mt-5 max-w-lg text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
-            Grow smarter with real audience reach, transparent tracking and support whenever you need it.
+            Bot numbers fade and hurt your reach. Real organic engagement compounds — and that is the only thing we deliver.
           </p>
         </div>
         <div className="mt-12 grid gap-5 md:grid-cols-3">
