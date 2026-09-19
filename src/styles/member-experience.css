@@ -1,17 +1,17 @@
 .member-shell {
-  --member-sky: 202 70% 61%;
-  --member-blue: 216 100% 50%;
-  --member-ink: 215 35% 14%;
+  --member-sky: 262 83% 68%;
+  --member-blue: 262 83% 58%;
+  --member-ink: 255 30% 14%;
   --member-paper: 0 0% 100%;
-  --member-soft: 204 55% 97%;
-  --member-line: 205 38% 87%;
-  --member-action-gradient: linear-gradient(135deg, hsl(var(--member-ink)), hsl(var(--member-blue)));
+  --member-soft: 262 90% 97%;
+  --member-line: 255 25% 90%;
+  --member-action-gradient: linear-gradient(120deg, hsl(272 85% 62%), hsl(262 83% 58%) 60%, hsl(250 80% 55%));
   min-height: 100vh;
   background:
-    linear-gradient(180deg, hsl(var(--member-sky) / 0.2), hsl(var(--member-soft)) 23rem),
+    linear-gradient(180deg, hsl(var(--member-sky) / 0.16), hsl(var(--member-soft)) 23rem),
     hsl(var(--member-soft));
   color: hsl(var(--member-ink));
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "DM Sans", "Segoe UI", Arial, sans-serif;
 }
 
 .member-shell * { letter-spacing: 0; }
