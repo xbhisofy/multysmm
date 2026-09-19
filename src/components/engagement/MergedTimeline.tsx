@@ -58,7 +58,7 @@ interface MergedTimelineProps {
   typeTargets?: TypeTarget[]; // Total targets for each engagement type in order
 }
 
-export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTargets = [] }: MergedTimelineProps) {
+export function MergedTimeline({ runs, nextRun, onRefresh, typeTargets = [] }: MergedTimelineProps) {
   const [refreshingRunId, setRefreshingRunId] = useState<string | null>(null);
   const [isGlobalRefreshing, setIsGlobalRefreshing] = useState(false);
 
@@ -289,9 +289,8 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
                     ? 'bg-emerald-500/10 border border-emerald-500/30'
                     : isFailed
                       ? 'bg-green-500/10 border border-green-500/30'
-                      : 'bg-fuchsia-500/5 border border-fuchsia-500/20 hover:bg-fuchsia-500/10 cursor-pointer'
+                      : 'bg-fuchsia-500/5 border border-fuchsia-500/20 hover:bg-fuchsia-500/10'
                   }`}
-                onClick={() => isPending && onEditRun(run)}
               >
                 {/* Main Row */}
                 <div className="p-3 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
@@ -528,21 +527,6 @@ export function MergedTimeline({ runs, onEditRun, nextRun, onRefresh, typeTarget
                           <RefreshCw className="h-4 w-4 mr-1.5" />
                         )}
                         Check Now
-                      </Button>
-                    )}
-
-                    {isPending && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 px-3 text-muted-foreground hover:text-foreground"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEditRun(run);
-                        }}
-                      >
-                        <Pencil className="h-4 w-4 mr-1.5" />
-                        Edit
                       </Button>
                     )}
                   </div>

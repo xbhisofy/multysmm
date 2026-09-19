@@ -77,7 +77,6 @@ export function TypeHistoryCard({
   runs,
   serviceName,
   servicePrice,
-  onEditRun,
   itemId,
   itemStatus,
   onPause,
@@ -380,10 +379,9 @@ export function TypeHistoryCard({
                     key={run.id}
                     className={`p-4 transition-colors ${isActive ? 'bg-blue-500/10' :
                       isFailed ? 'bg-green-500/5' :
-                        isPending ? 'hover:bg-fuchsia-500/5 cursor-pointer' :
+                        isPending ? 'hover:bg-fuchsia-500/5' :
                           isCompleted ? 'bg-emerald-500/5' : ''
                       }`}
-                    onClick={() => isPending && onEditRun(run)}
                   >
                     <div className="flex items-center gap-4">
                       {/* Run Number Circle - Colorful Gradient */}
@@ -475,20 +473,6 @@ export function TypeHistoryCard({
                           </div>
                         )}
 
-                        {isPending && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-8"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onEditRun(run);
-                            }}
-                          >
-                            <Pencil className="h-3 w-3 mr-1" />
-                            Edit
-                          </Button>
-                        )}
                       </div>
                     </div>
 

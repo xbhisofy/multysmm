@@ -53,7 +53,6 @@ export function TypeHistoryTable({
   targetQuantity,
   deliveredQuantity,
   runs,
-  onEditRun,
 }: TypeHistoryTableProps) {
   // Dynamic fallback for unknown engagement types
   const config = ENGAGEMENT_CONFIG[engagementType] || {
@@ -146,10 +145,8 @@ export function TypeHistoryTable({
                 <div
                   key={run.id}
                   className={`grid grid-cols-12 gap-2 p-3 text-sm items-center transition-colors ${
-                    isActive ? 'bg-blue-50/80 dark:bg-blue-950/20' :
-                    isPending ? 'hover:bg-muted/50 cursor-pointer' : ''
+                    isActive ? 'bg-blue-50/80 dark:bg-blue-950/20' : ''
                   }`}
-                  onClick={() => isPending && onEditRun(run)}
                 >
                   {/* Run Number */}
                   <div className="col-span-1">
@@ -230,22 +227,8 @@ export function TypeHistoryTable({
                     )}
                   </div>
 
-                  {/* Edit */}
-                  <div className="col-span-1 flex justify-end">
-                    {isPending && (
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        className="h-6 w-6 p-0"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEditRun(run);
-                        }}
-                      >
-                        <Pencil className="h-3 w-3" />
-                      </Button>
-                    )}
-                  </div>
+                  {/* View-only — editing removed */}
+                  <div className="col-span-1" />
                 </div>
               );
             })}
