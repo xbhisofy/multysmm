@@ -35,7 +35,7 @@ export function MobileBottomNav() {
               key={to}
               to={to}
               className={({ isActive }) => `member-bottom-nav-item flex flex-col items-center justify-center gap-1 flex-1 py-2 ${isActive ? 'is-active' : ''}`}
-              style={{ '--tab-color': color, '--tab-soft': soft } as React.CSSProperties}
+              style={{ '--tab-color': color, '--tab-soft': soft } as CSSProperties}
             >
               <span className="member-bottom-nav-icon flex items-center justify-center w-9 h-9 rounded-xl">
                 <Icon className="w-[22px] h-[22px]" strokeWidth={2.6} />
