@@ -75,7 +75,7 @@ export default function AboutUs() {
                 
                 <strong className="text-foreground">Registered Address:</strong> 8 The Green, Suite #14490, Dover, DE 19901, United States<br />
                 <strong className="text-foreground">Email:</strong> support@multysmm.com<br />
-                <strong className="text-foreground">Telegram Support:</strong> <a href="https://t.me/multysmm" target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">@multysmm</a><br />
+                <strong className="text-foreground">Telegram Support:</strong> <a href="https://t.me/x07neo" target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">@x07neo</a><br />
                 <strong className="text-foreground">Website:</strong> https://multysmm.com
               </p>
             </section>

@@ -212,7 +212,7 @@ export default function Wallet() {
         duration: 12000,
         action: {
           label: 'Contact support',
-          onClick: () => window.open('https://t.me/multysmm', '_blank'),
+          onClick: () => window.open('https://t.me/x07neo', '_blank'),
         },
       });
       cleanUrl();
