@@ -442,6 +442,12 @@ export function EngagementTypeCard({
           </div>
         )}
 
+        {config.enabled && !hasError && providerMin > 0 && (
+          <div className="mt-1.5 text-[11px] text-muted-foreground">
+            Minimum {providerMin.toLocaleString()} — isse kam order nahi hoga
+          </div>
+        )}
+
         {/* Advanced Settings - collapsed behind a small toggle */}
         {config.enabled && !hasError && (
           <Collapsible>
