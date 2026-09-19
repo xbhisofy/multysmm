@@ -1583,7 +1583,7 @@ export default function EngagementOrder() {
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <span className="text-xs sm:text-sm bg-primary/10 text-primary px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-medium">
+              <span className="text-xs sm:text-sm bg-foreground text-background px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold">
                 {bundlesLoading ? (
                   <span className="flex items-center gap-1.5"><Loader2 className="h-3 w-3 animate-spin" /> ...</span>
                 ) : (
