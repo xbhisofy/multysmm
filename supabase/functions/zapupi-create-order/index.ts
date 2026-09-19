@@ -32,7 +32,10 @@ Deno.serve(async (req) => {
     const origin = safeOrigin(req.headers.get('origin') || (body?.origin as string) || 'https://multysmm.com')
     const returnBaseUrl = safeReturnUrl(body?.return_url, origin)
     const customerMobile = String(body?.customer_mobile || '').replace(/\D/g, '').slice(-10)
-    const webhookUrl = `${SUPABASE_URL}/functions/v1/zapupi-webhook`
+    // Webhook must be publicly reachable (ZapUPI servers call it).
+    // On self-hosted VPS, SUPABASE_URL is internal — use PUBLIC_FUNCTIONS_URL if set.
+    const publicBase = Deno.env.get('PUBLIC_FUNCTIONS_URL') || `${SUPABASE_URL}/functions/v1`
+    const webhookUrl = `${publicBase}/zapupi-webhook`
 
     const orderId = 'ZAP_' + crypto.randomUUID().replace(/-/g, '')
     const successUrl = gatewayReturnUrl(returnBaseUrl, 'success', orderId)
