@@ -8,7 +8,6 @@ import { Mail, Lock, User, Loader2, ArrowLeft, Shield, Zap, Eye, EyeOff, ArrowRi
 import { supabase } from '@/integrations/supabase/client';
 import { z } from 'zod';
 import { PageMeta } from '@/components/seo/PageMeta';
-import skyImage from '@/assets/multysmm-sky.jpg';
 import '@/styles/member-experience.css';
 
 const GRADIENT = 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #C084FC 100%)';
@@ -101,8 +100,7 @@ export default function Auth() {
   const inputClass = "h-12 rounded-xl border-[#E9E5FB] bg-white focus:border-[#7C3AED] focus:ring-2 focus:ring-[#7C3AED]/15 text-[#0B0B16] font-medium px-4 placeholder:text-[#bbb] transition-all";
 
   return (
-    <div className="member-shell member-auth flex items-center justify-center px-6 py-12 relative overflow-hidden"
-      style={{ '--member-sky-image': `url(${skyImage})` } as React.CSSProperties}>
+    <div className="member-shell member-auth flex items-center justify-center px-6 py-12 relative overflow-hidden">
       {/* glow */}
       <div aria-hidden className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(closest-side, rgba(124,58,237,.16), transparent 70%)', filter: 'blur(40px)' }} />
