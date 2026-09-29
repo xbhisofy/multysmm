@@ -1137,15 +1137,34 @@ async function processAllRuns(supabase: any, executionId: string, startTime: num
         message.includes('active order on link')
     }
 
-    const allEngagementRuns = [...pendingRunsLimitedPerItem, ...retryRunsLimitedPerItem].sort((a: any, b: any) => {
+    const sortedEngagementRuns = [...pendingRunsLimitedPerItem, ...retryRunsLimitedPerItem].sort((a: any, b: any) => {
       const aBusy = isDeprioritizedBusyRun(a) ? 1 : 0
       const bBusy = isDeprioritizedBusyRun(b) ? 1 : 0
       if (aBusy !== bBusy) return aBusy - bBusy
+
+      // Never-attempted runs go before retries so a new order is never starved
+      const aFresh = !a.retry_count && !a.error_message ? 0 : 1
+      const bFresh = !b.retry_count && !b.error_message ? 0 : 1
+      if (aFresh !== bFresh) return aFresh - bFresh
 
       const aTime = new Date(a.scheduled_at || 0).getTime()
       const bTime = new Date(b.scheduled_at || 0).getTime()
       return aTime - bTime
     })
+
+    // FAIRNESS: round-robin across engagement orders so one order with many
+    // items/retries can't eat the whole 50s time slice and starve others.
+    const runsByOrder = new Map<string, any[]>()
+    for (const r of sortedEngagementRuns) {
+      const oid = r.engagement_order_item?.engagement_order?.id || r.engagement_order_item_id || r.id
+      if (!runsByOrder.has(oid)) runsByOrder.set(oid, [])
+      runsByOrder.get(oid)!.push(r)
+    }
+    const allEngagementRuns: any[] = []
+    const queues = [...runsByOrder.values()]
+    for (let i = 0; allEngagementRuns.length < sortedEngagementRuns.length; i++) {
+      for (const q of queues) if (q[i]) allEngagementRuns.push(q[i])
+    }
     console.log(`Processing ${allEngagementRuns.length} runs (${pendingRunsLimitedPerItem.length} pending + ${retryRunsLimitedPerItem.length} retry), total overdue in DB: check query`)
 
     // A previous "busy" response must not blacklist an account for 15 minutes.
