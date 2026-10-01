@@ -5,7 +5,7 @@ import { Sidebar } from './Sidebar';
 
 const items = [
   { to: '/engagement-order', label: 'Order', icon: Zap, color: '#7C3AED', soft: '#F1EBFE' },
-  { to: '/orders', label: 'History', icon: History, color: '#0EA5E9', soft: '#E8F5FE' },
+  { to: '/engagement-orders', label: 'History', icon: History, color: '#0EA5E9', soft: '#E8F5FE' },
   { to: '/wallet', label: 'Wallet', icon: Wallet, color: '#10B981', soft: '#E7F8F1' },
   { to: '/settings', label: 'Settings', icon: Settings, color: '#F59E0B', soft: '#FDF3E2' },
 ];
