@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { PLATFORM_CONFIG } from "@/lib/engagement-types";
-import { Instagram, Music, Youtube, Twitter, Facebook } from "lucide-react";
+import { Instagram, Music, Youtube, Twitter, Facebook, Megaphone } from "lucide-react";
 
 interface PlatformSelectorProps {
   selected: string;
@@ -14,6 +14,7 @@ const iconMap = {
   Youtube,
   Twitter,
   Facebook,
+  Megaphone,
 };
 
 export function PlatformSelector({ selected, onSelect, availablePlatforms }: PlatformSelectorProps) {
