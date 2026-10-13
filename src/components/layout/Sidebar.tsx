@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Wallet, Settings, LifeBuoy, Shield, LogOut, Rocket, Sparkles, X, Code2, Send, Layers, Bot, Bookmark } from 'lucide-react';
+import { LayoutDashboard, Wallet, Settings, LifeBuoy, Shield, LogOut, Rocket, Sparkles, X, Code2, Send, Layers, Megaphone, Bookmark } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency, CURRENCIES } from '@/hooks/useCurrency';
 import { cn } from '@/lib/utils';
@@ -15,7 +15,7 @@ const userNavItems = [
   { icon: Layers, label: 'Mass Order', path: '/engagement-order?mode=mass' },
   { icon: Sparkles, label: 'Engagement Orders', path: '/engagement-orders' },
   
-  { icon: Bot, label: 'AI Assistant', path: '/ai-assistant', highlight: true },
+  { icon: Megaphone, label: 'Ads Monetization', path: '/engagement-order?platform=adsterra', highlight: true },
   { icon: Wallet, label: 'Wallet', path: '/wallet' },
   { icon: Code2, label: 'API Access', path: '/api-access' },
   { icon: LifeBuoy, label: 'Support', path: '/support' },
@@ -108,10 +108,14 @@ export function Sidebar({ onClose }: SidebarProps) {
           const isEngagementBase = item.path === '/engagement-order';
           const onEngagement = location.pathname === '/engagement-order';
           const isMassActive = onEngagement && location.search.includes('mode=mass');
-          const isActive = isMassLink
+          const isAdsLink = item.path.includes('platform=adsterra');
+          const isAdsActive = onEngagement && location.search.includes('platform=adsterra');
+          const isActive = isAdsLink
+            ? isAdsActive
+            : isMassLink
             ? isMassActive
             : isEngagementBase
-              ? onEngagement && !isMassActive
+              ? onEngagement && !isMassActive && !isAdsActive
               : location.pathname === item.path;
           return (
             <Link key={item.path} to={item.path} onClick={onClose}
