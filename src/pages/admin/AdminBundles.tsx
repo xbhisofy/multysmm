@@ -89,6 +89,9 @@ const ENGAGEMENT_ICONS: Record<EngagementType, any> = {
   watch_hours: Clock,
   retweets: Repeat,
   reposts: RefreshCw,
+  impressions: Eye,
+  visits: Globe,
+  clicks: Sparkle,
 };
 
 export default function AdminBundles() {
