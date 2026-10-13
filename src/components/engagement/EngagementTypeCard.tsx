@@ -27,7 +27,7 @@ import {
   Eye, Heart, MessageCircle, Bookmark, Share2,
   Clock, AlertTriangle,
   Timer, Shuffle, Flame, Calendar, ChevronDown, ChevronUp, List, Sparkles,
-  UserPlus, Bell, Repeat, RefreshCw
+  UserPlus, Bell, Repeat, RefreshCw, Globe, MousePointerClick
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -53,6 +53,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Repeat,
   RefreshCw,
   Clock,
+  Globe,
+  MousePointerClick,
 };
 
 const TIME_PRESETS = [
