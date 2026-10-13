@@ -145,7 +145,7 @@ export default function EngagementOrder() {
 
 
   // Form State
-  const [platform, setPlatform] = useState('instagram');
+  const [platform, setPlatform] = useState(() => new URLSearchParams(location.search).get('platform') || 'instagram');
   const [link, setLink] = useState('');
   // Mass Order mode state
   const [orderMode, setOrderMode] = useState<'single' | 'mass'>(
@@ -155,6 +155,8 @@ export default function EngagementOrder() {
   useEffect(() => {
     const mode = new URLSearchParams(location.search).get('mode');
     setOrderMode(mode === 'mass' ? 'mass' : 'single');
+    const p = new URLSearchParams(location.search).get('platform');
+    if (p) setPlatform(p);
   }, [location.search]);
   const [massLinksText, setMassLinksText] = useState('');
   const [massConfirmOpen, setMassConfirmOpen] = useState(false);
