@@ -398,15 +398,18 @@ serve(async (req) => {
 
     // Check if bundle has AI Organic Mode enabled (default ON)
     let aiOrganicEnabled = true
+    let isManualPlatform = false
     if (bundle_id) {
-      const { data: bundle } = await supabase.from('engagement_bundles').select('ai_organic_enabled').eq('id', bundle_id).single()
+      const { data: bundle } = await supabase.from('engagement_bundles').select('ai_organic_enabled, platform').eq('id', bundle_id).single()
       if (bundle) aiOrganicEnabled = bundle.ai_organic_enabled ?? true
+      // Manual platforms (Adsterra): admin delivers by hand, no provider runs are scheduled.
+      if (bundle && ['adsterra'].includes(String(bundle.platform))) isManualPlatform = true
     }
 
     // Create order (persist full config_snapshot for Repeat Order restore)
     const config_snapshot = (body as any).config_snapshot ?? null
     const { data: order, error: orderError } = await supabase.from('engagement_orders').insert({
-      user_id, bundle_id, link, total_price: safeTotalPrice, base_quantity, is_organic_mode: true, status: 'processing',
+      user_id, bundle_id, link, total_price: safeTotalPrice, base_quantity, is_organic_mode: !isManualPlatform, status: isManualPlatform ? 'pending' : 'processing',
       config_snapshot,
     }).select().single()
 
@@ -858,6 +861,10 @@ serve(async (req) => {
       } catch (err: any) {
         console.error(`${orderTag} 💥 Background fatal error:`, err?.message || err, err?.stack ? `\n${err.stack}` : '')
       }
+    }
+
+    if (isManualPlatform) {
+      return new Response(JSON.stringify({ success: true, order_id: order.id, new_balance: newBalance, manual: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
     if (typeof (globalThis as any).EdgeRuntime !== 'undefined' && (globalThis as any).EdgeRuntime.waitUntil) {

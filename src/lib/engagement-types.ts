@@ -3,7 +3,7 @@
 export interface EngagementBundle {
   id: string;
   name: string;
-  platform: 'instagram' | 'tiktok' | 'youtube' | 'twitter' | 'facebook';
+  platform: 'instagram' | 'tiktok' | 'youtube' | 'twitter' | 'facebook' | 'adsterra';
   provider_id: string | null;
   description: string | null;
   icon: string;
@@ -37,7 +37,7 @@ export interface BundleItem {
   };
 }
 
-export type EngagementType = 'views' | 'likes' | 'comments' | 'saves' | 'shares' | 'followers' | 'subscribers' | 'watch_hours' | 'retweets' | 'reposts';
+export type EngagementType = 'views' | 'likes' | 'comments' | 'saves' | 'shares' | 'followers' | 'subscribers' | 'watch_hours' | 'retweets' | 'reposts' | 'impressions' | 'visits' | 'clicks';
 
 export type SpeedPreset = 'fast' | 'natural' | 'safe';
 
@@ -136,7 +136,11 @@ export const PLATFORM_CONFIG = {
   youtube: { icon: 'Youtube', color: 'from-red-800/60 to-red-950/80', label: 'YouTube', bgColor: 'bg-red-800/10', borderColor: 'border-red-800/20' },
   twitter: { icon: 'Twitter', color: 'from-sky-800/60 to-blue-950/80', label: 'Twitter/X', bgColor: 'bg-sky-800/10', borderColor: 'border-sky-800/20' },
   facebook: { icon: 'Facebook', color: 'from-blue-800/60 to-fuchsia-950/80', label: 'Facebook', bgColor: 'bg-blue-800/10', borderColor: 'border-blue-800/20' },
+  adsterra: { icon: 'Megaphone', color: 'from-orange-600/70 to-rose-700/70', label: 'Adsterra', bgColor: 'bg-orange-600/10', borderColor: 'border-orange-600/20' },
 } as const;
+
+/** Platforms whose orders are fulfilled manually by the admin (no provider API). */
+export const MANUAL_PLATFORMS = ['adsterra'] as const;
 
 // Engagement type icons and colors - Muted deep colors
 export const ENGAGEMENT_CONFIG = {
@@ -150,6 +154,9 @@ export const ENGAGEMENT_CONFIG = {
   watch_hours: { icon: 'Clock', color: 'text-blue-700', bgColor: 'bg-blue-700/10', borderColor: 'border-blue-700/20', label: 'Watch Hours', emoji: '⏱️' },
   retweets: { icon: 'Repeat', color: 'text-teal-700', bgColor: 'bg-teal-700/10', borderColor: 'border-teal-700/20', label: 'Retweets', emoji: '🔁' },
   reposts: { icon: 'RefreshCw', color: 'text-green-700', bgColor: 'bg-green-700/10', borderColor: 'border-green-700/20', label: 'Reposts', emoji: '🔄' },
+  impressions: { icon: 'Eye', color: 'text-orange-600', bgColor: 'bg-orange-600/10', borderColor: 'border-orange-600/20', label: 'Impressions', emoji: '📢' },
+  visits: { icon: 'Globe', color: 'text-sky-700', bgColor: 'bg-sky-700/10', borderColor: 'border-sky-700/20', label: 'Visits / Traffic', emoji: '🌐' },
+  clicks: { icon: 'MousePointerClick', color: 'text-rose-700', bgColor: 'bg-rose-700/10', borderColor: 'border-rose-700/20', label: 'Clicks', emoji: '🖱️' },
 } as const;
 
 // Default engagement ratios (percentage of base views)
@@ -164,6 +171,9 @@ export const DEFAULT_RATIOS: Record<EngagementType, number> = {
   watch_hours: 5,
   retweets: 4,
   reposts: 1.3,
+  impressions: 100,
+  visits: 10,
+  clicks: 1,
 };
 
 // Platform-specific engagement types
@@ -173,6 +183,7 @@ export const PLATFORM_ENGAGEMENT_TYPES: Record<string, EngagementType[]> = {
   youtube: ['views', 'likes', 'comments', 'subscribers', 'watch_hours'],
   twitter: ['views', 'likes', 'comments', 'retweets', 'followers'],
   facebook: ['views', 'likes', 'comments', 'shares', 'followers'],
+  adsterra: ['impressions', 'visits', 'clicks'],
 };
 
 // Speed presets (kept for legacy compatibility)

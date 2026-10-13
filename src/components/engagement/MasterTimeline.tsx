@@ -49,6 +49,9 @@ const typeColors: Record<EngagementType, string> = {
   watch_hours: 'bg-foreground/45',
   retweets: 'bg-foreground/40',
   reposts: 'bg-foreground/35',
+  impressions: 'bg-foreground',
+  visits: 'bg-foreground/80',
+  clicks: 'bg-foreground/60',
 };
 
 export function MasterTimeline({ engagements }: MasterTimelineProps) {
