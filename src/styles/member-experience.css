@@ -228,7 +228,8 @@
 
 /* Order workspace: crisp paper, deep teal actions, cobalt and coral accents. */
 .member-shell:has(.engagement-order-page) {
-  --primary: 174 79% 26%;
+  --order-teal: 174 79% 26%;
+  --primary: var(--order-teal);
   --primary-foreground: 0 0% 100%;
   --ring: 174 79% 26%;
   --foreground: 210 28% 16%;
@@ -252,7 +253,7 @@
 }
 
 .engagement-order-page {
-  --engagement-tone: var(--primary);
+  --engagement-tone: var(--order-teal);
 }
 
 .member-shell:has(.engagement-order-page) .member-page :is(.glass-card, .glass-panel, .three-d-card, [class*="bg-card"]) {
