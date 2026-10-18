@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Deploy the Monetag platform icon crash fix to the VPS; verified live asset matches the VPS build and login opens without errors (authenticated order-page check unavailable).
+
 - [x] Add Monetag beside Adsterra as a separate ads platform with its own combined Impressions / Visits bundle.
 
 - [x] Combine default ads Impressions / Visits into one service, card and quantity while preserving custom services and existing orders.
