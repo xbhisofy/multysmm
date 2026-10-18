@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Keep default ads bundle limited to Impressions and Visits while preserving admin-added custom types.
+
 - [x] Show complete ads order details with separate copy-link and copy-all actions in admin.
 - [x] Accept valid website links from any domain for ads orders, in single and mass mode.
 
