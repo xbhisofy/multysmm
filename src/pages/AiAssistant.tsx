@@ -155,7 +155,7 @@ export default function AiAssistant() {
                 key={i}
                 onClick={() => send(s.text)}
                 disabled={loading}
-                className="text-left flex items-start gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:border-fuchsia-300 hover:bg-fuchsia-50/40 transition-all disabled:opacity-50"
+                className="text-left flex items-start gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:border-emerald-300 hover:bg-emerald-50/40 transition-all disabled:opacity-50"
               >
                 <s.icon className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#F5364B" }} />
                 <span className="text-xs text-slate-700 line-clamp-2">{s.text}</span>
@@ -166,7 +166,7 @@ export default function AiAssistant() {
 
         {/* Composer */}
         <div className="mt-3 shrink-0">
-          <div className="relative rounded-2xl border border-slate-200 bg-white focus-within:border-fuchsia-300 focus-within:ring-4 focus-within:ring-fuchsia-100 transition-all">
+          <div className="relative rounded-2xl border border-slate-200 bg-white focus-within:border-emerald-300 focus-within:ring-4 focus-within:ring-emerald-100 transition-all">
             <textarea
               ref={inputRef}
               value={input}

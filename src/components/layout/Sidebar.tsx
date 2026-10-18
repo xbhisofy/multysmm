@@ -65,7 +65,7 @@ export function Sidebar({ onClose }: SidebarProps) {
                 <span className="text-[8px] font-bold px-1.5 py-[2px] rounded tracking-wider text-primary-foreground"
                   style={{ background: GRADIENT }}>PRO</span>
               </div>
-              <p className="text-[10.5px] truncate mt-0.5" style={{ color: '#94A3B8' }}>{profile.email}</p>
+              <p className="text-[10.5px] truncate mt-0.5" style={{ color: '#64748B' }}>{profile.email}</p>
             </div>
           </div>
 
@@ -76,7 +76,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           <div className="relative px-4 pt-3 pb-4">
             <div className="flex items-end justify-between mb-3">
               <div className="min-w-0">
-                <p className="text-[9px] font-semibold uppercase tracking-[0.18em]" style={{ color: '#94A3B8' }}>
+                <p className="text-[9px] font-semibold uppercase tracking-[0.18em]" style={{ color: '#64748B' }}>
                   Available Balance
                 </p>
                 <p className="text-[24px] font-extrabold leading-none mt-1.5 tracking-tight truncate"
@@ -145,7 +145,7 @@ export function Sidebar({ onClose }: SidebarProps) {
         {isAdmin && (
           <>
             <div className="my-3 mx-3" style={{ borderTop: '1px solid hsl(var(--member-line))' }} />
-            <p className="px-3 mb-2 text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: '#94A3B8' }}>Admin</p>
+            <p className="px-3 mb-2 text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: '#64748B' }}>Admin</p>
             {adminNavItems.map((item) => {
               const isActive = location.pathname.startsWith(item.path);
               return (
@@ -201,7 +201,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           </span>
           <span className="min-w-0">
             <span className="block text-[13px] font-bold leading-tight" style={{ color: '#0F172A' }}>Join our Telegram</span>
-            <span className="block text-[11px] mt-0.5" style={{ color: '#94A3B8' }}>Updates & support</span>
+            <span className="block text-[11px] mt-0.5" style={{ color: '#64748B' }}>Updates & support</span>
           </span>
         </a>
       </div>

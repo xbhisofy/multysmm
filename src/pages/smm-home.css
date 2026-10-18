@@ -1,11 +1,11 @@
 .smm-home {
-  --smm-violet: 262 83% 58%;
-  --smm-violet-deep: 262 70% 45%;
-  --smm-violet-soft: 262 90% 96%;
-  --smm-ink: 255 30% 14%;
-  --smm-copy: 255 12% 42%;
+  --smm-violet: 152 58% 36%;
+  --smm-violet-deep: 158 66% 26%;
+  --smm-violet-soft: 150 65% 95%;
+  --smm-ink: 165 30% 12%;
+  --smm-copy: 165 12% 40%;
   --smm-paper: 0 0% 100%;
-  --smm-line: 255 25% 90%;
+  --smm-line: 150 32% 87%;
   min-height: 100vh;
   background: hsl(var(--smm-paper));
   color: hsl(var(--smm-ink));
@@ -23,7 +23,7 @@
 }
 
 .smm-grad-text {
-  background: linear-gradient(92deg, hsl(280 85% 60%), hsl(262 83% 58%) 55%, hsl(230 85% 62%));
+  background: linear-gradient(92deg, hsl(152 65% 45%), hsl(152 58% 36%) 55%, hsl(174 65% 32%));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -70,7 +70,7 @@
 }
 
 .smm-btn-primary {
-  background: linear-gradient(120deg, hsl(272 85% 62%), hsl(var(--smm-violet)) 60%, hsl(250 80% 55%));
+  background: linear-gradient(120deg, hsl(152 62% 42%), hsl(var(--smm-violet)) 60%, hsl(168 70% 25%));
   color: #fff;
   box-shadow: 0 12px 28px -10px hsl(var(--smm-violet) / 0.55);
 }
@@ -140,7 +140,7 @@
 .smm-stat-value {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   font-weight: 800;
-  background: linear-gradient(120deg, hsl(280 85% 60%), hsl(250 80% 55%));
+  background: linear-gradient(120deg, hsl(152 65% 45%), hsl(168 70% 28%));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -175,7 +175,7 @@
   padding: 2rem;
   min-height: 15rem;
   color: #fff;
-  background: linear-gradient(150deg, hsl(280 80% 62%), hsl(var(--smm-violet)) 55%, hsl(250 75% 48%));
+  background: linear-gradient(150deg, hsl(152 62% 48%), hsl(var(--smm-violet)) 55%, hsl(168 70% 26%));
   box-shadow: 0 24px 48px -18px hsl(var(--smm-violet) / 0.5);
   transition: transform 200ms ease, box-shadow 200ms ease;
 }
@@ -226,7 +226,7 @@
 }
 
 .smm-service-row.is-featured {
-  background: linear-gradient(120deg, hsl(272 85% 62%), hsl(var(--smm-violet)) 60%, hsl(250 80% 55%));
+  background: linear-gradient(120deg, hsl(152 62% 42%), hsl(var(--smm-violet)) 60%, hsl(168 70% 25%));
   border-color: transparent;
   color: #fff;
   box-shadow: 0 18px 38px -14px hsl(var(--smm-violet) / 0.55);
@@ -269,7 +269,7 @@
   position: relative;
   overflow: hidden;
   border-radius: 1.8rem;
-  background: linear-gradient(130deg, hsl(280 82% 60%), hsl(var(--smm-violet)) 55%, hsl(248 78% 48%));
+  background: linear-gradient(130deg, hsl(152 62% 46%), hsl(var(--smm-violet)) 55%, hsl(168 70% 26%));
   box-shadow: 0 30px 60px -20px hsl(var(--smm-violet) / 0.55);
 }
 
@@ -317,11 +317,11 @@
   width: min(280px, 70vw);
   aspect-ratio: 280 / 560;
   border-radius: 44px;
-  background: linear-gradient(160deg, hsl(262 60% 22%), hsl(262 70% 14%));
+  background: linear-gradient(160deg, hsl(165 45% 16%), hsl(165 50% 9%));
   padding: 10px;
   box-shadow:
     0 30px 80px -20px hsl(var(--smm-violet) / 0.45),
-    0 0 0 1px hsl(262 40% 30% / 0.6),
+    0 0 0 1px hsl(152 35% 26% / 0.6),
     inset 0 0 0 2px hsl(0 0% 100% / 0.08);
   animation: smm-phone-float 7s ease-in-out infinite;
 }
@@ -334,7 +334,7 @@
   width: 88px;
   height: 22px;
   border-radius: 999px;
-  background: hsl(262 60% 10%);
+  background: hsl(165 45% 8%);
   z-index: 3;
 }
 
@@ -344,7 +344,7 @@
   height: 100%;
   border-radius: 36px;
   overflow: hidden;
-  background: linear-gradient(175deg, hsl(262 83% 62%), hsl(262 70% 40%) 60%, hsl(255 70% 30%));
+  background: linear-gradient(175deg, hsl(152 62% 45%), hsl(158 66% 30%) 60%, hsl(168 70% 20%));
   display: flex;
   flex-direction: column;
   padding: 52px 18px 18px;

@@ -131,11 +131,11 @@ export const DEFAULT_ORGANIC_SETTINGS = {
 
 // Platform icons and colors - Deep Premium Palettes
 export const PLATFORM_CONFIG = {
-  instagram: { icon: 'Instagram', color: 'from-green-600/60 to-fuchsia-800/60', label: 'Instagram', bgColor: 'bg-green-600/10', borderColor: 'border-green-600/20' },
+  instagram: { icon: 'Instagram', color: 'from-green-600/60 to-emerald-800/60', label: 'Instagram', bgColor: 'bg-green-600/10', borderColor: 'border-green-600/20' },
   tiktok: { icon: 'Music', color: 'from-cyan-700/60 to-green-700/60', label: 'TikTok', bgColor: 'bg-cyan-700/10', borderColor: 'border-cyan-700/20' },
   youtube: { icon: 'Youtube', color: 'from-red-800/60 to-red-950/80', label: 'YouTube', bgColor: 'bg-red-800/10', borderColor: 'border-red-800/20' },
   twitter: { icon: 'Twitter', color: 'from-sky-800/60 to-blue-950/80', label: 'Twitter/X', bgColor: 'bg-sky-800/10', borderColor: 'border-sky-800/20' },
-  facebook: { icon: 'Facebook', color: 'from-blue-800/60 to-fuchsia-950/80', label: 'Facebook', bgColor: 'bg-blue-800/10', borderColor: 'border-blue-800/20' },
+  facebook: { icon: 'Facebook', color: 'from-blue-800/60 to-emerald-950/80', label: 'Facebook', bgColor: 'bg-blue-800/10', borderColor: 'border-blue-800/20' },
   adsterra: { icon: 'Megaphone', color: 'from-orange-600/70 to-rose-700/70', label: 'Adsterra', bgColor: 'bg-orange-600/10', borderColor: 'border-orange-600/20' },
 } as const;
 
@@ -148,8 +148,8 @@ export const ENGAGEMENT_CONFIG = {
   likes: { icon: 'Heart', color: 'text-green-600', bgColor: 'bg-green-600/10', borderColor: 'border-green-600/20', label: 'Likes', emoji: '❤️' },
   comments: { icon: 'MessageCircle', color: 'text-emerald-700', bgColor: 'bg-emerald-700/10', borderColor: 'border-emerald-700/20', label: 'Comments', emoji: '💬' },
   saves: { icon: 'Bookmark', color: 'text-blue-700', bgColor: 'bg-blue-700/10', borderColor: 'border-blue-700/20', label: 'Saves', emoji: '📥' },
-  shares: { icon: 'Share2', color: 'text-fuchsia-700', bgColor: 'bg-fuchsia-700/10', borderColor: 'border-fuchsia-700/20', label: 'Shares', emoji: '🔄' },
-  followers: { icon: 'UserPlus', color: 'text-fuchsia-700', bgColor: 'bg-fuchsia-700/10', borderColor: 'border-fuchsia-700/20', label: 'Followers', emoji: '👥' },
+  shares: { icon: 'Share2', color: 'text-emerald-700', bgColor: 'bg-emerald-700/10', borderColor: 'border-emerald-700/20', label: 'Shares', emoji: '🔄' },
+  followers: { icon: 'UserPlus', color: 'text-emerald-700', bgColor: 'bg-emerald-700/10', borderColor: 'border-emerald-700/20', label: 'Followers', emoji: '👥' },
   subscribers: { icon: 'Bell', color: 'text-red-700', bgColor: 'bg-red-700/10', borderColor: 'border-red-700/20', label: 'Subscribers', emoji: '🔔' },
   watch_hours: { icon: 'Clock', color: 'text-blue-700', bgColor: 'bg-blue-700/10', borderColor: 'border-blue-700/20', label: 'Watch Hours', emoji: '⏱️' },
   retweets: { icon: 'Repeat', color: 'text-teal-700', bgColor: 'bg-teal-700/10', borderColor: 'border-teal-700/20', label: 'Retweets', emoji: '🔁' },

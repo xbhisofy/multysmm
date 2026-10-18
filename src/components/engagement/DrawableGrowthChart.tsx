@@ -36,11 +36,11 @@ const VISIBLE_TYPES: VisibleType[] = ['views', 'likes', 'comments', 'saves', 'sh
 
 // Type colors for curves
 const TYPE_COLORS: Record<VisibleType, string> = {
-  views: '#60a5fa',
-  comments: '#34d399',
+  views: '#16A34A',
+  comments: '#2DD4BF',
   likes: '#4ade80',
-  saves: '#fbbf24',
-  shares: '#a78bfa',
+  saves: '#A3E635',
+  shares: '#059669',
 };
 
 interface DrawableGrowthChartProps {
