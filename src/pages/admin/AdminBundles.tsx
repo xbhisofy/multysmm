@@ -74,6 +74,7 @@ import { Slider } from '@/components/ui/slider';
 import { platformOptions, isManualAdsPlatform } from '@/lib/platform-options';
 import {
   PLATFORM_CONFIG,
+  ENGAGEMENT_CONFIG,
   DEFAULT_RATIOS,
   PLATFORM_ENGAGEMENT_TYPES,
   EngagementType,
@@ -91,6 +92,7 @@ const ENGAGEMENT_ICONS: Record<EngagementType, any> = {
   retweets: Repeat,
   reposts: RefreshCw,
   impressions: Eye,
+  impressions_visits: Eye,
   visits: Globe,
   clicks: Sparkle,
 };
@@ -888,7 +890,7 @@ function BundleCard({
           {(PLATFORM_ENGAGEMENT_TYPES[bundle.platform] || PLATFORM_ENGAGEMENT_TYPES.adsterra).map((type) => {
             const Icon = ENGAGEMENT_ICONS[type];
             const exists = existingTypes.has(type);
-            const label = type === 'watch_hours' ? 'Watch Hours' : type;
+            const label = ENGAGEMENT_CONFIG[type]?.label || type;
             return (
               <Button
                 key={type}
@@ -936,7 +938,7 @@ function BundleCard({
                       <Icon className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <span className="font-medium capitalize">
-                      {item.engagement_type}
+                      {ENGAGEMENT_CONFIG[item.engagement_type as EngagementType]?.label || item.engagement_type}
                     </span>
                     {/* Only show % badge when custom ratios is ON */}
                     {useCustomRatios && (

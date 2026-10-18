@@ -50,6 +50,7 @@ const typeColors: Record<EngagementType, string> = {
   retweets: 'bg-foreground/40',
   reposts: 'bg-foreground/35',
   impressions: 'bg-foreground',
+  impressions_visits: 'bg-foreground',
   visits: 'bg-foreground/80',
   clicks: 'bg-foreground/60',
 };

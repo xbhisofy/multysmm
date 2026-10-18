@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Combine default ads Impressions / Visits into one service, card and quantity while preserving custom services and existing orders.
+
 - [x] Allow admin-named custom platforms, bundles and service types, and show custom platforms on order screens.
 
 - [x] Keep default ads bundle limited to Impressions and Visits while preserving admin-added custom types.
