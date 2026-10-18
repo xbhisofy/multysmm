@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Allow admin-named custom platforms and bundles, retain custom-named service creation, and show custom platforms on order screens.
+
 - [x] Keep default ads bundle limited to Impressions and Visits while preserving admin-added custom types.
 
 - [x] Show complete ads order details with separate copy-link and copy-all actions in admin.

@@ -71,6 +71,7 @@ import {
 } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { Slider } from '@/components/ui/slider';
+import { platformOptions, isManualAdsPlatform } from '@/lib/platform-options';
 import {
   PLATFORM_CONFIG,
   DEFAULT_RATIOS,
@@ -220,14 +221,16 @@ export default function AdminBundles() {
           platform: bundleData.platform,
           description: bundleData.description,
           is_active: true,
+          ai_organic_enabled: !isManualAdsPlatform(bundleData.platform),
         })
         .select()
         .single();
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (bundle) => {
       toast({ title: 'Bundle created!' });
+      setSelectedPlatform(bundle.platform);
       queryClient.invalidateQueries({ queryKey: ['admin-bundles'] });
       setIsCreateOpen(false);
     },
@@ -531,6 +534,7 @@ export default function AdminBundles() {
                   </DialogTitle>
                 </DialogHeader>
                 <CreateBundleForm
+                  platforms={(bundles || []).map(b => b.platform)}
                   onSubmit={(data) => createBundleMutation.mutate(data)}
                   isLoading={createBundleMutation.isPending}
                 />
@@ -541,14 +545,14 @@ export default function AdminBundles() {
 
         {/* Platform Tabs */}
         <Tabs value={selectedPlatform} onValueChange={setSelectedPlatform}>
-          <TabsList className="h-11 p-1 rounded-xl bg-muted/50">
-            {Object.entries(PLATFORM_CONFIG).map(([key, config]) => (
+          <TabsList className="h-auto flex flex-wrap justify-start gap-1 p-1 rounded-xl bg-muted/50">
+            {platformOptions((bundles || []).map(b => b.platform)).map(({key, label}) => (
               <TabsTrigger
                 key={key}
                 value={key}
                 className="rounded-lg capitalize data-[state=active]:bg-background"
               >
-                {config.label}
+                {label}
               </TabsTrigger>
             ))}
           </TabsList>
@@ -562,7 +566,7 @@ export default function AdminBundles() {
                   Create your first bundle for{' '}
                   {
                     PLATFORM_CONFIG[selectedPlatform as keyof typeof PLATFORM_CONFIG]
-                      ?.label
+                      ?.label || selectedPlatform
                   }
                 </p>
                 <Button onClick={() => setIsCreateOpen(true)} className="gap-2">
@@ -642,7 +646,9 @@ export default function AdminBundles() {
 function CreateBundleForm({
   onSubmit,
   isLoading,
+  platforms,
 }: {
+  platforms: string[];
   onSubmit: (data: {
     name: string;
     platform: string;
@@ -653,6 +659,8 @@ function CreateBundleForm({
   const [name, setName] = useState('');
   const [platform, setPlatform] = useState('instagram');
   const [description, setDescription] = useState('');
+  const [customPlatform, setCustomPlatform] = useState('');
+  const finalPlatform = platform === '__custom__' ? customPlatform.trim() : platform;
 
   return (
     <div className="space-y-4 py-4">
@@ -672,13 +680,15 @@ function CreateBundleForm({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {Object.entries(PLATFORM_CONFIG).map(([key, config]) => (
+            {platformOptions(platforms).map(({key, label}) => (
               <SelectItem key={key} value={key}>
-                {config.label}
+                {label}
               </SelectItem>
             ))}
+            <SelectItem value="__custom__">+ Custom platform</SelectItem>
           </SelectContent>
         </Select>
+        {platform === '__custom__' && <Input aria-label="Custom platform name" value={customPlatform} onChange={e => setCustomPlatform(e.target.value)} maxLength={80} placeholder="e.g. Monitag or My Ads Network" />}
       </div>
       <div className="space-y-2">
         <Label>Description (optional)</Label>
@@ -691,8 +701,8 @@ function CreateBundleForm({
       </div>
       <DialogFooter className="pt-4">
         <Button
-          onClick={() => onSubmit({ name, platform, description })}
-          disabled={!name || isLoading}
+          onClick={() => onSubmit({ name: name.trim(), platform: finalPlatform, description })}
+          disabled={!name.trim() || !finalPlatform || isLoading}
           className="w-full rounded-xl"
         >
           {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
@@ -874,7 +884,7 @@ function BundleCard({
 
         {/* Quick Add Chips - Platform Specific */}
         <div className="flex flex-wrap gap-2">
-          {(PLATFORM_ENGAGEMENT_TYPES[bundle.platform] || []).map((type) => {
+          {(PLATFORM_ENGAGEMENT_TYPES[bundle.platform] || PLATFORM_ENGAGEMENT_TYPES.adsterra).map((type) => {
             const Icon = ENGAGEMENT_ICONS[type];
             const exists = existingTypes.has(type);
             const label = type === 'watch_hours' ? 'Watch Hours' : type;

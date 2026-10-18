@@ -19,6 +19,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { isValidAdsLink } from "@/lib/ads-link";
+import { isManualAdsPlatform } from '@/lib/platform-options';
 import { PlatformSelector } from "@/components/engagement/PlatformSelector";
 
 import { QuantitySelector } from "@/components/engagement/QuantitySelector";
@@ -819,7 +820,7 @@ export default function EngagementOrder() {
         if (!['http:', 'https:'].includes(u.protocol)) {
           reason = 'Invalid URL';
         } else {
-          const detected = platform === 'adsterra' ? (isValidAdsLink(l) ? platform : null) : detectPlatformFromUrl(l);
+          const detected = isManualAdsPlatform(platform) ? (isValidAdsLink(l) ? platform : null) : detectPlatformFromUrl(l);
           if (!detected) reason = 'Unsupported platform';
           else if (detected !== platform) reason = `Not ${platform}`;
           else valid = true;
@@ -1043,7 +1044,7 @@ export default function EngagementOrder() {
   const canAfford = wallet && wallet.balance > 0 && wallet.balance >= totalPrice;
 
   // Detect platform from link for validation
-  const detectPlatformFromLink = (raw: string) => platform === 'adsterra'
+  const detectPlatformFromLink = (raw: string) => isManualAdsPlatform(platform)
     ? (isValidAdsLink(raw) ? platform : null)
     : detectPlatformFromUrl(raw);
 
@@ -1090,7 +1091,7 @@ export default function EngagementOrder() {
 
       // Detect platform from link and validate it matches selected platform
       const detectedPlatform = detectPlatformFromLink(link);
-      if (platform === 'adsterra' && !detectedPlatform) {
+      if (isManualAdsPlatform(platform) && !detectedPlatform) {
         toast({ title: 'Invalid link', description: 'Enter a website link starting with https:// or http://.', variant: 'destructive' });
         return;
       }
@@ -1476,7 +1477,7 @@ export default function EngagementOrder() {
                   return (
                     <>
                       <Input
-                        placeholder={platform === 'adsterra' ? 'https://example.com/...' : `https://${platform}.com/...`}
+                        placeholder={isManualAdsPlatform(platform) ? 'https://example.com/...' : `https://${platform}.com/...`}
                         value={link}
                         onChange={(e) => setLink(e.target.value)}
                         onKeyDown={(e) => {
@@ -1490,7 +1491,7 @@ export default function EngagementOrder() {
                       />
                       {state === 'invalid' && (
                         <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
-                          <span>⚠️</span> {platform === 'adsterra' ? 'Enter a valid website link starting with https:// or http://.' : `Please enter a valid ${platform.toUpperCase()} URL (e.g. https://${platform}.com/…). Random text, usernames or unsupported links are not allowed.`}
+                          <span>⚠️</span> {isManualAdsPlatform(platform) ? 'Enter a valid website link starting with https:// or http://.' : `Please enter a valid ${platform.toUpperCase()} URL (e.g. https://${platform}.com/…). Random text, usernames or unsupported links are not allowed.`}
                         </p>
                       )}
                       {state === 'wrong' && (
@@ -1500,7 +1501,7 @@ export default function EngagementOrder() {
                       )}
                       {state === 'valid' && (
                         <p className="mt-2 text-xs text-success flex items-center gap-1.5">
-                          <span>✓</span> {platform === 'adsterra' ? 'Valid website link' : `Valid ${platform.toUpperCase()} link`}
+                          <span>✓</span> {isManualAdsPlatform(platform) ? 'Valid website link' : `Valid ${platform.toUpperCase()} link`}
                         </p>
                       )}
                     </>

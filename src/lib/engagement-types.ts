@@ -3,7 +3,7 @@
 export interface EngagementBundle {
   id: string;
   name: string;
-  platform: 'instagram' | 'tiktok' | 'youtube' | 'twitter' | 'facebook' | 'adsterra';
+  platform: string;
   provider_id: string | null;
   description: string | null;
   icon: string;
