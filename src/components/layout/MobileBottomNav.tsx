@@ -1,13 +1,13 @@
-import { useState, type CSSProperties } from 'react';
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Menu, Zap, History, Wallet, Settings } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 
 const items = [
-  { to: '/engagement-order', label: 'Order', icon: Zap, color: 'hsl(var(--member-green-deep))', soft: 'hsl(var(--member-green) / 0.12)' },
-  { to: '/engagement-orders', label: 'History', icon: History, color: 'hsl(var(--member-teal))', soft: 'hsl(var(--member-teal) / 0.12)' },
-  { to: '/wallet', label: 'Wallet', icon: Wallet, color: 'hsl(var(--member-green))', soft: 'hsl(var(--member-green) / 0.12)' },
-  { to: '/settings', label: 'Settings', icon: Settings, color: 'hsl(var(--member-lime))', soft: 'hsl(var(--member-lime) / 0.14)' },
+  { to: '/engagement-order', label: 'Order', icon: Zap },
+  { to: '/engagement-orders', label: 'History', icon: History },
+  { to: '/wallet', label: 'Wallet', icon: Wallet },
+  { to: '/settings', label: 'Settings', icon: Settings },
 ];
 
 export function MobileBottomNav() {
@@ -30,17 +30,16 @@ export function MobileBottomNav() {
 
       <nav className="member-bottom-nav fixed bottom-0 left-0 right-0 z-40 lg:hidden" aria-label="Primary">
         <div className="member-bottom-nav-inner flex items-stretch justify-around">
-          {items.map(({ to, label, icon: Icon, color, soft }) => (
+          {items.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
-              className={({ isActive }) => `member-bottom-nav-item flex flex-col items-center justify-center gap-1 flex-1 py-2 ${isActive ? 'is-active' : ''}`}
-              style={{ '--tab-color': color, '--tab-soft': soft } as CSSProperties}
+              className={({ isActive }) => `member-bottom-nav-item flex flex-col items-center justify-center gap-[5px] flex-1 pt-2 pb-[7px] ${isActive ? 'is-active' : ''}`}
             >
-              <span className="member-bottom-nav-icon flex items-center justify-center w-9 h-9 rounded-xl">
-                <Icon className="w-[22px] h-[22px]" strokeWidth={2.6} />
+              <span className="member-bottom-nav-icon flex items-center justify-center w-10 h-10 rounded-[14px]">
+                <Icon className="w-[21px] h-[21px]" />
               </span>
-              <span className="text-[11px] font-extrabold tracking-tight">{label}</span>
+              <span className="member-bottom-nav-label">{label}</span>
             </NavLink>
           ))}
         </div>
