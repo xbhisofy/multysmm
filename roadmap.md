@@ -22,3 +22,5 @@
 - [x] Recolor the whole app — homepage, auth, member area, payment cards and admin — to the light green palette.
 
 - [x] Make the mobile bottom navigation icons professional: one uniform inactive style, one green gradient active tile, solid white bar with no bleed-through.
+
+- [x] Rename Order tab to New Order with always-green tabs; deploy everything (Monetag platform, green palette, ads feature, New Order nav) live to the VPS with Monetag bundle in the VPS database.
