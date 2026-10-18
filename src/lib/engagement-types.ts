@@ -37,7 +37,7 @@ export interface BundleItem {
   };
 }
 
-export type EngagementType = 'views' | 'likes' | 'comments' | 'saves' | 'shares' | 'followers' | 'subscribers' | 'watch_hours' | 'retweets' | 'reposts' | 'impressions' | 'visits' | 'clicks';
+export type EngagementType = 'views' | 'likes' | 'comments' | 'saves' | 'shares' | 'followers' | 'subscribers' | 'watch_hours' | 'retweets' | 'reposts' | 'impressions' | 'visits' | 'clicks' | 'impressions_visits';
 
 export type SpeedPreset = 'fast' | 'natural' | 'safe';
 
@@ -155,6 +155,7 @@ export const ENGAGEMENT_CONFIG = {
   retweets: { icon: 'Repeat', color: 'text-teal-700', bgColor: 'bg-teal-700/10', borderColor: 'border-teal-700/20', label: 'Retweets', emoji: '🔁' },
   reposts: { icon: 'RefreshCw', color: 'text-green-700', bgColor: 'bg-green-700/10', borderColor: 'border-green-700/20', label: 'Reposts', emoji: '🔄' },
   impressions: { icon: 'Eye', color: 'text-orange-600', bgColor: 'bg-orange-600/10', borderColor: 'border-orange-600/20', label: 'Impressions', emoji: '📢' },
+  impressions_visits: { icon: 'Eye', color: 'text-primary', bgColor: 'bg-primary/10', borderColor: 'border-primary/20', label: 'Impressions / Visits', emoji: '📢' },
   visits: { icon: 'Globe', color: 'text-sky-700', bgColor: 'bg-sky-700/10', borderColor: 'border-sky-700/20', label: 'Visits / Traffic', emoji: '🌐' },
   clicks: { icon: 'MousePointerClick', color: 'text-rose-700', bgColor: 'bg-rose-700/10', borderColor: 'border-rose-700/20', label: 'Clicks', emoji: '🖱️' },
 } as const;
@@ -172,6 +173,7 @@ export const DEFAULT_RATIOS: Record<EngagementType, number> = {
   retweets: 4,
   reposts: 1.3,
   impressions: 100,
+  impressions_visits: 100,
   visits: 10,
   clicks: 1,
 };
@@ -183,7 +185,7 @@ export const PLATFORM_ENGAGEMENT_TYPES: Record<string, EngagementType[]> = {
   youtube: ['views', 'likes', 'comments', 'subscribers', 'watch_hours'],
   twitter: ['views', 'likes', 'comments', 'retweets', 'followers'],
   facebook: ['views', 'likes', 'comments', 'shares', 'followers'],
-  adsterra: ['impressions', 'visits', 'clicks'],
+  adsterra: ['impressions_visits', 'impressions', 'visits', 'clicks'],
 };
 
 // Speed presets (kept for legacy compatibility)
