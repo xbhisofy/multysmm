@@ -130,18 +130,18 @@ export function EditRunDialog({
               <div className={`p-3 rounded-lg border ${
                 hasInsufficientBalance 
                   ? 'bg-red-50 dark:bg-red-950/30 border-red-300' 
-                  : 'bg-blue-50 dark:bg-blue-950/30 border-blue-300'
+                  : 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-300'
               }`}>
                 <div className="flex items-center gap-2 mb-2">
-                  <Wallet className={`h-4 w-4 ${hasInsufficientBalance ? 'text-red-600' : 'text-blue-600'}`} />
-                  <span className={`text-sm font-medium ${hasInsufficientBalance ? 'text-red-700' : 'text-blue-700'}`}>
+                  <Wallet className={`h-4 w-4 ${hasInsufficientBalance ? 'text-red-600' : 'text-emerald-600'}`} />
+                  <span className={`text-sm font-medium ${hasInsufficientBalance ? 'text-red-700' : 'text-emerald-700'}`}>
                     Extra Charge
                   </span>
                 </div>
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Extra {quantityDifference.toLocaleString()} units:</span>
-                    <span className={`font-bold ${hasInsufficientBalance ? 'text-red-600' : 'text-blue-600'}`}>
+                    <span className={`font-bold ${hasInsufficientBalance ? 'text-red-600' : 'text-emerald-600'}`}>
                       {formatPrice(extraCost)}
                     </span>
                   </div>
@@ -175,7 +175,7 @@ export function EditRunDialog({
                 <span>Original:</span>
                 <span className="font-medium">{format(new Date(run.scheduledAt), 'MMM d, HH:mm')}</span>
                 {hasTimeChanged && (
-                  <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700">
+                  <Badge variant="secondary" className="text-xs bg-emerald-100 text-emerald-700">
                     ⏰ Changed
                   </Badge>
                 )}
@@ -184,8 +184,8 @@ export function EditRunDialog({
 
             {/* Warning */}
             {hasChanges && !hasInsufficientBalance && (
-              <div className="p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 rounded-lg text-sm">
-                <p className="text-blue-700">
+              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 rounded-lg text-sm">
+                <p className="text-emerald-700">
                   ⚠️ Variance will be reset to 0 when manually editing
                 </p>
               </div>

@@ -516,7 +516,7 @@ export default function Orders() {
                                   key={run.id}
                                   className={`relative rounded-lg transition-all ${
                                     isActive 
-                                      ? 'bg-blue-500/10 border-2 border-blue-500/50 shadow-md shadow-blue-500/20' 
+                                      ? 'bg-emerald-500/10 border-2 border-emerald-500/50 shadow-md shadow-emerald-500/20' 
                                       : isCompleted
                                         ? 'bg-emerald-500/10 border border-emerald-500/30'
                                         : isFailed
@@ -530,7 +530,7 @@ export default function Orders() {
                                       {/* Run Number Badge - Colorful */}
                                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-mono text-sm font-bold ${
                                         isActive 
-                                          ? 'bg-gradient-to-br from-blue-500 to-blue-500 text-white animate-pulse' 
+                                          ? 'bg-gradient-to-br from-emerald-500 to-emerald-500 text-white animate-pulse' 
                                           : isCompleted
                                             ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white'
                                             : isFailed
@@ -546,7 +546,7 @@ export default function Orders() {
                                           {/* Status Icon + Label - Colorful */}
                                           <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${
                                             isActive 
-                                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
+                                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
                                               : isCompleted
                                                 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                                                 : isFailed
@@ -581,7 +581,7 @@ export default function Orders() {
                                           
                                           {/* Peak indicator - Orange/Amber */}
                                           {Number(run.peak_multiplier) > 1 && (
-                                            <span className="inline-flex items-center gap-1 text-[10px] text-blue-400 bg-blue-500/20 border border-blue-500/30 px-1.5 py-0.5 rounded">
+                                            <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400 bg-emerald-500/20 border border-emerald-500/30 px-1.5 py-0.5 rounded">
                                               <Zap className="h-3 w-3" />
                                               {run.peak_multiplier}x Peak
                                             </span>
