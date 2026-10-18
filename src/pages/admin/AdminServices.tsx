@@ -77,7 +77,7 @@ export default function AdminServices() {
       const { error } = await supabase
         .from('services')
         .insert({
-          provider_service_id: formData.provider_service_id,
+          provider_service_id: formData.provider_service_id.trim() || `manual-${crypto.randomUUID()}`,
           name: formData.name,
           category: formData.category,
           description: formData.description || null,

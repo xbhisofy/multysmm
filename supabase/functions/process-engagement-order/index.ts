@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { isManualAdsPlatform } from '../_shared/platform-policy.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -403,7 +404,7 @@ serve(async (req) => {
       const { data: bundle } = await supabase.from('engagement_bundles').select('ai_organic_enabled, platform').eq('id', bundle_id).single()
       if (bundle) aiOrganicEnabled = bundle.ai_organic_enabled ?? true
       // Manual platforms (Adsterra): admin delivers by hand, no provider runs are scheduled.
-      if (bundle && ['adsterra'].includes(String(bundle.platform))) isManualPlatform = true
+      if (bundle && isManualAdsPlatform(String(bundle.platform))) isManualPlatform = true
     }
 
     // Create order (persist full config_snapshot for Repeat Order restore)

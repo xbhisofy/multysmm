@@ -116,7 +116,7 @@ export function EngagementTypeCard({
     return () => { if (qtyTimerRef.current) clearTimeout(qtyTimerRef.current); };
   }, []);
 
-  const engagementConfig = ENGAGEMENT_CONFIG[type];
+  const engagementConfig = ENGAGEMENT_CONFIG[type] || { icon: 'Eye', label: String(type) };
   const Icon = iconMap[engagementConfig?.icon as keyof typeof iconMap] || Eye;
 
   // Get provider limits

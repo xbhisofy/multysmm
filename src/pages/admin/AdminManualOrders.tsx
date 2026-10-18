@@ -8,7 +8,8 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { Copy, Megaphone, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
-import { ENGAGEMENT_CONFIG, MANUAL_PLATFORMS, PLATFORM_CONFIG } from '@/lib/engagement-types';
+import { ENGAGEMENT_CONFIG, PLATFORM_CONFIG } from '@/lib/engagement-types';
+import { isManualAdsPlatform } from '@/lib/platform-options';
 
 type Row = {
   id: string; order_number: number; user_id: string; link: string; total_price: number;
@@ -26,8 +27,9 @@ export default function AdminManualOrders() {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['admin-manual-orders', filter],
     queryFn: async () => {
-      const { data: bundles, error: bundleError } = await supabase.from('engagement_bundles').select('id, name, platform').in('platform', [...MANUAL_PLATFORMS]);
+      const { data: allBundles, error: bundleError } = await supabase.from('engagement_bundles').select('id, name, platform');
       if (bundleError) throw bundleError;
+      const bundles = (allBundles || []).filter(b => isManualAdsPlatform(b.platform));
       const bundleNames: Record<string, string> = {};
       (bundles || []).forEach((b) => { bundleNames[b.id] = `${PLATFORM_CONFIG[b.platform as keyof typeof PLATFORM_CONFIG]?.label || b.platform} · ${b.name}`; });
       const ids = (bundles || []).map((b) => b.id);
