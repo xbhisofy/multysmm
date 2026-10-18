@@ -748,6 +748,7 @@ function BundleCard({
 }) {
   const [editingRatios, setEditingRatios] = useState<Record<string, string>>({});
   const [editingPrices, setEditingPrices] = useState<Record<string, string>>({});
+  const [customType, setCustomType] = useState('');
   const INR_RATE = 83.5;
   const existingTypes = new Set(
     bundle.items?.map((i: any) => i.engagement_type) || []
@@ -906,6 +907,13 @@ function BundleCard({
         </div>
 
         {/* Items List */}
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Input aria-label="Custom service type name" placeholder="Custom service name" value={customType} onChange={e => setCustomType(e.target.value)} maxLength={80} />
+          <Button variant="outline" disabled={!customType.trim() || existingTypes.has(customType.trim())} onClick={() => {
+            onAddItem({ engagement_type: customType.trim(), ratio_percent: 100, is_base: existingTypes.size === 0 });
+            setCustomType('');
+          }}><Plus className="h-4 w-4 mr-2" />Add custom service</Button>
+        </div>
         <div className="space-y-3">
           {bundle.items?.map((item: any) => {
             const Icon =
