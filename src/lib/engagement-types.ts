@@ -137,10 +137,11 @@ export const PLATFORM_CONFIG = {
   twitter: { icon: 'Twitter', color: 'from-sky-800/60 to-blue-950/80', label: 'Twitter/X', bgColor: 'bg-sky-800/10', borderColor: 'border-sky-800/20' },
   facebook: { icon: 'Facebook', color: 'from-blue-800/60 to-emerald-950/80', label: 'Facebook', bgColor: 'bg-blue-800/10', borderColor: 'border-blue-800/20' },
   adsterra: { icon: 'Megaphone', color: 'from-orange-600/70 to-rose-700/70', label: 'Adsterra', bgColor: 'bg-orange-600/10', borderColor: 'border-orange-600/20' },
+  monetag: { icon: 'Globe', color: 'from-primary to-accent', label: 'Monetag', bgColor: 'bg-primary/10', borderColor: 'border-primary/20' },
 } as const;
 
 /** Platforms whose orders are fulfilled manually by the admin (no provider API). */
-export const MANUAL_PLATFORMS = ['adsterra'] as const;
+export const MANUAL_PLATFORMS = ['adsterra', 'monetag'] as const;
 
 // Engagement type icons and colors - Muted deep colors
 export const ENGAGEMENT_CONFIG = {
@@ -186,6 +187,7 @@ export const PLATFORM_ENGAGEMENT_TYPES: Record<string, EngagementType[]> = {
   twitter: ['views', 'likes', 'comments', 'retweets', 'followers'],
   facebook: ['views', 'likes', 'comments', 'shares', 'followers'],
   adsterra: ['impressions_visits', 'impressions', 'visits', 'clicks'],
+  monetag: ['impressions_visits', 'impressions', 'visits', 'clicks'],
 };
 
 // Speed presets (kept for legacy compatibility)
