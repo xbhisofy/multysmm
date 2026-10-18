@@ -306,14 +306,6 @@
 .engagement-order-page .engagement-type-card[data-engagement-type="shares"],
 .engagement-order-page .engagement-type-card[data-engagement-type="visits"],
 .engagement-order-page .engagement-type-card[data-engagement-type="comments"] { --engagement-tone: var(--order-teal); }
-.member-shell:has(.engagement-order-page) .member-bottom-nav-item:nth-child(1) {
-  --tab-color: hsl(var(--primary)) !important;
-  --tab-soft: hsl(var(--primary) / 0.1) !important;
-}
-.member-shell:has(.engagement-order-page) .member-bottom-nav-item:nth-child(4) {
-  --tab-color: hsl(var(--order-lime)) !important;
-  --tab-soft: hsl(var(--order-lime) / 0.1) !important;
-}
 .member-shell:has(.engagement-order-page) .member-mobile-header button {
   border-color: hsl(var(--border)) !important;
   background: hsl(var(--secondary)) !important;
