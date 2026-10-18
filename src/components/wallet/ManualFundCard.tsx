@@ -8,7 +8,7 @@ const QUICK = [100, 500, 1000, 2000, 5000, 10000];
 const TG_USERNAME = 'x07neo';
 const MIN_AMOUNT = 100;
 const MAX_AMOUNT = 540000;
-const ACCENT = '#0088CC';
+const ACCENT = '#4D7C0F';
 
 export default function ManualFundCard() {
   const [amount, setAmount] = useState<string>('100');
@@ -68,7 +68,7 @@ export default function ManualFundCard() {
         label="Open Telegram"
         loadingLabel=""
       />
-      <p className="mt-3 text-[11px] text-center text-slate-400 flex items-center justify-center gap-1">
+      <p className="mt-3 text-[11px] text-center text-slate-500 flex items-center justify-center gap-1">
         <Send className="h-3 w-3" /> Message pre-filled · replies in minutes
       </p>
     </SimpleCard>

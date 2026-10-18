@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { Loader2, Zap, IndianRupee, ArrowUpRight } from 'lucide-react';
 
 const QUICK = [100, 500, 1000, 2000, 5000];
-const ACCENT = '#C026D3';
+const ACCENT = '#15803D';
 
 export default function ZapUpiDepositCard() {
   const [amount, setAmount] = useState<string>('100');
@@ -61,7 +61,7 @@ export default function ZapUpiDepositCard() {
         label={`Pay ₹${Number(amount || 0).toLocaleString('en-IN')}`}
         loadingLabel="Redirecting…"
       />
-      <p className="mt-3 text-[11px] text-center text-slate-400">Auto-credit after payment · no refresh</p>
+      <p className="mt-3 text-[11px] text-center text-slate-500">Auto-credit after payment · no refresh</p>
     </SimpleCard>
   );
 }
@@ -125,11 +125,11 @@ export function AmountBlock({
         boxShadow: focused ? `0 0 0 4px ${accent}18` : 'none',
       }}
     >
-      <label htmlFor={id} className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+      <label htmlFor={id} className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-slate-500">
         Amount
       </label>
       <div className="flex items-center gap-2 mt-1">
-        <IndianRupee className="h-5 w-5 text-slate-400" strokeWidth={2.5} />
+        <IndianRupee className="h-5 w-5 text-slate-500" strokeWidth={2.5} />
         <input
           id={id}
           type="number"
@@ -141,9 +141,9 @@ export function AmountBlock({
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder="100"
-          className="flex-1 bg-transparent border-0 outline-none text-slate-900 text-[26px] font-semibold tracking-tight placeholder:text-slate-300"
+          className="flex-1 bg-transparent border-0 outline-none text-slate-900 text-[26px] font-semibold tracking-tight placeholder:text-slate-400"
         />
-        <span className="text-[10.5px] font-medium text-slate-400 tracking-wider">
+        <span className="text-[10.5px] font-medium text-slate-500 tracking-wider">
           ₹{min}–{max >= 100000 ? `${Math.round(max / 1000)}k` : max.toLocaleString('en-IN')}
         </span>
       </div>

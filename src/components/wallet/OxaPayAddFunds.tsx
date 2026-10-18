@@ -5,7 +5,7 @@ import { Bitcoin } from 'lucide-react';
 import { SimpleCard, AmountBlock, ChipRow, PayCta } from './ZapUpiDepositCard';
 
 const QUICK = [90, 500, 1000, 2000, 5000, 10000];
-const ACCENT = '#F7931A';
+const ACCENT = '#0E7A66';
 
 export default function OxaPayAddFunds() {
   const [amount, setAmount] = useState<string>('100');
@@ -57,7 +57,7 @@ export default function OxaPayAddFunds() {
         label={`Pay ₹${Number(amount || 0).toLocaleString('en-IN')} in Crypto`}
         loadingLabel="Opening OxaPay…"
       />
-      <p className="mt-3 text-[11px] text-center text-slate-400">Rate ₹90 = $1 · webhook auto-credit</p>
+      <p className="mt-3 text-[11px] text-center text-slate-500">Rate ₹90 = $1 · webhook auto-credit</p>
     </SimpleCard>
   );
 }
