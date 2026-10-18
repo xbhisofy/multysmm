@@ -57,7 +57,7 @@
 }
 
 .member-bottom-nav-item {
-  color: hsl(var(--member-ink) / 0.4);
+  color: hsl(var(--member-green-deep));
   text-decoration: none;
   transition: color 0.18s ease;
 }
@@ -65,21 +65,22 @@
 .member-bottom-nav-label {
   font-size: 10.5px;
   line-height: 1.15;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-weight: 800;
+  letter-spacing: 0;
   transition: color 0.18s ease;
 }
 
 .member-bottom-nav-icon {
-  background: transparent;
-  color: hsl(var(--member-ink) / 0.4);
-  border: 1px solid transparent;
+  background: var(--member-action-gradient);
+  color: hsl(var(--member-paper));
+  border: 1px solid hsl(var(--member-green-deep) / 0.32);
+  box-shadow: 0 6px 14px -8px hsl(var(--member-green-deep) / 0.5);
   transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
 
 .member-bottom-nav-item .lucide {
   color: currentColor;
-  stroke-width: 2.15;
+  stroke-width: 2.5;
 }
 
 .member-bottom-nav-item:active .member-bottom-nav-icon {
@@ -91,7 +92,7 @@
 }
 
 .member-bottom-nav-item.is-active .member-bottom-nav-label {
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .member-bottom-nav-item.is-active .member-bottom-nav-icon {
@@ -104,7 +105,7 @@
 
 .member-bottom-nav-item.is-active .lucide {
   color: hsl(var(--member-paper));
-  stroke-width: 2.05;
+  stroke-width: 2.5;
 }
 
 

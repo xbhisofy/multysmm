@@ -4,7 +4,7 @@ import { Menu, Zap, History, Wallet, Settings } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 
 const items = [
-  { to: '/engagement-order', label: 'Order', icon: Zap },
+  { to: '/engagement-order', label: 'New Order', icon: Zap },
   { to: '/engagement-orders', label: 'History', icon: History },
   { to: '/wallet', label: 'Wallet', icon: Wallet },
   { to: '/settings', label: 'Settings', icon: Settings },
