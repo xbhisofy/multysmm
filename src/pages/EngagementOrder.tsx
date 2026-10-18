@@ -816,6 +816,7 @@ export default function EngagementOrder() {
     const analyzed = dedup.map(l => {
       let reason: string | null = null;
       let valid = false;
+      if (isManualAdsPlatform(platform)) return { link: l, valid: true, reason: null };
       try {
         const u = new URL(l);
         if (!['http:', 'https:'].includes(u.protocol)) {
