@@ -550,19 +550,19 @@ export default function Settings() {
               <div className="flex items-center gap-2 mt-6 mb-2">
                 <span className="text-base">🐦</span>
                 <h3 className="text-sm font-bold text-foreground">Twitter / X</h3>
-                <Badge variant="secondary" className="bg-sky-500/10 text-sky-400 text-[9px] uppercase tracking-wider">X</Badge>
+                <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-400 text-[9px] uppercase tracking-wider">X</Badge>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 {Object.entries(ratios).filter(([key]) => ['retweets'].includes(key)).map(([key, value]) => {
                   const meta = RATIO_META[key];
                   return (
-                    <div key={key} className="space-y-3 p-4 rounded-2xl bg-background/50 border border-border group hover:border-sky-500/30 transition-all">
+                    <div key={key} className="space-y-3 p-4 rounded-2xl bg-background/50 border border-border group hover:border-emerald-500/30 transition-all">
                       <div className="flex justify-between items-center">
-                        <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground group-hover:text-sky-400 transition-colors flex items-center gap-1.5">
+                        <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground group-hover:text-emerald-400 transition-colors flex items-center gap-1.5">
                           <span>{meta?.emoji}</span> {meta?.label || key}
                         </Label>
-                        <span className="text-lg font-mono font-bold text-sky-400">{value}%</span>
+                        <span className="text-lg font-mono font-bold text-emerald-400">{value}%</span>
                       </div>
                       <div className="px-1">
                         <Slider value={[value]} onValueChange={([val]) => updateRatio(key as any, val)} max={100} step={1} className="py-4" />

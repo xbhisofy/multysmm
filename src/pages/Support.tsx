@@ -61,16 +61,16 @@ const CATEGORIES = [
 ];
 
 const PRIORITIES = [
-  { value: 'low', label: 'Low', color: 'bg-blue-500' },
+  { value: 'low', label: 'Low', color: 'bg-emerald-500' },
   { value: 'medium', label: 'Medium', color: 'bg-yellow-500' },
-  { value: 'high', label: 'High', color: 'bg-blue-500' },
+  { value: 'high', label: 'High', color: 'bg-emerald-500' },
   { value: 'urgent', label: 'Urgent', color: 'bg-red-500' },
 ];
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
-  open: { label: 'Open', color: 'bg-blue-500', icon: MessageSquare },
+  open: { label: 'Open', color: 'bg-emerald-500', icon: MessageSquare },
   pending: { label: 'Pending', color: 'bg-yellow-500', icon: Clock },
-  in_progress: { label: 'In Progress', color: 'bg-blue-500', icon: Clock },
+  in_progress: { label: 'In Progress', color: 'bg-emerald-500', icon: Clock },
   resolved: { label: 'Resolved', color: 'bg-green-500', icon: CheckCircle },
   closed: { label: 'Closed', color: 'bg-muted', icon: CheckCircle },
 };
@@ -315,7 +315,7 @@ export default function Support() {
           </Card>
           <Card className="glass-card">
             <CardContent className="p-4 text-center">
-              <p className="text-2xl sm:text-3xl font-bold text-blue-500">{openTickets.length}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-emerald-600">{openTickets.length}</p>
               <p className="text-xs sm:text-sm text-muted-foreground">Open</p>
             </CardContent>
           </Card>

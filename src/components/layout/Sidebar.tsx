@@ -30,7 +30,7 @@ export function Sidebar({ onClose }: SidebarProps) {
   const { formatPrice, currency, currencyInfo, setCurrency } = useCurrency();
 
   return (
-    <div className="member-sidebar h-full w-full overflow-hidden flex flex-col" style={{ background: '#F4F6FF', borderRight: '1px solid rgba(59,46,240,.08)' }}>
+    <div className="member-sidebar h-full w-full overflow-hidden flex flex-col" style={{ background: 'hsl(var(--member-soft))', borderRight: '1px solid hsl(var(--member-line))' }}>
       {/* Close button (mobile) */}
       <div className="flex items-center justify-end px-3 pt-2 lg:hidden">
         <button onClick={onClose} aria-label="Close navigation menu" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>
@@ -42,8 +42,8 @@ export function Sidebar({ onClose }: SidebarProps) {
       {profile && (
         <div className="mx-3 sm:mx-4 mb-4 mt-3 lg:mt-4 relative rounded-2xl overflow-hidden bg-white"
           style={{
-            border: '1px solid rgba(59,46,240,.12)',
-            boxShadow: '0 10px 28px -14px rgba(59,46,240,.28), 0 1px 0 rgba(255,255,255,.6) inset',
+            border: '1px solid hsl(var(--member-line))',
+            boxShadow: '0 10px 28px -14px hsl(var(--member-green) / 0.28), 0 1px 0 rgba(255,255,255,.6) inset',
           }}>
           {/* subtle top gradient hairline */}
           <div aria-hidden className="absolute top-0 inset-x-0 h-[3px]" style={{ background: GRADIENT }} />
@@ -55,7 +55,7 @@ export function Sidebar({ onClose }: SidebarProps) {
                 style={{ background: GRADIENT }}>
                 {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || 'U'}
               </div>
-              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white" style={{ background: '#22c55e' }} />
+              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white" style={{ background: 'hsl(var(--member-green))' }} />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
@@ -70,7 +70,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           </div>
 
           {/* Divider */}
-          <div className="mx-4 h-px" style={{ background: 'rgba(59,46,240,.10)' }} />
+          <div className="mx-4 h-px" style={{ background: 'hsl(var(--member-line))' }} />
 
           {/* Wallet section */}
           <div className="relative px-4 pt-3 pb-4">
@@ -84,14 +84,14 @@ export function Sidebar({ onClose }: SidebarProps) {
                   {formatPrice(wallet?.balance || 0)}
                 </p>
               </div>
-              <div className="flex items-center gap-1 shrink-0 pb-0.5 px-2 py-1 rounded-md" style={{ background: '#EFF6FF' }}>
-                <Wallet className="w-3 h-3" style={{ color: '#3B2EF0' }} />
-                <span className="text-[9px] font-bold" style={{ color: '#3B2EF0' }}>{currency}</span>
+              <div className="flex items-center gap-1 shrink-0 pb-0.5 px-2 py-1 rounded-md" style={{ background: 'hsl(var(--member-green) / 0.1)' }}>
+                <Wallet className="w-3 h-3" style={{ color: 'hsl(var(--member-green-deep))' }} />
+                <span className="text-[9px] font-bold" style={{ color: 'hsl(var(--member-green-deep))' }}>{currency}</span>
               </div>
             </div>
             <Link to="/wallet" onClick={onClose}
               className="group flex items-center justify-center gap-2 w-full h-10 rounded-xl text-[12.5px] font-semibold text-primary-foreground transition-all active:scale-[.98]"
-              style={{ background: GRADIENT, boxShadow: '0 10px 22px -8px rgba(245,54,75,.50)' }}>
+              style={{ background: GRADIENT, boxShadow: '0 10px 22px -8px hsl(var(--member-green) / 0.5)' }}>
               <span className="tracking-wide">Add Funds</span>
               <Rocket className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
@@ -101,7 +101,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 pb-3 scrollbar-thin">
-        <p className="px-3 mb-2.5 text-[10px] font-extrabold uppercase tracking-[0.22em]" style={{ color: '#A5B4FC' }}>Menu</p>
+        <p className="px-3 mb-2.5 text-[10px] font-extrabold uppercase tracking-[0.22em]" style={{ color: 'hsl(var(--member-green) / 0.7)' }}>Menu</p>
         {userNavItems.map((item) => {
           const currentFull = location.pathname + location.search;
           const isMassLink = item.path.includes('mode=mass');
@@ -125,15 +125,15 @@ export function Sidebar({ onClose }: SidebarProps) {
               style={{
                 background: isActive ? GRADIENT : '#FFFFFF',
                 color: isActive ? '#FFFFFF' : '#334155',
-                border: isActive ? '1px solid transparent' : '1px solid rgba(59,46,240,.10)',
+                border: isActive ? '1px solid transparent' : '1px solid hsl(var(--member-line))',
                 boxShadow: isActive
-                  ? '0 10px 20px -8px rgba(59,46,240,.45)'
+                  ? '0 10px 20px -8px hsl(var(--member-green) / 0.45)'
                   : '0 2px 8px -4px rgba(15,23,42,.08)',
                 fontWeight: isActive ? 800 : 600,
                 letterSpacing: '-0.01em',
               }}
             >
-              <item.icon className="w-[18px] h-[18px]" style={{ color: isActive ? '#FFFFFF' : '#7C8CF8' }} />
+              <item.icon className="w-[18px] h-[18px]" style={{ color: isActive ? '#FFFFFF' : 'hsl(var(--member-green))' }} />
               <span className="flex-1">{item.label}</span>
               {(item as any).highlight && !isActive && (
                  <span className="text-[8px] px-1.5 py-0.5 rounded-full font-bold text-primary-foreground" style={{ background: GRADIENT }}>HOT</span>
@@ -144,7 +144,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
         {isAdmin && (
           <>
-            <div className="my-3 mx-3" style={{ borderTop: '1px solid rgba(59,46,240,.10)' }} />
+            <div className="my-3 mx-3" style={{ borderTop: '1px solid hsl(var(--member-line))' }} />
             <p className="px-3 mb-2 text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: '#94A3B8' }}>Admin</p>
             {adminNavItems.map((item) => {
               const isActive = location.pathname.startsWith(item.path);
@@ -154,13 +154,13 @@ export function Sidebar({ onClose }: SidebarProps) {
                   style={{
                     background: isActive ? GRADIENT : '#FFFFFF',
                     color: isActive ? '#FFFFFF' : '#334155',
-                    border: isActive ? '1px solid transparent' : '1px solid rgba(59,46,240,.10)',
-                    boxShadow: isActive ? '0 10px 20px -8px rgba(59,46,240,.45)' : '0 2px 8px -4px rgba(15,23,42,.08)',
+                    border: isActive ? '1px solid transparent' : '1px solid hsl(var(--member-line))',
+                    boxShadow: isActive ? '0 10px 20px -8px hsl(var(--member-green) / 0.45)' : '0 2px 8px -4px rgba(15,23,42,.08)',
                     fontWeight: isActive ? 800 : 600,
                     letterSpacing: '-0.01em',
                   }}
                 >
-                  <item.icon className="w-[18px] h-[18px]" style={{ color: isActive ? '#FFFFFF' : '#7C8CF8' }} />
+                  <item.icon className="w-[18px] h-[18px]" style={{ color: isActive ? '#FFFFFF' : 'hsl(var(--member-green))' }} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -172,12 +172,12 @@ export function Sidebar({ onClose }: SidebarProps) {
       {/* Currency */}
       <div className="px-3 pb-2">
         <label className="relative w-full flex items-center justify-between gap-2 px-4 py-3 rounded-2xl text-[13px] font-semibold cursor-pointer"
-          style={{ color: '#334155', background: '#FFFFFF', border: '1px solid rgba(59,46,240,.10)', boxShadow: '0 2px 8px -4px rgba(15,23,42,.08)' }}>
+          style={{ color: '#334155', background: '#FFFFFF', border: '1px solid hsl(var(--member-line))', boxShadow: '0 2px 8px -4px rgba(15,23,42,.08)' }}>
           <div className="flex items-center gap-2.5">
             <span className="text-base">{currencyInfo.flag}</span>
             <span className="uppercase tracking-wider">{currency}</span>
           </div>
-          <span className="text-[11px] font-bold" style={{ color: '#7C8CF8' }}>{currencyInfo.symbol}</span>
+          <span className="text-[11px] font-bold" style={{ color: 'hsl(var(--member-green))' }}>{currencyInfo.symbol}</span>
           <select
             value={currency}
             onChange={(e) => setCurrency(e.target.value as any)}
@@ -195,7 +195,7 @@ export function Sidebar({ onClose }: SidebarProps) {
       <div className="px-3 pb-2">
         <a href="https://t.me/x07neo" target="_blank" rel="noopener noreferrer"
           className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-150 hover:translate-x-0.5"
-          style={{ background: '#FFFFFF', border: '1px solid rgba(59,46,240,.14)', boxShadow: '0 2px 8px -4px rgba(15,23,42,.08)' }}>
+          style={{ background: '#FFFFFF', border: '1px solid hsl(var(--member-line))', boxShadow: '0 2px 8px -4px rgba(15,23,42,.08)' }}>
           <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: GRADIENT }}>
             <Send className="w-4 h-4" style={{ color: '#fff' }} />
           </span>

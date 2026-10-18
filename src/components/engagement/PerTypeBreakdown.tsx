@@ -21,8 +21,8 @@ const ENGAGEMENT_CONFIG: Record<string, { icon: typeof Eye; label: string; emoji
   likes: { icon: Heart, label: "Likes", emoji: "❤️", color: "text-green-400", bg: "bg-green-500/20", border: "border-green-500/40" },
   comments: { icon: MessageCircle, label: "Comments", emoji: "💬", color: "text-emerald-400", bg: "bg-emerald-500/20", border: "border-emerald-500/40" },
   saves: { icon: Bookmark, label: "Saves", emoji: "📥", color: "text-blue-400", bg: "bg-blue-500/20", border: "border-blue-500/40" },
-  shares: { icon: Share2, label: "Shares", emoji: "🔄", color: "text-fuchsia-400", bg: "bg-fuchsia-500/20", border: "border-fuchsia-500/40" },
-  reposts: { icon: Share2, label: "Reposts", emoji: "🔁", color: "text-fuchsia-400", bg: "bg-fuchsia-500/20", border: "border-fuchsia-500/40" },
+  shares: { icon: Share2, label: "Shares", emoji: "🔄", color: "text-emerald-400", bg: "bg-emerald-500/20", border: "border-emerald-500/40" },
+  reposts: { icon: Share2, label: "Reposts", emoji: "🔁", color: "text-emerald-400", bg: "bg-emerald-500/20", border: "border-emerald-500/40" },
 };
 
 // Helper to get config with dynamic fallback

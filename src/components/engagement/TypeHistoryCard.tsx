@@ -379,7 +379,7 @@ export function TypeHistoryCard({
                     key={run.id}
                     className={`p-4 transition-colors ${isActive ? 'bg-blue-500/10' :
                       isFailed ? 'bg-green-500/5' :
-                        isPending ? 'hover:bg-fuchsia-500/5' :
+                        isPending ? 'hover:bg-emerald-500/5' :
                           isCompleted ? 'bg-emerald-500/5' : ''
                       }`}
                   >
@@ -388,7 +388,7 @@ export function TypeHistoryCard({
                       <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm ${isCompleted ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white' :
                         isActive ? 'bg-gradient-to-br from-blue-500 to-blue-500 text-white animate-pulse' :
                           isFailed ? 'bg-gradient-to-br from-green-500 to-red-500 text-white' :
-                            'bg-gradient-to-br from-fuchsia-500 to-fuchsia-500 text-white'
+                            'bg-gradient-to-br from-emerald-500 to-emerald-500 text-white'
                         }`}>
                         #{run.run_number}
                       </div>
@@ -401,7 +401,7 @@ export function TypeHistoryCard({
                             isActive ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40' :
                               isFailed ? 'bg-green-500/20 text-green-400 border border-green-500/40' :
                                 isUpcoming ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40' :
-                                  'bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/40'
+                                  'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
                             }`}>
                             {isCompleted && <CheckCircle2 className="h-3 w-3 mr-1" />}
                             {isActive && <Play className="h-3 w-3 mr-1" />}
@@ -462,7 +462,7 @@ export function TypeHistoryCard({
                         {run.provider_account_name && !isAutoCompletedCancel && (
                           <div className="text-right">
                             <p className="text-xs text-muted-foreground uppercase">Provider</p>
-                            <p className="text-sm font-bold text-fuchsia-400">{run.provider_account_name}</p>
+                            <p className="text-sm font-bold text-emerald-400">{run.provider_account_name}</p>
                           </div>
                         )}
 
