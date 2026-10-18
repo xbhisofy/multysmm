@@ -1207,16 +1207,9 @@ export default function EngagementOrder() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 space-y-3 sm:space-y-6 pb-8">
+      <div className="engagement-order-page max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 space-y-3 sm:space-y-6 pb-8">
         {/* Engagement console — premium mode picker */}
         <div className="relative rounded-2xl bg-card border border-border shadow-[0_8px_30px_-12px_rgba(249,115,22,0.15)] overflow-hidden">
-          {/* Soft brand wash */}
-          <div className="pointer-events-none absolute inset-0 opacity-70"
-            style={{
-              background:
-                'radial-gradient(600px 120px at 0% 0%, rgba(249,115,22,0.10), transparent 60%), radial-gradient(500px 120px at 100% 0%, rgba(249,115,22,0.06), transparent 60%)',
-            }}
-          />
 
           <div className="relative flex items-start gap-3 px-4 sm:px-5 pt-4 pb-3">
             <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-primary/70 text-primary-foreground flex items-center justify-center shrink-0 shadow-[0_6px_18px_-8px_rgba(249,115,22,0.6)]">

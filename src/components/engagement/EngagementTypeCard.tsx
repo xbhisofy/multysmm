@@ -325,9 +325,9 @@ export function EngagementTypeCard({
   const hasError = isBelowMin || isAboveMax;
 
   return (
-    <Card className={cn(
-      "rounded-2xl border bg-card shadow-[0_2px_12px_-4px_rgba(139,92,246,0.14)]",
-      hasError ? "border-destructive/40" : "border-violet-100",
+    <Card data-engagement-type={type} className={cn(
+      "engagement-type-card rounded-2xl border bg-card shadow-sm",
+      hasError ? "border-destructive/40" : "border-border",
       !config.enabled && "opacity-60"
     )}>
       <CardContent className="p-3.5 sm:p-4 overflow-hidden">
