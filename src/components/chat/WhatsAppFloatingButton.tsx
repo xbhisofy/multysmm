@@ -42,7 +42,7 @@ export function WhatsAppFloatingButton() {
       <span
         className="relative flex items-center justify-center h-14 w-14 rounded-full transition-transform group-hover:scale-110"
         style={{
-          background: 'linear-gradient(135deg, #229ED9, #0EA5E9)',
+          background: 'linear-gradient(135deg, #16A34A, #0E9F86)',
           boxShadow: '0 10px 28px rgba(34,158,217,.5), 0 4px 10px rgba(0,0,0,.2)',
           border: '2px solid #fff',
         }}

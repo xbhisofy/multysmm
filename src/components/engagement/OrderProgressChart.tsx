@@ -312,7 +312,7 @@ export function OrderProgressChart({ runs, perType }: OrderProgressChartProps) {
           })}
           {stats && stats.startedRuns > 0 && (
             <div className="flex items-center gap-2 ml-4 pl-4 border-l border-border">
-              <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs text-muted-foreground">{stats.startedRuns} in progress</span>
             </div>
           )}

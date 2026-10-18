@@ -4,10 +4,10 @@ import { Menu, Zap, History, Wallet, Settings } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 
 const items = [
-  { to: '/engagement-order', label: 'Order', icon: Zap, color: '#7C3AED', soft: '#F1EBFE' },
-  { to: '/engagement-orders', label: 'History', icon: History, color: '#0EA5E9', soft: '#E8F5FE' },
-  { to: '/wallet', label: 'Wallet', icon: Wallet, color: '#10B981', soft: '#E7F8F1' },
-  { to: '/settings', label: 'Settings', icon: Settings, color: '#F59E0B', soft: '#FDF3E2' },
+  { to: '/engagement-order', label: 'Order', icon: Zap, color: 'hsl(var(--member-green-deep))', soft: 'hsl(var(--member-green) / 0.12)' },
+  { to: '/engagement-orders', label: 'History', icon: History, color: 'hsl(var(--member-teal))', soft: 'hsl(var(--member-teal) / 0.12)' },
+  { to: '/wallet', label: 'Wallet', icon: Wallet, color: 'hsl(var(--member-green))', soft: 'hsl(var(--member-green) / 0.12)' },
+  { to: '/settings', label: 'Settings', icon: Settings, color: 'hsl(var(--member-lime))', soft: 'hsl(var(--member-lime) / 0.14)' },
 ];
 
 export function MobileBottomNav() {
@@ -17,9 +17,9 @@ export function MobileBottomNav() {
     <>
       <header className="fixed top-0 left-0 right-0 z-40 lg:hidden">
         <div className="member-mobile-header flex items-center justify-between h-14 px-4"
-          style={{ background: 'rgba(255,255,255,.92)', backdropFilter: 'blur(14px)', borderBottom: '1px solid rgba(59,46,240,.12)', boxShadow: '0 6px 20px rgba(59,46,240,.08)' }}>
-          <button onClick={() => setSidebarOpen(true)} aria-label="Open navigation menu" className="flex items-center justify-center w-9 h-9 rounded-lg" style={{ border: '1px solid rgba(59,46,240,.15)', background: '#F3EFFE' }}>
-            <Menu className="w-4 h-4" style={{ color: '#7C3AED' }} />
+          style={{ background: 'rgba(255,255,255,.92)', backdropFilter: 'blur(14px)', borderBottom: '1px solid hsl(var(--member-line))', boxShadow: '0 6px 20px hsl(var(--member-green) / 0.08)' }}>
+          <button onClick={() => setSidebarOpen(true)} aria-label="Open navigation menu" className="flex items-center justify-center w-9 h-9 rounded-lg" style={{ border: '1px solid hsl(var(--member-line))', background: 'hsl(var(--member-green) / 0.1)' }}>
+            <Menu className="w-4 h-4" style={{ color: 'hsl(var(--member-green-deep))' }} />
           </button>
           <div className="flex items-center">
             <img src="/logo.png" alt="MultySMM" className="h-8 w-auto object-contain" />

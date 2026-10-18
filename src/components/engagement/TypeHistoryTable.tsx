@@ -9,17 +9,17 @@ import {
 } from "lucide-react";
 
 const ENGAGEMENT_CONFIG: Record<string, { icon: typeof Eye; color: string; bg: string; border: string; label: string; emoji: string }> = {
-  views: { icon: Eye, color: "text-blue-500", bg: "bg-blue-100", border: "border-blue-500", label: "Views", emoji: "👁️" },
+  views: { icon: Eye, color: "text-emerald-500", bg: "bg-emerald-100", border: "border-emerald-500", label: "Views", emoji: "👁️" },
   likes: { icon: Heart, color: "text-red-500", bg: "bg-red-100", border: "border-red-500", label: "Likes", emoji: "❤️" },
   comments: { icon: MessageCircle, color: "text-green-500", bg: "bg-green-100", border: "border-green-500", label: "Comments", emoji: "💬" },
-  saves: { icon: Bookmark, color: "text-blue-500", bg: "bg-blue-100", border: "border-blue-500", label: "Saves", emoji: "📥" },
-  shares: { icon: Share2, color: "text-fuchsia-500", bg: "bg-fuchsia-100", border: "border-fuchsia-500", label: "Shares", emoji: "🔄" },
-  reposts: { icon: Share2, color: "text-fuchsia-500", bg: "bg-fuchsia-100", border: "border-fuchsia-500", label: "Reposts", emoji: "🔁" },
+  saves: { icon: Bookmark, color: "text-emerald-500", bg: "bg-emerald-100", border: "border-emerald-500", label: "Saves", emoji: "📥" },
+  shares: { icon: Share2, color: "text-emerald-500", bg: "bg-emerald-100", border: "border-emerald-500", label: "Shares", emoji: "🔄" },
+  reposts: { icon: Share2, color: "text-emerald-500", bg: "bg-emerald-100", border: "border-emerald-500", label: "Reposts", emoji: "🔁" },
 };
 
 const STATUS_CONFIG = {
-  pending: { icon: Clock, color: "bg-blue-100 text-blue-700 border-blue-300", symbol: "⏳" },
-  started: { icon: Play, color: "bg-blue-100 text-blue-700 border-blue-300", symbol: "🔵" },
+  pending: { icon: Clock, color: "bg-emerald-100 text-emerald-700 border-emerald-300", symbol: "⏳" },
+  started: { icon: Play, color: "bg-emerald-100 text-emerald-700 border-emerald-300", symbol: "🔵" },
   completed: { icon: CheckCircle2, color: "bg-green-100 text-green-700 border-green-300", symbol: "✅" },
   failed: { icon: XCircle, color: "bg-red-100 text-red-700 border-red-300", symbol: "🔴" },
 };
@@ -83,9 +83,9 @@ export function TypeHistoryTable({
           <p className="text-xs text-muted-foreground uppercase">Delivered</p>
           <p className="text-2xl font-bold text-green-600">{deliveredQuantity.toLocaleString()}</p>
         </div>
-        <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
+        <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200">
           <p className="text-xs text-muted-foreground uppercase">Remaining</p>
-          <p className="text-2xl font-bold text-blue-600">{remaining.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-emerald-600">{remaining.toLocaleString()}</p>
         </div>
         <div className="p-4 rounded-xl bg-muted border">
           <p className="text-xs text-muted-foreground uppercase">Completed</p>
@@ -93,11 +93,11 @@ export function TypeHistoryTable({
         </div>
         <div className="p-4 rounded-xl bg-muted border">
           <p className="text-xs text-muted-foreground uppercase">Active</p>
-          <p className="text-2xl font-bold text-blue-600">{startedRuns.length}</p>
+          <p className="text-2xl font-bold text-emerald-600">{startedRuns.length}</p>
         </div>
         <div className="p-4 rounded-xl bg-muted border">
           <p className="text-xs text-muted-foreground uppercase">Pending</p>
-          <p className="text-2xl font-bold text-blue-600">{pendingRuns.length}</p>
+          <p className="text-2xl font-bold text-emerald-600">{pendingRuns.length}</p>
         </div>
       </div>
 
@@ -144,14 +144,14 @@ export function TypeHistoryTable({
                 <div
                   key={run.id}
                   className={`grid grid-cols-12 gap-2 p-3 text-sm items-center transition-colors ${
-                    isActive ? 'bg-blue-50/80 dark:bg-blue-950/20' : ''
+                    isActive ? 'bg-emerald-50/80 dark:bg-emerald-950/20' : ''
                   }`}
                 >
                   {/* Run Number */}
                   <div className="col-span-1">
                     <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold ${
                       effectiveStatus === 'completed' ? 'bg-green-100 text-green-700 border-2 border-green-300' :
-                      effectiveStatus === 'started' ? 'bg-blue-100 text-blue-700 border-2 border-blue-300 animate-pulse' :
+                      effectiveStatus === 'started' ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-300 animate-pulse' :
                       effectiveStatus === 'failed' ? 'bg-red-100 text-red-700 border-2 border-red-300' :
                       'bg-muted text-muted-foreground border-2 border-border'
                     }`}>
@@ -185,7 +185,7 @@ export function TypeHistoryTable({
                   {/* Scheduled */}
                   <div className="col-span-2">
                     <p className="font-medium">{format(scheduledDate, 'HH:mm')}</p>
-                    <p className={`text-xs ${isPast ? 'text-blue-500 font-medium' : 'text-muted-foreground'}`}>
+                    <p className={`text-xs ${isPast ? 'text-emerald-500 font-medium' : 'text-muted-foreground'}`}>
                       {format(scheduledDate, 'MMM d')}
                     </p>
                   </div>
@@ -193,7 +193,7 @@ export function TypeHistoryTable({
                   {/* Started */}
                   <div className="col-span-1 text-xs">
                     {run.started_at ? (
-                      <span className="text-blue-600">{format(new Date(run.started_at), 'HH:mm')}</span>
+                      <span className="text-emerald-600">{format(new Date(run.started_at), 'HH:mm')}</span>
                     ) : (
                       <span className="text-muted-foreground">-</span>
                     )}
@@ -211,7 +211,7 @@ export function TypeHistoryTable({
                   {/* Peak */}
                   <div className="col-span-1">
                     {run.peak_multiplier && run.peak_multiplier > 1.3 ? (
-                      <span className="text-blue-600 text-xs">🔥 {run.peak_multiplier.toFixed(1)}x</span>
+                      <span className="text-emerald-600 text-xs">🔥 {run.peak_multiplier.toFixed(1)}x</span>
                     ) : (
                       <span className="text-muted-foreground text-xs">1.0x</span>
                     )}

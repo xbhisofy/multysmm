@@ -638,7 +638,7 @@ export function EngagementTypeCard({
                     <span className={cn(
                       "text-sm font-medium px-2 py-0.5 rounded-lg",
                       variancePercent <= 15 ? "text-red-400 bg-red-500/20"
-                        : variancePercent <= 25 ? "text-blue-400 bg-blue-500/20"
+                        : variancePercent <= 25 ? "text-emerald-400 bg-emerald-500/20"
                           : variancePercent <= 35 ? "text-primary bg-primary/20"
                             : "text-primary bg-primary/20"
                     )}>±{variancePercent}%</span>
@@ -660,7 +660,7 @@ export function EngagementTypeCard({
                         variancePercent <= 15
                           ? "from-red-600 to-red-500"
                           : variancePercent <= 25
-                            ? "from-blue-600 to-blue-500"
+                            ? "from-emerald-600 to-emerald-500"
                             : variancePercent <= 35
                               ? "from-primary to-primary"
                               : "from-primary to-primary"
@@ -670,7 +670,7 @@ export function EngagementTypeCard({
                         variancePercent <= 15
                           ? "border-red-500 shadow-red-500/30"
                           : variancePercent <= 25
-                            ? "border-blue-500 shadow-blue-500/30"
+                            ? "border-emerald-500 shadow-emerald-500/30"
                             : variancePercent <= 35
                               ? "border-primary shadow-sm"
                               : "border-primary shadow-sm"
@@ -717,7 +717,7 @@ export function EngagementTypeCard({
                           variancePercent <= 15
                             ? "bg-red-500"
                             : variancePercent <= 25
-                              ? "bg-blue-500"
+                              ? "bg-emerald-500"
                               : variancePercent <= 35
                                 ? "bg-primary"
                                 : "bg-primary"

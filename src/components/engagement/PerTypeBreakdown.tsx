@@ -20,9 +20,9 @@ const ENGAGEMENT_CONFIG: Record<string, { icon: typeof Eye; label: string; emoji
   views: { icon: Eye, label: "Views", emoji: "👁️", color: "text-cyan-400", bg: "bg-cyan-500/20", border: "border-cyan-500/40" },
   likes: { icon: Heart, label: "Likes", emoji: "❤️", color: "text-green-400", bg: "bg-green-500/20", border: "border-green-500/40" },
   comments: { icon: MessageCircle, label: "Comments", emoji: "💬", color: "text-emerald-400", bg: "bg-emerald-500/20", border: "border-emerald-500/40" },
-  saves: { icon: Bookmark, label: "Saves", emoji: "📥", color: "text-blue-400", bg: "bg-blue-500/20", border: "border-blue-500/40" },
-  shares: { icon: Share2, label: "Shares", emoji: "🔄", color: "text-fuchsia-400", bg: "bg-fuchsia-500/20", border: "border-fuchsia-500/40" },
-  reposts: { icon: Share2, label: "Reposts", emoji: "🔁", color: "text-fuchsia-400", bg: "bg-fuchsia-500/20", border: "border-fuchsia-500/40" },
+  saves: { icon: Bookmark, label: "Saves", emoji: "📥", color: "text-emerald-400", bg: "bg-emerald-500/20", border: "border-emerald-500/40" },
+  shares: { icon: Share2, label: "Shares", emoji: "🔄", color: "text-emerald-400", bg: "bg-emerald-500/20", border: "border-emerald-500/40" },
+  reposts: { icon: Share2, label: "Reposts", emoji: "🔁", color: "text-emerald-400", bg: "bg-emerald-500/20", border: "border-emerald-500/40" },
 };
 
 // Helper to get config with dynamic fallback
@@ -169,7 +169,7 @@ export function PerTypeBreakdown({ types, allRuns = [], onTypeClick, itemStatuse
               <div 
                 key={typeData.type} 
                 className={`relative p-3 rounded-xl ${config.bg} border ${config.border} transition-all duration-300 ${
-                  isPaused ? 'ring-1 ring-blue-500/30 grayscale-[30%]' : ''
+                  isPaused ? 'ring-1 ring-emerald-500/30 grayscale-[30%]' : ''
                 } ${isCancelled ? 'ring-1 ring-destructive/30 grayscale-[50%]' : ''} ${
                   onTypeClick ? 'cursor-pointer hover:scale-[1.02] hover:shadow-lg' : ''
                 }`}
@@ -185,7 +185,7 @@ export function PerTypeBreakdown({ types, allRuns = [], onTypeClick, itemStatuse
               >
                 {/* Status overlay stripe */}
                 {isPaused && (
-                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 rounded-t-xl" />
+                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-500 rounded-t-xl" />
                 )}
                 {isCancelled && (
                   <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-destructive via-red-400 to-destructive rounded-t-xl" />
@@ -197,7 +197,7 @@ export function PerTypeBreakdown({ types, allRuns = [], onTypeClick, itemStatuse
                     <span className={`text-xs uppercase font-bold tracking-wider ${config.color}`}>{config.label}</span>
                   </div>
                   {isPaused && (
-                    <span className="flex items-center gap-1 text-[10px] font-semibold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded-md border border-blue-500/20">
+                    <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-md border border-emerald-500/20">
                       <Pause className="h-2.5 w-2.5" /> PAUSED
                     </span>
                   )}
@@ -225,7 +225,7 @@ export function PerTypeBreakdown({ types, allRuns = [], onTypeClick, itemStatuse
                       </button>
                     ) : (
                       <button 
-                        className="flex-1 flex items-center justify-center gap-1 text-[11px] font-semibold py-1 rounded-md bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20 transition-colors"
+                        className="flex-1 flex items-center justify-center gap-1 text-[11px] font-semibold py-1 rounded-md bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 transition-colors"
                         onClick={() => onPauseType?.(itemInfo.id)}
                       >
                         <Pause className="h-3 w-3" /> Pause
