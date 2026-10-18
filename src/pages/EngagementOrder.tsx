@@ -19,7 +19,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { isValidAdsLink } from "@/lib/ads-link";
-import { isManualAdsPlatform } from '@/lib/platform-options';
+import { isManualAdsPlatform, isAdsOrderSection, orderPlatforms } from '@/lib/platform-options';
 import { PlatformSelector } from "@/components/engagement/PlatformSelector";
 
 import { QuantitySelector } from "@/components/engagement/QuantitySelector";
@@ -134,6 +134,7 @@ const averageIntervalFromRuns = (runs?: { scheduled_at?: string }[]): number | u
 export default function EngagementOrder() {
   const navigate = useNavigate();
   const location = useLocation();
+  const adsSection = isAdsOrderSection(location.search);
   const repeatFrom = (location.state as { repeatFrom?: number } | null)?.repeatFrom;
   const { user, profile, isLoading: authLoading, isAdmin, wallet, refreshWallet } = useAuth();
   const { toast } = useToast();
@@ -286,10 +287,10 @@ export default function EngagementOrder() {
     const platforms = allBundles
       .filter(b => b.items?.some((item) => item.service_id))
       .map(b => b.platform);
-    const result = [...new Set(platforms)];
+    const result = orderPlatforms(platforms, adsSection);
     console.log('[EngagementOrder] availablePlatforms:', result);
     return result;
-  }, [allBundles]);
+  }, [allBundles, adsSection]);
 
   // Auto-select first available platform if current selection has no bundles
   useEffect(() => {
