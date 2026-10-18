@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { PLATFORM_CONFIG } from "@/lib/engagement-types";
 import { platformOptions } from '@/lib/platform-options';
 import { Button } from '@/components/ui/button';
-import { Instagram, Music, Youtube, Twitter, Facebook, Megaphone } from "lucide-react";
+import { Instagram, Music, Youtube, Twitter, Facebook, Megaphone, Globe } from "lucide-react";
 
 interface PlatformSelectorProps {
   selected: string;
@@ -17,6 +17,7 @@ const iconMap = {
   Twitter,
   Facebook,
   Megaphone,
+  Globe,
 };
 
 export function PlatformSelector({ selected, onSelect, availablePlatforms }: PlatformSelectorProps) {
@@ -36,7 +37,7 @@ export function PlatformSelector({ selected, onSelect, availablePlatforms }: Pla
     <div className="flex flex-wrap gap-1.5">
       {platformsToShow.map(({key, label}) => {
         const config = PLATFORM_CONFIG[key as keyof typeof PLATFORM_CONFIG];
-        const Icon = config ? iconMap[config.icon as keyof typeof iconMap] : Megaphone;
+        const Icon = (config ? iconMap[config.icon as keyof typeof iconMap] : undefined) || Megaphone;
         const isSelected = selected === key;
 
         return (
