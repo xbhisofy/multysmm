@@ -21,11 +21,10 @@ BEGIN
   SELECT id INTO b_id FROM public.engagement_bundles WHERE platform='adsterra' LIMIT 1;
   IF b_id IS NULL THEN
     INSERT INTO public.engagement_bundles(name, platform, description, icon, is_active, sort_order, ai_organic_enabled)
-    VALUES ('Adsterra Monetization','adsterra','Impressions, visits and clicks for your Adsterra links','Megaphone',true,99,false)
+    VALUES ('Adsterra Monetization','adsterra','Impressions and visits for website links','Megaphone',true,99,false)
     RETURNING id INTO b_id;
     INSERT INTO public.bundle_items(bundle_id, service_id, engagement_type, ratio_percent, is_base, sort_order) VALUES
       (b_id, s_imp, 'impressions', 100, true, 0),
-      (b_id, s_vis, 'visits', 10, false, 1),
-      (b_id, s_clk, 'clicks', 1, false, 2);
+      (b_id, s_vis, 'visits', 10, false, 1);
   END IF;
 END $$;
