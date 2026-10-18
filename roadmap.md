@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Deploy the Monetag platform icon crash fix to the VPS and verify the live order page.
+- [x] Deploy the Monetag platform icon crash fix to the VPS; verified live asset matches the VPS build and login opens without errors (authenticated order-page check unavailable).
 
 - [x] Add Monetag beside Adsterra as a separate ads platform with its own combined Impressions / Visits bundle.
 
