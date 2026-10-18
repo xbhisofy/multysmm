@@ -18,3 +18,5 @@
 - [x] Restore automatic dispatch by allowing queued busy runs to retry providers on every cron cycle.
 
 - [x] Recolor the whole app — homepage, auth, member area, payment cards and admin — to the light green palette.
+
+- [x] Make the mobile bottom navigation icons professional: one uniform inactive style, one green gradient active tile, solid white bar with no bleed-through.
