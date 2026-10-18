@@ -45,8 +45,7 @@
 }
 
 .member-bottom-nav {
-  background: hsl(var(--member-paper) / 0.98) !important;
-  backdrop-filter: blur(14px);
+  background: hsl(var(--member-paper)) !important;
   border-top: 1px solid hsl(var(--member-line));
   box-shadow: 0 -6px 22px hsl(var(--member-ink) / 0.06);
   padding-bottom: env(safe-area-inset-bottom, 0px);
