@@ -1207,26 +1207,19 @@ export default function EngagementOrder() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 space-y-3 sm:space-y-6 pb-8">
+      <div className="engagement-order-page max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 space-y-3 sm:space-y-6 pb-8">
         {/* Engagement console — premium mode picker */}
         <div className="relative rounded-2xl bg-card border border-border shadow-[0_8px_30px_-12px_rgba(249,115,22,0.15)] overflow-hidden">
-          {/* Soft brand wash */}
-          <div className="pointer-events-none absolute inset-0 opacity-70"
-            style={{
-              background:
-                'radial-gradient(600px 120px at 0% 0%, rgba(249,115,22,0.10), transparent 60%), radial-gradient(500px 120px at 100% 0%, rgba(249,115,22,0.06), transparent 60%)',
-            }}
-          />
 
           <div className="relative flex items-start gap-3 px-4 sm:px-5 pt-4 pb-3">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-primary/70 text-primary-foreground flex items-center justify-center shrink-0 shadow-[0_6px_18px_-8px_rgba(249,115,22,0.6)]">
+            <div className="w-11 h-11 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-[0_6px_18px_-8px_rgba(249,115,22,0.6)]">
               <Rocket className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-primary/80">Engagement Console</span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200/70 px-2 py-0.5 text-[10px] font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 text-success border border-success/20 px-2 py-0.5 text-[10px] font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
                   Live
                 </span>
               </div>
@@ -1249,14 +1242,14 @@ export default function EngagementOrder() {
               }}
               className={`group relative text-left rounded-xl p-3.5 sm:p-4 transition-all border ${
                 isOrganicMode
-                  ? 'border-fuchsia-500/50 bg-fuchsia-500/[0.07] shadow-[0_6px_20px_-12px_rgba(124,58,237,0.55)]'
-                  : 'border-border bg-background hover:border-fuchsia-400/40 hover:bg-fuchsia-50/40 dark:hover:bg-fuchsia-500/5'
+                  ? 'border-primary/40 bg-primary/10 shadow-sm'
+                  : 'border-border bg-background hover:border-primary/40 hover:bg-primary/5'
               }`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    isOrganicMode ? 'bg-fuchsia-600 text-white' : 'bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400'
+                    isOrganicMode ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'
                   }`}>
                     <Brain className="h-4 w-4" />
                   </div>
@@ -1276,12 +1269,12 @@ export default function EngagementOrder() {
                     if (val) setIsAutoRatios(false);
                   }}
                   onClick={(e) => e.stopPropagation()}
-                  className="data-[state=checked]:bg-fuchsia-600 shrink-0"
+                  className="data-[state=checked]:bg-accent shrink-0"
                 />
               </div>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {['Drip speed', 'Random variance', 'Algo-safe'].map((t) => (
-                  <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-300 border border-fuchsia-500/20">
+                  <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
                     {t}
                   </span>
                 ))}
@@ -1297,14 +1290,14 @@ export default function EngagementOrder() {
               }}
               className={`group relative text-left rounded-xl p-3.5 sm:p-4 transition-all border ${
                 isAutoRatios
-                  ? 'border-primary/50 bg-primary/[0.07] shadow-[0_6px_20px_-12px_rgba(249,115,22,0.5)]'
+                  ? 'border-accent/40 bg-accent/10 shadow-sm'
                   : 'border-border bg-background hover:border-primary/30 hover:bg-muted/40'
               }`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    isAutoRatios ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'
+                    isAutoRatios ? 'bg-accent text-accent-foreground' : 'bg-accent/10 text-accent'
                   }`}>
                     <Percent className="h-4 w-4" />
                   </div>
@@ -1324,7 +1317,7 @@ export default function EngagementOrder() {
                     if (val) setIsOrganicMode(false);
                   }}
                   onClick={(e) => e.stopPropagation()}
-                  className="data-[state=checked]:bg-primary shrink-0"
+                  className="data-[state=checked]:bg-accent shrink-0"
                 />
               </div>
               <div className="mt-3 flex flex-wrap gap-1.5">

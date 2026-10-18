@@ -225,3 +225,63 @@
 @media (prefers-reduced-motion: reduce) {
   .member-shell *, .member-auth * { scroll-behavior: auto !important; }
 }
+
+/* Order workspace: crisp paper, deep teal actions, cobalt and coral accents. */
+.member-shell:has(.engagement-order-page) {
+  --order-teal: 174 79% 26%;
+  --primary: var(--order-teal);
+  --primary-foreground: 0 0% 100%;
+  --ring: 174 79% 26%;
+  --foreground: 210 28% 16%;
+  --card-foreground: 210 28% 16%;
+  --muted-foreground: 213 16% 39%;
+  --secondary: 180 24% 95%;
+  --muted: 180 18% 94%;
+  --border: 190 19% 83%;
+  --input: 190 19% 83%;
+  --accent: 218 78% 43%;
+  --accent-foreground: 0 0% 100%;
+  --success: 174 79% 26%;
+  --member-sky: 174 65% 38%;
+  --member-blue: 174 79% 26%;
+  --member-ink: 210 28% 16%;
+  --member-soft: 190 20% 96%;
+  --member-line: 190 19% 83%;
+  --member-action-gradient: linear-gradient(hsl(var(--primary)), hsl(var(--primary)));
+  --order-coral: 9 72% 43%;
+  --order-card-shadow: 0 4px 16px -10px hsl(var(--member-ink) / 0.18);
+}
+
+.engagement-order-page {
+  --engagement-tone: var(--order-teal);
+}
+
+.member-shell:has(.engagement-order-page) .member-page :is(.glass-card, .glass-panel, .three-d-card, [class*="bg-card"]) {
+  background: hsl(var(--card)) !important;
+  box-shadow: var(--order-card-shadow) !important;
+  backdrop-filter: none;
+}
+
+.engagement-type-card {
+  --primary: var(--engagement-tone);
+  --ring: var(--engagement-tone);
+  border-left: 4px solid hsl(var(--engagement-tone)) !important;
+}
+.engagement-order-page .engagement-type-card[data-engagement-type="likes"],
+.engagement-order-page .engagement-type-card[data-engagement-type="clicks"] { --engagement-tone: var(--order-coral); }
+.engagement-order-page .engagement-type-card[data-engagement-type="shares"],
+.engagement-order-page .engagement-type-card[data-engagement-type="visits"],
+.engagement-order-page .engagement-type-card[data-engagement-type="comments"] { --engagement-tone: var(--accent); }
+.member-shell:has(.engagement-order-page) .member-bottom-nav-item:nth-child(1) {
+  --tab-color: hsl(var(--primary)) !important;
+  --tab-soft: hsl(var(--primary) / 0.1) !important;
+}
+.member-shell:has(.engagement-order-page) .member-bottom-nav-item:nth-child(4) {
+  --tab-color: hsl(var(--order-coral)) !important;
+  --tab-soft: hsl(var(--order-coral) / 0.1) !important;
+}
+.member-shell:has(.engagement-order-page) .member-mobile-header button {
+  border-color: hsl(var(--border)) !important;
+  background: hsl(var(--secondary)) !important;
+}
+.member-shell:has(.engagement-order-page) .member-mobile-header button svg { color: hsl(var(--primary)) !important; }

@@ -325,9 +325,9 @@ export function EngagementTypeCard({
   const hasError = isBelowMin || isAboveMax;
 
   return (
-    <Card className={cn(
-      "rounded-2xl border bg-card shadow-[0_2px_12px_-4px_rgba(139,92,246,0.14)]",
-      hasError ? "border-destructive/40" : "border-violet-100",
+    <Card data-engagement-type={type} className={cn(
+      "engagement-type-card rounded-2xl border bg-card shadow-sm",
+      hasError ? "border-destructive/40" : "border-border",
       !config.enabled && "opacity-60"
     )}>
       <CardContent className="p-3.5 sm:p-4 overflow-hidden">
@@ -337,26 +337,26 @@ export function EngagementTypeCard({
           <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
             <span className={cn(
               "w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center shrink-0",
-              config.enabled ? "bg-violet-100" : "bg-secondary"
+              config.enabled ? "bg-primary/10" : "bg-secondary"
             )}>
               <Icon className={cn(
                 "h-4 w-4 sm:h-[18px] sm:w-[18px]",
-                config.enabled ? "text-violet-600" : "text-muted-foreground"
+                config.enabled ? "text-primary" : "text-muted-foreground"
               )} />
             </span>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
                 {/* Decorative avatar + sparkle, green design jaisa */}
-                <span className="w-4 h-4 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-500 border border-white shadow-sm shrink-0" aria-hidden />
-                <Sparkles className="h-3 w-3 text-violet-400 shrink-0" aria-hidden />
+                <span className="w-4 h-4 rounded-full bg-accent border border-card shadow-sm shrink-0" aria-hidden />
+                <Sparkles className="h-3 w-3 text-primary shrink-0" aria-hidden />
                 <span className={cn(
-                  "text-sm sm:text-[15px] font-extrabold truncate tracking-tight",
-                  config.enabled ? "text-violet-600" : "text-foreground"
+                  "text-sm sm:text-[15px] font-extrabold break-words leading-snug",
+                  config.enabled ? "text-primary" : "text-foreground"
                 )}>
                   {engagementConfig.label}
                 </span>
                 {type === 'views' && (
-                  <Badge className="text-[9px] bg-violet-600 text-white font-bold px-1.5 py-0 rounded border-none normal-case tracking-wide">
+                  <Badge className="text-[9px] bg-primary text-primary-foreground font-bold px-1.5 py-0 rounded border-none normal-case tracking-wide">
                     BASE
                   </Badge>
                 )}
@@ -375,7 +375,7 @@ export function EngagementTypeCard({
                 onChange={(e) => handleQuantityChange(e.target.value)}
                 onBlur={handleQuantityBlur}
                 className={cn(
-                  "w-16 sm:w-20 h-8 sm:h-9 text-sm sm:text-[15px] text-center bg-stone-100 border border-stone-200 text-foreground font-bold px-2 rounded-full shadow-none focus-visible:ring-violet-400",
+                  "w-16 sm:w-20 h-8 sm:h-9 text-sm sm:text-[15px] text-center bg-secondary border border-border text-foreground font-bold px-2 rounded-full shadow-none focus-visible:ring-ring",
                   hasError && "border-destructive"
                 )}
               />
@@ -384,7 +384,7 @@ export function EngagementTypeCard({
               <Switch
                 checked={config.enabled}
                 onCheckedChange={handleToggle}
-                className="data-[state=checked]:bg-violet-500"
+                className="data-[state=checked]:bg-primary"
               />
             </div>
           </div>
@@ -397,7 +397,7 @@ export function EngagementTypeCard({
         )}
 
         {config.enabled && !hasError && providerMin > 0 && (
-          <div className="mt-1.5 text-[11.5px] font-medium text-slate-500">
+          <div className="mt-1.5 text-[11.5px] font-medium text-muted-foreground">
             Min: {providerMin.toLocaleString()} • Max: {providerMax.toLocaleString()}
           </div>
         )}
@@ -408,12 +408,12 @@ export function EngagementTypeCard({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="group mt-2.5 w-full flex items-center justify-between gap-3 rounded-xl border border-violet-100 bg-violet-50/60 hover:bg-violet-50 transition-colors px-3 py-2.5 text-left"
+                className="group mt-2.5 w-full flex items-center justify-between gap-3 rounded-xl border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors px-3 py-2.5 text-left"
               >
                 <span className="flex items-center gap-2.5 flex-1 min-w-0">
-                  <span className="relative w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center shrink-0">
-                    <Timer className="h-4 w-4 text-violet-600" />
-                    <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-violet-500 border-2 border-white" aria-hidden />
+                  <span className="relative w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <Timer className="h-4 w-4 text-primary" />
+                    <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-primary border-2 border-card" aria-hidden />
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-[13px] font-semibold text-foreground leading-tight">
@@ -426,7 +426,7 @@ export function EngagementTypeCard({
                     </span>
                   </span>
                 </span>
-                <span className="flex items-center gap-1 text-[11px] font-bold tracking-wide text-violet-600 shrink-0">
+                <span className="flex items-center gap-1 text-[11px] font-bold tracking-wide text-primary shrink-0">
                   <span className="group-data-[state=open]:hidden">OPEN</span>
                   <span className="hidden group-data-[state=open]:inline">CLOSE</span>
                   <ChevronDown className="h-4 w-4 group-data-[state=open]:rotate-180 transition-transform" />
@@ -639,8 +639,8 @@ export function EngagementTypeCard({
                       "text-sm font-medium px-2 py-0.5 rounded-lg",
                       variancePercent <= 15 ? "text-red-400 bg-red-500/20"
                         : variancePercent <= 25 ? "text-blue-400 bg-blue-500/20"
-                          : variancePercent <= 35 ? "text-violet-400 bg-violet-500/20"
-                            : "text-violet-400 bg-violet-400/20"
+                          : variancePercent <= 35 ? "text-primary bg-primary/20"
+                            : "text-primary bg-primary/20"
                     )}>±{variancePercent}%</span>
                   </Label>
                   <p className="text-[10px] text-muted-foreground leading-snug">
@@ -662,8 +662,8 @@ export function EngagementTypeCard({
                           : variancePercent <= 25
                             ? "from-blue-600 to-blue-500"
                             : variancePercent <= 35
-                              ? "from-violet-600 to-violet-500"
-                              : "from-violet-500 to-violet-400"
+                              ? "from-primary to-primary"
+                              : "from-primary to-primary"
                       )}
                       thumbClassName={cn(
                         "border-3",
@@ -672,8 +672,8 @@ export function EngagementTypeCard({
                           : variancePercent <= 25
                             ? "border-blue-500 shadow-blue-500/30"
                             : variancePercent <= 35
-                              ? "border-violet-500 shadow-violet-500/30"
-                              : "border-violet-400 shadow-violet-400/30"
+                              ? "border-primary shadow-sm"
+                              : "border-primary shadow-sm"
                       )}
                     />
                   </div>
@@ -719,8 +719,8 @@ export function EngagementTypeCard({
                             : variancePercent <= 25
                               ? "bg-blue-500"
                               : variancePercent <= 35
-                                ? "bg-violet-500"
-                                : "bg-violet-400"
+                                ? "bg-primary"
+                                : "bg-primary"
                         )}
                         style={{ width: `${Math.min(100, ((variancePercent - 10) / 40) * 100)}%` }}
                       />
