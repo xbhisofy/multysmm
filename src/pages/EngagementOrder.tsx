@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { isValidAdsLink } from "@/lib/ads-link";
 import { PlatformSelector } from "@/components/engagement/PlatformSelector";
 
 import { QuantitySelector } from "@/components/engagement/QuantitySelector";
@@ -818,7 +819,7 @@ export default function EngagementOrder() {
         if (!['http:', 'https:'].includes(u.protocol)) {
           reason = 'Invalid URL';
         } else {
-          const detected = detectPlatformFromUrl(l);
+          const detected = platform === 'adsterra' ? (isValidAdsLink(l) ? platform : null) : detectPlatformFromUrl(l);
           if (!detected) reason = 'Unsupported platform';
           else if (detected !== platform) reason = `Not ${platform}`;
           else valid = true;
@@ -1042,7 +1043,9 @@ export default function EngagementOrder() {
   const canAfford = wallet && wallet.balance > 0 && wallet.balance >= totalPrice;
 
   // Detect platform from link for validation
-  const detectPlatformFromLink = detectPlatformFromUrl;
+  const detectPlatformFromLink = (raw: string) => platform === 'adsterra'
+    ? (isValidAdsLink(raw) ? platform : null)
+    : detectPlatformFromUrl(raw);
 
   // Handle order button click - SUBSCRIPTION FIRST, then BALANCE
   const handlePlaceOrder = () => {
@@ -1087,6 +1090,10 @@ export default function EngagementOrder() {
 
       // Detect platform from link and validate it matches selected platform
       const detectedPlatform = detectPlatformFromLink(link);
+      if (platform === 'adsterra' && !detectedPlatform) {
+        toast({ title: 'Invalid link', description: 'Enter a website link starting with https:// or http://.', variant: 'destructive' });
+        return;
+      }
       if (detectedPlatform && detectedPlatform !== platform) {
         toast({
           title: "⚠️ Platform Mismatch",
@@ -1456,7 +1463,7 @@ export default function EngagementOrder() {
               <>
                 {(() => {
                   const trimmed = link.trim();
-                  const detected = trimmed ? detectPlatformFromUrl(trimmed) : null;
+                  const detected = trimmed ? detectPlatformFromLink(trimmed) : null;
                   const state: 'empty' | 'valid' | 'invalid' | 'wrong' =
                     !trimmed ? 'empty'
                     : !detected ? 'invalid'
@@ -1469,7 +1476,7 @@ export default function EngagementOrder() {
                   return (
                     <>
                       <Input
-                        placeholder={`https://${platform}.com/...`}
+                        placeholder={platform === 'adsterra' ? 'https://example.com/...' : `https://${platform}.com/...`}
                         value={link}
                         onChange={(e) => setLink(e.target.value)}
                         onKeyDown={(e) => {
@@ -1483,17 +1490,17 @@ export default function EngagementOrder() {
                       />
                       {state === 'invalid' && (
                         <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
-                          <span>⚠️</span> Please enter a valid {platform.toUpperCase()} URL (e.g. https://{platform}.com/…). Random text, usernames or unsupported links are not allowed.
+                          <span>⚠️</span> {platform === 'adsterra' ? 'Enter a valid website link starting with https:// or http://.' : `Please enter a valid ${platform.toUpperCase()} URL (e.g. https://${platform}.com/…). Random text, usernames or unsupported links are not allowed.`}
                         </p>
                       )}
                       {state === 'wrong' && (
                         <p className="mt-2 text-xs text-destructive flex items-center gap-1.5">
-                          <span>⚠️</span> This is a {detected!.toUpperCase()} link, but you selected {platform.toUpperCase()}. Only {platform.toUpperCase()} links are accepted for this service.
+                          <span>⚠️</span> This is a {detected?.toUpperCase()} link, but you selected {platform.toUpperCase()}. Only {platform.toUpperCase()} links are accepted for this service.
                         </p>
                       )}
                       {state === 'valid' && (
                         <p className="mt-2 text-xs text-success flex items-center gap-1.5">
-                          <span>✓</span> Valid {platform.toUpperCase()} link
+                          <span>✓</span> {platform === 'adsterra' ? 'Valid website link' : `Valid ${platform.toUpperCase()} link`}
                         </p>
                       )}
                     </>
