@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Show complete ads order details with separate copy-link and copy-all actions in admin.
+- [x] Accept valid website links from any domain for ads orders, in single and mass mode.
+
 - [x] Share current UI deployment steps for the user’s VPS.
 
 - [x] Restyle every authenticated user page and shared navigation to match the Catalis sky-blue editorial design.
