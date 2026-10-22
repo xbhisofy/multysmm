@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useDebounce } from '@/hooks/useDebounce';
+import { useCurrency } from '@/hooks/useCurrency';
 import { supabase } from '@/integrations/supabase/client';
 import {
   Dialog,
@@ -46,14 +48,18 @@ interface ImportServicesDialogProps {
 }
 
 export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: ImportServicesDialogProps) {
+  const queryClient = useQueryClient();
+  const { formatPrice } = useCurrency();
   const [selectedProvider, setSelectedProvider] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedServices, setSelectedServices] = useState<Set<string>>(new Set());
   const [markupPercent, setMarkupPercent] = useState(0);
+  const debouncedSearch = useDebounce(searchQuery, 400);
 
   // Fetch unique providers from provider_accounts
   const { data: providers } = useQuery({
     queryKey: ['admin-provider-accounts-unique'],
+    enabled: open,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('provider_accounts')
@@ -75,8 +81,8 @@ export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: Im
   });
 
   // Fetch services from provider API
-  const { data: providerServices, isLoading: loadingServices, refetch: fetchServices, isFetching } = useQuery({
-    queryKey: ['provider-services', selectedProvider, searchQuery],
+  const { data: providerServices, error: fetchError, isLoading: loadingServices, refetch: fetchServices, isFetching } = useQuery({
+    queryKey: ['provider-services', selectedProvider, debouncedSearch],
     queryFn: async () => {
       const { data: session } = await supabase.auth.getSession();
       if (!session.session) throw new Error('Not authenticated');
@@ -85,15 +91,16 @@ export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: Im
         body: {
           provider_id: selectedProvider,
           action: 'fetch',
-          search_query: searchQuery,
+          search_query: debouncedSearch,
           markup_percent: markupPercent,
         },
       });
 
       if (response.error) throw response.error;
+      if (response.data?.error) throw new Error(response.data.error);
       return response.data as { services: ProviderService[]; total: number; filtered: number };
     },
-    enabled: !!selectedProvider,
+    enabled: open && !!selectedProvider,
   });
 
   // Import selected services
@@ -116,10 +123,16 @@ export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: Im
       });
 
       if (response.error) throw response.error;
+      if (response.data?.error) throw new Error(response.data.error);
       return response.data;
     },
     onSuccess: (data) => {
-      toast.success(`Successfully imported ${data.imported} services${data.updated > 0 ? `, updated ${data.updated}` : ''}`);
+      toast.success(`Imported ${data.imported} services${data.updated > 0 ? `, updated ${data.updated}` : ''}`);
+      if (data.errors?.length) toast.error(`${data.errors.length} import errors: ${data.errors[0]}`);
+      queryClient.invalidateQueries({ queryKey: ['single-order-services'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-services-active'] });
+      queryClient.invalidateQueries({ queryKey: ['services'] });
+      try { localStorage.removeItem('whopautopilot_services_cache_v2'); } catch { /* storage unavailable */ }
       setSelectedServices(new Set());
       onImportSuccess();
       onOpenChange(false);
@@ -141,12 +154,13 @@ export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: Im
 
   const toggleAll = () => {
     if (!providerServices?.services) return;
-    
-    if (selectedServices.size === providerServices.services.length) {
-      setSelectedServices(new Set());
-    } else {
-      setSelectedServices(new Set(providerServices.services.map(s => s.service_id)));
-    }
+    const ids = providerServices.services.map(s => s.service_id);
+    const allSelected = ids.every(id => selectedServices.has(id));
+    setSelectedServices(previous => {
+      const next = new Set(previous);
+      ids.forEach(id => allSelected ? next.delete(id) : next.add(id));
+      return next;
+    });
   };
 
   const handleSearch = () => {
@@ -155,7 +169,7 @@ export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: Im
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-card border-border max-w-4xl max-h-[90vh] flex flex-col">
+      <DialogContent className="border-border max-w-4xl h-[85vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Download className="h-5 w-5 text-primary" />
@@ -168,7 +182,7 @@ export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: Im
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Select Provider</label>
-              <Select value={selectedProvider} onValueChange={setSelectedProvider}>
+               <Select value={selectedProvider} disabled={importMutation.isPending} onValueChange={value => { setSelectedProvider(value); setSelectedServices(new Set()); }}>
                 <SelectTrigger className="input-glass">
                   <SelectValue placeholder="Choose a provider" />
                 </SelectTrigger>
@@ -186,13 +200,15 @@ export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: Im
               <Input
                 type="number"
                 value={markupPercent}
-                onChange={(e) => setMarkupPercent(parseInt(e.target.value) || 0)}
+                onChange={(e) => setMarkupPercent(Math.min(500, Math.max(0, Number(e.target.value) || 0)))}
+                disabled={importMutation.isPending}
                 className="input-glass"
                 min={0}
                 max={500}
               />
             </div>
           </div>
+          {providers?.length === 0 && <p className="text-sm text-muted-foreground">No active providers. Add a provider account first.</p>}
 
           {/* Search */}
           {selectedProvider && (
@@ -216,7 +232,7 @@ export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: Im
           {/* Services List */}
           {selectedProvider && (
             <div className="flex-1 overflow-hidden flex flex-col">
-              {loadingServices || isFetching ? (
+              {fetchError ? <p role="alert" className="py-4 text-sm text-destructive">{fetchError.message}</p> : loadingServices || isFetching ? (
                 <div className="flex-1 flex items-center justify-center">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
@@ -226,11 +242,11 @@ export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: Im
                   <div className="flex items-center justify-between py-2 px-3 bg-secondary/30 rounded-t-lg">
                     <div className="flex items-center gap-2">
                       <Checkbox
-                        checked={selectedServices.size === providerServices.services.length}
+                        checked={providerServices.services.every(s => selectedServices.has(s.service_id))}
                         onCheckedChange={toggleAll}
                       />
                       <span className="text-sm text-muted-foreground">
-                        {selectedServices.size} of {providerServices.services.length} selected
+                        {selectedServices.size} selected · {providerServices.services.length} shown
                       </span>
                     </div>
                     <span className="text-xs text-muted-foreground">
@@ -280,7 +296,7 @@ export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: Im
                               {service.category}
                             </td>
                             <td className="px-3 py-2 text-sm font-medium text-success">
-                              ${(service.rate * (1 + markupPercent / 100)).toFixed(2)}
+                              {formatPrice(service.rate * (1 + markupPercent / 100))}
                             </td>
                             <td className="px-3 py-2 text-xs text-muted-foreground">
                               {service.min.toLocaleString()} / {service.max.toLocaleString()}

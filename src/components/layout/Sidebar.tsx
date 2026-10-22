@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Wallet, Settings, LifeBuoy, Shield, LogOut, Rocket, Sparkles, X, Code2, Send, Layers, Megaphone, Bookmark } from 'lucide-react';
+import { LayoutDashboard, Wallet, Settings, LifeBuoy, Shield, LogOut, Rocket, Sparkles, X, Code2, Send, Layers, Megaphone, Bookmark, ShoppingCart, History } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency, CURRENCIES } from '@/hooks/useCurrency';
 import { cn } from '@/lib/utils';
@@ -12,6 +12,8 @@ const DISPLAY = "Georgia, 'Times New Roman', serif";
 
 const userNavItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+  { icon: ShoppingCart, label: 'Single Order', path: '/single-order' },
+  { icon: History, label: 'Single Order History', path: '/orders' },
   { icon: Rocket, label: 'Full Engagement', path: '/engagement-order', highlight: true },
   { icon: Layers, label: 'Mass Order', path: '/engagement-order?mode=mass' },
   { icon: Sparkles, label: 'Engagement Orders', path: '/engagement-orders' },

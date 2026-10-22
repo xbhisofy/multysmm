@@ -5,3 +5,6 @@
 - Filter order platforms by the URL's ads section using shared manual-platform classification; legacy ads-platform links also select that section so social and ads navigation stay separate.
 - Model combined ads delivery as its own bundle item type and service so one quantity is billed once without relabelling historical separate-service orders.
 - Keep colors in the shared token layers (`src/index.css`, `src/styles/member-experience.css`, `src/pages/smm-home.css`) so one palette drives the whole app; don't add new hardcoded hex accents in components.
+- Keep Single Order on `/single-order` with `/orders` history and use `place-order` for server-priced wallet payment and mapped provider dispatch; never insert orders from the browser.
+- Query provider-backed Single Order services without the persistent engagement cache and invalidate that catalog after admin changes so imports appear immediately without bundles.
+- Use the shared single-order policy for quantity validation and final per-1000 pricing so the displayed charge and server debit agree without double markup.

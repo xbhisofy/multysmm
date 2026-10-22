@@ -1,10 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
+import { singleOrderPrice, singleOrderValidation } from '../_shared/single-order-policy.ts';
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -13,8 +9,8 @@ Deno.serve(async (req) => {
 
   try {
     const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      Deno.env.get("SUPABASE_URL") ?? '',
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ''
     );
 
     const authHeader = req.headers.get("Authorization");
@@ -35,9 +31,10 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { orderData, totalPrice, runs } = body;
+    const { orderData, runs } = body;
+    const isSingleOrder = body.single_order === true;
 
-    if (!orderData || !totalPrice || totalPrice <= 0) {
+    if (!orderData || typeof orderData !== 'object') {
       return new Response(JSON.stringify({ error: "Invalid order data" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -58,7 +55,7 @@ Deno.serve(async (req) => {
           ? Math.min(100, Math.max(0, Number(orderData.variance_percent)))
           : 25,
       peak_hours_enabled: !!orderData.peak_hours_enabled,
-      drip_qty_per_run: orderData.drip_qty_per_run ?? null,
+      drip_quantity_per_run: orderData.drip_quantity_per_run ?? orderData.drip_qty_per_run ?? null,
       drip_interval: orderData.drip_interval ?? null,
       drip_interval_unit:
         orderData.drip_interval_unit === "minutes" ||
@@ -66,7 +63,7 @@ Deno.serve(async (req) => {
         orderData.drip_interval_unit === "days"
           ? orderData.drip_interval_unit
           : "hours",
-      runs_total: orderData.runs_total ?? null,
+      drip_runs: orderData.drip_runs ?? orderData.runs_total ?? null,
     };
 
     // ============ SERVER-SIDE PRICE RECOMPUTATION (anti-tamper) ============
@@ -78,13 +75,22 @@ Deno.serve(async (req) => {
     }
     const { data: svc, error: svcErr } = await supabaseAdmin
       .from("services")
-      .select("id, price, min_quantity, max_quantity, is_active")
+      .select("id, name, provider_id, price, min_quantity, max_quantity, is_active")
       .eq("id", orderInsertData.service_id)
       .maybeSingle();
     if (svcErr || !svc || svc.is_active === false) {
       return new Response(JSON.stringify({ error: "Service unavailable" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+    if (isSingleOrder) {
+      const validation = singleOrderValidation(String(orderInsertData.link || ''), Number(orderData.quantity), svc.min_quantity, svc.max_quantity);
+      if (validation || !svc.provider_id || orderInsertData.is_organic_mode || orderInsertData.is_drip_feed || (Array.isArray(runs) && runs.length > 0)) {
+        return new Response(JSON.stringify({ error: validation || 'Select a provider-backed single-order service without a schedule.' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      orderInsertData.link = String(orderInsertData.link).trim();
     }
     if (svc.min_quantity && qty < svc.min_quantity) {
       return new Response(JSON.stringify({ error: `Minimum quantity is ${svc.min_quantity}` }), {
@@ -96,10 +102,13 @@ Deno.serve(async (req) => {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    const { data: psRow } = await supabaseAdmin
-      .from("platform_settings").select("global_markup_percent").limit(1).maybeSingle();
-    const markupMul = 1 + (Number(psRow?.global_markup_percent ?? 0) / 100);
-    const safeTotalPrice = Math.round((qty / 1000) * Number(svc.price) * markupMul * 10000) / 10000;
+    // services.price already contains the admin's final selling price.
+    const safeTotalPrice = singleOrderPrice(Number(svc.price), qty);
+    if (!Number.isFinite(safeTotalPrice) || safeTotalPrice <= 0) {
+      return new Response(JSON.stringify({ error: 'Service price unavailable' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     // Override any client-supplied price
     orderInsertData.price = safeTotalPrice;
     orderInsertData.quantity = qty;
@@ -177,7 +186,7 @@ Deno.serve(async (req) => {
         p_amount: safeTotalPrice,
         p_order_id: order.id,
         p_engagement_order_id: null,
-        p_description: `Order #${order.order_number} - ${service_name || "Service Order"}`,
+        p_description: `Order #${order.order_number} - ${svc.name || "Service Order"}`,
       }
     );
 

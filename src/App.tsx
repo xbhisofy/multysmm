@@ -18,6 +18,8 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
+import SingleOrder from "./pages/SingleOrder";
+import AdminServices from "./pages/admin/AdminServices";
 import Wallet from "./pages/Wallet";
 import Settings from "./pages/Settings";
 import Support from "./pages/Support";
@@ -113,6 +115,7 @@ const App = () => {
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/orders" element={<Orders />} />
+                    <Route path="/single-order" element={<SingleOrder />} />
                     <Route path="/wallet" element={<Wallet />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/support" element={<Support />} />
@@ -127,7 +130,7 @@ const App = () => {
 
                     {/* Admin — server-verified guard */}
                     <Route path="/admin" element={<AdminGuard><Admin /></AdminGuard>} />
-                    <Route path="/admin/services" element={<NotFound />} />
+                    <Route path="/admin/services" element={<AdminGuard><AdminServices /></AdminGuard>} />
                     <Route path="/admin/users" element={<AdminGuard><AdminUsers /></AdminGuard>} />
                     <Route path="/admin/bundles" element={<AdminGuard><AdminBundles /></AdminGuard>} />
                     <Route path="/admin/adsterra-orders" element={<AdminGuard><AdminManualOrders /></AdminGuard>} />
