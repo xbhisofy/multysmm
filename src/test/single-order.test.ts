@@ -6,6 +6,11 @@ describe('Single Order', () => {
     expect(singleOrderPrice(2, 1500)).toBe(3);
     expect(singleOrderPrice(0.12345, 500)).toBe(0.0617);
   });
+  it('adds a 500% markup over the catalog per-1000 price (6x total)', () => {
+    expect(SINGLE_ORDER_MARKUP_PERCENT).toBe(500);
+    expect(singleOrderMarkedPrice(2)).toBe(12);
+    expect(singleOrderPrice(singleOrderMarkedPrice(2), 1500)).toBe(18);
+  });
   it('requires a link and a whole quantity within the chosen service bounds', () => {
     expect(singleOrderValidation('https://instagram.com/p/example', 500, 500, 10000)).toBeNull();
     expect(singleOrderValidation('', 500, 500, 10000)).not.toBeNull();
