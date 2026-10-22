@@ -448,6 +448,9 @@ interface ServiceFormProps {
 }
 
 function ServiceForm({ formData, setFormData, onSubmit, isLoading, categories, isEdit }: ServiceFormProps) {
+  const [customCategoryMode, setCustomCategoryMode] = useState(
+    Boolean(isEdit && formData.category && !categories.includes(formData.category))
+  );
   return (
     <div className="space-y-4 mt-4">
       <div className="grid grid-cols-2 gap-4">
@@ -462,7 +465,18 @@ function ServiceForm({ formData, setFormData, onSubmit, isLoading, categories, i
         </div>
         <div className="space-y-2">
           <Label>Category</Label>
-          <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+          <Select
+            value={customCategoryMode ? '__custom' : formData.category}
+            onValueChange={(v) => {
+              if (v === '__custom') {
+                setCustomCategoryMode(true);
+                setFormData({ ...formData, category: '' });
+              } else {
+                setCustomCategoryMode(false);
+                setFormData({ ...formData, category: v });
+              }
+            }}
+          >
             <SelectTrigger className="input-glass">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
@@ -470,8 +484,18 @@ function ServiceForm({ formData, setFormData, onSubmit, isLoading, categories, i
               {categories.map((cat) => (
                 <SelectItem key={cat} value={cat}>{cat}</SelectItem>
               ))}
+              <SelectItem value="__custom">+ New custom category…</SelectItem>
             </SelectContent>
           </Select>
+          {customCategoryMode && (
+            <Input
+              placeholder="Type your own category, e.g., YouTube Subscribers"
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="input-glass"
+              autoFocus
+            />
+          )}
         </div>
       </div>
 
