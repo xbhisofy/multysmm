@@ -34,9 +34,28 @@ export function Sidebar({ onClose }: SidebarProps) {
 
   return (
     <div className="member-sidebar h-full w-full overflow-hidden flex flex-col" style={{ background: 'hsl(var(--member-soft))', borderRight: '1px solid hsl(var(--member-line))' }}>
-      {/* Close button (mobile) */}
-      <div className="flex items-center justify-end px-3 pt-2 lg:hidden">
-        <button onClick={onClose} aria-label="Close navigation menu" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ color: '#bbb' }}>
+      {/* Brand header — logo + name (mobile fills the empty top strip) */}
+      <div className="flex items-center justify-between gap-2 px-4 pt-3 pb-2">
+        <Link to="/dashboard" onClick={onClose} className="flex items-center gap-2.5 min-w-0">
+          <span className="w-10 h-10 rounded-xl overflow-hidden shrink-0 bg-white"
+            style={{ border: '1px solid hsl(var(--member-line))', boxShadow: '0 6px 14px -8px hsl(var(--member-green) / 0.5)' }}>
+            <span aria-hidden className="block w-full h-full"
+              style={{ backgroundImage: 'url(/logo.png)', backgroundSize: '260%', backgroundPosition: '51% 39%', backgroundRepeat: 'no-repeat' }} />
+          </span>
+          <span className="min-w-0">
+            <span className="block text-[17px] font-extrabold tracking-tight leading-none" style={{ color: '#0F172A' }}>
+              Multy<span style={{ color: 'hsl(var(--member-green))' }}>SMM</span>
+            </span>
+            <span className="flex items-center gap-1.5 mt-1">
+              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'hsl(var(--member-green))' }} />
+              <span className="text-[8.5px] font-bold uppercase tracking-[0.18em] truncate" style={{ color: 'hsl(var(--member-green-deep))' }}>
+                Real Growth Platform
+              </span>
+            </span>
+          </span>
+        </Link>
+        <button onClick={onClose} aria-label="Close navigation menu"
+          className="w-8 h-8 flex items-center justify-center rounded-lg shrink-0 lg:hidden" style={{ color: '#bbb' }}>
           <X className="w-4 h-4" />
         </button>
       </div>
