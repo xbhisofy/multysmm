@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Add a simple Single Order page with service search, platform/category filters, price, wallet payment and separate history.
+- [ ] Restore admin service import and ensure imported services refresh immediately on the Single Order page.
+- [ ] Verify Single Order validation, placement and provider delivery; preserve existing engagement/ads flows.
+
 - [ ] Separate Ads Monetization platforms from normal social engagement ordering and verify both entry points.
 
 - [x] Deploy the Monetag platform icon crash fix to the VPS; verified live asset matches the VPS build and login opens without errors (authenticated order-page check unavailable).
