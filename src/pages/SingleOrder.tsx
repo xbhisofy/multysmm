@@ -12,7 +12,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSingleOrderServices } from '@/hooks/useSingleOrderServices';
 import { supabase } from '@/integrations/supabase/client';
-import { singleOrderPrice, singleOrderValidation, servicePlatform } from '../../supabase/functions/_shared/single-order-policy';
+import { singleOrderPrice, singleOrderMarkedPrice, singleOrderValidation, servicePlatform } from '../../supabase/functions/_shared/single-order-policy';
 import { toast } from 'sonner';
 
 const platforms = [
@@ -52,7 +52,7 @@ export default function SingleOrder() {
   const categoryServices = filtered.filter(service => service.category === activeCategory);
   const service = categoryServices.find(item => item.id === serviceId) || categoryServices[0];
   const qty = Number(quantity);
-  const total = service && Number.isSafeInteger(qty) && qty > 0 ? singleOrderPrice(service.price, qty) : 0;
+  const total = service && Number.isSafeInteger(qty) && qty > 0 ? singleOrderPrice(singleOrderMarkedPrice(service.price), qty) : 0;
   const insufficientBalance = Boolean(wallet && total > Number(wallet.balance));
 
   useEffect(() => {
@@ -127,7 +127,7 @@ export default function SingleOrder() {
             <div className="relative"><Search className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" /><Input aria-label="Search service" placeholder="Search by ID, name or category..." value={search} onChange={e => setSearch(e.target.value)} className="h-14 rounded-lg pl-12" disabled={placeOrder.isPending} /></div>
             {isLoading ? <div className="flex items-center gap-2 py-6 text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin" />Loading services…</div> : servicesError ? <div role="alert" className="flex flex-wrap items-center gap-3 text-destructive">Could not load services.<Button type="button" variant="outline" onClick={() => refetch()}><RefreshCw />Retry</Button></div> : categories.length === 0 ? <div className="space-y-3 py-4"><p className="text-muted-foreground">{search ? 'No matching services.' : 'No single-order services available yet.'}</p>{isAdmin && <Button variant="outline" asChild><Link to="/admin/services">Import Services</Link></Button>}</div> : <>
               <div className="space-y-2"><Label htmlFor="single-category">Category</Label><Select value={activeCategory} disabled={placeOrder.isPending} onValueChange={value => { setCategory(value); setServiceId(''); }}><SelectTrigger id="single-category" className="h-auto min-h-14 rounded-lg text-left [&>span]:whitespace-normal"><SelectValue placeholder="Choose category" /></SelectTrigger><SelectContent>{categories.map(item => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent></Select></div>
-              <div className="space-y-2"><Label htmlFor="single-service">Service</Label><Select value={service?.id || ''} disabled={placeOrder.isPending} onValueChange={setServiceId}><SelectTrigger id="single-service" className="h-auto min-h-14 rounded-lg py-3 text-left [&>span]:whitespace-normal"><SelectValue placeholder="Choose service" /></SelectTrigger><SelectContent className="max-w-[calc(100vw-2rem)]">{categoryServices.map(item => <SelectItem key={item.id} value={item.id} className="py-3"><span className="break-words">{item.provider_service_id} · {item.name} — {formatPrice(item.price)} / 1,000</span></SelectItem>)}</SelectContent></Select></div>
+              <div className="space-y-2"><Label htmlFor="single-service">Service</Label><Select value={service?.id || ''} disabled={placeOrder.isPending} onValueChange={setServiceId}><SelectTrigger id="single-service" className="h-auto min-h-14 rounded-lg py-3 text-left [&>span]:whitespace-normal"><SelectValue placeholder="Choose service" /></SelectTrigger><SelectContent className="max-w-[calc(100vw-2rem)]">{categoryServices.map(item => <SelectItem key={item.id} value={item.id} className="py-3"><span className="break-words">{item.provider_service_id} · {item.name} — {formatPrice(singleOrderMarkedPrice(item.price))} / 1,000</span></SelectItem>)}</SelectContent></Select></div>
             </>}
           </section>
 
