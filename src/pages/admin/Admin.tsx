@@ -212,7 +212,7 @@ export default function Admin() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
           <Button variant="outline" asChild className="h-auto justify-start rounded-lg p-5">
-            <Link to="/admin/services"><DownloadServicesIcon />Single Order Services</Link>
+            <Link to="/admin/services"><Package />Single Order Services</Link>
           </Button>
 
           <Link to="/admin/bundles">
