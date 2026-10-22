@@ -177,7 +177,7 @@ export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: Im
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 flex-1 overflow-hidden flex flex-col">
+        <div className="space-y-4 flex-1 min-h-0 overflow-hidden flex flex-col">
           {/* Provider & Markup Selection */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -231,7 +231,7 @@ export function ImportServicesDialog({ open, onOpenChange, onImportSuccess }: Im
 
           {/* Services List */}
           {selectedProvider && (
-            <div className="flex-1 overflow-hidden flex flex-col">
+            <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
               {fetchError ? <p role="alert" className="py-4 text-sm text-destructive">{fetchError.message}</p> : loadingServices || isFetching ? (
                 <div className="flex-1 flex items-center justify-center">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />

@@ -1,6 +1,15 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 import { singleOrderPrice, singleOrderValidation } from '../_shared/single-order-policy.ts';
+import { z } from 'npm:zod@3';
+
+const SingleOrderSchema = z.object({
+  service_id: z.string().uuid(),
+  link: z.string().trim().min(1).max(2048),
+  quantity: z.number().int().positive().safe(),
+  is_drip_feed: z.literal(false).optional(),
+  is_organic_mode: z.literal(false).optional(),
+});
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -40,10 +49,14 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    if (isSingleOrder && !SingleOrderSchema.safeParse(orderData).success) {
+      return new Response(JSON.stringify({ error: 'Select a service, enter a link and a whole-number quantity.' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     // ============ ALLOWLIST CLIENT INPUT (anti field-injection) ============
     // Never spread client orderData into a service-role insert. Pick only safe fields.
-    const service_name: string | undefined = orderData.service_name;
     const orderInsertData: Record<string, unknown> = {
       service_id: orderData.service_id,
       link: typeof orderData.link === "string" ? orderData.link : null,

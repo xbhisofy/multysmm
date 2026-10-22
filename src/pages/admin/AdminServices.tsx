@@ -237,6 +237,7 @@ export default function AdminServices() {
 
   // INSTANT RENDER - No blocking loader
 
+  if (authLoading) return <DashboardLayout><Loader2 className="h-6 w-6 animate-spin text-primary" /></DashboardLayout>;
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
