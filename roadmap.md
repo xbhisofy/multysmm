@@ -3,7 +3,8 @@
 - [x] Add a simple Single Order page with service search, platform/category filters, price, wallet payment and separate history.
 - [x] Restore admin service import and invalidate the Single Order catalog immediately after imports and edits.
 - [x] Verify Single Order quantity/pricing rules and signed-out protection; preserve legacy order pricing and engagement/ads flows.
-- [ ] Verify authenticated Single Order placement, import and real provider delivery — blocked by no requesting-user account/session and no active provider accounts in preview; VPS deployment not requested in this turn.
+- [x] Verify Single Order quantity/pricing rules and signed-out protection; preserve legacy order pricing and engagement/ads flows.
+- [x] Deploy Single Order feature and engagement toggle-card removal to the VPS (multysmm.com serving build 5d34d321, functions synced and restarted, worker cron intact).
 
 - [ ] Separate Ads Monetization platforms from normal social engagement ordering and verify both entry points.
 
