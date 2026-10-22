@@ -40,6 +40,13 @@ import { ImportServicesDialog } from '@/components/admin/ImportServicesDialog';
 export default function AdminServices() {
   const { isAdmin, isLoading: authLoading } = useAuth();
   const queryClient = useQueryClient();
+  const refreshCatalog = () => {
+    try { localStorage.removeItem('whopautopilot_services_cache_v2'); } catch { /* storage unavailable */ }
+    queryClient.invalidateQueries({ queryKey: ['single-order-services'] });
+    queryClient.invalidateQueries({ queryKey: ['services'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-all-services'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-services-active'] });
+  };
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddService, setShowAddService] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
@@ -96,7 +103,7 @@ export default function AdminServices() {
       toast.success('Service added successfully!');
       setShowAddService(false);
       resetForm();
-      queryClient.invalidateQueries({ queryKey: ['admin-all-services'] });
+      refreshCatalog();
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -130,7 +137,7 @@ export default function AdminServices() {
       toast.success('Service updated successfully!');
       setEditingService(null);
       resetForm();
-      queryClient.invalidateQueries({ queryKey: ['admin-all-services'] });
+      refreshCatalog();
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -167,7 +174,7 @@ export default function AdminServices() {
     },
     onSuccess: () => {
       toast.success('Service deleted successfully!');
-      queryClient.invalidateQueries({ queryKey: ['admin-all-services'] });
+      refreshCatalog();
       queryClient.invalidateQueries({ queryKey: ['admin-services-active'] });
       queryClient.invalidateQueries({ queryKey: ['admin-bundles'] });
     },
@@ -186,7 +193,7 @@ export default function AdminServices() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-all-services'] });
+      refreshCatalog();
     },
   });
 
@@ -218,7 +225,7 @@ export default function AdminServices() {
       speed: service.speed || 'medium',
       quality: service.quality || 'standard',
       drip_feed_enabled: service.drip_feed_enabled || false,
-      is_active: service.is_active || true,
+      is_active: service.is_active ?? true,
     });
     setEditingService(service);
   };
@@ -230,6 +237,7 @@ export default function AdminServices() {
 
   // INSTANT RENDER - No blocking loader
 
+  if (authLoading) return <DashboardLayout><Loader2 className="h-6 w-6 animate-spin text-primary" /></DashboardLayout>;
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -240,7 +248,7 @@ export default function AdminServices() {
     <DashboardLayout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link to="/admin" className="p-2 hover:bg-secondary rounded-lg transition-colors">
               <ArrowLeft className="h-5 w-5" />
@@ -250,7 +258,7 @@ export default function AdminServices() {
               <p className="text-muted-foreground">Add, edit and manage your services</p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
               className="gap-2"
@@ -264,7 +272,7 @@ export default function AdminServices() {
                   if (error) throw error;
                   if (data?.error) throw new Error(data.error);
                   toast.success(`${data.updated} service prices synced from providers!`);
-                  queryClient.invalidateQueries({ queryKey: ['admin-all-services'] });
+                  refreshCatalog();
                 } catch (err: any) {
                   toast.error(err.message || 'Sync failed');
                 } finally {
@@ -411,7 +419,7 @@ export default function AdminServices() {
         <ImportServicesDialog
           open={showImportDialog}
           onOpenChange={setShowImportDialog}
-          onImportSuccess={() => queryClient.invalidateQueries({ queryKey: ['admin-all-services'] })}
+          onImportSuccess={refreshCatalog}
         />
       </div>
     </DashboardLayout>

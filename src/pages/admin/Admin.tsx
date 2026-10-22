@@ -211,6 +211,10 @@ export default function Admin() {
         {/* Quick Access Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
+          <Button variant="outline" asChild className="h-auto justify-start rounded-lg p-5">
+            <Link to="/admin/services"><Package />Single Order Services</Link>
+          </Button>
+
           <Link to="/admin/bundles">
             <Card className="glass-card h-full hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all cursor-pointer group border-2 border-primary/20">
               <CardContent className="p-5">
