@@ -6,7 +6,7 @@ import {
   Sparkles, TrendingUp, Twitter, X, Youtube, Zap,
 } from 'lucide-react';
 
-import heroImage from '@/assets/smm-hero.png';
+import heroImage from '@/assets/smm-hero.webp';
 import { PageMeta } from '@/components/seo/PageMeta';
 import './smm-home.css';
 
