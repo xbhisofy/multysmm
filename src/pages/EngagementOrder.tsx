@@ -42,8 +42,7 @@ import {
   curveToSchedule,
   calculateQuantitiesFromCurve,
 } from "@/lib/curve-to-schedule";
-import { Loader2, Rocket, Link as LinkIcon, Wallet, RefreshCw, Brain, Percent, Eye, Heart, MessageCircle, Bookmark, Share2, AlertTriangle } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+import { Loader2, Rocket, Link as LinkIcon, Wallet, RefreshCw, Eye, Heart, MessageCircle, Bookmark, Share2, AlertTriangle } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { FullOrganicConfig } from "@/lib/organic-algorithm";
 
@@ -1234,119 +1233,8 @@ export default function EngagementOrder() {
             </div>
           </div>
 
-          <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-2.5 px-3 sm:px-4 pb-3">
-            <button
-              type="button"
-              onClick={() => {
-                const val = !isOrganicMode;
-                setIsOrganicMode(val);
-                if (val) setIsAutoRatios(false);
-              }}
-              className={`group relative text-left rounded-xl p-3.5 sm:p-4 transition-all border ${
-                isOrganicMode
-                  ? 'border-primary/40 bg-primary/10 shadow-sm'
-                  : 'border-border bg-background hover:border-primary/40 hover:bg-primary/5'
-              }`}
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    isOrganicMode ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'
-                  }`}>
-                    <Brain className="h-4 w-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-sm sm:text-base font-medium text-foreground leading-tight">
-                      Natural Delivery
-                    </h3>
-                    <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
-                      Safe speed pe split delivery
-                    </p>
-                  </div>
-                </div>
-                <Switch
-                  checked={isOrganicMode}
-                  onCheckedChange={(val) => {
-                    setIsOrganicMode(val);
-                    if (val) setIsAutoRatios(false);
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  className="data-[state=checked]:bg-accent shrink-0"
-                />
-              </div>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {['Drip speed', 'Random variance', 'Algo-safe'].map((t) => (
-                  <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </button>
+          {/* Mode toggles removed — delivery stays natural by default */}
 
-            <button
-              type="button"
-              onClick={() => {
-                const val = !isAutoRatios;
-                setIsAutoRatios(val);
-                if (val) setIsOrganicMode(false);
-              }}
-              className={`group relative text-left rounded-xl p-3.5 sm:p-4 transition-all border ${
-                isAutoRatios
-                  ? 'border-accent/40 bg-accent/10 shadow-sm'
-                  : 'border-border bg-background hover:border-primary/30 hover:bg-muted/40'
-              }`}
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    isAutoRatios ? 'bg-accent text-accent-foreground' : 'bg-accent/10 text-accent'
-                  }`}>
-                    <Percent className="h-4 w-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-sm sm:text-base font-medium text-foreground leading-tight">
-                      Auto Mix
-                    </h3>
-                    <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
-                      Views, likes, comments ka balance
-                    </p>
-                  </div>
-                </div>
-                <Switch
-                  checked={isAutoRatios}
-                  onCheckedChange={(val) => {
-                    setIsAutoRatios(val);
-                    if (val) setIsOrganicMode(false);
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  className="data-[state=checked]:bg-accent shrink-0"
-                />
-              </div>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {['Best ratios', 'One-tap', 'Balanced'].map((t) => (
-                  <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-muted/70 text-muted-foreground border border-border/60">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </button>
-          </div>
-
-          <div className="relative px-4 sm:px-5 py-2.5 border-t border-border/70 bg-muted/40 flex items-center justify-between gap-3">
-            <p className="text-xs text-muted-foreground truncate">
-              One link, all engagement — completely natural.
-            </p>
-            <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full border ${
-              isOrganicMode
-                ? 'bg-primary/10 text-primary border-primary/30'
-                : isAutoRatios
-                ? 'bg-primary/10 text-primary border-primary/30'
-                : 'bg-background text-muted-foreground border-border'
-            }`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${isOrganicMode || isAutoRatios ? 'bg-primary' : 'bg-muted-foreground/50'}`} />
-              {isOrganicMode ? 'Natural Delivery' : isAutoRatios ? 'Auto Mix' : 'Manual mode'}
-            </span>
-          </div>
         </div>
 
 
