@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { singleOrderPrice, singleOrderValidation, servicePlatform } from '../../supabase/functions/_shared/single-order-policy';
+import { singleOrderPrice, singleOrderMarkedPrice, singleOrderValidation, servicePlatform, SINGLE_ORDER_MARKUP_PERCENT } from '../../supabase/functions/_shared/single-order-policy';
 
 describe('Single Order', () => {
   it('charges one quantity at the final per-1000 service price without extra markup', () => {
