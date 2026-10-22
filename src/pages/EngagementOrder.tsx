@@ -42,8 +42,7 @@ import {
   curveToSchedule,
   calculateQuantitiesFromCurve,
 } from "@/lib/curve-to-schedule";
-import { Loader2, Rocket, Link as LinkIcon, Wallet, RefreshCw, Brain, Percent, Eye, Heart, MessageCircle, Bookmark, Share2, AlertTriangle } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+import { Loader2, Rocket, Link as LinkIcon, Wallet, RefreshCw, Eye, Heart, MessageCircle, Bookmark, Share2, AlertTriangle } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { FullOrganicConfig } from "@/lib/organic-algorithm";
 
