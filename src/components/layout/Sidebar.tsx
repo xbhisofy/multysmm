@@ -37,11 +37,10 @@ export function Sidebar({ onClose }: SidebarProps) {
       {/* Brand header — logo + name (mobile fills the empty top strip) */}
       <div className="flex items-center justify-between gap-2 px-4 pt-3 pb-2">
         <Link to="/dashboard" onClick={onClose} className="flex items-center gap-2.5 min-w-0">
-          <span className="w-10 h-10 rounded-xl overflow-hidden shrink-0 bg-white"
-            style={{ border: '1px solid hsl(var(--member-line))', boxShadow: '0 6px 14px -8px hsl(var(--member-green) / 0.5)' }}>
-            <span aria-hidden className="block w-full h-full"
-              style={{ backgroundImage: 'url(/logo.png)', backgroundSize: '260%', backgroundPosition: '51% 39%', backgroundRepeat: 'no-repeat' }} />
-          </span>
+            <span className="w-11 h-11 rounded-xl overflow-hidden shrink-0 bg-white flex items-center justify-center p-1"
+              style={{ border: '1px solid hsl(var(--member-line))', boxShadow: '0 6px 14px -8px hsl(var(--member-green) / 0.5)' }}>
+              <img src="/logo-mark.png" alt="MultySMM logo" className="w-full h-full object-contain" />
+            </span>
           <span className="min-w-0">
             <span className="block text-[17px] font-extrabold tracking-tight leading-none" style={{ color: '#0F172A' }}>
               Multy<span style={{ color: 'hsl(var(--member-green))' }}>SMM</span>
