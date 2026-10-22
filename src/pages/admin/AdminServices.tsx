@@ -497,11 +497,11 @@ function ServiceForm({ formData, setFormData, onSubmit, isLoading, categories, i
 
       <div className="grid grid-cols-3 gap-4">
         <div className="space-y-2">
-          <Label>Price per 1K</Label>
+          <Label>Price per 1K (₹ INR)</Label>
           <Input
             type="number"
             step="0.01"
-            placeholder="0.50"
+            placeholder="1.50"
             value={formData.price}
             onChange={(e) => setFormData({ ...formData, price: e.target.value })}
             className="input-glass"

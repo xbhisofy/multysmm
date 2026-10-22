@@ -23,7 +23,8 @@ interface ProviderService {
 // Transform a provider service to our format
 function transformService(s: ProviderService, provider_id: string, markup_percent: number, categoryOverride?: string) {
   const baseRate = parseFloat(s.rate) || 0
-  const markedUpRate = baseRate * (1 + markup_percent / 100)
+  // Provider rates arrive in USD; the catalog stores INR per 1k so admins see and edit rupee prices.
+  const markedUpRate = baseRate * (1 + markup_percent / 100) * 83.5
 
   let speed = 'medium'
   const nameLower = s.name.toLowerCase()

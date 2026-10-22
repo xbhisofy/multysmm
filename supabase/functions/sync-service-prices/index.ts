@@ -216,8 +216,8 @@ Deno.serve(async (req) => {
       if (highestRate > 0) {
         const oldPrice = currentPriceMap[serviceId]?.price ?? 0;
 
-        // Store RAW provider cost (no markup). Frontend applies markup dynamically.
-        const rawCost = Number(highestRate.toFixed(5));
+        // Store provider cost converted to INR per 1k (catalog stores rupee prices).
+        const rawCost = Number((highestRate * 83.5).toFixed(5));
 
         console.log(`[UPDATE] service=${serviceId} name="${currentPriceMap[serviceId]?.name}" rawCost=${rawCost} from=${highestSource}`);
 

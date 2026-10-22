@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
-import { singleOrderPrice, singleOrderMarkedPrice, singleOrderValidation } from '../_shared/single-order-policy.ts';
+import { singleOrderPrice, singleOrderMarkedPrice, singleOrderValidation, INR_PER_USD } from '../_shared/single-order-policy.ts';
 import { z } from 'npm:zod@3';
 
 const SingleOrderSchema = z.object({
@@ -118,7 +118,8 @@ Deno.serve(async (req) => {
     // Single Order uses the catalog per-1000 price plus the shared markup; preserve legacy ordering behavior.
     let pricePerThousand = Number(svc.price);
     if (isSingleOrder) {
-      pricePerThousand = singleOrderMarkedPrice(pricePerThousand);
+      // Catalog price is INR per 1k; wallet settles in USD.
+      pricePerThousand = singleOrderMarkedPrice(pricePerThousand) / INR_PER_USD;
     } else {
       const { data: settings } = await supabaseAdmin.from('platform_settings')
         .select('global_markup_percent').limit(1).maybeSingle();
