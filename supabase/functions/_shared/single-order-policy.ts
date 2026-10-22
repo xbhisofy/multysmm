@@ -24,3 +24,10 @@ export function servicePlatform(category: string, name: string): string {
   if (text.includes('twitter') || text.includes('twitter/x')) return 'twitter';
   return 'other';
 }
+// Single Order markup: 500% extra over the catalog per-1000 price.
+// Change this one number to adjust every single-order price everywhere.
+export const SINGLE_ORDER_MARKUP_PERCENT = 500;
+
+export function singleOrderMarkedPrice(pricePerThousand: number): number {
+  return pricePerThousand * (1 + SINGLE_ORDER_MARKUP_PERCENT / 100);
+}
