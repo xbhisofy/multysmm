@@ -8,7 +8,6 @@ import { isAdsOrderSection } from '@/lib/platform-options';
 interface SidebarProps { onClose?: () => void; }
 
 const GRADIENT = 'var(--member-action-gradient)';
-const DISPLAY = "Georgia, 'Times New Roman', serif";
 
 const userNavItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
