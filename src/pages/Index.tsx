@@ -6,7 +6,7 @@ import {
   Sparkles, TrendingUp, Twitter, X, Youtube, Zap,
 } from 'lucide-react';
 
-import heroImage from '@/assets/smm-hero.png';
+import heroImage from '@/assets/smm-hero.webp';
 import { PageMeta } from '@/components/seo/PageMeta';
 import './smm-home.css';
 
@@ -170,6 +170,9 @@ const Index = () => {
             alt="Social media growth illustration"
             width={1024}
             height={1024}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="smm-hero-img mt-6 w-[min(86%,560px)]"
           />
         </div>
