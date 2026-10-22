@@ -115,8 +115,14 @@ Deno.serve(async (req) => {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    // services.price already contains the admin's final selling price.
-    const safeTotalPrice = singleOrderPrice(Number(svc.price), qty);
+    // Single Order uses the final catalog price; preserve legacy ordering behavior.
+    let pricePerThousand = Number(svc.price);
+    if (!isSingleOrder) {
+      const { data: settings } = await supabaseAdmin.from('platform_settings')
+        .select('global_markup_percent').limit(1).maybeSingle();
+      pricePerThousand *= 1 + Number(settings?.global_markup_percent ?? 0) / 100;
+    }
+    const safeTotalPrice = singleOrderPrice(pricePerThousand, qty);
     if (!Number.isFinite(safeTotalPrice) || safeTotalPrice <= 0) {
       return new Response(JSON.stringify({ error: 'Service price unavailable' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
