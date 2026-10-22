@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Wallet, Settings, LifeBuoy, Shield, LogOut, Rocket, Sparkles, X, Code2, Send, Layers, Megaphone, Bookmark, ShoppingCart, History } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useCurrency, CURRENCIES } from '@/hooks/useCurrency';
+import { useCurrency } from '@/hooks/useCurrency';
 import { cn } from '@/lib/utils';
 import { isAdsOrderSection } from '@/lib/platform-options';
 
@@ -29,7 +29,7 @@ const adminNavItems = [{ icon: Shield, label: 'Admin Panel', path: '/admin' }];
 export function Sidebar({ onClose }: SidebarProps) {
   const location = useLocation();
   const { isAdmin, signOut, wallet, profile } = useAuth();
-  const { formatPrice, currency, currencyInfo, setCurrency } = useCurrency();
+  const { formatPrice, currency } = useCurrency();
 
   return (
     <div className="member-sidebar h-full w-full overflow-hidden flex flex-col" style={{ background: 'hsl(var(--member-soft))', borderRight: '1px solid hsl(var(--member-line))' }}>
@@ -179,27 +179,7 @@ export function Sidebar({ onClose }: SidebarProps) {
         )}
       </nav>
 
-      {/* Currency */}
-      <div className="px-3 pb-2">
-        <label className="relative w-full flex items-center justify-between gap-2 px-4 py-3 rounded-2xl text-[13px] font-semibold cursor-pointer"
-          style={{ color: '#334155', background: '#FFFFFF', border: '1px solid hsl(var(--member-line))', boxShadow: '0 2px 8px -4px rgba(15,23,42,.08)' }}>
-          <div className="flex items-center gap-2.5">
-            <span className="text-base">{currencyInfo.flag}</span>
-            <span className="uppercase tracking-wider">{currency}</span>
-          </div>
-          <span className="text-[11px] font-bold" style={{ color: 'hsl(var(--member-green))' }}>{currencyInfo.symbol}</span>
-          <select
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value as any)}
-            className="absolute inset-0 opacity-0 cursor-pointer"
-            aria-label="Select currency"
-          >
-            {CURRENCIES.map(c => (
-              <option key={c.code} value={c.code}>{c.flag} {c.code} — {c.name}</option>
-            ))}
-          </select>
-        </label>
-      </div>
+      {/* Currency selector removed — pricing is INR-only now */}
 
       {/* Telegram card */}
       <div className="px-3 pb-2">
