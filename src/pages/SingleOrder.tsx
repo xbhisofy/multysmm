@@ -12,7 +12,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSingleOrderServices } from '@/hooks/useSingleOrderServices';
 import { supabase } from '@/integrations/supabase/client';
-import { singleOrderPrice, singleOrderMarkedPrice, singleOrderValidation, servicePlatform } from '../../supabase/functions/_shared/single-order-policy';
+import { singleOrderPrice, singleOrderMarkedPrice, singleOrderValidation, servicePlatform, INR_PER_USD } from '../../supabase/functions/_shared/single-order-policy';
+
+const formatINR = (n: number) => `₹${n.toFixed(2)}`;
 import { toast } from 'sonner';
 
 const platforms = [
@@ -53,7 +55,7 @@ export default function SingleOrder() {
   const service = categoryServices.find(item => item.id === serviceId) || categoryServices[0];
   const qty = Number(quantity);
   const total = service && Number.isSafeInteger(qty) && qty > 0 ? singleOrderPrice(singleOrderMarkedPrice(service.price), qty) : 0;
-  const insufficientBalance = Boolean(wallet && total > Number(wallet.balance));
+  const insufficientBalance = Boolean(wallet && total / INR_PER_USD > Number(wallet.balance));
 
   useEffect(() => {
     setQuantity(service ? String(service.min_quantity) : '');
@@ -127,7 +129,7 @@ export default function SingleOrder() {
             <div className="relative"><Search className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" /><Input aria-label="Search service" placeholder="Search by ID, name or category..." value={search} onChange={e => setSearch(e.target.value)} className="h-14 rounded-lg pl-12" disabled={placeOrder.isPending} /></div>
             {isLoading ? <div className="flex items-center gap-2 py-6 text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin" />Loading services…</div> : servicesError ? <div role="alert" className="flex flex-wrap items-center gap-3 text-destructive">Could not load services.<Button type="button" variant="outline" onClick={() => refetch()}><RefreshCw />Retry</Button></div> : categories.length === 0 ? <div className="space-y-3 py-4"><p className="text-muted-foreground">{search ? 'No matching services.' : 'No single-order services available yet.'}</p>{isAdmin && <Button variant="outline" asChild><Link to="/admin/services">Import Services</Link></Button>}</div> : <>
               <div className="space-y-2"><Label htmlFor="single-category">Category</Label><Select value={activeCategory} disabled={placeOrder.isPending} onValueChange={value => { setCategory(value); setServiceId(''); }}><SelectTrigger id="single-category" className="h-auto min-h-14 rounded-lg text-left [&>span]:whitespace-normal"><SelectValue placeholder="Choose category" /></SelectTrigger><SelectContent>{categories.map(item => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent></Select></div>
-              <div className="space-y-2"><Label htmlFor="single-service">Service</Label><Select value={service?.id || ''} disabled={placeOrder.isPending} onValueChange={setServiceId}><SelectTrigger id="single-service" className="h-auto min-h-14 rounded-lg py-3 text-left [&>span]:whitespace-normal"><SelectValue placeholder="Choose service" /></SelectTrigger><SelectContent className="max-w-[calc(100vw-2rem)]">{categoryServices.map(item => <SelectItem key={item.id} value={item.id} className="py-3"><span className="break-words">{item.provider_service_id} · {item.name} — {formatPrice(singleOrderMarkedPrice(item.price))} / 1,000</span></SelectItem>)}</SelectContent></Select></div>
+              <div className="space-y-2"><Label htmlFor="single-service">Service</Label><Select value={service?.id || ''} disabled={placeOrder.isPending} onValueChange={setServiceId}><SelectTrigger id="single-service" className="h-auto min-h-14 rounded-lg py-3 text-left [&>span]:whitespace-normal"><SelectValue placeholder="Choose service" /></SelectTrigger><SelectContent className="max-w-[calc(100vw-2rem)]">{categoryServices.map(item => <SelectItem key={item.id} value={item.id} className="py-3"><span className="break-words">{item.provider_service_id} · {item.name} — {formatINR(singleOrderMarkedPrice(item.price))} / 1,000</span></SelectItem>)}</SelectContent></Select></div>
             </>}
           </section>
 
@@ -141,7 +143,7 @@ export default function SingleOrder() {
 
           {(formError || insufficientBalance) && <div role="alert" className="flex items-start gap-2 px-4 text-sm font-semibold text-destructive"><AlertCircle className="h-5 w-5 shrink-0" /><span>{formError || 'Insufficient balance.'} {insufficientBalance && <Link to="/wallet" className="underline">Add funds</Link>}</span></div>}
           <footer className="flex flex-wrap items-center justify-between gap-4 border-t border-border bg-secondary px-4 py-5 sm:px-6">
-            <div><p className="text-xs font-semibold text-muted-foreground">Total Amount</p><p className="text-2xl font-extrabold text-primary">{formatPrice(total)}</p><p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground"><Wallet className="h-3 w-3" />Balance: {formatPrice(Number(wallet?.balance || 0))}</p></div>
+            <div><p className="text-xs font-semibold text-muted-foreground">Total Amount</p><p className="text-2xl font-extrabold text-primary">{formatINR(total)}</p><p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground"><Wallet className="h-3 w-3" />Balance: {formatPrice(Number(wallet?.balance || 0))}</p></div>
             <Button type="submit" className="h-12 rounded-lg px-6" disabled={!service || !wallet || placeOrder.isPending || insufficientBalance}>{placeOrder.isPending ? <Loader2 className="animate-spin" /> : <ShoppingCart />}{placeOrder.isPending ? 'Placing Order…' : 'Place Order'}</Button>
           </footer>
         </form>
