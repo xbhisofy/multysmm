@@ -8,7 +8,6 @@ import { isAdsOrderSection } from '@/lib/platform-options';
 interface SidebarProps { onClose?: () => void; }
 
 const GRADIENT = 'var(--member-action-gradient)';
-const DISPLAY = "Georgia, 'Times New Roman', serif";
 
 const userNavItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
@@ -59,62 +58,52 @@ export function Sidebar({ onClose }: SidebarProps) {
         </button>
       </div>
 
-      {/* Mission Control Card — user + wallet unified */}
+      {/* User + Wallet cards (OrganicSMM-style soft green) */}
       {profile && (
-        <div className="mx-3 sm:mx-4 mb-4 mt-3 lg:mt-4 relative rounded-2xl overflow-hidden bg-white"
-          style={{
-            border: '1px solid hsl(var(--member-line))',
-            boxShadow: '0 10px 28px -14px hsl(var(--member-green) / 0.28), 0 1px 0 rgba(255,255,255,.6) inset',
-          }}>
-          {/* subtle top gradient hairline */}
-          <div aria-hidden className="absolute top-0 inset-x-0 h-[3px]" style={{ background: GRADIENT }} />
-
-          {/* Identity row */}
-          <div className="relative px-4 pt-4 pb-3 flex items-center gap-3">
-            <div className="relative shrink-0">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-[13px] font-bold text-primary-foreground"
-                style={{ background: GRADIENT }}>
-                {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || 'U'}
-              </div>
-              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white" style={{ background: 'hsl(var(--member-green))' }} />
+        <div className="mx-3 sm:mx-4 mb-4 mt-2 space-y-2.5">
+          {/* User card */}
+          <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3"
+            style={{
+              background: 'hsl(var(--member-green) / 0.09)',
+              border: '1px solid hsl(var(--member-green) / 0.16)',
+            }}>
+            <div className="w-11 h-11 rounded-full flex items-center justify-center text-[14px] font-extrabold text-primary-foreground shrink-0"
+              style={{ background: GRADIENT, boxShadow: '0 8px 16px -8px hsl(var(--member-green) / 0.55)' }}>
+              {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || 'U'}
             </div>
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <p className="text-[13px] font-semibold truncate leading-tight" style={{ color: '#0F172A' }}>
-                  {profile.full_name || 'User'}
-                </p>
-                <span className="text-[8px] font-bold px-1.5 py-[2px] rounded tracking-wider text-primary-foreground"
-                  style={{ background: GRADIENT }}>PRO</span>
-              </div>
-              <p className="text-[10.5px] truncate mt-0.5" style={{ color: '#64748B' }}>{profile.email}</p>
+              <p className="text-[14px] font-bold truncate leading-tight" style={{ color: '#0F172A' }}>
+                {profile.full_name || 'User'}
+              </p>
+              <p className="text-[11px] truncate mt-0.5" style={{ color: '#64748B' }}>{profile.email}</p>
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="mx-4 h-px" style={{ background: 'hsl(var(--member-line))' }} />
-
-          {/* Wallet section */}
-          <div className="relative px-4 pt-3 pb-4">
-            <div className="flex items-end justify-between mb-3">
-              <div className="min-w-0">
-                <p className="text-[9px] font-semibold uppercase tracking-[0.18em]" style={{ color: '#64748B' }}>
-                  Available Balance
-                </p>
-                <p className="text-[24px] font-extrabold leading-none mt-1.5 tracking-tight truncate"
-                  style={{ color: '#0F172A', fontFamily: DISPLAY }}>
-                  {formatPrice(wallet?.balance || 0)}
-                </p>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 pb-0.5 px-2 py-1 rounded-md" style={{ background: 'hsl(var(--member-green) / 0.1)' }}>
-                <Wallet className="w-3 h-3" style={{ color: 'hsl(var(--member-green-deep))' }} />
-                <span className="text-[9px] font-bold" style={{ color: 'hsl(var(--member-green-deep))' }}>{currency}</span>
-              </div>
+          {/* Wallet card */}
+          <div className="rounded-2xl px-4 pt-3.5 pb-4"
+            style={{
+              background: 'hsl(var(--member-green) / 0.09)',
+              border: '1px solid hsl(var(--member-green) / 0.16)',
+            }}>
+            <div className="flex items-center justify-between mb-1.5">
+              <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: 'hsl(var(--member-green-deep))' }}>
+                <Wallet className="w-3.5 h-3.5" />
+                Wallet Balance
+              </p>
+              <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-white"
+                style={{ color: 'hsl(var(--member-green-deep))', border: '1px solid hsl(var(--member-green) / 0.2)' }}>
+                {currency}
+              </span>
             </div>
+            <p className="text-[26px] font-extrabold leading-none tracking-tight truncate mb-3.5"
+              style={{ color: '#0F172A' }}>
+              {formatPrice(wallet?.balance || 0)}
+            </p>
             <Link to="/wallet" onClick={onClose}
-              className="group flex items-center justify-center gap-2 w-full h-10 rounded-xl text-[12.5px] font-semibold text-primary-foreground transition-all active:scale-[.98]"
-              style={{ background: GRADIENT, boxShadow: '0 10px 22px -8px hsl(var(--member-green) / 0.5)' }}>
+              className="flex items-center justify-center gap-2 w-full h-11 rounded-full text-[13.5px] font-bold text-primary-foreground transition-all active:scale-[.98]"
+              style={{ background: GRADIENT, boxShadow: '0 10px 22px -8px hsl(var(--member-green) / 0.55)' }}>
+              <Wallet className="w-4 h-4" />
               <span className="tracking-wide">Add Funds</span>
-              <Rocket className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
         </div>
