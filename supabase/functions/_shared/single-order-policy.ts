@@ -24,9 +24,12 @@ export function servicePlatform(category: string, name: string): string {
   if (text.includes('twitter') || text.includes('twitter/x')) return 'twitter';
   return 'other';
 }
-// Single Order markup: 500% extra over the catalog per-1000 price.
+// Single Order markup over the catalog per-1000 price. 0 = admin's price is shown to users as-is.
 // Change this one number to adjust every single-order price everywhere.
-export const SINGLE_ORDER_MARKUP_PERCENT = 500;
+export const SINGLE_ORDER_MARKUP_PERCENT = 0;
+
+// Admin enters service prices in INR per 1,000; wallets settle internally in USD.
+export const INR_PER_USD = 83.5;
 
 export function singleOrderMarkedPrice(pricePerThousand: number): number {
   return pricePerThousand * (1 + SINGLE_ORDER_MARKUP_PERCENT / 100);
