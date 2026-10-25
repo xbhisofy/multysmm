@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Audit live provider top-up and pending-user reports, repair confirmed financial calculation bugs, and verify the live admin flow.
+
 - [x] Add a simple Single Order page with service search, platform/category filters, price, wallet payment and separate history.
 - [x] Restore admin service import and invalidate the Single Order catalog immediately after imports and edits.
 - [x] Verify Single Order quantity/pricing rules and signed-out protection; preserve legacy order pricing and engagement/ads flows.
