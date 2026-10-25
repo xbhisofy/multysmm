@@ -1,5 +1,7 @@
 # Project rules
 
+- Generate provider funding reports in an admin-only function using fresh upstream rates, unsent work only, and historical paid totals for user exposure; never infer provider costs from mutable retail prices.
+
 - Keep ads website-link validation in `src/lib/ads-link.ts` and reuse it for single and mass orders so network-independent acceptance stays consistent.
 - Derive custom platform options from stored bundles; share manual ads-platform classification between frontend and functions so custom networks display and fulfil consistently without a schema migration.
 - Filter order platforms by the URL's ads section using shared manual-platform classification; legacy ads-platform links also select that section so social and ads navigation stay separate.
