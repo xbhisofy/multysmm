@@ -1,7 +1,7 @@
 # Roadmap
 
 - [x] Audit and repair provider financial reporting; verified authenticated live report and Refresh, using upstream rates and historical paid value with no customer-data changes.
-- [ ] Complete Whop cost verification: blocked because whopgrow.online does not resolve and its API times out; report marks its 53 runs unpriced instead of inventing a cost.
+- [ ] Complete Whop cost verification: blocked because its API times out (DNS also fails from the sandbox); report marks its 53 runs unpriced instead of inventing a cost.
 
 - [x] Add a simple Single Order page with service search, platform/category filters, price, wallet payment and separate history.
 - [x] Restore admin service import and invalidate the Single Order catalog immediately after imports and edits.
