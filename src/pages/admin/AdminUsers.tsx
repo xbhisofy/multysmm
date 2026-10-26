@@ -792,11 +792,10 @@ export default function AdminUsers() {
 
 
                   {/* Wallet stats */}
-                  <div className="mt-3 grid grid-cols-3 divide-x divide-border rounded-xl bg-muted/50 overflow-hidden">
+                  <div className="mt-3 grid grid-cols-2 divide-x divide-border rounded-xl bg-muted/50 overflow-hidden">
                     {[
                       { label: 'Balance', value: (u.wallet?.balance || 0) * 83.5, cls: 'text-success' },
                       { label: 'Spent', value: (u.wallet?.total_spent || 0) * 83.5, cls: 'text-foreground' },
-                      { label: 'Deposited', value: (u.wallet?.total_deposited || 0) * 83.5, cls: 'text-primary' },
                     ].map((s) => (
                       <div key={s.label} className="px-1.5 py-2.5 min-w-0 text-center">
                         <p
