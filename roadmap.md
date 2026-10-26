@@ -37,3 +37,4 @@
 - [x] Make the mobile bottom navigation icons professional: one uniform inactive style, one green gradient active tile, solid white bar with no bleed-through.
 
 - [x] Rename Order tab to New Order with always-green tabs; deploy everything (Monetag platform, green palette, ads feature, New Order nav) live to the VPS with Monetag bundle in the VPS database.
+- [x] Remove the Total User Deposits (All Time) hero card from the admin dashboard and deploy live to the VPS; verified the string is absent from every served bundle and the live index matches the fresh build.
