@@ -1445,6 +1445,36 @@ function ProviderMappingDialog({
           })
         )
       );
+
+      // Sync the linked service's name/price/limits with the highest-priority mapped provider service,
+      // so the displayed name follows the Service ID the admin entered.
+      const primary = [...checkedEntries].sort((a, b) => a[1].sortOrder - b[1].sortOrder)[0];
+      const primaryAcct = primary ? providerAccounts.find(a => a.id === primary[0]) : undefined;
+      if (primary && primaryAcct && currentServiceId) {
+        const { data: fresh } = await supabase
+          .from('services')
+          .select('id, name, price, min_quantity, max_quantity, description')
+          .eq('provider_id', primaryAcct.provider_id)
+          .eq('provider_service_id', primary[1].serviceId.trim())
+          .neq('id', currentServiceId)
+          .order('updated_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        await supabase
+          .from('services')
+          .update({
+            provider_id: primaryAcct.provider_id,
+            provider_service_id: primary[1].serviceId.trim(),
+            ...(fresh ? {
+              name: fresh.name,
+              price: fresh.price,
+              min_quantity: fresh.min_quantity,
+              max_quantity: fresh.max_quantity,
+              description: fresh.description,
+            } : {}),
+          })
+          .eq('id', currentServiceId);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['service-mappings-bundle'] });
