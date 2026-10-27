@@ -1301,6 +1301,49 @@ function ProviderMappingDialog({
         toast({ title: `Service #${data.serviceId.trim()} imported & linked!` });
       }
 
+      // If this service row is shared with another bundle item (e.g. Reposts & Shares),
+      // fork a dedicated copy so each item keeps its own provider Service IDs.
+      if (currentServiceId && bundleItemId) {
+        const { data: sharers } = await supabase
+          .from('bundle_items')
+          .select('id')
+          .eq('service_id', currentServiceId)
+          .neq('id', bundleItemId)
+          .limit(1);
+        if (sharers && sharers.length > 0) {
+          const { data: src } = await supabase
+            .from('services')
+            .select('*')
+            .eq('id', currentServiceId)
+            .maybeSingle();
+          if (src) {
+            const firstChecked = Object.entries(mappings).find(([_, v]) => v.checked && v.serviceId.trim());
+            const acct = firstChecked ? providerAccounts.find(a => a.id === firstChecked[0]) : undefined;
+            const { id: _i, created_at: _c, updated_at: _u, ...rest } = src as any;
+            const label = engagementType ? engagementType.charAt(0).toUpperCase() + engagementType.slice(1) : 'Copy';
+            const { data: clone, error: cloneErr } = await supabase
+              .from('services')
+              .insert({
+                ...rest,
+                name: `${src.name} (${label})`,
+                provider_id: acct?.provider_id ?? src.provider_id,
+                provider_service_id: firstChecked?.[1].serviceId.trim() || src.provider_service_id,
+              })
+              .select('id')
+              .single();
+            if (cloneErr) throw cloneErr;
+            const { error: linkErr } = await supabase
+              .from('bundle_items')
+              .update({ service_id: clone.id })
+              .eq('id', bundleItemId);
+            if (linkErr) throw linkErr;
+            currentServiceId = clone.id;
+            setServiceId(clone.id);
+            onServiceLinked?.(bundleItemId, clone.id);
+          }
+        }
+      }
+
       // Get current mappings
       const { data: currentMappings } = await supabase
         .from('service_provider_mapping')
