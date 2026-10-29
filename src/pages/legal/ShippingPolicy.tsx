@@ -63,7 +63,7 @@ export default function ShippingPolicy() {
 
             <section className="space-y-3">
               <h2 className="text-xl font-semibold text-foreground">6. Contact</h2>
-              <p>For any delivery related queries, contact us at <a className="text-blue-500 hover:underline" href="mailto:support@multysmm.com">support@multysmm.com</a> or Telegram <a className="text-blue-500 hover:underline" href="https://t.me/x07neo" target="_blank" rel="noreferrer">@x07neo</a>.</p>
+              <p>For any delivery related queries, contact us at <a className="text-blue-500 hover:underline" href="mailto:support@multysmm.com">support@multysmm.com</a> or Telegram <a className="text-blue-500 hover:underline" href="https://t.me/Organicsmmcashier" target="_blank" rel="noreferrer">@Organicsmmcashier</a>.</p>
             </section>
           </div>
         </div>
