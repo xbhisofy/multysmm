@@ -183,7 +183,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
       {/* Telegram card */}
       <div className="px-3 pb-2">
-        <a href="https://t.me/x07neo" target="_blank" rel="noopener noreferrer"
+        <a href="https://t.me/Organicsmmcashier" target="_blank" rel="noopener noreferrer"
           className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-150 hover:translate-x-0.5"
           style={{ background: '#FFFFFF', border: '1px solid hsl(var(--member-line))', boxShadow: '0 2px 8px -4px rgba(15,23,42,.08)' }}>
           <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: GRADIENT }}>
