@@ -40,4 +40,4 @@
 - [x] Remove the Total User Deposits (All Time) hero card from the admin dashboard and deploy live to the VPS; verified the string is absent from every served bundle and the live index matches the fresh build.
 
 - [x] Migrate full MultySMM (code, self-hosted backend, database, functions, payments, cron, backups) from old VPS to the new shared VPS without touching BottingPro/ProxyPulse; old VPS now forwards the backend to the new one.
-- [ ] Point multysmm.com, www and api.multysmm.com DNS A records to the new VPS: waiting on the user.
+- [x] DNS for multysmm.com, www and api now points to the new VPS; SSL renewal, worker, backups verified there.
