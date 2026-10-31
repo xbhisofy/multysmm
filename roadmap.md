@@ -39,4 +39,5 @@
 - [x] Rename Order tab to New Order with always-green tabs; deploy everything (Monetag platform, green palette, ads feature, New Order nav) live to the VPS with Monetag bundle in the VPS database.
 - [x] Remove the Total User Deposits (All Time) hero card from the admin dashboard and deploy live to the VPS; verified the string is absent from every served bundle and the live index matches the fresh build.
 
-- [ ] Migrate full MultySMM (code, self-hosted backend, database, functions, payments, cron, backups) from old VPS to the new shared VPS without touching BottingPro/ProxyPulse; domain switch done later by user.
+- [x] Migrate full MultySMM (code, self-hosted backend, database, functions, payments, cron, backups) from old VPS to the new shared VPS without touching BottingPro/ProxyPulse; old VPS now forwards the backend to the new one.
+- [ ] Point multysmm.com, www and api.multysmm.com DNS A records to the new VPS: waiting on the user.
