@@ -18,7 +18,7 @@ export function useSingleOrderServices() {
           .select('*').eq('is_active', true).not('provider_id', 'is', null)
           .order('category').order('id').range(offset, offset + 999);
         if (error) throw error;
-        services.push(...(data as Service[]));
+        services.push(...((data as any[]).filter(s => !s.is_deleted) as Service[]));
         if (data.length < 1000) break;
       }
       return services;
