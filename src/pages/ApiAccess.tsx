@@ -24,7 +24,9 @@ import {
 
 // Detect Supabase project URL for showing API base URL
 const SUPABASE_URL = (import.meta as any).env?.VITE_SUPABASE_URL || 'https://YOUR_PROJECT.supabase.co';
-const API_BASE = `${SUPABASE_URL}/functions/v1/public-api`;
+// Standard SMM panel v2 URL (proxied by nginx to the public-api function)
+const API_BASE = 'https://multysmm.com/api/v2';
+void SUPABASE_URL;
 
 function generateApiKey(): string {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
