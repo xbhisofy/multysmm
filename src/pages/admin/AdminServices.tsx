@@ -75,7 +75,8 @@ export default function AdminServices() {
         .order('category', { ascending: true });
 
       if (error) throw error;
-      return data as Service[];
+      // Soft-deleted services stay in DB only for old order history
+      return (data as any[]).filter(s => !s.is_deleted) as Service[];
     },
   });
 
@@ -151,25 +152,19 @@ export default function AdminServices() {
         supabase.from('engagement_order_items').select('id', { count: 'exact', head: true }).eq('service_id', id),
         supabase.from('orders').select('id', { count: 'exact', head: true }).eq('service_id', id),
       ]);
-
-      const refs = (bundleRefs.count || 0) + (engagementRefs.count || 0) + (orderRefs.count || 0);
-      if (refs > 0) {
-        throw new Error('This service is used by bundles or orders. Disable it or edit provider mapping instead of deleting, to prevent bundle/order reset.');
+      // Bundles must never reset, so services linked to a bundle stay.
+      if ((bundleRefs.count || 0) > 0) {
+        throw new Error('This service is linked to a bundle. Change the bundle first, then delete.');
       }
-
-      // Delete provider mappings for this service
-      const { error: mappingsError } = await supabase
-        .from('service_provider_mapping')
-        .delete()
-        .eq('service_id', id);
-      if (mappingsError) throw mappingsError;
-
-      // Finally delete the service
-      const { error } = await supabase
-        .from('services')
-        .delete()
-        .eq('id', id);
-
+      if ((engagementRefs.count || 0) + (orderRefs.count || 0) > 0) {
+        // Old orders reference it: hide it everywhere instead of breaking history.
+        const { error } = await supabase.from('services')
+          .update({ is_active: false, is_deleted: true } as any).eq('id', id);
+        if (error) throw error;
+        return;
+      }
+      await supabase.from('service_provider_mapping').delete().eq('service_id', id);
+      const { error } = await supabase.from('services').delete().eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -376,7 +371,7 @@ export default function AdminServices() {
                             size="sm"
                             className="text-destructive hover:text-destructive"
                             onClick={() => {
-                              if (confirm('Delete only if this service is not used by any bundle/order. If used, deletion will be blocked. Continue?')) {
+                              {
                                 deleteServiceMutation.mutate(service.id);
                               }
                             }}
