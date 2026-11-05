@@ -123,15 +123,14 @@ serve(async (req) => {
             case 'services': {
                 const { data: services, error } = await supabase
                     .from('services')
-                    .select('provider_service_id, name, category, price, min_quantity, max_quantity, drip_feed_enabled, description')
+                    .select('service_number, name, category, price, min_quantity, max_quantity, drip_feed_enabled, description')
                     .eq('is_active', true)
                     .not('provider_id', 'is', null)
-                    .not('provider_service_id', 'is', null)
-                    .order('category')
+                    .not('service_number', 'is', null)
+                    .order('service_number')
                 if (error) throw error
-                const seen = new Set<string>()
-                return json(services.filter(s => { const k = String(s.provider_service_id); if (seen.has(k)) return false; seen.add(k); return true }).map(s => ({
-                    service: parseInt(s.provider_service_id) || s.provider_service_id,
+                return json(services.map(s => ({
+                    service: s.service_number,
                     name: s.name,
                     category: s.category,
                     rate: singleOrderMarkedPrice(Number(s.price)).toFixed(2),
@@ -159,11 +158,9 @@ serve(async (req) => {
                 const { data: svc } = await supabase
                     .from('services')
                     .select('*')
-                    .eq('provider_service_id', String(providerSvcId))
+                    .eq('service_number', Number(providerSvcId) || -1)
                     .eq('is_active', true)
                     .not('provider_id', 'is', null)
-                    .order('created_at', { ascending: true })
-                    .limit(1)
                     .maybeSingle()
 
                 if (!svc) return err('Service not found or inactive', 404)
