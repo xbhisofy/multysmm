@@ -68,8 +68,9 @@ function json(data: unknown, status = 200) {
 }
 
 // ─── Error response (standard SMM API format) ────────────────────────────────
-function err(msg: string, status = 400) {
-    return json({ error: msg }, status)
+function err(msg: string, _status = 400) {
+    // Standard panels expect HTTP 200 with {"error": "..."}
+    return json({ error: msg }, 200)
 }
 
 // ─── Lookup user by API key or Telegram ID ─────────────────────────────────
@@ -104,7 +105,7 @@ serve(async (req) => {
         if (!key) return err('Authentication required (key)', 401)
 
         const userId = await getUserId(key)
-        if (!userId) return err('Invalid authentication', 401)
+        if (!userId) return err('Invalid API key', 401)
 
         // ── Routes ──────────────────────────────────────────────────────────────
         switch (action) {
