@@ -41,6 +41,8 @@ export interface Service {
   id: string;
   provider_id: string | null;
   provider_service_id: string;
+  /** Our own public service number (1001+), shown to users and API resellers */
+  service_number?: number | null;
   name: string;
   category: string;
   description: string | null;
