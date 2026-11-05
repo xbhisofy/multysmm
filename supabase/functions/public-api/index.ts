@@ -1,5 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { INR_PER_USD, singleOrderMarkedPrice, singleOrderPrice } from '../_shared/single-order-policy.ts'
+
+// Standard SMM Panel API v2: all money is INR (same as Single Order page); wallet stores USD internally.
+const toInr = (usd: number) => Number(usd || 0) * INR_PER_USD
 
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -14,13 +18,20 @@ const supabase = createClient(
 // ─── Parse body: JSON OR form-encoded ───────────────────────────────────────
 async function parseBody(req: Request): Promise<Record<string, string>> {
     const ct = req.headers.get('content-type') || ''
+    const query: Record<string, string> = {}
+    new URL(req.url).searchParams.forEach((v, k) => { query[k] = v })
+    if (req.method === 'GET') return query
     try {
         if (ct.includes('application/json')) {
-            return await req.json()
+            return { ...query, ...(await req.json()) }
+        }
+        if (ct.includes('multipart/form-data')) {
+            const fd = await req.formData(); const out: Record<string, string> = { ...query }
+            fd.forEach((v, k) => { out[k] = String(v) }); return out
         }
         // form-encoded: key=X&action=balance (what most SMM panels send)
-        const text = await req.text()
-        const params: Record<string, string> = {}
+        const text = (await req.text()).replace(/\+/g, ' ')
+        const params: Record<string, string> = { ...query }
         for (const pair of text.split('&')) {
             const idx = pair.indexOf('=')
             if (idx === -1) continue
@@ -34,6 +45,20 @@ async function parseBody(req: Request): Promise<Record<string, string>> {
     }
 }
 
+function formatStatus(order: any) {
+    const statusMap: Record<string, string> = {
+        pending: 'Pending', processing: 'In progress', in_progress: 'In progress', dispatching: 'In progress',
+        completed: 'Completed', failed: 'Canceled', canceled: 'Canceled', cancelled: 'Canceled', partial: 'Partial',
+    }
+    return {
+        charge: toInr(Number(order.price)).toFixed(2),
+        start_count: String(order.start_count ?? 0),
+        status: statusMap[order.status ?? 'pending'] ?? order.status,
+        remains: String(order.remains ?? order.quantity),
+        currency: 'INR',
+    }
+}
+
 // ─── JSON response helper ────────────────────────────────────────────────────
 function json(data: unknown, status = 200) {
     return new Response(JSON.stringify(data), {
@@ -43,8 +68,9 @@ function json(data: unknown, status = 200) {
 }
 
 // ─── Error response (standard SMM API format) ────────────────────────────────
-function err(msg: string, status = 400) {
-    return json({ error: msg }, status)
+function err(msg: string, _status = 400) {
+    // Standard panels expect HTTP 200 with {"error": "..."}
+    return json({ error: msg }, 200)
 }
 
 // ─── Lookup user by API key or Telegram ID ─────────────────────────────────
@@ -55,7 +81,7 @@ async function getUserId(key?: string) {
         .from('profiles')
         .select('user_id')
         .eq('api_key', key.trim())
-        .single()
+        .maybeSingle()
 
     return data?.user_id ?? null
 }
@@ -79,7 +105,7 @@ serve(async (req) => {
         if (!key) return err('Authentication required (key)', 401)
 
         const userId = await getUserId(key)
-        if (!userId) return err('Invalid authentication', 401)
+        if (!userId) return err('Invalid API key', 401)
 
         // ── Routes ──────────────────────────────────────────────────────────────
         switch (action) {
@@ -88,9 +114,8 @@ serve(async (req) => {
             // Standard format: {"balance":"1.00","currency":"USD"}
             case 'balance': {
                 const { data: w } = await supabase
-                    .from('wallets').select('balance').eq('user_id', userId).single()
-                if (!w) return err('Wallet not found', 404)
-                return json({ balance: w.balance.toFixed(2), currency: 'USD' })
+                    .from('wallets').select('balance').eq('user_id', userId).maybeSingle()
+                return json({ balance: toInr(Number(w?.balance ?? 0)).toFixed(2), currency: 'INR' })
             }
 
             // ─────────── SERVICES ──────────────────────────────────────────────
@@ -100,13 +125,19 @@ serve(async (req) => {
                     .from('services')
                     .select('provider_service_id, name, category, price, min_quantity, max_quantity, drip_feed_enabled, description')
                     .eq('is_active', true)
+                    .not('provider_id', 'is', null)
+                    .not('provider_service_id', 'is', null)
                     .order('category')
                 if (error) throw error
-                return json(services.map(s => ({
+                const seen = new Set<string>()
+                return json(services.filter(s => { const k = String(s.provider_service_id); if (seen.has(k)) return false; seen.add(k); return true }).map(s => ({
                     service: parseInt(s.provider_service_id) || s.provider_service_id,
                     name: s.name,
                     category: s.category,
-                    rate: (s.price * markupMultiplier).toFixed(4),
+                    rate: singleOrderMarkedPrice(Number(s.price)).toFixed(2),
+                    type: 'Default',
+                    refill: false,
+                    cancel: false,
                     min: s.min_quantity,
                     max: s.max_quantity,
                     dripfeed: s.drip_feed_enabled ?? false,
@@ -130,21 +161,24 @@ serve(async (req) => {
                     .select('*')
                     .eq('provider_service_id', String(providerSvcId))
                     .eq('is_active', true)
-                    .single()
+                    .not('provider_id', 'is', null)
+                    .order('created_at', { ascending: true })
+                    .limit(1)
+                    .maybeSingle()
 
                 if (!svc) return err('Service not found or inactive', 404)
-                if (qty < svc.min_quantity || qty > svc.max_quantity) {
+                if (!Number.isSafeInteger(qty) || qty < svc.min_quantity || qty > svc.max_quantity) {
                     return err(`Quantity must be between ${svc.min_quantity} and ${svc.max_quantity}`)
                 }
 
-                const markedUpPrice = svc.price * markupMultiplier
-                const totalPrice = (qty / 1000) * markedUpPrice
+                // Same pricing as Single Order: INR per 1k -> USD wallet debit
+                const totalPrice = singleOrderPrice(singleOrderMarkedPrice(Number(svc.price)) / INR_PER_USD, qty)
+                if (!Number.isFinite(totalPrice) || totalPrice <= 0) return err('Service price unavailable')
 
                 const { data: wallet } = await supabase
-                    .from('wallets').select('*').eq('user_id', userId).single()
-                if (!wallet) return err('Wallet not found', 404)
-                if (wallet.balance < totalPrice) {
-                    return err(`Insufficient balance. Need $${totalPrice.toFixed(4)}, have $${wallet.balance.toFixed(4)}`)
+                    .from('wallets').select('*').eq('user_id', userId).maybeSingle()
+                if (!wallet || Number(wallet.balance) < totalPrice) {
+                    return err('Not enough funds on balance')
                 }
 
                 const duplicateWindowStart = new Date(Date.now() - 2 * 60 * 1000).toISOString()
@@ -169,7 +203,7 @@ serve(async (req) => {
                     .insert({
                         user_id: userId,
                         service_id: svc.id,
-                        link,
+                        link: String(link).trim(),
                         quantity: qty,
                         price: totalPrice,
                         status: 'pending',
@@ -198,15 +232,28 @@ serve(async (req) => {
                     return err(debitError?.message || 'Payment failed', 400)
                 }
 
-                // Fire & forget
-                supabase.functions.invoke('process-order', { body: { order_id: order.id } })
-                    .catch((e: Error) => console.error('process-order:', e.message))
+                // Dispatch to mapped provider (awaited so edge runtime doesn't drop it)
+                try {
+                    await supabase.functions.invoke('process-order', { body: { order_id: order.id } })
+                } catch (e) { console.error('process-order:', (e as Error).message) }
 
                 return json({ order: order.order_number })
             }
 
             // ─────────── ORDER STATUS ──────────────────────────────────────────
             case 'status': {
+                if (body.orders) {
+                    const nums = String(body.orders).split(',').map(x => Number(x.trim())).filter(Boolean).slice(0, 100)
+                    const { data: rows } = await supabase.from('orders')
+                        .select('order_number, status, quantity, remains, start_count, price')
+                        .eq('user_id', userId).in('order_number', nums)
+                    const out: Record<string, unknown> = {}
+                    for (const n of nums) {
+                        const o = (rows ?? []).find((r: any) => r.order_number === n)
+                        out[String(n)] = o ? formatStatus(o) : { error: 'Incorrect order ID' }
+                    }
+                    return json(out)
+                }
                 if (!body.order) return err('order_number is required (field: order)')
 
                 const { data: order } = await supabase
@@ -214,7 +261,7 @@ serve(async (req) => {
                     .select('order_number, status, quantity, remains, start_count, price, service:services(name)')
                     .eq('order_number', Number(body.order))
                     .eq('user_id', userId)
-                    .single()
+                    .maybeSingle()
 
                 if (!order) {
                     // Try engagement_orders if not found in orders
@@ -223,34 +270,28 @@ serve(async (req) => {
                         .select('order_number, status, total_price, base_quantity')
                         .eq('order_number', Number(body.order))
                         .eq('user_id', userId)
-                        .single()
+                        .maybeSingle()
 
-                    if (!engOrder) return err('Order not found', 404)
+                    if (!engOrder) return err('Incorrect order ID', 404)
 
                     return json({
-                        charge: engOrder.total_price.toFixed(4),
+                        charge: toInr(Number(engOrder.total_price)).toFixed(2),
+                        currency: 'INR',
                         status: engOrder.status,
                         quantity: engOrder.base_quantity,
                         type: 'engagement_order'
                     })
                 }
 
-                const statusMap: Record<string, string> = {
-                    pending: 'Pending',
-                    processing: 'In progress',
-                    completed: 'Completed',
-                    failed: 'Canceled',
-                    partial: 'Partial',
-                }
-
-                return json({
-                    charge: order.price.toFixed(4),
-                    start_count: String(order.start_count ?? 0),
-                    status: statusMap[order.status ?? 'pending'] ?? order.status,
-                    remains: String(order.remains ?? order.quantity),
-                    currency: 'USD',
-                })
+                return json(formatStatus(order))
             }
+
+            case 'refill':
+            case 'refill_status':
+                return err('Refill is not available for this service')
+
+            case 'cancel':
+                return err('Cancel is not available for this service')
 
             // ─────────── ORDER SCHEDULE (NEW!) ──────────────────────────────────
             // Shows upcoming random bursts for an organic order
@@ -340,7 +381,7 @@ serve(async (req) => {
 
             // ─────────── UNKNOWN ───────────────────────────────────────────────
             default:
-                return err(`Unknown action "${action}". Valid: balance, services, add, status, order_schedule, control_order, verify_deposit`)
+                return err(`Unknown action "${action}". Valid: balance, services, add, status, refill, cancel, order_schedule, control_order, verify_deposit`)
         }
 
     } catch (e: any) {
