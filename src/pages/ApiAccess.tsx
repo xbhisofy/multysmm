@@ -47,13 +47,10 @@ export default function ApiAccess() {
         if (!user) return;
         setIsGenerating(true);
         try {
-            const newKey = generateApiKey();
-            const { error } = await supabase
-                .from('profiles')
-                .update({ api_key: newKey })
-                .eq('user_id', user.id);
-
+            void generateApiKey;
+            const { data: newKey, error } = await (supabase as any).rpc('regenerate_api_key');
             if (error) throw error;
+            if (!newKey) throw new Error('API key save nahi hui, dobara try karein');
             await refreshProfile();
             toast.success('API Key generated successfully!');
             setShowKey(true);
