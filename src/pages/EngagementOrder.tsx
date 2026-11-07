@@ -1498,21 +1498,11 @@ export default function EngagementOrder() {
                   parsedMassLinks.valid.length > 0;
                 const canShowButton = singleLinkValid || massLinksValid;
 
-                if (!canShowButton) {
-                  return (
-                    <div className="h-10 sm:h-11 px-4 rounded-lg border border-dashed border-border bg-muted/40 flex items-center justify-center text-xs text-muted-foreground whitespace-nowrap">
-                      {orderMode === 'mass'
-                        ? 'Paste valid links'
-                        : `Paste a valid ${platform.toUpperCase()} link`}
-                    </div>
-                  );
-                }
-
                 return (
                   <Button
                     size="default"
                     onClick={handlePlaceOrder}
-                    disabled={placeOrderMutation.isPending || bundlesLoading}
+                    disabled={!canShowButton || placeOrderMutation.isPending || bundlesLoading}
                     className="h-10 sm:h-11 px-5 text-sm font-semibold rounded-lg bg-primary hover:bg-primary/90 transition-colors"
                   >
                     {placeOrderMutation.isPending ? (
