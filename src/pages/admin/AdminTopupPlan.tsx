@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AlertTriangle, ArrowLeft, Copy, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { FunctionsHttpError } from '@supabase/supabase-js';
 
 interface Provider { provider_id: string; provider_name: string; pending_runs: number; cost_inr: number; balance_inr: number; unknown_runs: number; balance_unknown?: boolean }
 interface Breakdown { provider_id: string; service_id: string; service_name: string; pending_quantity: number; pending_runs: number }
@@ -18,11 +19,23 @@ export default function AdminTopupPlan() {
   const { data, error, isFetching, refetch } = useQuery({
     queryKey: ['verified-provider-topup-report'],
     queryFn: async () => {
-      const response = await supabase.functions.invoke('provider-topup-report', { body: {} });
-      if (response.error) throw response.error;
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 45000);
+      let response;
+      try {
+        response = await supabase.functions.invoke('provider-topup-report', { body: {}, signal: controller.signal });
+      } catch {
+        throw new Error('Provider check timed out. Refresh karke dobara try karein.');
+      } finally { clearTimeout(timeout); }
+      if (response.error) {
+        const details = response.error instanceof FunctionsHttpError ? await response.error.context.text() : response.error.message;
+        console.error('Provider report failed:', details);
+        throw new Error('Report load nahi hui. Refresh karke dobara try karein.');
+      }
       if (response.data?.error) throw new Error(response.data.error);
       return response.data as Report;
     },
+    retry: false,
     staleTime: 60000,
     refetchOnWindowFocus: false,
   });
