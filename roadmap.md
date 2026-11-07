@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Add colorful platform icons to category/services/history and fix ordinary provider order status reconciliation; deploy and verify on live VPS.
+
 - [x] Remove sidebar Ads Monetization link, Engagement Console header and Draw Your Growth Curve section; preserve order forms and delivery behavior.
 
 - [x] Match Single Order and Order History to supplied mobile references with mint theme: searchable category/service menus, facts and numbered steps, status filters, scrollable table and copy IDs. Five pricing tests and controlled desktop/mobile UI checks passed; real authenticated data check blocked by paused preview backend. No VPS deployment requested in this turn.

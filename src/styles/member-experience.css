@@ -1,3 +1,30 @@
+.platform-brand-icon {
+  --brand-ink: 0 0% 100%;
+  --brand-instagram: linear-gradient(135deg, #f9ce34, #ee2a7b 55%, #6228d7);
+  --brand-tiktok: 0 0% 8%;
+  --brand-tiktok-cyan: 178 90% 48%;
+  --brand-tiktok-pink: 347 99% 58%;
+  --brand-facebook: 214 89% 52%;
+  --brand-twitter: 0 0% 8%;
+  --brand-youtube: 0 100% 46%;
+  --brand-telegram: 200 82% 44%;
+  --brand-spotify: 141 73% 30%;
+  --brand-linkedin: 210 90% 36%;
+  width: 30px; height: 30px; flex: 0 0 30px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 8px; color: hsl(var(--brand-ink)); background: hsl(var(--primary));
+}
+.platform-brand-icon svg { width: 18px; height: 18px; }
+.platform-brand-icon[data-platform="instagram"] { background: var(--brand-instagram); }
+.platform-brand-icon[data-platform="tiktok"] { background: hsl(var(--brand-tiktok)); }
+.platform-brand-icon[data-platform="tiktok"] svg { filter: drop-shadow(-1px -1px hsl(var(--brand-tiktok-cyan))) drop-shadow(1px 1px hsl(var(--brand-tiktok-pink))); }
+.platform-brand-icon[data-platform="facebook"] { background: hsl(var(--brand-facebook)); }
+.platform-brand-icon[data-platform="twitter"] { background: hsl(var(--brand-twitter)); }
+.platform-brand-icon[data-platform="youtube"] { background: hsl(var(--brand-youtube)); }
+.platform-brand-icon[data-platform="telegram"] { background: hsl(var(--brand-telegram)); }
+.platform-brand-icon[data-platform="spotify"] { background: hsl(var(--brand-spotify)); }
+.platform-brand-icon[data-platform="linkedin"] { background: hsl(var(--brand-linkedin)); }
+
 .member-shell {
   --member-green: 152 58% 36%;
   --member-green-deep: 158 66% 26%;

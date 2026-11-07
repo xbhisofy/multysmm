@@ -1,0 +1,3 @@
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS provider_account_id uuid, ADD COLUMN IF NOT EXISTS dispatched_provider_id uuid, ADD COLUMN IF NOT EXISTS provider_status text, ADD COLUMN IF NOT EXISTS last_status_check timestamptz;
+CREATE INDEX IF NOT EXISTS idx_orders_provider_status_poll ON public.orders (last_status_check NULLS FIRST, created_at) WHERE is_organic_mode = false AND provider_order_id IS NOT NULL;
+GRANT ALL ON public.orders TO service_role;
