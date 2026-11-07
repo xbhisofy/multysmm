@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Configure dedicated Telegram successful-deposit alerts for ZapUPI and OxaPay, deploy to the shared VPS and verify delivery without a real charge.
+
 - [x] Audit and repair provider financial reporting; verified authenticated live report and Refresh, using upstream rates and historical paid value with no customer-data changes.
 - [ ] Complete Whop cost verification: blocked because its API times out (DNS also fails from the sandbox); report marks its 53 runs unpriced instead of inventing a cost.
 
