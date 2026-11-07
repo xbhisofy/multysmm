@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Replace green theme across the website with white/sky blue and compact OYO Media-style text, icons and spacing; preserve branding, statuses and all order/payment behavior.
+
 - [x] Add colorful platform icons to category/services/history and owner-scoped ordinary provider order status reconciliation; deployed on live VPS, 14 tests passed, authenticated mobile menus/history and status endpoint verified.
 - [ ] Reconcile 21 historical Single Orders without recorded dispatch provider: blocked by missing provenance and dispatch logs; do not guess accounts or resend paid orders. New dispatches persist provider identity.
 
