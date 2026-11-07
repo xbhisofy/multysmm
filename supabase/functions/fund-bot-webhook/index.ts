@@ -4,7 +4,6 @@ import { fundBotCommand, isFundAdminChat, withDeadline } from '../_shared/fund-b
 
 const token = Deno.env.get('FUND_ALERT_BOT_TOKEN') ?? '';
 const chats = Deno.env.get('FUND_ALERT_CHAT_ID') ?? '';
-const secret = Deno.env.get('FUND_BOT_WEBHOOK_SECRET') ?? '';
 const db = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '');
 const keyboard = {
   keyboard: [[{ text: '💰 Live Balance' }, { text: '📊 Top-up Plan' }], [{ text: '🏠 Menu' }]],
@@ -55,15 +54,21 @@ async function process(chatId: string | number, command: ReturnType<typeof fundB
 
 Deno.serve(async req => {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
-  if (!secret || !token || req.headers.get('x-telegram-bot-api-secret-token') !== secret) return new Response('Unauthorized', { status: 401 });
+  if (!token) return new Response('Unauthorized', { status: 401 });
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`telegram-webhook:${token}`));
+  const secret = btoa(String.fromCharCode(...new Uint8Array(digest))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+  const supplied = req.headers.get('x-telegram-bot-api-secret-token') ?? '';
+  let difference = supplied.length ^ secret.length;
+  for (let i = 0; i < secret.length; i++) difference |= secret.charCodeAt(i) ^ (supplied.charCodeAt(i) || 0);
+  if (difference !== 0) return new Response('Unauthorized', { status: 401 });
   const update = await req.json().catch(() => null);
   if (!update || !Number.isInteger(update.update_id)) return new Response('Invalid update', { status: 400 });
   const message = update.message;
   if (!message || !isFundAdminChat(message.chat?.id, chats) || typeof message.text !== 'string') return Response.json({ ok: true, ignored: true });
   // Claim each Telegram update once across worker restarts before sending anything.
-  const { data: claimed, error } = await db.from('site_settings').upsert({
-    key: `fund_bot_update_${update.update_id}`, value: { received_at: new Date().toISOString() },
-  }, { onConflict: 'key', ignoreDuplicates: true }).select('key');
+  const { data: claimed, error } = await db.from('fund_bot_updates').upsert({
+    update_id: update.update_id,
+  }, { onConflict: 'update_id', ignoreDuplicates: true }).select('update_id');
   if (error) return Response.json({ error: 'Unable to accept update' }, { status: 503 });
   if (!claimed?.length) return Response.json({ ok: true, duplicate: true });
   EdgeRuntime.waitUntil(process(message.chat.id, fundBotCommand(message.text)));
