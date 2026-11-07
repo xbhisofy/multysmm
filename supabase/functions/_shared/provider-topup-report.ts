@@ -51,7 +51,7 @@ export async function generateProviderTopupReport(db: any) {
       const id = account?.provider_id ?? 'unassigned';
       const group = groups.get(id) ?? { provider_id: id, provider_name: account?.name ?? 'Unassigned', pending_runs: 0, cost_inr: 0, balance_inr: 0, unknown_runs: 0 };
       const catalog = account && catalogs.get(account.id);
-      const providerServiceId = mapping?.provider_account_id === account?.id ? mapping.provider_service_id : service?.provider_service_id;
+      const providerServiceId = mapping && account && mapping.provider_account_id === account.id ? mapping.provider_service_id : service?.provider_service_id;
       const rate = catalog?.rates.get(String(providerServiceId));
       const cost = rate && catalog ? providerCostInr(Number(rate.rate), catalog.currency, quantity, Number(rate.min) || 0, Number(account?.delivery_multiplier) || 1) : null;
       group.pending_runs++;
