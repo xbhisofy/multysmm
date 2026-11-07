@@ -26,7 +26,6 @@ import { QuantitySelector } from "@/components/engagement/QuantitySelector";
 import { EngagementTypeCard } from "@/components/engagement/EngagementTypeCard";
 import { DeliveryPreview } from "@/components/engagement/DeliveryPreview";
 import { LiveGrowthChart } from "@/components/engagement/LiveGrowthChart";
-import { DrawableGrowthChart } from "@/components/engagement/DrawableGrowthChart";
 import {
   EngagementType,
   EngagementConfig,
@@ -1209,38 +1208,6 @@ export default function EngagementOrder() {
   return (
     <DashboardLayout>
       <div className="engagement-order-page max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 space-y-3 sm:space-y-6 pb-8">
-        {/* Engagement console — premium mode picker */}
-        <div className="relative rounded-2xl bg-card border border-border shadow-[0_8px_30px_-12px_rgba(249,115,22,0.15)] overflow-hidden">
-
-          <div className="relative flex items-start gap-3 px-4 sm:px-5 pt-4 pb-3">
-            <div className="w-11 h-11 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-[0_6px_18px_-8px_rgba(249,115,22,0.6)]">
-              <Rocket className="h-5 w-5" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-primary/80">Engagement Console</span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 text-success border border-success/20 px-2 py-0.5 text-[10px] font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-                  Live
-                </span>
-              </div>
-              <h1 className="text-lg sm:text-xl font-semibold text-foreground leading-snug mt-1">
-                Organic Full Engagement
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                Paste one link — we'll keep the delivery natural and safe.
-              </p>
-            </div>
-          </div>
-
-          {/* Mode toggles removed — delivery stays natural by default */}
-
-        </div>
-
-
-        {/* AI Growth Engine moved to sidebar → /ai-assistant */}
-
-
         {/* Platform Selector */}
         <Card className="glass-card border-2 border-border">
           <CardContent className="p-3 sm:p-4">
@@ -1502,16 +1469,6 @@ export default function EngagementOrder() {
             ))}
           </div>
         </div>
-
-        {/* Drawable Growth Chart - Interactive curve editing */}
-        {activeEngagementTypes.length > 0 && (
-          <DrawableGrowthChart
-            engagements={engagements as Record<EngagementType, EngagementConfig>}
-            onCurveChange={handleCurveChange}
-            drawModeState={drawModeState}
-            onDrawModeChange={setDrawModeState}
-          />
-        )}
 
         {/* Live Growth Chart - Real-time visualization (shown when not drawing) */}
         {!drawModeState.isEnabled && activeEngagementTypes.length > 0 && (
