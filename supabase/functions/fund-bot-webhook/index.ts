@@ -47,7 +47,9 @@ async function process(chatId: string | number, command: ReturnType<typeof fundB
       chunk += line + '\n\n';
     }
     await send(chatId, chunk + footer);
-  } catch {
+    console.info(`Fund bot ${command} delivered; providers=${report.providers.length}; incomplete=${incomplete}`);
+  } catch (error) {
+    console.error('Fund bot report failed:', error instanceof Error ? error.message : 'Unknown failure');
     await send(chatId, '⚠️ <b>Report abhi load nahi hui.</b>\nThodi der baad button se dobara check karein. Koi wallet ya order change nahi hua.');
   }
 }
