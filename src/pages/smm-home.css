@@ -1,11 +1,11 @@
 .smm-home {
-  --smm-violet: 152 58% 36%;
-  --smm-violet-deep: 158 66% 26%;
-  --smm-violet-soft: 150 65% 95%;
-  --smm-ink: 165 30% 12%;
-  --smm-copy: 165 12% 40%;
+  --smm-violet: 210 88% 42%;
+  --smm-violet-deep: 210 88% 38%;
+  --smm-violet-soft: 210 75% 96%;
+  --smm-ink: 218 35% 12%;
+  --smm-copy: 215 18% 40%;
   --smm-paper: 0 0% 100%;
-  --smm-line: 150 32% 87%;
+  --smm-line: 210 75% 88%;
   min-height: 100vh;
   background: hsl(var(--smm-paper));
   color: hsl(var(--smm-ink));
@@ -17,13 +17,13 @@
 .smm-home h3 {
   font-family: "DM Sans", "Segoe UI", Arial, sans-serif;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   line-height: 1.08;
   color: hsl(var(--smm-ink));
 }
 
 .smm-grad-text {
-  background: linear-gradient(92deg, hsl(152 65% 45%), hsl(152 58% 36%) 55%, hsl(174 65% 32%));
+  background: linear-gradient(92deg, hsl(210 88% 48%), hsl(210 88% 42%) 55%, hsl(210 88% 38%));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -70,7 +70,7 @@
 }
 
 .smm-btn-primary {
-  background: linear-gradient(120deg, hsl(152 62% 42%), hsl(var(--smm-violet)) 60%, hsl(168 70% 25%));
+  background: linear-gradient(120deg, hsl(210 88% 48%), hsl(var(--smm-violet)) 60%, hsl(210 88% 38%));
   color: #fff;
   box-shadow: 0 12px 28px -10px hsl(var(--smm-violet) / 0.55);
 }
@@ -138,9 +138,9 @@
 
 /* ---------- Stats ---------- */
 .smm-stat-value {
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-size: 1.8rem;
   font-weight: 800;
-  background: linear-gradient(120deg, hsl(152 65% 45%), hsl(168 70% 28%));
+  background: linear-gradient(120deg, hsl(210 88% 48%), hsl(210 88% 38%));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -175,7 +175,7 @@
   padding: 2rem;
   min-height: 15rem;
   color: #fff;
-  background: linear-gradient(150deg, hsl(152 62% 48%), hsl(var(--smm-violet)) 55%, hsl(168 70% 26%));
+  background: linear-gradient(150deg, hsl(210 88% 48%), hsl(var(--smm-violet)) 55%, hsl(210 88% 38%));
   box-shadow: 0 24px 48px -18px hsl(var(--smm-violet) / 0.5);
   transition: transform 200ms ease, box-shadow 200ms ease;
 }
@@ -226,7 +226,7 @@
 }
 
 .smm-service-row.is-featured {
-  background: linear-gradient(120deg, hsl(152 62% 42%), hsl(var(--smm-violet)) 60%, hsl(168 70% 25%));
+  background: linear-gradient(120deg, hsl(210 88% 48%), hsl(var(--smm-violet)) 60%, hsl(210 88% 38%));
   border-color: transparent;
   color: #fff;
   box-shadow: 0 18px 38px -14px hsl(var(--smm-violet) / 0.55);
@@ -269,7 +269,7 @@
   position: relative;
   overflow: hidden;
   border-radius: 1.8rem;
-  background: linear-gradient(130deg, hsl(152 62% 46%), hsl(var(--smm-violet)) 55%, hsl(168 70% 26%));
+  background: linear-gradient(130deg, hsl(210 88% 48%), hsl(var(--smm-violet)) 55%, hsl(210 88% 38%));
   box-shadow: 0 30px 60px -20px hsl(var(--smm-violet) / 0.55);
 }
 
@@ -317,11 +317,11 @@
   width: min(280px, 70vw);
   aspect-ratio: 280 / 560;
   border-radius: 44px;
-  background: linear-gradient(160deg, hsl(165 45% 16%), hsl(165 50% 9%));
+  background: linear-gradient(160deg, hsl(218 35% 16%), hsl(218 35% 9%));
   padding: 10px;
   box-shadow:
     0 30px 80px -20px hsl(var(--smm-violet) / 0.45),
-    0 0 0 1px hsl(152 35% 26% / 0.6),
+    0 0 0 1px hsl(210 88% 38% / 0.6),
     inset 0 0 0 2px hsl(0 0% 100% / 0.08);
   animation: smm-phone-float 7s ease-in-out infinite;
 }
@@ -334,7 +334,7 @@
   width: 88px;
   height: 22px;
   border-radius: 999px;
-  background: hsl(165 45% 8%);
+  background: hsl(218 35% 8%);
   z-index: 3;
 }
 
@@ -344,7 +344,7 @@
   height: 100%;
   border-radius: 36px;
   overflow: hidden;
-  background: linear-gradient(175deg, hsl(152 62% 45%), hsl(158 66% 30%) 60%, hsl(168 70% 20%));
+  background: linear-gradient(175deg, hsl(210 88% 48%), hsl(210 88% 38%) 60%, hsl(210 88% 38%));
   display: flex;
   flex-direction: column;
   padding: 52px 18px 18px;
@@ -362,7 +362,7 @@
   margin-top: 4px;
   font-size: 1.9rem;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   color: #fff;
   line-height: 1.1;
 }
@@ -372,7 +372,7 @@
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: hsl(150 80% 75%);
+  color: hsl(204 90% 75%);
 }
 
 .smm-phone-chart {
@@ -420,7 +420,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: hsl(150 75% 45%);
+  background: hsl(210 88% 48%);
   animation: smm-dot-pulse 1.4s ease-in-out infinite;
 }
 
@@ -452,7 +452,7 @@
 }
 
 .smm-float-chip .up {
-  color: hsl(150 75% 40%);
+  color: hsl(210 88% 46%);
 }
 
 @keyframes smm-phone-float {
@@ -569,3 +569,19 @@
 @media (prefers-reduced-motion: reduce) {
   .smm-flow-tile { animation: none; }
 }
+
+/* Compact homepage hierarchy, consistent with the member workspace. */
+.smm-home { font-size: 14px; }
+.smm-home h1 { font-size: 36px !important; line-height: 1.15; }
+.smm-home h2 { font-size: 26px !important; }
+.smm-home h3 { font-size: 18px !important; }
+.smm-home .text-lg { font-size: 15px; }
+.smm-home .text-xl { font-size: 16px; }
+.smm-platform { font-size: 13px; gap: 8px; }
+.smm-platform svg { width: 18px; height: 18px; }
+.smm-feature-card { border-radius: 8px; padding: 24px; min-height: 12rem; }
+.smm-feature-icon { width: 36px; height: 36px; border-radius: 8px; }
+.smm-service-row { padding: 12px 16px; border-radius: 8px; }
+.smm-flow-card, .smm-step-card, .smm-flow-tile, .smm-faq-item { border-radius: 8px; }
+.smm-home * { letter-spacing: 0; }
+@media (min-width: 768px) { .smm-home h1 { font-size: 44px !important; } }

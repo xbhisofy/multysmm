@@ -10,12 +10,7 @@ import { z } from 'zod';
 import { PageMeta } from '@/components/seo/PageMeta';
 import '@/styles/member-experience.css';
 
-const GRADIENT = 'linear-gradient(135deg, #1B9E5A 0%, #22B573 50%, #5FD39A 100%)';
-const ACCENT = '#1B9E5A';
-const MAGENTA = '#22B573';
-const PURPLE = '#5FD39A';
-
-
+const GRADIENT = 'var(--member-action-gradient)';
 
 const loginSchema = z.object({
   email: z.string().trim().email('Invalid email address'),
@@ -97,16 +92,10 @@ export default function Auth() {
     } finally { setIsSubmitting(false); }
   };
 
-  const inputClass = "h-12 rounded-xl border-[#D8EFE3] bg-white focus:border-[#1B9E5A] focus:ring-2 focus:ring-[#1B9E5A]/15 text-[#0B0B16] font-medium px-4 placeholder:text-[#bbb] transition-all";
+  const inputClass = "h-11 rounded-lg border-border bg-card focus:border-primary focus:ring-2 focus:ring-primary/15 text-foreground font-medium px-3 placeholder:text-muted-foreground transition-all";
 
   return (
     <div className="member-shell member-auth flex items-center justify-center px-6 py-12 relative overflow-hidden">
-      {/* glow */}
-      <div aria-hidden className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(closest-side, rgba(27,158,90,.16), transparent 70%)', filter: 'blur(40px)' }} />
-      <div aria-hidden className="absolute bottom-[-200px] right-[-100px] w-[500px] h-[500px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(closest-side, rgba(34,181,115,.14), transparent 70%)', filter: 'blur(40px)' }} />
-
       <PageMeta
         title={isLogin ? 'Sign in — MultySMM' : 'Create your account — MultySMM'}
         description="Sign in or create your free MultySMM account to launch AI-powered Instagram, YouTube and TikTok growth campaigns. No credit card required."
@@ -114,96 +103,96 @@ export default function Auth() {
       />
       <div className="member-auth-card relative">
           {/* Logo */}
-          <div className="flex items-center justify-center mb-10">
-            <img src="/logo.png" alt="MultySMM" className="h-16 w-16 rounded-full object-cover bg-white ring-2 ring-blue-100 shadow-md" />
+          <div className="flex items-center justify-center mb-6">
+            <img src="/logo.png" alt="MultySMM" className="h-12 w-12 rounded-full object-cover bg-white ring-2 ring-blue-100 shadow-md" />
           </div>
 
-          <Link to="/" className="inline-flex items-center gap-1.5 text-[12px] font-medium mb-8" style={{ color: '#64748B' }}>
+          <Link to="/" className="inline-flex items-center gap-1.5 text-[12px] font-medium mb-5" style={{ color: 'hsl(var(--muted-foreground))' }}>
             <ArrowLeft className="w-3.5 h-3.5" /> Back to home
           </Link>
 
-          <h1 className="text-3xl font-black tracking-[-0.02em] mb-1" style={{ color: '#0B0B16' }}>
+          <h1 className="text-3xl font-black tracking-[-0.02em] mb-1" style={{ color: 'hsl(var(--foreground))' }}>
             {isForgotPassword ? 'Reset password' : isLogin ? 'Welcome back' : 'Create account'}
           </h1>
-          <p className="text-[14px] mb-8" style={{ color: '#475569' }}>
+          <p className="text-[14px] mb-5" style={{ color: 'hsl(var(--muted-foreground))' }}>
             {isForgotPassword ? 'Enter your email to receive a reset link.' : isLogin ? 'Sign in to your MultySMM account.' : 'Get started for free — no credit card.'}
           </p>
 
 
           {showVerifyEmail ? (
             <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: '#E7F6EE' }}>
-                <Mail className="w-7 h-7" style={{ color: '#1B9E5A' }} />
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: 'hsl(var(--secondary))' }}>
+                <Mail className="w-7 h-7" style={{ color: 'hsl(var(--primary))' }} />
               </div>
-              <h3 className="text-xl font-bold mb-2" style={{ color: '#0B0B16' }}>Check your inbox</h3>
-              <p className="text-[13px] mb-2" style={{ color: '#475569' }}>Verification link sent to:</p>
-              <p className="text-[13px] font-semibold mb-6" style={{ color: '#0B0B16' }}>{email}</p>
-              <button onClick={() => { setShowVerifyEmail(false); setIsLogin(true); }} className="text-[13px] font-bold" style={{ color: '#1B9E5A' }}>
+              <h3 className="text-xl font-bold mb-2" style={{ color: 'hsl(var(--foreground))' }}>Check your inbox</h3>
+              <p className="text-[13px] mb-2" style={{ color: 'hsl(var(--muted-foreground))' }}>Verification link sent to:</p>
+              <p className="text-[13px] font-semibold mb-6" style={{ color: 'hsl(var(--foreground))' }}>{email}</p>
+              <Button variant="ghost" onClick={() => { setShowVerifyEmail(false); setIsLogin(true); }} className="text-[13px] font-bold" style={{ color: 'hsl(var(--primary))' }}>
                 ← Back to login
-              </button>
+              </Button>
             </div>
           ) : (
             <form onSubmit={isForgotPassword ? handleForgotPassword : handleSubmit} className="space-y-4">
               {isForgotPassword ? (
                 <div className="space-y-4">
                   <div>
-                    <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: '#475569', textTransform: 'none', letterSpacing: 'normal' }}>Email</Label>
+                    <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: 'hsl(var(--muted-foreground))', textTransform: 'none', letterSpacing: 'normal' }}>Email</Label>
                     <Input type="email" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
                   </div>
-                  {error && <p className="text-[13px] font-medium" style={{ color: '#ef4444' }}>{error}</p>}
-                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#1B9E5A' }}>{successMessage}</p>}
-                  <button type="submit" disabled={isSubmitting}
+                  {error && <p className="text-[13px] font-medium" style={{ color: 'hsl(var(--destructive))' }}>{error}</p>}
+                  {successMessage && <p className="text-[13px] font-medium" style={{ color: 'hsl(var(--primary))' }}>{successMessage}</p>}
+                  <Button variant="ghost" type="submit" disabled={isSubmitting}
                     className="w-full h-12 rounded-xl text-[13.5px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-70"
-                    style={{ background: GRADIENT, boxShadow: '0 12px 28px -8px rgba(27,158,90,.45)' }}>
+                    style={{ background: GRADIENT, boxShadow: 'var(--shadow-soft)' }}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Send reset link <ArrowRight className="w-3.5 h-3.5" /></>}
-                  </button>
-                  <button type="button" onClick={() => setIsForgotPassword(false)} className="w-full text-center text-[13px] font-medium" style={{ color: '#475569' }}>
+                  </Button>
+                  <Button variant="ghost" type="button" onClick={() => setIsForgotPassword(false)} className="w-full text-center text-[13px] font-medium" style={{ color: 'hsl(var(--muted-foreground))' }}>
                     Back to login
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {!isLogin && (
                     <div>
-                      <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: '#475569', textTransform: 'none', letterSpacing: 'normal' }}>Full name</Label>
+                      <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: 'hsl(var(--muted-foreground))', textTransform: 'none', letterSpacing: 'normal' }}>Full name</Label>
                       <Input placeholder="John Doe" value={fullName} onChange={e => setFullName(e.target.value)} className={inputClass} />
                     </div>
                   )}
                   <div>
-                    <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: '#475569', textTransform: 'none', letterSpacing: 'normal' }}>Email</Label>
+                    <Label className="text-[12px] font-semibold mb-1.5 block" style={{ color: 'hsl(var(--muted-foreground))', textTransform: 'none', letterSpacing: 'normal' }}>Email</Label>
                     <Input type="email" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} />
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <Label className="text-[12px] font-semibold" style={{ color: '#475569', textTransform: 'none', letterSpacing: 'normal' }}>Password</Label>
+                      <Label className="text-[12px] font-semibold" style={{ color: 'hsl(var(--muted-foreground))', textTransform: 'none', letterSpacing: 'normal' }}>Password</Label>
                       {isLogin && (
-                        <button type="button" onClick={() => setIsForgotPassword(true)} className="text-[11px] font-semibold" style={{ color: '#1B9E5A' }}>
+                        <Button variant="ghost" type="button" onClick={() => setIsForgotPassword(true)} className="text-[11px] font-semibold" style={{ color: 'hsl(var(--primary))' }}>
                           Forgot password?
-                        </button>
+                        </Button>
                       )}
                     </div>
                     <div className="relative">
                       <Input type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} className={`${inputClass} pr-11`} />
-                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: '#94A3B8' }}>
+                      <Button variant="ghost" type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: 'hsl(var(--muted-foreground))' }}>
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
-                  {error && <p className="text-[13px] font-medium" style={{ color: '#ef4444' }}>{error}</p>}
-                  {successMessage && <p className="text-[13px] font-medium" style={{ color: '#1B9E5A' }}>{successMessage}</p>}
+                  {error && <p className="text-[13px] font-medium" style={{ color: 'hsl(var(--destructive))' }}>{error}</p>}
+                  {successMessage && <p className="text-[13px] font-medium" style={{ color: 'hsl(var(--primary))' }}>{successMessage}</p>}
 
-                  <button type="submit" disabled={isSubmitting}
+                  <Button variant="ghost" type="submit" disabled={isSubmitting}
                     className="w-full h-12 rounded-xl text-[13.5px] font-bold text-white flex items-center justify-center gap-2 disabled:opacity-70 transition-transform hover:-translate-y-0.5"
-                    style={{ background: GRADIENT, boxShadow: '0 12px 28px -8px rgba(27,158,90,.45)' }}>
+                    style={{ background: GRADIENT, boxShadow: 'var(--shadow-soft)' }}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{isLogin ? 'Sign in' : 'Create account'} <ArrowRight className="w-3.5 h-3.5" /></>}
-                  </button>
+                  </Button>
 
-                  <p className="text-center text-[13px]" style={{ color: '#475569' }}>
+                  <p className="text-center text-[13px]" style={{ color: 'hsl(var(--muted-foreground))' }}>
                     {isLogin ? "Don't have an account? " : 'Already have an account? '}
-                    <button type="button" onClick={() => { setIsLogin(!isLogin); setError(''); setSuccessMessage(''); }} className="font-bold" style={{ color: '#1B9E5A' }}>
+                    <Button variant="ghost" type="button" onClick={() => { setIsLogin(!isLogin); setError(''); setSuccessMessage(''); }} className="font-bold" style={{ color: 'hsl(var(--primary))' }}>
                       {isLogin ? 'Sign up' : 'Sign in'}
-                    </button>
+                    </Button>
                   </p>
                 </div>
               )}

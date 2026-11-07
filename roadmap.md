@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Replace green theme with shared white/sky-blue tokens and compact OYO Media-style text, icons and spacing. Desktop/mobile homepage and auth verified without overflow or runtime errors; authenticated member check blocked by unavailable preview database. VPS not deployed in this turn.
+
 - [x] Add colorful platform icons to category/services/history and owner-scoped ordinary provider order status reconciliation; deployed on live VPS, 14 tests passed, authenticated mobile menus/history and status endpoint verified.
 - [ ] Reconcile 21 historical Single Orders without recorded dispatch provider: blocked by missing provenance and dispatch logs; do not guess accounts or resend paid orders. New dispatches persist provider identity.
 
