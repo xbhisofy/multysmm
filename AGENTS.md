@@ -1,5 +1,8 @@
 # Project rules
 
+- Render platform branding through the shared PlatformIcon and global brand tokens; keep service and category menus consistent.
+- Persist ordinary order dispatch provenance and reconcile only that provider's explicit status; member refreshes must be owner-scoped and never resend orders or credit wallets.
+
 - Route committed payment-credit notifications through the dedicated fund-alert bot, separate from operational/fraud alerts, and HTML-escape identity fields so payment helpers share safe Telegram routing.
 
 - Generate provider funding reports in an admin-only function using fresh upstream rates, unsent work only, and historical paid totals for user exposure; never infer provider costs from mutable retail prices.

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ServicePicker } from '@/components/ServicePicker';
+import { PlatformIcon } from '@/components/PlatformIcon';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSingleOrderServices } from '@/hooks/useSingleOrderServices';
@@ -117,7 +118,7 @@ export default function SingleOrder() {
           <div className="flex gap-2 overflow-x-auto rounded-2xl border border-border bg-secondary/50 p-2" aria-label="Service platform">
             {platforms.filter(item => item.key === 'all' || services.some(s => servicePlatform(s.category, s.name) === item.key)).map(({ key, label, icon: Icon }) => {
               const on = platform === key;
-              return <Button variant="ghost" type="button" key={key} aria-pressed={on} onClick={() => { setPlatform(key); setCategory(''); setServiceId(''); }} className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-base font-semibold shadow-sm transition-colors ${on ? 'bg-primary text-primary-foreground' : 'bg-card text-foreground'}`}><span className={`flex h-8 w-8 items-center justify-center rounded-full ${on ? 'bg-primary-foreground/25' : 'bg-secondary text-primary'}`}><Icon className="h-4 w-4" /></span>{label}</Button>;
+              return <Button variant="ghost" type="button" key={key} aria-pressed={on} onClick={() => { setPlatform(key); setCategory(''); setServiceId(''); }} className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-base font-semibold shadow-sm transition-colors ${on ? 'bg-primary text-primary-foreground' : 'bg-card text-foreground'}`}><PlatformIcon platform={key} />{label}</Button>;
             })}
           </div>
 
@@ -129,8 +130,8 @@ export default function SingleOrder() {
               {step(1, 'Search or pick a service')}
               <div className="relative"><Search className="absolute left-4 top-4 h-5 w-5 text-foreground" /><Input aria-label="Search service" placeholder="Search service..." value={search} onChange={e => setSearch(e.target.value)} className={field + " pl-12"} disabled={placeOrder.isPending} /></div>
               {isLoading ? <div className="flex items-center gap-2 py-6 text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin" />Loading services…</div> : servicesError ? <div role="alert" className="flex flex-wrap items-center gap-3 text-destructive">Could not load services.<Button type="button" variant="outline" onClick={() => refetch()}><RefreshCw />Retry</Button></div> : categories.length === 0 ? <div className="space-y-3 py-4"><p className="text-muted-foreground">{search ? 'No matching services.' : 'No single-order services available yet.'}</p>{isAdmin && <Button variant="outline" asChild><Link to="/admin/services">Import Services</Link></Button>}</div> : <>
-                <div className="space-y-2"><Label htmlFor="single-category" className="text-base font-bold">Category</Label><ServicePicker id="single-category" value={activeCategory} disabled={placeOrder.isPending} onChange={value => { setCategory(value); setServiceId(''); }} placeholder="Choose category" options={categories.map(item => ({ value: item, label: item }))} /></div>
-                <div className="space-y-2"><Label htmlFor="single-service" className="text-base font-bold">Service</Label><ServicePicker id="single-service" value={service?.id || ''} disabled={placeOrder.isPending} onChange={setServiceId} placeholder="Choose service" options={categoryServices.map(item => ({ value: item.id, number: item.service_number, label: `${item.name} — ${formatINR(singleOrderMarkedPrice(item.price))} per 1000` }))} /></div>
+                <div className="space-y-2"><Label htmlFor="single-category" className="text-base font-bold">Category</Label><ServicePicker id="single-category" value={activeCategory} disabled={placeOrder.isPending} onChange={value => { setCategory(value); setServiceId(''); }} placeholder="Choose category" options={categories.map(item => ({ value: item, label: item, platform: servicePlatform(item, filtered.find(service => service.category === item)?.name || '') }))} /></div>
+                <div className="space-y-2"><Label htmlFor="single-service" className="text-base font-bold">Service</Label><ServicePicker id="single-service" value={service?.id || ''} disabled={placeOrder.isPending} onChange={setServiceId} placeholder="Choose service" options={categoryServices.map(item => ({ value: item.id, number: item.service_number, platform: servicePlatform(item.category, item.name), label: `${item.name} — ${formatINR(singleOrderMarkedPrice(item.price))} per 1000` }))} /></div>
               </>}
             </section>
 
