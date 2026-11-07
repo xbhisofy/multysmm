@@ -82,13 +82,13 @@ export default function Orders() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('orders')
-        .select('id, order_number, status, price, link, quantity, remains, start_count, provider_order_id, is_organic_mode, is_drip_feed, created_at, updated_at, error_message, service:services(name, category, service_number)')
+        .select('id, order_number, status, price, link, quantity, remains, start_count, provider_order_id, is_organic_mode, is_drip_feed, created_at, updated_at, error_message, service:services(*)')
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false })
         .limit(200);
       
       if (error) throw error;
-      return data as (Order & { service: { name: string; category: string; service_number?: number } | null })[];
+      return data as unknown as (Order & { service: { name: string; category: string; service_number?: number } | null })[];
     },
     enabled: !!user?.id,
     staleTime: 10000, // Cache for 10s - instant subsequent loads
