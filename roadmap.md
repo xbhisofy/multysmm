@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Match Single Order and Order History to supplied mobile references with mint theme: searchable category/service menus, facts and numbered steps, status filters, scrollable table and copy IDs. Five pricing tests and controlled desktop/mobile UI checks passed; real authenticated data check blocked by paused preview backend. No VPS deployment requested in this turn.
+
 - [x] Add private admin fund-bot /bal and tap controls; live balance and top-up reports delivered for six provider groups, unauthorized/duplicate updates rejected. Fixed missing-mapping crash and bounded website loading; VPS build/tests passed. Authenticated website view not rechecked; unavailable providers remain explicitly incomplete.
 
 - [x] Configure dedicated Telegram successful-deposit alerts for ZapUPI and OxaPay; live VPS test message delivered, five unit tests passed. Real payment not performed; paused Cloud preview deployment unavailable.

@@ -311,3 +311,62 @@
   background: hsl(var(--secondary)) !important;
 }
 .member-shell:has(.engagement-order-page) .member-mobile-header button svg { color: hsl(var(--primary)) !important; }
+
+/* Reference-style Single Order and tabular history, using the member palette. */
+.single-order-page, .order-history-page {
+  --order-surface: var(--member-soft);
+  --order-field: var(--secondary);
+  --order-shadow: 0 8px 24px -16px hsl(var(--member-green-deep) / 0.2);
+}
+.member-page :is(.single-order-page, .order-history-page) :is(h1, h2, h3) { letter-spacing: 0 !important; }
+.single-workspace { padding: 20px 16px; }
+.single-order-page { background: hsl(var(--card)); }
+.single-workspace > nav { margin-bottom: 28px; }
+.single-workspace > [aria-label="Service platform"] { margin-bottom: 24px; border-radius: 0; }
+.single-workspace [aria-label="Service platform"] button { height: 48px; padding-inline: 18px; }
+.single-step { border: 1px solid hsl(var(--border)); border-radius: 20px; background: hsl(var(--order-surface)); }
+.single-step h2 { margin-bottom: 22px; line-height: 1.4; }
+.single-step :is(input, .single-picker) {
+  background: hsl(var(--order-field)) !important;
+  border-color: hsl(var(--border)) !important;
+  box-shadow: none !important;
+  padding: 16px;
+  min-height: 58px;
+}
+.single-step label { display: block; margin-top: 20px; margin-bottom: 10px; }
+.single-step input[aria-label="Search service"] { padding-left: 48px; }
+.single-facts, .single-description { background: hsl(var(--secondary)); border: 1px solid hsl(var(--border)); border-radius: 8px; }
+.single-fact { border-radius: 8px; background: hsl(var(--card)); }
+.single-fact:nth-child(2n) > span { background: hsl(var(--member-teal)); }
+.single-fact:nth-child(3n) > span { background: hsl(var(--member-lime)); }
+.single-description { line-height: 1.7; }
+.single-description :is(p, li) { overflow-wrap: anywhere; }
+.single-total { border-radius: 8px; background: var(--member-action-gradient); box-shadow: var(--order-shadow); }
+.single-total button { background: hsl(var(--card)) !important; color: hsl(var(--primary)) !important; border-radius: 8px; }
+.order-picker-popup { --accent: 152 58% 30%; --accent-foreground: 0 0% 100%; --secondary: 150 45% 95%; --primary: 152 58% 30%; z-index: 100; background: hsl(var(--member-paper, 0 0% 100%)) !important; }
+.order-picker-popup [cmdk-root] { background: hsl(var(--member-paper, 0 0% 100%)) !important; }
+.history-title { padding-bottom: 16px; border-bottom: 2px solid hsl(var(--border)); }
+.history-status-filters { padding-top: 12px; }
+.history-filter { color: hsl(var(--muted-foreground)); background: hsl(var(--order-field)); border: 1px solid hsl(var(--border)); box-shadow: none; }
+.history-filter.is-selected { color: hsl(var(--foreground)); background: hsl(var(--card)); border-color: hsl(var(--primary) / 0.5); box-shadow: var(--order-shadow); }
+.history-filter.is-selected svg { color: hsl(var(--primary)); }
+.member-page .history-search { background: hsl(var(--order-field)) !important; box-shadow: none !important; }
+.history-table-scroll { max-width: 100%; border: 1px solid hsl(var(--border)); border-radius: 8px; background: hsl(var(--order-surface)); padding: 12px; }
+.history-table { min-width: 1350px; border-collapse: separate; border-spacing: 0 12px; font-variant-numeric: tabular-nums; }
+.history-table :is(th, td) { padding: 20px 16px; background: hsl(var(--card)); vertical-align: middle; }
+.history-table th { font-weight: 600; color: hsl(var(--muted-foreground)); white-space: nowrap; padding-block: 16px; }
+.history-table :is(th, td):first-child { border-radius: 8px 0 0 8px; }
+.history-table :is(th, td):last-child { border-radius: 0 8px 8px 0; }
+.history-table .history-order-id { color: hsl(var(--primary-foreground)); background: hsl(var(--member-ink)); box-shadow: none; }
+.history-table .history-detail td { max-width: 0; white-space: normal; }
+@media (min-width: 640px) {
+  .single-workspace { padding: 24px 0; }
+  .single-step { padding-inline: 24px; }
+  .history-table-scroll { padding: 16px; }
+}
+@media (max-width: 400px) {
+  .single-workspace { padding-inline: 12px; }
+  .single-fact { padding: 10px 8px; }
+  .single-fact > span { width: 32px; height: 32px; }
+  .history-filter { padding-inline: 12px; }
+}

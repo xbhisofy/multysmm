@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useAuth } from '@/hooks/useAuth';
@@ -25,7 +27,7 @@ import {
   Activity,
   Play,
   History,
-  Pencil
+  Pencil, Copy, ListFilter, CircleDollarSign, CircleDashed, ShoppingCart
 } from 'lucide-react';
 import type { Order, OrganicRun } from '@/lib/supabase';
 import { EditRunDialog } from '@/components/engagement/EditRunDialog';
@@ -67,6 +69,7 @@ interface EditRunData {
 export default function Orders() {
   const { user, wallet, refreshWallet } = useAuth();
   const { formatPrice } = useCurrency();
+  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
@@ -74,18 +77,18 @@ export default function Orders() {
   const [editingRun, setEditingRun] = useState<EditRunData | null>(null);
 
   // Instant load with cache - no loading spinner
-  const { data: orders, refetch } = useQuery({
+  const { data: orders, refetch, isLoading, error: ordersError } = useQuery({
     queryKey: ['orders', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('orders')
-        .select('id, order_number, status, price, link, quantity, remains, start_count, provider_order_id, is_organic_mode, is_drip_feed, created_at, updated_at, error_message, service:services(name, category)')
+        .select('id, order_number, status, price, link, quantity, remains, start_count, provider_order_id, is_organic_mode, is_drip_feed, created_at, updated_at, error_message, service:services(*)')
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false })
         .limit(200);
       
       if (error) throw error;
-      return data as (Order & { service: { name: string; category: string } | null })[];
+      return data as unknown as (Order & { service: { name: string; category: string; service_number?: number } | null })[];
     },
     enabled: !!user?.id,
     staleTime: 10000, // Cache for 10s - instant subsequent loads
@@ -271,7 +274,7 @@ export default function Orders() {
       .reduce((sum, r) => sum + r.quantity_to_send, 0);
   };
 
-  const getOrderProgress = (order: Order & { service: { name: string; category: string } | null }) => {
+  const getOrderProgress = (order: Order & { service: { name: string; category: string; service_number?: number } | null }) => {
     if (!order.is_organic_mode) return null;
     
     // We'll calculate from organicRuns if this order is expanded
@@ -288,140 +291,52 @@ export default function Orders() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Orders</h1>
-            <p className="text-muted-foreground">Track and manage your orders.</p>
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={handleManualRefresh}
-            disabled={isRefreshing}
-            className="gap-2"
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
+      <div className="order-history-page space-y-6">
+        <nav aria-label="Order pages" className="flex gap-2">
+          <Button variant="outline" asChild><Link to="/single-order"><ShoppingCart />New Order</Link></Button>
+          <Button asChild><Link to="/orders" aria-current="page"><History />Order History</Link></Button>
+        </nav>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="history-title text-2xl font-extrabold sm:text-3xl">Order Status</h1>
+          <Button variant="outline" size="icon" aria-label="Refresh orders" title="Refresh orders" onClick={handleManualRefresh} disabled={isRefreshing}><RefreshCw className={isRefreshing ? 'animate-spin' : ''} /></Button>
         </div>
-
-        {/* Auto-refresh indicator */}
-        {hasProcessingOrders && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-secondary/30 px-4 py-2 rounded-lg">
-            <Loader2 className="h-4 w-4 animate-spin text-warning" />
-            <span>Auto-refreshing every 10 seconds while orders are processing...</span>
-          </div>
-        )}
-
-        {/* Filters */}
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by order #, link, or service..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 input-glass"
-            />
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {statusFilters.map((status) => (
-              <button
-                key={status}
-                onClick={() => setStatusFilter(status)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  statusFilter === status
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                }`}
-              >
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-              </button>
-            ))}
-          </div>
+        <div className="history-status-filters flex flex-wrap gap-2 sm:gap-3" aria-label="Order status">
+          {['All', 'pending', 'completed', 'partial', 'processing', 'refunded', 'failed', 'cancelled'].map(status => {
+            const Icon = status === 'All' ? ListFilter : status === 'completed' ? CheckCircle2 : status === 'processing' ? Loader2 : status === 'partial' ? CircleDashed : status === 'refunded' ? CircleDollarSign : status === 'failed' ? AlertCircle : Clock;
+            return <Button key={status} variant="outline" aria-pressed={statusFilter === status} onClick={() => setStatusFilter(status)} className={`history-filter h-11 rounded-full px-4 text-sm sm:text-base ${statusFilter === status ? 'is-selected' : ''}`}><Icon />{status.charAt(0).toUpperCase() + status.slice(1)}</Button>;
+          })}
         </div>
+        <div className="relative"><Input aria-label="Search orders" placeholder="Search" value={searchQuery} onChange={event => setSearchQuery(event.target.value)} className="history-search h-16 rounded-xl pl-5 pr-14 text-base" /><Search className="absolute right-5 top-5 h-6 w-6" /></div>
+        {ordersError && <div role="alert" className="flex items-center gap-3 text-destructive">Could not load orders.<Button variant="outline" onClick={handleManualRefresh}>Retry</Button></div>}
+        {isLoading && <div role="status" className="flex items-center justify-center gap-2 py-12 text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin" />Loading orders…</div>}
 
         {/* Orders List - Instant render */}
         {filteredOrders && filteredOrders.length > 0 ? (
-          <div className="space-y-4">
+          <div className="history-table-scroll overflow-x-auto" tabIndex={0} role="region" aria-label="Order history table">
+            <table className="history-table w-full text-left text-sm"><thead><tr>
+              <th><div className="flex items-center gap-2"><Checkbox aria-label="Select all visible orders" checked={filteredOrders.length > 0 && filteredOrders.every(order => selectedOrders.includes(order.id))} onCheckedChange={checked => setSelectedOrders(checked ? filteredOrders.map(order => order.id) : [])} />ID<Button size="sm" className="rounded-full" disabled={!selectedOrders.length} onClick={async () => { try { await navigator.clipboard.writeText(filteredOrders.filter(order => selectedOrders.includes(order.id)).map(order => order.order_number).join('\n')); toast.success('Order IDs copied'); } catch { toast.error('Could not copy order IDs'); } }}><Copy />Copy</Button></div></th>
+              <th>Date</th><th>Link</th><th>Charge</th><th>Start count</th><th>Quantity</th><th>Service</th><th>Status</th><th>Remains</th><th>Actions</th>
+            </tr></thead><tbody>
             {filteredOrders.map((order) => {
               const progress = expandedOrder === order.id ? getOrderProgress(order) : null;
               
               return (
-                <div key={order.id} className="glass-card overflow-hidden">
-                  {/* Order Header */}
-                  <div 
-                    className="p-6 cursor-pointer hover:bg-secondary/20 transition-colors"
-                    onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-                          <span className="text-sm font-mono text-primary">#{order.order_number}</span>
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-semibold">{order.service?.name || 'Unknown Service'}</h3>
-                            {order.is_organic_mode && (
-                              <span className="flex items-center gap-1 text-xs text-success bg-success/20 px-2 py-0.5 rounded-full">
-                                <Leaf className="h-3 w-3" />
-                                Organic
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground flex items-center gap-2">
-                            <span className="truncate max-w-[300px]">{order.link}</span>
-                            <ExternalLink className="h-3 w-3 shrink-0" />
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <p className="font-semibold">{order.quantity.toLocaleString()}</p>
-                          <p className="text-sm text-muted-foreground">{formatPrice(Number(order.price))}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {getStatusIcon(order.status)}
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(order.status)}`}>
-                            {order.status}
-                          </span>
-                        </div>
-                        {order.is_organic_mode ? (
-                          expandedOrder === order.id ? (
-                            <ChevronUp className="h-5 w-5 text-muted-foreground" />
-                          ) : (
-                            <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                          )
-                        ) : null}
-                      </div>
-                    </div>
-
-                    {/* Quick Progress Bar (visible when collapsed) */}
-                    {order.is_organic_mode && order.status === 'processing' && expandedOrder !== order.id && (
-                      <div className="mt-4 pt-4 border-t border-border/50">
-                        <div className="flex items-center gap-4">
-                          <Loader2 className="h-4 w-4 text-warning animate-spin" />
-                          <div className="flex-1">
-                            <Progress value={30} className="h-2" />
-                          </div>
-                          <span className="text-xs text-muted-foreground">Processing...</span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Error Message */}
-                    {order.error_message && (
-                      <div className="mt-3 p-2 rounded bg-destructive/10 border border-destructive/20 text-xs text-destructive">
-                        {order.error_message}
-                      </div>
-                    )}
-                  </div>
-
+                <Fragment key={order.id}>
+                  <tr>
+                    <td><div className="flex items-center gap-3"><Checkbox aria-label={`Select order ${order.order_number}`} checked={selectedOrders.includes(order.id)} onCheckedChange={checked => setSelectedOrders(previous => checked ? [...previous, order.id] : previous.filter(id => id !== order.id))} /><Button variant="secondary" className="history-order-id h-9 rounded-full px-3" onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)} aria-expanded={expandedOrder === order.id}>{order.order_number}</Button></div></td>
+                    <td className="whitespace-nowrap">{new Date(order.created_at).toLocaleString('sv-SE')}</td>
+                    <td><a className="block max-w-52 truncate font-medium text-primary" title={order.link} href={/^https?:\/\//i.test(order.link) ? order.link : undefined} target="_blank" rel="noopener noreferrer">{order.link}</a></td>
+                    <td className="whitespace-nowrap font-semibold">{formatPrice(Number(order.price))}</td>
+                    <td>{order.start_count ?? '—'}</td><td>{order.quantity.toLocaleString()}</td>
+                    <td><span className="block max-w-72 truncate" title={order.service?.name}><span className="font-bold text-primary">{order.service?.service_number ? `s${order.service.service_number} - ` : ''}</span>{order.service?.name || 'Unavailable service'}</span></td>
+                    <td><span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 capitalize ${getStatusColor(order.status)}`}>{getStatusIcon(order.status)}{order.status}</span></td>
+                    <td>{order.remains ?? '—'}</td>
+                    <td><Button variant="outline" size="sm" className="rounded-full" onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)} aria-expanded={expandedOrder === order.id}>Details</Button></td>
+                  </tr>
+                  {expandedOrder === order.id && !order.is_organic_mode && <tr className="history-detail"><td colSpan={10}><div className="space-y-3 p-4"><p className="font-bold">{order.service?.name || 'Unavailable service'}</p><p className="break-all">{order.link}</p>{order.error_message && <p role="alert" className="text-destructive">{order.error_message}</p>}<p className="text-muted-foreground">Order #{order.order_number} · {order.status} · {order.quantity.toLocaleString()} quantity</p></div></td></tr>}
                   {/* Organic Runs (Expanded) - ENHANCED REAL-TIME VIEW */}
                   {expandedOrder === order.id && order.is_organic_mode && (
-                    <div className="border-t border-border">
+                    <tr className="history-detail"><td colSpan={10}><div className="border-t border-border">
                       {/* Header with Live Status */}
                       <div className="p-4 bg-gradient-to-r from-success/10 to-transparent border-b border-border flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
                         <h4 className="text-sm font-bold flex items-center gap-2">
@@ -516,12 +431,12 @@ export default function Orders() {
                                   key={run.id}
                                   className={`relative rounded-lg transition-all ${
                                     isActive 
-                                      ? 'bg-emerald-500/10 border-2 border-emerald-500/50 shadow-md shadow-emerald-500/20' 
+                                      ? 'bg-primary/10 border-2 border-primary/50 shadow-md shadow-primary/20' 
                                       : isCompleted
-                                        ? 'bg-emerald-500/10 border border-emerald-500/30'
+                                        ? 'bg-primary/10 border border-primary/30'
                                         : isFailed
-                                          ? 'bg-green-500/10 border border-green-500/30'
-                                          : 'bg-emerald-500/5 border border-emerald-500/20'
+                                          ? 'bg-primary/10 border border-primary/30'
+                                          : 'bg-primary/5 border border-primary/20'
                                   }`}
                                 >
                                   <div className="p-3">
@@ -530,12 +445,12 @@ export default function Orders() {
                                       {/* Run Number Badge - Colorful */}
                                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-mono text-sm font-bold ${
                                         isActive 
-                                          ? 'bg-gradient-to-br from-emerald-500 to-emerald-500 text-white animate-pulse' 
+                                          ? 'bg-gradient-to-br from-primary to-primary text-primary-foreground animate-pulse' 
                                           : isCompleted
-                                            ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white'
+                                            ? 'bg-gradient-to-br from-primary to-primary text-primary-foreground'
                                             : isFailed
-                                              ? 'bg-gradient-to-br from-green-500 to-red-500 text-white'
-                                              : 'bg-gradient-to-br from-emerald-500 to-emerald-500 text-white'
+                                              ? 'bg-gradient-to-br from-primary to-destructive text-primary-foreground'
+                                              : 'bg-gradient-to-br from-primary to-primary text-primary-foreground'
                                       }`}>
                                         #{run.run_number}
                                       </div>
@@ -546,12 +461,12 @@ export default function Orders() {
                                           {/* Status Icon + Label - Colorful */}
                                           <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${
                                             isActive 
-                                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                                              ? 'bg-primary/20 text-primary border border-primary/30' 
                                               : isCompleted
-                                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                                ? 'bg-primary/20 text-primary border border-primary/30'
                                                 : isFailed
-                                                  ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                                                  : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                                  ? 'bg-primary/20 text-primary border border-primary/30'
+                                                  : 'bg-primary/20 text-primary border border-primary/30'
                                           }`}>
                                             {isActive && <Loader2 className="h-3 w-3 animate-spin" />}
                                             {isCompleted && <CheckCircle2 className="h-3 w-3" />}
@@ -561,34 +476,34 @@ export default function Orders() {
                                           </span>
                                           
                                           {/* Quantity - Cyan accent - Use service category for label */}
-                                          <span className="text-sm font-bold text-cyan-400">
+                                          <span className="text-sm font-bold text-primary">
                                             +{run.quantity_to_send} {getServiceTypeLabel(order.service?.category)}
                                           </span>
                                           
                                           {/* CUMULATIVE COUNT - Teal badge */}
                                           {(isCompleted || cumulativeDelivered > 0) && (
-                                            <span className="inline-flex items-center gap-1 text-xs bg-teal-500/20 text-teal-400 border border-teal-500/30 px-2 py-0.5 rounded-lg">
+                                            <span className="inline-flex items-center gap-1 text-xs bg-primary/20 text-primary border border-primary/30 px-2 py-0.5 rounded-lg">
                                               = {cumulativeDelivered.toLocaleString()} total
                                             </span>
                                           )}
                                           
                                           {/* Show scheduled total for pending - Purple */}
                                           {isPending && cumulativeDelivered === 0 && (
-                                            <span className="inline-flex items-center gap-1 text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-lg">
+                                            <span className="inline-flex items-center gap-1 text-xs bg-primary/20 text-primary border border-primary/30 px-2 py-0.5 rounded-lg">
                                               → {cumulativeScheduled.toLocaleString()} scheduled
                                             </span>
                                           )}
                                           
                                           {/* Peak indicator - Orange/Amber */}
                                           {Number(run.peak_multiplier) > 1 && (
-                                            <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400 bg-emerald-500/20 border border-emerald-500/30 px-1.5 py-0.5 rounded">
+                                            <span className="inline-flex items-center gap-1 text-[10px] text-primary bg-primary/20 border border-primary/30 px-1.5 py-0.5 rounded">
                                               <Zap className="h-3 w-3" />
                                               {run.peak_multiplier}x Peak
                                             </span>
                                           )}
                                           
                                           {/* Variance - Blue for positive, Pink for negative */}
-                                          <span className={`text-[10px] font-medium ${Number(run.variance_applied) >= 0 ? 'text-sky-400' : 'text-green-400'}`}>
+                                          <span className={`text-[10px] font-medium ${Number(run.variance_applied) >= 0 ? 'text-primary' : 'text-primary'}`}>
                                             ({Number(run.variance_applied) >= 0 ? '+' : ''}{run.variance_applied})
                                           </span>
                                         </div>
@@ -632,7 +547,7 @@ export default function Orders() {
                                         <Button
                                           variant="ghost"
                                           size="sm"
-                                          className="h-8 px-3 text-emerald-400 hover:bg-emerald-500/20"
+                                          className="h-8 px-3 text-primary hover:bg-primary/20"
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             setEditingRun({
@@ -698,20 +613,21 @@ export default function Orders() {
                           Loading delivery schedule...
                         </div>
                       )}
-                    </div>
+                    </div></td></tr>
                   )}
-                </div>
+                </Fragment>
               );
             })}
+            </tbody></table>
           </div>
-        ) : (
-          <div className="glass-card p-12 text-center">
+        ) : !isLoading && !ordersError ? (
+          <div className="py-12 text-center">
             <p className="text-muted-foreground mb-4">No orders found</p>
             <Button variant="gradient" asChild>
-              <a href="/engagement-order">Place Your First Order</a>
+              <Link to="/single-order">New Order</Link>
             </Button>
           </div>
-        )}
+        ) : null}
 
         {/* Edit Run Dialog */}
         <EditRunDialog
