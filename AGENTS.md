@@ -1,5 +1,7 @@
 # Project rules
 
+- Route committed payment-credit notifications through the dedicated fund-alert bot, separate from operational/fraud alerts, and HTML-escape identity fields so payment helpers share safe Telegram routing.
+
 - Generate provider funding reports in an admin-only function using fresh upstream rates, unsent work only, and historical paid totals for user exposure; never infer provider costs from mutable retail prices.
 
 - Keep ads website-link validation in `src/lib/ads-link.ts` and reuse it for single and mass orders so network-independent acceptance stays consistent.

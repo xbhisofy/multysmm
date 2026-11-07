@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { telegramRoute } from "../_shared/telegram-routing.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -111,15 +112,16 @@ serve(async (req) => {
       });
     }
 
-    const BOT_TOKEN = Deno.env.get("PROVIDER_BALANCE_BOT_TOKEN");
+    const isFundAlert = telegramRoute(alert_kind) === "fund";
+    const BOT_TOKEN = Deno.env.get(isFundAlert ? "FUND_ALERT_BOT_TOKEN" : "PROVIDER_BALANCE_BOT_TOKEN");
     if (!BOT_TOKEN) {
       return new Response(
-        JSON.stringify({ skipped: true, reason: "PROVIDER_BALANCE_BOT_TOKEN not set" }),
+        JSON.stringify({ skipped: true, reason: "Telegram bot not configured" }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
-    const rawIds = [
+    const rawIds = isFundAlert ? [Deno.env.get("FUND_ALERT_CHAT_ID")] : [
       Deno.env.get("PROVIDER_BALANCE_CHAT_ID_1"),
       Deno.env.get("PROVIDER_BALANCE_CHAT_ID_2"),
       Deno.env.get("PROVIDER_BALANCE_CHAT_ID_3"),
@@ -192,7 +194,7 @@ serve(async (req) => {
           }
           return { chat_id, ok: !!r?.ok, error: r?.description ?? null };
         } catch (e) {
-          return { chat_id, ok: false, error: String(e) };
+          return { chat_id, ok: false, error: "Telegram delivery failed" };
         }
       }),
     );

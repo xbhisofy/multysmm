@@ -2,9 +2,10 @@
 // Layers: replay protection, gateway re-verification, amount-match guard,
 // fraud-strike auto-ban, Telegram alerts.
 
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const ZAPUPI_KEY = Deno.env.get("ZAPUPI_ZAP_KEY")!;
+import { escapeTelegram } from "./telegram-routing.ts";
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
+const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+const ZAPUPI_KEY = Deno.env.get("ZAPUPI_ZAP_KEY") ?? "";
 
 const AMOUNT_TOLERANCE = 0.01; // ±1 paisa
 const INR_RATE = 83.5;
@@ -210,31 +211,33 @@ export async function telegramCreditAlert(admin: any, orderId: string, source: "
     .eq("order_id", orderId).maybeSingle();
   if (!dep) return;
   const { data: prof } = await admin
-    .from("profiles").select("email").eq("user_id", dep.user_id).maybeSingle();
+    .from("profiles").select("email, full_name").eq("user_id", dep.user_id).maybeSingle();
   const { data: wal } = await admin
     .from("wallets").select("balance").eq("user_id", dep.user_id).maybeSingle();
-  const balInr = wal?.balance ? (Number(wal.balance) * INR_RATE).toFixed(2) : "?";
+  const balInr = wal?.balance != null ? (Number(wal.balance) * INR_RATE).toFixed(2) : "?";
   const msg = [
-    `💰 <b>Auto Fund Added (ZapUPI)</b>`,
+    `💰 <b>Deposit Success</b>`,
     ``,
-    `👤 <b>User:</b> ${prof?.email ?? dep.user_id}`,
+    `👤 <b>User:</b> ${escapeTelegram(prof?.email ?? dep.user_id)}${prof?.full_name ? ` (${escapeTelegram(prof.full_name)})` : ""}`,
+    `🔑 <b>User ID:</b> <code>${escapeTelegram(dep.user_id)}</code>`,
     `💵 <b>Amount:</b> ₹${Number(dep.amount_inr).toFixed(2)}`,
     `🏦 <b>New Balance:</b> ₹${balInr}`,
-    `🆔 <b>Order:</b> <code>${orderId}</code>`,
-    dep.utr ? `🔁 <b>UTR:</b> <code>${dep.utr}</code>` : "",
-    dep.txn_id ? `🧾 <b>Txn:</b> <code>${dep.txn_id}</code>` : "",
+    `💳 <b>Method:</b> ZapUPI`,
+    `🆔 <b>Order:</b> <code>${escapeTelegram(orderId)}</code>`,
+    dep.utr ? `🔁 <b>UTR:</b> <code>${escapeTelegram(dep.utr)}</code>` : "",
+    dep.txn_id ? `🧾 <b>Txn:</b> <code>${escapeTelegram(dep.txn_id)}</code>` : "",
     `📡 <b>Source:</b> ${source}`,
   ].filter(Boolean).join("\n");
-  await sendTelegram(msg);
+  await sendTelegram(msg, "deposit_success");
 }
 
-async function sendTelegram(message: string) {
+async function sendTelegram(message: string, alert_kind = "deposit") {
   await fetch(`${SUPABASE_URL}/functions/v1/send-telegram-notification`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${SERVICE_ROLE}`,
     },
-    body: JSON.stringify({ message, parse_mode: "HTML", force: true, alert_kind: "deposit" }),
+    body: JSON.stringify({ message, parse_mode: "HTML", force: true, alert_kind }),
   });
 }
