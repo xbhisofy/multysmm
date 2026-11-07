@@ -14,7 +14,11 @@ export async function syncSingleOrders(db: any, options: { userId?: string | nul
   async function check(order: any) {
     if (Date.now() > deadline) { unavailable++; return; }
     const accountId = order.provider_account_id || order.dispatched_provider_id;
-    if (!accountId || order.provider_order_id === 'unknown') { unavailable++; return; }
+    if (!accountId || order.provider_order_id === 'unknown') {
+      unavailable++;
+      await db.from('orders').update({ last_status_check: new Date().toISOString() }).eq('id', order.id);
+      return;
+    }
     const table = order.provider_account_id ? 'provider_accounts' : 'providers';
     const key = `${table}:${accountId}`;
     if (!accounts.has(key)) {

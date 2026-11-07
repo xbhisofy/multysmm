@@ -1,6 +1,7 @@
 # Roadmap
 
-- [ ] Add colorful platform icons to category/services/history and fix ordinary provider order status reconciliation; deploy and verify on live VPS.
+- [x] Add colorful platform icons to category/services/history and owner-scoped ordinary provider order status reconciliation; deployed on live VPS, 14 tests passed, authenticated mobile menus/history and status endpoint verified.
+- [ ] Reconcile 21 historical Single Orders without recorded dispatch provider: blocked by missing provenance and dispatch logs; do not guess accounts or resend paid orders. New dispatches persist provider identity.
 
 - [x] Remove sidebar Ads Monetization link, Engagement Console header and Draw Your Growth Curve section; preserve order forms and delivery behavior.
 
