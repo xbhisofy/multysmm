@@ -3,6 +3,7 @@
 - Route committed payment-credit notifications through the dedicated fund-alert bot, separate from operational/fraud alerts, and HTML-escape identity fields so payment helpers share safe Telegram routing.
 
 - Generate provider funding reports in an admin-only function using fresh upstream rates, unsent work only, and historical paid totals for user exposure; never infer provider costs from mutable retail prices.
+- Share verified provider reporting between the admin page and the private fund-bot webhook; require a webhook secret and configured chat allowlist, deduplicate updates, and bound upstream and page waits so failures never hang indefinitely.
 
 - Keep ads website-link validation in `src/lib/ads-link.ts` and reuse it for single and mass orders so network-independent acceptance stays consistent.
 - Derive custom platform options from stored bundles; share manual ads-platform classification between frontend and functions so custom networks display and fulfil consistently without a schema migration.

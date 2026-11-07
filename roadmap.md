@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Add private admin fund-bot /bal and tap controls; live balance and top-up reports delivered for six provider groups, unauthorized/duplicate updates rejected. Fixed missing-mapping crash and bounded website loading; VPS build/tests passed. Authenticated website view not rechecked; unavailable providers remain explicitly incomplete.
+
 - [x] Configure dedicated Telegram successful-deposit alerts for ZapUPI and OxaPay; live VPS test message delivered, five unit tests passed. Real payment not performed; paused Cloud preview deployment unavailable.
 
 - [x] Audit and repair provider financial reporting; verified authenticated live report and Refresh, using upstream rates and historical paid value with no customer-data changes.
