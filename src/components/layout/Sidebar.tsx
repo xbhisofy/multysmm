@@ -17,7 +17,6 @@ const userNavItems = [
   { icon: Layers, label: 'Mass Order', path: '/engagement-order?mode=mass' },
   { icon: Sparkles, label: 'Engagement Orders', path: '/engagement-orders' },
   
-  { icon: Megaphone, label: 'Ads Monetization', path: '/engagement-order?section=ads&platform=adsterra', highlight: true },
   { icon: Wallet, label: 'Wallet', path: '/wallet' },
   { icon: Code2, label: 'API Access', path: '/api-access' },
   { icon: LifeBuoy, label: 'Support', path: '/support' },
