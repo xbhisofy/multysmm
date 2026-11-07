@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { syncSingleOrders } from '../_shared/sync-single-orders.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -139,11 +140,13 @@ Deno.serve(async (req) => {
   try {
     // Parse the request first so an authenticated user can refresh one owned run.
     let targetRunId: string | null = null
+    let singleOrdersOnly = false
     let callSource: string = 'unknown'
     let callContext: Record<string, unknown> = {}
     try {
       const body = await req.json()
       targetRunId = body?.runId || null
+      singleOrdersOnly = body?.singleOrders === true
       callSource = (body?.source || 'unknown').toString().slice(0, 40)
       callContext = {
         order_id: body?.orderId ?? body?.engagementOrderId ?? null,
@@ -180,12 +183,13 @@ Deno.serve(async (req) => {
     }
 
     if (!isSystemCall && !callerIsAdmin) {
-      if (!targetRunId) {
+      if (!targetRunId && !singleOrdersOnly) {
         return new Response(JSON.stringify({ error: 'A run ID is required' }), {
           status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         })
       }
 
+      if (!singleOrdersOnly) {
       const { data: ownedRun } = await supabase
         .from('organic_run_schedule')
         .select('order_id, engagement_order_item_id')
@@ -211,7 +215,13 @@ Deno.serve(async (req) => {
           status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         })
       }
+      }
     }
+
+    // Ordinary orders have no organic_run_schedule rows. Always reconcile them
+    // before the scheduled-run work; members can only refresh their own rows.
+    const singleResult = !targetRunId ? await syncSingleOrders(supabase, { userId: !isSystemCall && !callerIsAdmin ? callerId : null }) : null
+    if (singleOrdersOnly) return new Response(JSON.stringify({ success: true, ...singleResult }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
 
     const invocationStartedAt = Date.now()
     const traceId = crypto.randomUUID().slice(0, 8)

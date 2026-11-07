@@ -139,6 +139,7 @@ serve(async (req) => {
       apiUrl: string
       providerServiceId: string
       accountId?: string
+      legacyId?: string
     }
     
     const providerOptions: ProviderOption[] = []
@@ -192,6 +193,7 @@ serve(async (req) => {
           apiKey: provider.api_key,
           apiUrl: provider.api_url,
           providerServiceId: order.service?.provider_service_id || '',
+          legacyId: provider.id,
         })
       }
     } else if (providerOptions.length === 0 && hasConfiguredMappings) {
@@ -276,11 +278,15 @@ serve(async (req) => {
         }
 
         // SUCCESS!
-        const providerOrderId = result.order?.toString() || result.id?.toString() || 'unknown'
+        const providerOrderId = result.order?.toString() || result.id?.toString()
+        if (!providerOrderId || providerOrderId === 'unknown') throw new Error('Provider returned no usable order ID')
         
         await supabase.from('orders').update({ 
           status: 'processing', 
           provider_order_id: providerOrderId, 
+          provider_account_id: provider.accountId || null,
+          dispatched_provider_id: provider.legacyId || null,
+          last_status_check: null,
           error_message: null 
         }).eq('id', order_id)
 
@@ -299,6 +305,8 @@ serve(async (req) => {
         await supabase.from('orders').update({
           status: 'processing',
           error_message: `Network error after provider request. [Dispatch uncertain] Verify provider before retrying: ${fetchError.message}`,
+          provider_account_id: provider.accountId || null,
+          dispatched_provider_id: provider.legacyId || null,
           updated_at: new Date().toISOString(),
         }).eq('id', order_id)
 

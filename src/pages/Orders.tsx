@@ -1,4 +1,6 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect, useRef } from 'react';
+import { PlatformIcon } from '@/components/PlatformIcon';
+import { servicePlatform } from '../../supabase/functions/_shared/single-order-policy';
 import { Link } from 'react-router-dom';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -75,6 +77,7 @@ export default function Orders() {
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [editingRun, setEditingRun] = useState<EditRunData | null>(null);
+  const syncBusy = useRef(false);
 
   // Instant load with cache - no loading spinner
   const { data: orders, refetch, isLoading, error: ordersError } = useQuery({
@@ -167,12 +170,27 @@ export default function Orders() {
 
   const handleManualRefresh = async () => {
     setIsRefreshing(true);
-    await refetch();
-    if (expandedOrder) {
-      await refetchRuns();
+    try {
+      const { data, error } = await supabase.functions.invoke('check-order-status', { body: { singleOrders: true, source: 'history-refresh' } });
+      if (error || data?.unavailable) toast.warning('Some provider statuses could not be verified. Last confirmed status retained.');
+      await refetch();
+      if (expandedOrder) await refetchRuns();
+    } finally {
+      setIsRefreshing(false);
     }
-    setIsRefreshing(false);
   };
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const sync = async () => {
+      if (syncBusy.current || document.visibilityState !== 'visible') return;
+      syncBusy.current = true;
+      try { await supabase.functions.invoke('check-order-status', { body: { singleOrders: true, source: 'history-auto' } }); await refetch(); } finally { syncBusy.current = false; }
+    };
+    void sync();
+    const timer = setInterval(() => { void sync(); }, 30000);
+    return () => clearInterval(timer);
+  }, [user?.id, refetch]);
 
   const filteredOrders = orders?.filter(order => {
     const matchesSearch = 
@@ -328,7 +346,7 @@ export default function Orders() {
                     <td><a className="block max-w-52 truncate font-medium text-primary" title={order.link} href={/^https?:\/\//i.test(order.link) ? order.link : undefined} target="_blank" rel="noopener noreferrer">{order.link}</a></td>
                     <td className="whitespace-nowrap font-semibold">{formatPrice(Number(order.price))}</td>
                     <td>{order.start_count ?? '—'}</td><td>{order.quantity.toLocaleString()}</td>
-                    <td><span className="block max-w-72 truncate" title={order.service?.name}><span className="font-bold text-primary">{order.service?.service_number ? `s${order.service.service_number} - ` : ''}</span>{order.service?.name || 'Unavailable service'}</span></td>
+                    <td><span className="flex max-w-72 items-center gap-3" title={order.service?.name}><PlatformIcon platform={servicePlatform(order.service?.category || '', order.service?.name || '')} /><span className="min-w-0 truncate"><span className="font-bold text-primary">{order.service?.service_number ? `s${order.service.service_number} - ` : ''}</span>{order.service?.name || 'Unavailable service'}</span></span></td>
                     <td><span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 capitalize ${getStatusColor(order.status)}`}>{getStatusIcon(order.status)}{order.status}</span></td>
                     <td>{order.remains ?? '—'}</td>
                     <td><Button variant="outline" size="sm" className="rounded-full" onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)} aria-expanded={expandedOrder === order.id}>Details</Button></td>
