@@ -1277,37 +1277,6 @@ export default function EngagementOrder() {
                 <LinkIcon className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
               </div>
               <Label className="text-base sm:text-lg font-medium text-foreground">Video/Post Link</Label>
-              {/* Single / Mass segmented toggle */}
-              <div className="mr-auto sm:mr-0 sm:ml-auto inline-flex p-1 rounded-full bg-secondary border border-border" role="tablist">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={orderMode === 'single'}
-                  onClick={() => setOrderMode('single')}
-                  className={cn(
-                    "px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full transition-all",
-                    orderMode === 'single'
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  Single Order
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={orderMode === 'mass'}
-                  onClick={() => setOrderMode('mass')}
-                  className={cn(
-                    "px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full transition-all",
-                    orderMode === 'mass'
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  Mass Order
-                </button>
-              </div>
             </div>
 
             {orderMode === 'single' ? (
