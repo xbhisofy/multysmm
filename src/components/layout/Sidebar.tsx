@@ -35,7 +35,7 @@ export function Sidebar({ onClose }: SidebarProps) {
       {/* Brand header — logo + name (mobile fills the empty top strip) */}
       <div className="flex items-center justify-between gap-2 px-4 pt-3 pb-2">
         <Link to="/dashboard" onClick={onClose} className="flex items-center gap-2.5 min-w-0">
-            <span className="w-11 h-11 rounded-xl overflow-hidden shrink-0 bg-white flex items-center justify-center p-1"
+            <span className="w-9 h-9 rounded-xl overflow-hidden shrink-0 bg-white flex items-center justify-center p-1"
               style={{ border: '1px solid hsl(var(--member-line))', boxShadow: '0 6px 14px -8px hsl(var(--member-green) / 0.5)' }}>
               <img src="/logo-mark.png" alt="MultySMM logo" className="w-full h-full object-contain" />
             </span>
@@ -61,12 +61,12 @@ export function Sidebar({ onClose }: SidebarProps) {
       {profile && (
         <div className="mx-3 sm:mx-4 mb-4 mt-2 space-y-2.5">
           {/* User card */}
-          <div className="rounded-2xl px-4 py-3.5 flex items-center gap-3"
+          <div className="rounded-lg px-4 py-3.5 flex items-center gap-3"
             style={{
               background: 'hsl(var(--member-green) / 0.09)',
               border: '1px solid hsl(var(--member-green) / 0.16)',
             }}>
-            <div className="w-11 h-11 rounded-full flex items-center justify-center text-[14px] font-extrabold text-primary-foreground shrink-0"
+            <div className="w-9 h-9 rounded-full flex items-center justify-center text-[14px] font-extrabold text-primary-foreground shrink-0"
               style={{ background: GRADIENT, boxShadow: '0 8px 16px -8px hsl(var(--member-green) / 0.55)' }}>
               {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || 'U'}
             </div>
@@ -79,7 +79,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           </div>
 
           {/* Wallet card */}
-          <div className="rounded-2xl px-4 pt-3.5 pb-4"
+          <div className="rounded-lg px-4 pt-3.5 pb-4"
             style={{
               background: 'hsl(var(--member-green) / 0.09)',
               border: '1px solid hsl(var(--member-green) / 0.16)',
@@ -94,7 +94,7 @@ export function Sidebar({ onClose }: SidebarProps) {
                 {currency}
               </span>
             </div>
-            <p className="text-[26px] font-extrabold leading-none tracking-tight truncate mb-3.5"
+            <p className="text-[22px] font-extrabold leading-none tracking-tight truncate mb-3.5"
               style={{ color: '#0F172A' }}>
               {formatPrice(wallet?.balance || 0)}
             </p>
@@ -128,7 +128,7 @@ export function Sidebar({ onClose }: SidebarProps) {
               : location.pathname === item.path;
           return (
             <Link key={item.path} to={item.path} onClick={onClose}
-              className={cn('flex items-center gap-3 px-4 py-3 rounded-2xl text-[13.5px] mb-2 transition-all duration-150 active:scale-[.98]',
+              className={cn('flex items-center gap-3 px-4 py-3 rounded-lg text-[13.5px] mb-2 transition-all duration-150 active:scale-[.98]',
                 !isActive && 'hover:translate-x-0.5'
               )}
               style={{
@@ -139,7 +139,7 @@ export function Sidebar({ onClose }: SidebarProps) {
                   ? '0 10px 20px -8px hsl(var(--member-green) / 0.45)'
                   : '0 2px 8px -4px rgba(15,23,42,.08)',
                 fontWeight: isActive ? 800 : 600,
-                letterSpacing: '-0.01em',
+                letterSpacing: '0',
               }}
             >
               <item.icon className="w-[18px] h-[18px]" style={{ color: isActive ? '#FFFFFF' : 'hsl(var(--member-green))' }} />
@@ -159,14 +159,14 @@ export function Sidebar({ onClose }: SidebarProps) {
               const isActive = location.pathname.startsWith(item.path);
               return (
                 <Link key={item.path} to={item.path} onClick={onClose}
-                  className="flex items-center gap-3 px-4 py-3 rounded-2xl text-[13.5px] mb-2 transition-all duration-150 active:scale-[.98]"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-[13.5px] mb-2 transition-all duration-150 active:scale-[.98]"
                   style={{
                     background: isActive ? GRADIENT : '#FFFFFF',
                     color: isActive ? '#FFFFFF' : '#334155',
                     border: isActive ? '1px solid transparent' : '1px solid hsl(var(--member-line))',
                     boxShadow: isActive ? '0 10px 20px -8px hsl(var(--member-green) / 0.45)' : '0 2px 8px -4px rgba(15,23,42,.08)',
                     fontWeight: isActive ? 800 : 600,
-                    letterSpacing: '-0.01em',
+                    letterSpacing: '0',
                   }}
                 >
                   <item.icon className="w-[18px] h-[18px]" style={{ color: isActive ? '#FFFFFF' : 'hsl(var(--member-green))' }} />
@@ -183,7 +183,7 @@ export function Sidebar({ onClose }: SidebarProps) {
       {/* Telegram card */}
       <div className="px-3 pb-2">
         <a href="https://t.me/Organicsmmcashier" target="_blank" rel="noopener noreferrer"
-          className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-150 hover:translate-x-0.5"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-150 hover:translate-x-0.5"
           style={{ background: '#FFFFFF', border: '1px solid hsl(var(--member-line))', boxShadow: '0 2px 8px -4px rgba(15,23,42,.08)' }}>
           <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: GRADIENT }}>
             <Send className="w-4 h-4" style={{ color: '#fff' }} />
@@ -197,7 +197,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
       {/* Sign out */}
       <div className="p-3">
-        <button onClick={() => signOut()} className="w-full flex items-center justify-center gap-2.5 px-4 py-3 rounded-2xl text-[13.5px] font-bold transition-all active:scale-[.98] hover:bg-red-50"
+        <button onClick={() => signOut()} className="w-full flex items-center justify-center gap-2.5 px-4 py-3 rounded-lg text-[13.5px] font-bold transition-all active:scale-[.98] hover:bg-red-50"
           style={{ color: '#EF4444', background: '#FFFFFF', border: '1px solid rgba(239,68,68,.18)', boxShadow: '0 2px 8px -4px rgba(15,23,42,.08)' }}>
           <LogOut className="w-4 h-4" />
           <span>Sign out</span>

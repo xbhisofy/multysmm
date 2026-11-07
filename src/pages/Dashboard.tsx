@@ -80,7 +80,7 @@ export default function Dashboard() {
           </div>
           <div className="flex gap-2">
             <button onClick={() => navigate('/engagement-order')} className="h-10 px-4 rounded-lg text-[12px] font-semibold flex items-center gap-1.5" style={{ border: '1px solid rgba(0,0,0,.08)', color: '#4B5563' }}>
-              <Sparkles className="w-3.5 h-3.5" style={{ color: '#15803D' }} /> Engagement
+              <Sparkles className="w-3.5 h-3.5" style={{ color: 'hsl(var(--primary))' }} /> Engagement
             </button>
             <button onClick={() => navigate('/order')} className="h-10 px-4 rounded-lg text-[12px] font-semibold text-white flex items-center gap-1.5" style={{ background: 'hsl(var(--member-ink))' }}>
               <Zap className="w-3.5 h-3.5" /> New Order
@@ -91,13 +91,13 @@ export default function Dashboard() {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { icon: Wallet, label: 'Balance', value: formatPrice(wallet?.balance || 0), sub: 'Available funds', accent: '#16A34A' },
-            { icon: ShoppingCart, label: 'Total Orders', value: stats?.totalOrders || 0, sub: `${stats?.completedOrders || 0} completed`, accent: '#0E9F86' },
-            { icon: Activity, label: 'Active', value: stats?.activeOrders || 0, sub: 'In progress', accent: '#7DA31C' },
-            { icon: TrendingUp, label: 'Total Spent', value: formatPrice(stats?.totalSpent || 0), sub: 'All time', accent: '#15803D' },
+            { icon: Wallet, label: 'Balance', value: formatPrice(wallet?.balance || 0), sub: 'Available funds', accent: 'hsl(var(--primary))' },
+            { icon: ShoppingCart, label: 'Total Orders', value: stats?.totalOrders || 0, sub: `${stats?.completedOrders || 0} completed`, accent: 'hsl(var(--primary))' },
+            { icon: Activity, label: 'Active', value: stats?.activeOrders || 0, sub: 'In progress', accent: 'hsl(var(--primary))' },
+            { icon: TrendingUp, label: 'Total Spent', value: formatPrice(stats?.totalSpent || 0), sub: 'All time', accent: 'hsl(var(--primary))' },
           ].map((s, i) => (
             <div key={i} className="rounded-xl p-5" style={cardStyle}>
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style={{ background: s.accent + '12', color: s.accent }}>
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style={{ background: 'hsl(var(--primary) / 0.08)', color: s.accent }}>
                 <s.icon className="w-4 h-4" />
               </div>
               <p className="text-[10px] font-semibold uppercase tracking-wider mb-1" style={{ color: '#6B7280' }}>{s.label}</p>
@@ -113,10 +113,10 @@ export default function Dashboard() {
           <div className="lg:col-span-3 rounded-xl overflow-hidden" style={cardStyle}>
             <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid rgba(0,0,0,.06)' }}>
               <div className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4" style={{ color: '#15803D' }} />
+                <BarChart3 className="w-4 h-4" style={{ color: 'hsl(var(--primary))' }} />
                 <h2 className="text-[14px] font-bold" style={{ color: 'hsl(var(--member-ink))' }}>Engagement Orders</h2>
               </div>
-              <Link to="/engagement-orders" className="text-[11px] font-medium flex items-center gap-0.5" style={{ color: '#15803D' }}>
+              <Link to="/engagement-orders" className="text-[11px] font-medium flex items-center gap-0.5" style={{ color: 'hsl(var(--primary))' }}>
                 View all <ChevronRight className="w-3 h-3" />
               </Link>
             </div>
@@ -154,7 +154,7 @@ export default function Dashboard() {
                 <Package className="w-4 h-4" style={{ color: '#6B7280' }} />
                 <h2 className="text-[14px] font-bold" style={{ color: 'hsl(var(--member-ink))' }}>Single Orders</h2>
               </div>
-              <Link to="/orders" className="text-[11px] font-medium flex items-center gap-0.5" style={{ color: '#15803D' }}>
+              <Link to="/orders" className="text-[11px] font-medium flex items-center gap-0.5" style={{ color: 'hsl(var(--primary))' }}>
                 View all <ChevronRight className="w-3 h-3" />
               </Link>
             </div>
@@ -180,11 +180,11 @@ export default function Dashboard() {
         {/* Quick actions */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
-            { icon: Sparkles, label: 'Full Engagement', desc: 'Views + Likes + Comments', path: '/engagement-order', accent: '#15803D' },
-            { icon: Wallet, label: 'Add Funds', desc: 'Deposit to wallet', path: '/wallet', accent: '#16A34A' },
+            { icon: Sparkles, label: 'Full Engagement', desc: 'Views + Likes + Comments', path: '/engagement-order', accent: 'hsl(var(--primary))' },
+            { icon: Wallet, label: 'Add Funds', desc: 'Deposit to wallet', path: '/wallet', accent: 'hsl(var(--primary))' },
           ].map((a, i) => (
             <Link key={i} to={a.path} className="group flex items-center gap-3.5 p-4 rounded-xl transition-all hover:-translate-y-0.5" style={cardStyle}>
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ background: a.accent + '12', color: a.accent }}>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'hsl(var(--primary) / 0.08)', color: a.accent }}>
                 <a.icon className="w-4.5 h-4.5" />
               </div>
               <div className="flex-1 min-w-0">
