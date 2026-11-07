@@ -11,7 +11,7 @@ it('reads the dispatched account and writes its Completed status without payment
       then: (resolve: any) => resolve({ data: [order], error: null }) };
     return chain;
   } };
-  const fetch = vi.fn(async () => ({ ok: true, json: async () => ({ status: 'Completed', remains: '0', start_count: '12' }) }));
+  const fetch = vi.fn(async (_url: string, _options?: unknown) => ({ ok: true, json: async () => ({ status: 'Completed', remains: '0', start_count: '12' }) }));
   vi.stubGlobal('fetch', fetch);
   expect(await syncSingleOrders(db, { userId: 'owner-a' })).toEqual({ updated: 1, unavailable: 0 });
   expect(fetch.mock.calls[0][0]).toBe('https://provider.test/api');
