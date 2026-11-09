@@ -152,9 +152,13 @@ export default function AdminServices() {
         supabase.from('engagement_order_items').select('id', { count: 'exact', head: true }).eq('service_id', id),
         supabase.from('orders').select('id', { count: 'exact', head: true }).eq('service_id', id),
       ]);
-      // Bundles must never reset, so services linked to a bundle stay.
+      // Single Order and bundles are independent: remove it from Single Order
+      // only, keeping it active so bundle orders keep working unchanged.
       if ((bundleRefs.count || 0) > 0) {
-        throw new Error('This service is linked to a bundle. Change the bundle first, then delete.');
+        const { error } = await supabase.from('services')
+          .update({ is_deleted: true } as any).eq('id', id);
+        if (error) throw error;
+        return;
       }
       if ((engagementRefs.count || 0) + (orderRefs.count || 0) > 0) {
         // Old orders reference it: hide it everywhere instead of breaking history.
