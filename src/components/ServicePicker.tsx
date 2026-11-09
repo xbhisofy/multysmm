@@ -14,7 +14,7 @@ export function ServicePicker({ id, value, options, onChange, disabled, placehol
   const selected = options.find(option => option.value === value);
   return <Popover open={open} onOpenChange={setOpen}>
     <PopoverTrigger asChild>
-      <Button id={id} type="button" variant="outline" role="combobox" aria-expanded={open} disabled={disabled} className="single-picker h-auto min-h-14 w-full justify-between text-left text-base font-medium">
+      <Button id={id} type="button" variant="outline" role="combobox" aria-expanded={open} disabled={disabled} className="single-picker h-auto min-h-14 w-full justify-between rounded-3xl border border-primary/15 bg-primary/5 px-5 text-left text-base font-medium shadow-none hover:bg-primary/10">
         <span className="flex min-w-0 items-center gap-3">{selected?.platform && <PlatformIcon platform={selected.platform} />}<span className="min-w-0 truncate">{selected ? `${selected.number != null ? `${selected.number} - ` : ''}${selected.label}` : placeholder}</span></span>
         <ChevronsUpDown className="h-4 w-4 shrink-0 text-muted-foreground" />
       </Button>
