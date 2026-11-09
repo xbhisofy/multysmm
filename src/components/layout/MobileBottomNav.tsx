@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Menu, ShoppingCart, Package, ClipboardList, Wallet, Settings } from 'lucide-react';
+import { Menu, ShoppingCart, Package, ClipboardList, Wallet, Settings, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sidebar } from './Sidebar';
 
@@ -13,7 +13,7 @@ const rightItems = [
   { to: '/settings', label: 'Settings', icon: Settings },
 ];
 
-const PlainItem = ({ to, label, icon: Icon }: { to: string; label: string; icon: typeof History }) => (
+const PlainItem = ({ to, label, icon: Icon }: { to: string; label: string; icon: LucideIcon }) => (
   <NavLink
     to={to}
     className={({ isActive }) => `member-bottom-nav-item flex flex-col items-center justify-center gap-[5px] flex-1 pt-2 pb-[7px] ${isActive ? 'is-active' : ''}`}
