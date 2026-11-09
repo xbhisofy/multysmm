@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Menu, ShoppingCart, Package, ClipboardList, Wallet, Settings, type LucideIcon } from 'lucide-react';
+import { Menu, ShoppingCart, ShoppingBag, ReceiptText, WalletMinimal, Settings2, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sidebar } from './Sidebar';
 
 const leftItems = [
-  { to: '/single-order', label: 'Single Order', icon: Package },
-  { to: '/orders', label: 'Order History', icon: ClipboardList },
+  { to: '/single-order', label: 'Single Order', icon: ShoppingBag },
+  { to: '/orders', label: 'Order History', icon: ReceiptText },
 ];
 const rightItems = [
-  { to: '/wallet', label: 'Wallet', icon: Wallet },
-  { to: '/settings', label: 'Settings', icon: Settings },
+  { to: '/wallet', label: 'Wallet', icon: WalletMinimal },
+  { to: '/settings', label: 'Settings', icon: Settings2 },
 ];
 
 const PlainItem = ({ to, label, icon: Icon }: { to: string; label: string; icon: LucideIcon }) => (
