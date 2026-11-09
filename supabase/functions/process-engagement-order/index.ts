@@ -357,10 +357,18 @@ serve(async (req) => {
       }
     }
 
+    // Detect manual ads platforms (Adsterra/Monetag) early: admin delivers these by hand,
+    // so their hidden placeholder services must not block order placement.
+    let isManualPlatform = false
+    if (bundle_id) {
+      const { data: bundleRow } = await supabase.from('engagement_bundles').select('platform').eq('id', bundle_id).single()
+      if (bundleRow && isManualAdsPlatform(String(bundleRow.platform))) isManualPlatform = true
+    }
+
     let serverTotal = 0
     for (const eng of engagements) {
       const svc = svcMap.get(eng.service_id) as any
-      if (!svc || svc.is_active === false) {
+      if (!svc || (svc.is_active === false && !isManualPlatform)) {
         return new Response(JSON.stringify({ error: `Service unavailable: ${eng.service_id}` }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
       }
       const qty = Math.max(0, Math.floor(Number(eng.quantity) || 0))
@@ -399,12 +407,9 @@ serve(async (req) => {
 
     // Check if bundle has AI Organic Mode enabled (default ON)
     let aiOrganicEnabled = true
-    let isManualPlatform = false
     if (bundle_id) {
-      const { data: bundle } = await supabase.from('engagement_bundles').select('ai_organic_enabled, platform').eq('id', bundle_id).single()
+      const { data: bundle } = await supabase.from('engagement_bundles').select('ai_organic_enabled').eq('id', bundle_id).single()
       if (bundle) aiOrganicEnabled = bundle.ai_organic_enabled ?? true
-      // Manual platforms (Adsterra): admin delivers by hand, no provider runs are scheduled.
-      if (bundle && isManualAdsPlatform(String(bundle.platform))) isManualPlatform = true
     }
 
     // Create order (persist full config_snapshot for Repeat Order restore)
