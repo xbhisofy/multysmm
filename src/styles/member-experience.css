@@ -149,7 +149,7 @@
 }
 
 .member-bottom-nav-item.is-active .lucide {
-  color: hsl(var(--member-paper));
+  color: hsl(var(--primary));
   stroke-width: 2.5;
 }
 
@@ -450,5 +450,4 @@
 .member-sidebar nav a { min-height: 44px; font-size: 13px; }
 .member-sidebar nav a .lucide { width: 17px; height: 17px; }
 .member-auth-card { border-radius: 8px; padding: 24px; }
-.member-bottom-nav-icon { width: 30px !important; height: 30px !important; border-radius: 8px; }
-.member-bottom-nav-icon .lucide { width: 16px; height: 16px; }
+.member-bottom-nav-icon .lucide { width: 22px; height: 22px; }
