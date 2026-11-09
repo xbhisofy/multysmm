@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Menu, Zap, History, Wallet, Settings } from 'lucide-react';
+import { Menu, ShoppingCart, Package, ClipboardList, Wallet, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sidebar } from './Sidebar';
 
 const leftItems = [
-  { to: '/engagement-orders', label: 'History', icon: History },
-  { to: '/wallet', label: 'Wallet', icon: Wallet },
+  { to: '/single-order', label: 'Single Order', icon: Package },
+  { to: '/orders', label: 'Order History', icon: ClipboardList },
 ];
 const rightItems = [
+  { to: '/wallet', label: 'Wallet', icon: Wallet },
   { to: '/settings', label: 'Settings', icon: Settings },
 ];
 
@@ -57,7 +58,7 @@ export function MobileBottomNav() {
             className={({ isActive }) => `member-bottom-nav-order absolute left-1/2 top-0 flex -translate-x-1/2 flex-col items-center ${isActive ? 'is-active' : ''}`}
           >
             <span className="member-bottom-nav-order-circle -mt-7 flex h-14 w-14 items-center justify-center rounded-full">
-              <Zap className="h-6 w-6" />
+              <ShoppingCart className="h-6 w-6" />
             </span>
             <span className="member-bottom-nav-label mt-1">New Order</span>
           </NavLink>
