@@ -4,12 +4,25 @@ import { Menu, Zap, History, Wallet, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sidebar } from './Sidebar';
 
-const items = [
-  { to: '/engagement-order', label: 'New Order', icon: Zap },
+const leftItems = [
   { to: '/engagement-orders', label: 'History', icon: History },
   { to: '/wallet', label: 'Wallet', icon: Wallet },
+];
+const rightItems = [
   { to: '/settings', label: 'Settings', icon: Settings },
 ];
+
+const PlainItem = ({ to, label, icon: Icon }: { to: string; label: string; icon: typeof History }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) => `member-bottom-nav-item flex flex-col items-center justify-center gap-[5px] flex-1 pt-2 pb-[7px] ${isActive ? 'is-active' : ''}`}
+  >
+    <span className="member-bottom-nav-icon flex items-center justify-center">
+      <Icon className="w-[22px] h-[22px]" />
+    </span>
+    <span className="member-bottom-nav-label">{label}</span>
+  </NavLink>
+);
 
 export function MobileBottomNav() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -30,19 +43,24 @@ export function MobileBottomNav() {
       </header>
 
       <nav className="member-bottom-nav fixed bottom-0 left-0 right-0 z-40 lg:hidden" aria-label="Primary">
-        <div className="member-bottom-nav-inner flex items-stretch justify-around">
-          {items.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) => `member-bottom-nav-item flex flex-col items-center justify-center gap-[5px] flex-1 pt-2 pb-[7px] ${isActive ? 'is-active' : ''}`}
-            >
-              <span className="member-bottom-nav-icon flex items-center justify-center w-10 h-10 rounded-[14px]">
-                <Icon className="w-[21px] h-[21px]" />
-              </span>
-              <span className="member-bottom-nav-label">{label}</span>
-            </NavLink>
-          ))}
+        <div className="member-bottom-nav-inner relative flex items-stretch">
+          <div className="flex flex-1 items-stretch justify-around">
+            {leftItems.map(item => <PlainItem key={item.to} {...item} />)}
+          </div>
+          <div className="w-20 shrink-0" />
+          <div className="flex flex-1 items-stretch justify-around">
+            {rightItems.map(item => <PlainItem key={item.to} {...item} />)}
+          </div>
+          <NavLink
+            to="/engagement-order"
+            aria-label="New Order"
+            className={({ isActive }) => `member-bottom-nav-order absolute left-1/2 top-0 flex -translate-x-1/2 flex-col items-center ${isActive ? 'is-active' : ''}`}
+          >
+            <span className="member-bottom-nav-order-circle -mt-7 flex h-14 w-14 items-center justify-center rounded-full">
+              <Zap className="h-6 w-6" />
+            </span>
+            <span className="member-bottom-nav-label mt-1">New Order</span>
+          </NavLink>
         </div>
       </nav>
 
