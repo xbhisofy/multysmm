@@ -369,8 +369,8 @@
 .single-fact:nth-child(3n) > span { background: hsl(var(--member-lime)); }
 .single-description { line-height: 1.7; }
 .single-description :is(p, li) { overflow-wrap: anywhere; }
-.single-total { border-radius: 8px; background: var(--member-action-gradient); box-shadow: var(--order-shadow); }
-.single-total button { background: hsl(var(--card)) !important; color: hsl(var(--primary)) !important; border-radius: 8px; }
+.single-total { border-radius: 24px; background: var(--member-action-gradient); box-shadow: var(--order-shadow); }
+.single-total button { background: hsl(var(--card)) !important; color: hsl(var(--primary)) !important; border-radius: 9999px; }
 .order-picker-popup { --accent: 210 88% 38%; --accent-foreground: 0 0% 100%; --secondary: 210 75% 96%; --primary: 210 88% 38%; z-index: 100; background: hsl(var(--member-paper, 0 0% 100%)) !important; }
 .order-picker-popup [cmdk-root] { background: hsl(var(--member-paper, 0 0% 100%)) !important; }
 .history-title { padding-bottom: 16px; border-bottom: 2px solid hsl(var(--border)); }
