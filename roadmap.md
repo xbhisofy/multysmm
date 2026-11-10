@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Match only bottom navigation to the supplied glass/neumorphic reference; preserve five destinations and verify mobile/tablet/desktop sizing and navigation.
+- [x] Match only bottom navigation to the supplied glass/neumorphic reference with inline SVGs, raised center action, scoped effect tokens and safe-area spacing. Isolated real-component browser checks passed at 320/375/768/1280px and landscape, all five links/active states and reduced motion passed, build OK. Signed-in page check unavailable because requesting account could not be minted; no VPS deployment requested or performed.
 
 - [x] Add optional per-bundle-service minimum/maximum with linked-provider fallback and scheduling support; deployed schema, frontend and function plus Views-first Single Order categories to VPS. Eleven tests passed, minimum-one live save/read rollback passed, RLS remains enabled, source hashes match, environment unchanged, routes HTTP 200. Authenticated admin click and paid provider order remain unverified; actual provider minimum still governs dispatch.
 
