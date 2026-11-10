@@ -23,6 +23,8 @@ export interface BundleItem {
   is_base: boolean;
   /** Admin-set per-1000 price in USD. Overrides service.price when present. */
   price_per_k?: number | null;
+  min_quantity_override?: number | null;
+  max_quantity_override?: number | null;
   default_drip_qty_per_run: number;
   default_drip_interval: number;
   default_drip_interval_unit: 'minutes' | 'hours';

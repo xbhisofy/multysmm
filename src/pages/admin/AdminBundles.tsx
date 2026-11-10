@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { parseOptionalQuantity } from '../../../supabase/functions/_shared/bundle-quantity-policy';
 import {
   Select,
   SelectContent,
@@ -368,6 +369,22 @@ export default function AdminBundles() {
     },
   });
 
+  const updateItemLimitMutation = useMutation({
+    mutationFn: async ({ id, field, value }: { id: string; field: 'min_quantity_override' | 'max_quantity_override'; value: string }) => {
+      const parsed = parseOptionalQuantity(value);
+      const update = field === 'min_quantity_override' ? { min_quantity_override: parsed } : { max_quantity_override: parsed };
+      const { error } = await supabase.from('bundle_items').update(update).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-bundles'] });
+      queryClient.invalidateQueries({ queryKey: ['bundles'] });
+      queryClient.invalidateQueries({ queryKey: ['all-bundles-with-items'] });
+      toast({ title: 'Quantity limit updated' });
+    },
+    onError: (error: Error) => toast({ title: 'Could not save limit', description: error.message, variant: 'destructive' }),
+  });
+
   // Update item manual price (INR/1K → USD/1K stored in DB)
   const updateItemPriceMutation = useMutation({
     mutationFn: async ({ id, price_per_k }: { id: string; price_per_k: number | null }) => {
@@ -622,6 +639,7 @@ export default function AdminBundles() {
                   onUpdatePrice={(id, price_per_k) =>
                     updateItemPriceMutation.mutate({ id, price_per_k })
                   }
+                  onUpdateLimit={(id, field, value) => updateItemLimitMutation.mutate({ id, field, value })}
                 />
               ))
             )}
@@ -747,6 +765,7 @@ function BundleCard({
   onUpdateItem,
   onUpdateRatio,
   onUpdatePrice,
+  onUpdateLimit,
 }: {
   bundle: any;
   isPrimary: boolean;
@@ -768,6 +787,7 @@ function BundleCard({
   onUpdateItem: (id: string, service_id: string | null) => void;
   onUpdateRatio: (id: string, ratio_percent: number) => void;
   onUpdatePrice: (id: string, price_per_k: number | null) => void;
+  onUpdateLimit: (id: string, field: 'min_quantity_override' | 'max_quantity_override', value: string) => void;
 }) {
   const [editingRatios, setEditingRatios] = useState<Record<string, string>>({});
   const [editingPrices, setEditingPrices] = useState<Record<string, string>>({});
@@ -1062,6 +1082,17 @@ function BundleCard({
                   ) : (
                     <span className="text-[10px] text-muted-foreground italic">fallback: service price</span>
                   )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 sm:pl-12">
+                  {(['min_quantity_override', 'max_quantity_override'] as const).map((field) => (
+                    <div key={field} className="min-w-0 space-y-1">
+                      <Label htmlFor={`${item.id}-${field}`} className="text-xs text-muted-foreground">{field === 'min_quantity_override' ? 'Minimum (optional)' : 'Maximum (optional)'}</Label>
+                      <Input id={`${item.id}-${field}`} key={`${item.id}-${field}-${item[field]}`} type="number" min={1} step={1} placeholder="Provider default" defaultValue={item[field] ?? ''} className="h-8 text-sm" onBlur={(event) => {
+                        if (event.target.value !== String(item[field] ?? '')) onUpdateLimit(item.id, field, event.target.value);
+                      }} />
+                    </div>
+                  ))}
                 </div>
 
                 {/* Service Info + Provider Config */}

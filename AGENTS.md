@@ -19,6 +19,7 @@
 - Use the shared searchable ServicePicker for Single Order category/service selection and scoped member tokens for its reference-style workspace; keep history table scrolling local so mobile navigation never overflows.
 - Query provider-backed Single Order services without the persistent engagement cache and invalidate that catalog after admin changes so imports appear immediately without bundles.
 - Sort Single Order categories through the tested category-order helper so platform grouping and engagement priority remain consistent without changing prices or provider mappings.
+- Keep optional bundle quantity limits on bundle_items and resolve them with the shared bundle-quantity policy in member validation and server scheduling; never modify Single Order service limits to implement bundle overrides.
 - Use the shared single-order policy for quantity validation and final per-1000 pricing so the displayed charge and server debit agree without double markup.
 - When deploying to the VPS, never overwrite its `.env`; the live build must point at the self-hosted backend (`https://api.multysmm.com`), not Lovable Cloud, or live users, admins and bundles disappear.
 - The live MultySMM stack runs on the new shared VPS (credentials in the NEW_VPS_* secrets) beside other sites; touch only the `multysmm` nginx site, `/var/www/multysmm` and `/root/supabase/docker`, and start backend services with `--no-deps` (studio, pooler, meta and imgproxy stay off to fit memory).

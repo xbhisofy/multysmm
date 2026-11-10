@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { isManualAdsPlatform } from '../_shared/platform-policy.ts'
+import { bundleQuantityLimits, type BundleQuantityOverrides } from '../_shared/bundle-quantity-policy.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -342,13 +343,15 @@ serve(async (req) => {
     // Admin-set per-bundle-item price overrides services.price.
     // Build a map: service_id -> bundle_items.price_per_k (only when > 0).
     const bundleItemPriceMap = new Map<string, number>()
+    const bundleItemLimits = new Map<string, BundleQuantityOverrides>()
     if (bundle_id) {
       const { data: biRows } = await supabase
         .from('bundle_items')
-        .select('service_id, engagement_type, price_per_k')
+        .select('service_id, engagement_type, price_per_k, min_quantity_override, max_quantity_override')
         .eq('bundle_id', bundle_id)
       if (Array.isArray(biRows)) {
         for (const bi of biRows) {
+          bundleItemLimits.set(String(bi.engagement_type), bi)
           const ppk = Number(bi.price_per_k) || 0
           if (bi.service_id && ppk > 0) {
             bundleItemPriceMap.set(bi.service_id as string, ppk)
@@ -375,10 +378,11 @@ serve(async (req) => {
       if (qty <= 0) {
         return new Response(JSON.stringify({ error: 'Invalid quantity' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
       }
-      if (svc.min_quantity && qty < svc.min_quantity) {
+      const limits = bundleQuantityLimits(bundleItemLimits.get(String(eng.type)), svc)
+      if (qty < limits.minQuantity) {
         return new Response(JSON.stringify({ error: `Quantity below minimum for ${svc.id}` }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
       }
-      if (svc.max_quantity && qty > svc.max_quantity) {
+      if (limits.maxQuantity && qty > limits.maxQuantity) {
         return new Response(JSON.stringify({ error: `Quantity above maximum for ${svc.id}` }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
       }
       // Use admin-set bundle price_per_k when available, else fall back to service price.
@@ -515,7 +519,9 @@ serve(async (req) => {
           }
           // Enforce platform minimum floors (e.g. views must be >= 100)
           const floorMin = PROVIDER_MINIMUMS[engType] || 0
-          if (floorMin > 0) providerMin = Math.max(providerMin, floorMin)
+          const quantityOverride = bundleItemLimits.get(engType)?.min_quantity_override
+          if (quantityOverride != null) providerMin = quantityOverride
+          else if (engType === 'views' && floorMin > 0) providerMin = Math.max(providerMin, floorMin)
 
           const isViewType = ['views', 'impressions', 'reach', 'plays', 'watch_hours'].includes(engType)
           const stagger = platformStagger[engType] || platformStagger.generic
