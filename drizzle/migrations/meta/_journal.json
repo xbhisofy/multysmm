@@ -22,6 +22,13 @@
       "when": 1794292400774,
       "tag": "0002_primary_bundle_selection",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794293977996,
+      "tag": "0003_bundle_quantity_overrides",
+      "breakpoints": true
     }
   ]
 }

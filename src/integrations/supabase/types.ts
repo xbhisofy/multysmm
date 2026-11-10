@@ -72,6 +72,8 @@ export type Database = {
           engagement_type: string
           id: string
           is_base: boolean | null
+          max_quantity_override: number | null
+          min_quantity_override: number | null
           price_per_k: number | null
           ratio_percent: number | null
           service_id: string | null
@@ -86,6 +88,8 @@ export type Database = {
           engagement_type: string
           id?: string
           is_base?: boolean | null
+          max_quantity_override?: number | null
+          min_quantity_override?: number | null
           price_per_k?: number | null
           ratio_percent?: number | null
           service_id?: string | null
@@ -100,6 +104,8 @@ export type Database = {
           engagement_type?: string
           id?: string
           is_base?: boolean | null
+          max_quantity_override?: number | null
+          min_quantity_override?: number | null
           price_per_k?: number | null
           ratio_percent?: number | null
           service_id?: string | null
