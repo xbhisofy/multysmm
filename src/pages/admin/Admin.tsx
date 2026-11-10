@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useAuth } from '@/hooks/useAuth';
+import { useCurrency } from '@/hooks/useCurrency';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { QueueHealthWidget } from '@/components/admin/QueueHealthWidget';
@@ -40,6 +41,7 @@ import { toast } from 'sonner';
 
 export default function Admin() {
   const { isAdmin } = useAuth();
+  const { formatPrice } = useCurrency();
   const queryClient = useQueryClient();
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [maintenanceLoaded, setMaintenanceLoaded] = useState(false);
@@ -54,6 +56,7 @@ export default function Admin() {
     },
     refetchInterval: 15000,
     refetchOnWindowFocus: true,
+    enabled: isAdmin,
   });
 
   useEffect(() => {
@@ -97,10 +100,11 @@ export default function Admin() {
 
   // INSTANT RENDER - No blocking loader, redirect in useEffect if needed
 
-  const totalRevenue = dashboardStats?.total_revenue || 0;
-  const totalOrders = dashboardStats?.total_orders || 0;
-  const userCount = dashboardStats?.user_count || 0;
-  const serviceCount = dashboardStats?.service_count || 0;
+  const fundStats = [
+    { label: 'Total User Deposits (All Time)', value: dashboardStats?.total_deposits, icon: CreditCard },
+    { label: 'Today’s Deposits', value: dashboardStats?.deposits_today, icon: TrendingUp },
+    { label: 'Live User Balance', value: dashboardStats?.total_wallet_balance, icon: DollarSign },
+  ];
 
   return (
     <DashboardLayout>
@@ -134,7 +138,24 @@ export default function Admin() {
         </div>
 
 
-        {/* Stats Grid */}
+        <section aria-label="User fund overview" className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {fundStats.map(({ label, value, icon: Icon }) => (
+            <Card key={label} className="border-primary/15 bg-card shadow-none">
+              <CardContent className="flex items-center gap-3 p-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <h2 className="text-xs font-medium text-muted-foreground">{label}</h2>
+                  <p className="mt-1 break-all text-xl font-bold tabular-nums text-foreground" aria-live="polite">
+                    {statsLoading ? '…' : value == null ? 'Unavailable' : formatPrice(Number(value), { decimals: 2 })}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </section>
+
         {/* Maintenance Mode Toggle */}
         <Card className={`glass-card border-2 relative overflow-hidden transition-all ${maintenanceMode ? 'border-destructive/50 bg-destructive/5' : 'border-border'}`}>
           <CardContent className="p-5 sm:p-6">
