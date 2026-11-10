@@ -521,7 +521,7 @@ serve(async (req) => {
           const floorMin = PROVIDER_MINIMUMS[engType] || 0
           const quantityOverride = bundleItemLimits.get(engType)?.min_quantity_override
           if (quantityOverride != null) providerMin = quantityOverride
-          else if (floorMin > 0) providerMin = Math.max(providerMin, floorMin)
+          else if (engType === 'views' && floorMin > 0) providerMin = Math.max(providerMin, floorMin)
 
           const isViewType = ['views', 'impressions', 'reach', 'plays', 'watch_hours'].includes(engType)
           const stagger = platformStagger[engType] || platformStagger.generic
