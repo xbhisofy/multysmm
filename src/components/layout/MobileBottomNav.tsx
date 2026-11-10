@@ -1,29 +1,58 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Menu, ShoppingCart, ShoppingBag, ReceiptText, WalletMinimal, Settings2, type LucideIcon } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sidebar } from './Sidebar';
 
-const leftItems = [
-  { to: '/single-order', label: 'Single Order', icon: ShoppingBag },
-  { to: '/orders', label: 'Order History', icon: ReceiptText },
-];
-const rightItems = [
-  { to: '/wallet', label: 'Wallet', icon: WalletMinimal },
-  { to: '/settings', label: 'Settings', icon: Settings2 },
+type NavIconKind = 'single' | 'history' | 'new' | 'wallet' | 'settings';
+const items: { to: string; label: string; icon: NavIconKind }[] = [
+  { to: '/single-order', label: 'Single Order', icon: 'single' },
+  { to: '/orders', label: 'Order History', icon: 'history' },
+  { to: '/engagement-order', label: 'New Order', icon: 'new' },
+  { to: '/wallet', label: 'Wallet', icon: 'wallet' },
+  { to: '/settings', label: 'Settings', icon: 'settings' },
 ];
 
-const PlainItem = ({ to, label, icon: Icon }: { to: string; label: string; icon: LucideIcon }) => (
-  <NavLink
-    to={to}
-    className={({ isActive }) => `member-bottom-nav-item flex flex-col items-center justify-center gap-[5px] flex-1 pt-2 pb-[7px] ${isActive ? 'is-active' : ''}`}
-  >
-    <span className="member-bottom-nav-icon flex items-center justify-center">
-      <Icon className="w-[22px] h-[22px]" />
-    </span>
-    <span className="member-bottom-nav-label">{label}</span>
-  </NavLink>
-);
+function NavigationIcon({ kind }: { kind: NavIconKind }) {
+  const gradientId = useId().replace(/:/g, '');
+  const ink = `url(#${gradientId})`;
+  return (
+    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true" className={`member-nav-svg member-nav-svg-${kind}`}>
+      <defs>
+        <linearGradient id={gradientId} x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+          <stop className="member-nav-gradient-start" />
+          <stop offset="1" className="member-nav-gradient-end" />
+        </linearGradient>
+      </defs>
+      {kind === 'single' && <>
+        <path d="m7 29 17 10 17-10M7 36l17 10 17-10" stroke={ink} strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M21 3a6 6 0 0 1 6 0l15 9a4 4 0 0 1 0 7l-15 9a6 6 0 0 1-6 0L6 19a4 4 0 0 1 0-7Z" fill={ink} />
+        <path d="M24 9v13m-6.5-6.5h13" className="member-nav-white-stroke" strokeWidth="3.5" strokeLinecap="round" />
+      </>}
+      {kind === 'history' && <>
+        <path d="M21 41H9a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4h25a4 4 0 0 1 4 4v8M5 18h33M13 4v9M30 4v9" stroke={ink} strokeWidth="3.8" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M13 25h3m7 0h3m-13 7h3" stroke={ink} opacity=".25" strokeWidth="4" strokeLinecap="round" />
+        <circle cx="34" cy="34" r="11" className="member-nav-paper-fill" stroke={ink} strokeWidth="3.6" />
+        <path d="M34 28v7l4 2" stroke={ink} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      </>}
+      {kind === 'new' && <>
+        <path d="M4 10h7l6 26h23M18 30h23l4-17H29M3 22h7M1 28h8" className="member-nav-white-stroke" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M29 4h8l-5 10h8L26 29l3-12h-7Z" className="member-nav-white-fill" />
+        <circle cx="21" cy="42" r="3" className="member-nav-white-fill" /><circle cx="38" cy="42" r="3" className="member-nav-white-fill" />
+      </>}
+      {kind === 'wallet' && <>
+        <path d="m8 16 29-9 3 10M8 19h30" stroke={ink} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+        <rect x="4" y="16" width="41" height="28" rx="6" fill={ink} />
+        <path d="M26 23h11m-11 5h11m-10-5c8 0 8 10 0 10l9 7" className="member-nav-white-stroke" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </>}
+      {kind === 'settings' && <>
+        <path d="m20 3-1 6-5 2-5-3-6 9 5 4v6l-5 4 6 9 5-3 5 2 1 6h10l1-6 5-2 5 3 6-9-5-4v-6l5-4-6-9-5 3-5-2-1-6Z" fill={ink} transform="translate(-1 0)" />
+        <circle cx="24" cy="24" r="11" className="member-nav-paper-fill" />
+        <circle cx="24" cy="24" r="6" stroke={ink} strokeWidth="3.5" />
+      </>}
+    </svg>
+  );
+}
 
 export function MobileBottomNav() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -43,25 +72,18 @@ export function MobileBottomNav() {
         </div>
       </header>
 
-      <nav className="member-bottom-nav fixed bottom-0 left-0 right-0 z-40 lg:hidden" aria-label="Primary">
-        <div className="member-bottom-nav-inner relative flex items-stretch">
-          <div className="flex flex-1 items-stretch justify-around">
-            {leftItems.map(item => <PlainItem key={item.to} {...item} />)}
-          </div>
-          <div className="w-20 shrink-0" />
-          <div className="flex flex-1 items-stretch justify-around">
-            {rightItems.map(item => <PlainItem key={item.to} {...item} />)}
-          </div>
-          <NavLink
-            to="/engagement-order"
-            aria-label="New Order"
-            className={({ isActive }) => `member-bottom-nav-order absolute left-1/2 top-0 flex -translate-x-1/2 flex-col items-center ${isActive ? 'is-active' : ''}`}
-          >
-            <span className="member-bottom-nav-order-circle -mt-7 flex h-14 w-14 items-center justify-center rounded-full">
-              <ShoppingCart className="h-6 w-6" />
-            </span>
-            <span className="member-bottom-nav-label mt-1">New Order</span>
-          </NavLink>
+      <nav className="member-bottom-nav" aria-label="Primary">
+        <div className="member-bottom-nav-inner">
+          {items.map(({ to, label, icon }) => (
+            <NavLink key={to} to={to} className={({ isActive }) =>
+              `member-bottom-nav-item ${icon === 'new' ? 'member-bottom-nav-order' : ''} ${isActive ? 'is-active' : ''}`}
+              data-icon={icon}>
+              <span className={icon === 'new' ? 'member-bottom-nav-order-circle' : 'member-bottom-nav-icon'}>
+                <NavigationIcon kind={icon} />
+              </span>
+              <span className="member-bottom-nav-label">{label}</span>
+            </NavLink>
+          ))}
         </div>
       </nav>
 
