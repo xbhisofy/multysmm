@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Deploy reference-style Full Engagement lightning/engagement icon to VPS; preserve environment and verify served icon assets, then refresh code backup.
+- [x] Deploy reference-style Full Engagement lightning/engagement icon to VPS; build passed, source hashes matched, live served SVG paths verified, routes HTTP 200, environment unchanged and self-hosted backend preserved. Code-only backup invoked; signed-in live visual check not performed.
 
 - [x] Deploy compact bottom navigation to VPS; build passed, both source hashes matched, live JS labels and CSS bottom:0 verified, routes HTTP 200, .env unchanged and api.multysmm.com target preserved. Invoked existing code-only backup; signed-in live visual check not performed.
 
