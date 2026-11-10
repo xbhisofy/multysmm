@@ -371,7 +371,9 @@ export default function AdminBundles() {
 
   const updateItemLimitMutation = useMutation({
     mutationFn: async ({ id, field, value }: { id: string; field: 'min_quantity_override' | 'max_quantity_override'; value: string }) => {
-      const { error } = await supabase.from('bundle_items').update({ [field]: parseOptionalQuantity(value) }).eq('id', id);
+      const parsed = parseOptionalQuantity(value);
+      const update = field === 'min_quantity_override' ? { min_quantity_override: parsed } : { max_quantity_override: parsed };
+      const { error } = await supabase.from('bundle_items').update(update).eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => {
