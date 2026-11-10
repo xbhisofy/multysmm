@@ -493,7 +493,7 @@ export default function AdminBundles() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 px-2 sm:px-4 lg:px-6 pb-8">
+      <div className="min-w-0 max-w-full space-y-6 px-2 sm:px-4 lg:px-6 pb-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <Link
@@ -503,7 +503,7 @@ export default function AdminBundles() {
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <div className="flex-1">
-            <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+            <h1 className="text-xl sm:text-3xl font-bold flex items-center gap-2">
               <Sparkles className="h-6 w-6 text-primary" />
               Engagement Bundles
             </h1>
@@ -511,7 +511,7 @@ export default function AdminBundles() {
               Create platform bundles with engagement types
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
               className="rounded-xl gap-2"
@@ -769,11 +769,11 @@ function BundleCard({
     <Card className="glass-card overflow-hidden">
       <CardHeader className="border-b border-border pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
               <Package className="h-5 w-5 text-primary" />
             </div>
-            <div>
+            <div className="min-w-0 [overflow-wrap:anywhere]">
               <CardTitle className="text-lg">{bundle.name}</CardTitle>
               <p className="text-xs text-muted-foreground">
                 {bundle.description || 'No description'}
@@ -801,7 +801,7 @@ function BundleCard({
       </CardHeader>
       <CardContent className="p-4 space-y-4">
         {/* AI Organic Mode Toggle - MAIN FEATURE */}
-        <div className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all ${aiOrganicEnabled
+        <div className={`flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border-2 transition-all ${aiOrganicEnabled
           ? 'bg-gradient-to-r from-green-500/10 via-emerald-500/5 to-teal-500/10 border-green-500/40'
           : 'bg-gradient-to-r from-blue-500/10 via-blue-500/5 to-yellow-500/10 border-blue-500/40'
           }`}>
@@ -856,7 +856,7 @@ function BundleCard({
         </div>
 
         {/* Custom Ratios Toggle */}
-        <div className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20">
+        <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 rounded-xl bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20">
           <div className="flex items-center gap-3">
             {useCustomRatios ? (
               <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
@@ -929,15 +929,15 @@ function BundleCard({
             return (
               <div
                 key={item.id}
-                className="p-4 rounded-xl bg-muted/50 space-y-3"
+                className="min-w-0 max-w-full p-3 sm:p-4 rounded-xl bg-muted/50 space-y-3"
               >
                 {/* Top row - Type info */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-background flex items-center justify-center">
+                  <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
+                    <div className="w-9 h-9 shrink-0 rounded-lg bg-background flex items-center justify-center">
                       <Icon className="h-4 w-4 text-muted-foreground" />
                     </div>
-                    <span className="font-medium capitalize">
+                    <span className="min-w-0 font-medium capitalize [overflow-wrap:anywhere]">
                       {ENGAGEMENT_CONFIG[item.engagement_type as EngagementType]?.label || item.engagement_type}
                     </span>
                     {/* Only show % badge when custom ratios is ON */}
@@ -967,7 +967,7 @@ function BundleCard({
 
                 {/* Ratio Input - Only show when custom ratios enabled and not base */}
                 {useCustomRatios && !isBase && (
-                  <div className="flex items-center gap-2 pl-12">
+                  <div className="flex flex-wrap items-center gap-2 sm:pl-12">
                     <span className="text-xs text-muted-foreground">Custom Ratio:</span>
                     <div className="flex items-center gap-1">
                       <Input
@@ -1001,9 +1001,9 @@ function BundleCard({
                 )}
 
                 {/* Manual Price (INR per 1K) — overrides linked service price */}
-                <div className="flex items-center gap-2 pl-12">
+                <div className="flex min-w-0 flex-wrap items-center gap-2 sm:pl-12">
                   <span className="text-xs text-muted-foreground shrink-0">INR / 1K:</span>
-                  <div className="relative flex-1 max-w-[160px]">
+                  <div className="relative min-w-0 flex-1 max-w-40">
                     <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">₹</span>
                     <Input
                       type="number"
@@ -1041,7 +1041,7 @@ function BundleCard({
                 </div>
 
                 {/* Service Info + Provider Config */}
-                <div className="flex items-center gap-2 pl-12">
+                <div className="flex min-w-0 flex-wrap items-center gap-2 sm:pl-12">
                   {(() => {
                     // Use the JOIN data (item.service) as primary source
                     const joinedService = item.service as any;
@@ -1051,18 +1051,18 @@ function BundleCard({
                     const displayPrice = linkedService?.price ?? null;
 
                     return (
-                      <div className="flex-1 h-9 px-3 rounded-lg border border-border bg-background flex items-center text-xs gap-2">
+                      <div className="flex w-full min-w-0 max-w-full basis-full flex-wrap items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-xs">
                         {linkedService ? (
                           <>
-                            <span className="text-foreground font-medium truncate">
-                              {linkedService.name?.slice(0, 40)}
+                            <span className="min-w-0 flex-1 basis-full font-medium text-foreground [overflow-wrap:anywhere] sm:basis-auto">
+                              {linkedService.name}
                             </span>
                             <Badge variant="outline" className="text-[10px] shrink-0 font-bold border-primary/30 text-primary">
                               ${displayPrice ?? '?'}/1K
                             </Badge>
                           </>
                         ) : (
-                          <span className="text-muted-foreground italic">
+                          <span className="min-w-0 text-muted-foreground italic [overflow-wrap:anywhere]">
                             Not linked — use Providers to import &amp; link
                           </span>
                         )}
