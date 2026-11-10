@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Restore admin total user deposits, today's deposits and live wallet balance from existing dashboard stats; deployed VPS build passed, source hash/live asset and admin HTTP 200 verified, environment unchanged. Authenticated visual check unavailable because self-hosted session minting is not permitted; payment data untouched.
+
 - [x] Replace green theme with shared white/sky-blue tokens and compact OYO Media-style text, icons and spacing. Deployed frontend to VPS; environment hash unchanged and self-hosted backend target verified. Live mobile homepage/auth show blue theme without overflow or runtime errors; all six routes return 200, Single Order/History source hashes match, and BottingPro HTTPS returns 200. Authenticated member visual check remains unverified.
 
 - [x] Add colorful platform icons to category/services/history and owner-scoped ordinary provider order status reconciliation; deployed on live VPS, 14 tests passed, authenticated mobile menus/history and status endpoint verified.
