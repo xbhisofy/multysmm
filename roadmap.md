@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Deploy compact bottom navigation to VPS; build passed, both source hashes matched, live JS labels and CSS bottom:0 verified, routes HTTP 200, .env unchanged and api.multysmm.com target preserved. Invoked existing code-only backup; signed-in live visual check not performed.
+
 - [x] Compact bottom navigation icons and center elevation, remove outside bottom gap, and rename labels to Single / History / Full Engagement / Wallet / Setting; destinations unchanged. Isolated component browser checks passed at 320/375/424/768/1280px and landscape, bottom edge flush, five links/active states and reduced motion verified, build OK. Signed-in page verification and VPS deployment not performed.
 
 - [x] Match only bottom navigation to the supplied glass/neumorphic reference with inline SVGs, raised center action, scoped effect tokens and safe-area spacing. Isolated real-component browser checks passed at 320/375/768/1280px and landscape, all five links/active states and reduced motion passed, build OK. Signed-in page check unavailable because requesting account could not be minted; no VPS deployment requested or performed.
