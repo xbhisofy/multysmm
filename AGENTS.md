@@ -1,5 +1,7 @@
 # Project rules
 
+- Keep floating member navigation styling and effect tokens in member-experience.css with inline decorative SVGs in MobileBottomNav; preserve its route targets so visual changes never alter ordering behavior.
+
 - Primary engagement bundles use the first active per-platform sort order; set_primary_bundle atomically reorders that platform under an admin check, and all pricing/dispatch paths use the explicitly selected bundle.
 
 - Render platform branding through the shared PlatformIcon and global brand tokens; keep service and category menus consistent.

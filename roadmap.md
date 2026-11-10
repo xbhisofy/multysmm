@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Match only bottom navigation to the supplied glass/neumorphic reference; preserve five destinations and verify mobile/tablet/desktop sizing and navigation.
+
 - [x] Add optional per-bundle-service minimum/maximum with linked-provider fallback and scheduling support; deployed schema, frontend and function plus Views-first Single Order categories to VPS. Eleven tests passed, minimum-one live save/read rollback passed, RLS remains enabled, source hashes match, environment unchanged, routes HTTP 200. Authenticated admin click and paid provider order remain unverified; actual provider minimum still governs dispatch.
 
 - [x] Add compact platform-scoped bundle selection between platform and link; admin Make Primary atomically reorders existing platform bundles. Pricing, service IDs, snapshot and single/mass dispatch use selected bundle, repeat preserves original bundle. Ten tests passed; primary/admin-only SQL rollback checks passed. Cloud function migration and VPS frontend/function deployed, build OK, environment unchanged, both routes HTTP 200. Real authenticated UI/order verification unavailable; no paid test order or provider account isolation changes.
