@@ -1,5 +1,7 @@
 # Project rules
 
+- Primary engagement bundles use the first active per-platform sort order; set_primary_bundle atomically reorders that platform under an admin check, and all pricing/dispatch paths use the explicitly selected bundle.
+
 - Render platform branding through the shared PlatformIcon and global brand tokens; keep service and category menus consistent.
 - Persist ordinary order dispatch provenance and reconcile only that provider's explicit status; member refreshes must be owner-scoped and never resend orders or credit wallets.
 

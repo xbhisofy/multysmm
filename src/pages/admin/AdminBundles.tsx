@@ -105,6 +105,18 @@ export default function AdminBundles() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [deleteBundle, setDeleteBundle] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
+  const primaryBundleMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.rpc('set_primary_bundle' as any, { p_bundle_id: id });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-bundles'] });
+      queryClient.invalidateQueries({ queryKey: ['bundles'] });
+      toast({ title: 'Primary bundle updated' });
+    },
+    onError: (error: Error) => toast({ title: 'Could not update primary bundle', description: error.message, variant: 'destructive' }),
+  });
 
   // Realtime sync: instantly reflect admin pricing edits everywhere.
   useEffect(() => {
@@ -581,6 +593,9 @@ export default function AdminBundles() {
                 <BundleCard
                   key={bundle.id}
                   bundle={bundle}
+                  isPrimary={bundle.is_active && bundle.id === filteredBundles.filter(b => b.is_active).sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0) || a.id.localeCompare(b.id))[0]?.id}
+                  primaryPending={primaryBundleMutation.isPending}
+                  onMakePrimary={() => primaryBundleMutation.mutate(bundle.id)}
                   services={services || []}
                   mappedServices={allServices}
                   providerAccounts={providerAccounts || []}
@@ -717,6 +732,9 @@ function CreateBundleForm({
 
 function BundleCard({
   bundle,
+  isPrimary,
+  primaryPending,
+  onMakePrimary,
   services,
   mappedServices,
   providerAccounts,
@@ -731,6 +749,9 @@ function BundleCard({
   onUpdatePrice,
 }: {
   bundle: any;
+  isPrimary: boolean;
+  primaryPending: boolean;
+  onMakePrimary: () => void;
   services: any[];
   mappedServices: any[];
   providerAccounts: any[];
@@ -775,6 +796,9 @@ function BundleCard({
             </div>
             <div className="min-w-0 [overflow-wrap:anywhere]">
               <CardTitle className="text-lg">{bundle.name}</CardTitle>
+              <Button variant={isPrimary ? 'secondary' : 'outline'} size="sm" className="mt-1 h-7 gap-1 text-xs" disabled={isPrimary || !bundle.is_active || primaryPending} onClick={onMakePrimary}>
+                <Bookmark className="h-3 w-3" />{isPrimary ? 'Primary' : 'Make Primary'}
+              </Button>
               <p className="text-xs text-muted-foreground">
                 {bundle.description || 'No description'}
               </p>

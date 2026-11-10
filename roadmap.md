@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Add compact platform-scoped bundle selection between platform and link; admin Make Primary atomically reorders existing platform bundles. Pricing, service IDs, snapshot and single/mass dispatch use selected bundle, repeat preserves original bundle. Ten tests passed; primary/admin-only SQL rollback checks passed. Cloud function migration and VPS frontend/function deployed, build OK, environment unchanged, both routes HTTP 200. Real authenticated UI/order verification unavailable; no paid test order or provider account isolation changes.
+
 - [x] Fix Admin Bundles mobile service-card overflow: wrap full service names, move linked/provider controls below, remove mobile indentation and allow price rows to shrink/wrap. VPS build passed, environment unchanged, live Bundles HTTP 200; authenticated visual verification remains unavailable (preview Access Denied). Pricing/mappings untouched.
 
 - [x] Restore admin total user deposits, today's deposits and live wallet balance from existing dashboard stats; deployed VPS build passed, source hash/live asset and admin HTTP 200 verified, environment unchanged. Authenticated visual check unavailable because self-hosted session minting is not permitted; payment data untouched.

@@ -8,6 +8,9 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { chooseBundle, platformBundles } from "@/lib/bundle-selection";
+import { Package } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -148,6 +151,7 @@ export default function EngagementOrder() {
   // Form State
   const [platform, setPlatform] = useState(() => new URLSearchParams(location.search).get('platform') || 'instagram');
   const [link, setLink] = useState('');
+  const [selectedBundleId, setSelectedBundleId] = useState<string | null>(null);
   // Mass Order mode state
   const [orderMode, setOrderMode] = useState<'single' | 'mass'>(
     () => (new URLSearchParams(location.search).get('mode') === 'mass' ? 'mass' : 'single')
@@ -241,6 +245,7 @@ export default function EngagementOrder() {
       }
       const snap: any = (data as any).config_snapshot || null;
       setRepeatSource(data);
+      setSelectedBundleId(data.bundle_id);
       setPlatform(snap?.platform || bundle.platform);
       setBaseQuantity(snap?.base_quantity ?? data.base_quantity ?? 10000);
       setIsOrganicMode(snap?.is_organic_mode ?? !!data.is_organic_mode);
@@ -317,17 +322,19 @@ export default function EngagementOrder() {
       return data as (EngagementBundle & { items: (BundleItem & { service: any })[] })[];
     },
     enabled: !!platform && availablePlatforms.includes(platform),
-    staleTime: 10 * 60 * 1000,
+    staleTime: 0,
     gcTime: 30 * 60 * 1000,
-    placeholderData: keepPreviousData,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
+
+  const bundleOptions = useMemo(() => platformBundles(bundles || [], platform), [bundles, platform]);
+  const selectedBundle = useMemo(() => chooseBundle(bundles || [], platform, selectedBundleId), [bundles, platform, selectedBundleId]);
+  const seededBundleRef = useRef<string | null>(null);
 
   // Get active engagement types from bundle
   const activeEngagementTypes = useMemo<EngagementType[]>(() => {
-    if (!bundles || bundles.length === 0) return [];
-    const bundle = bundles[0];
+    const bundle = selectedBundle;
     if (!bundle?.items) return [];
     // Return unique engagement types sorted by preferred order
     const types = bundle.items
@@ -345,7 +352,7 @@ export default function EngagementOrder() {
     };
 
     return uniqueTypes.sort((a, b) => (PREFERRED_ORDER[a] || 99) - (PREFERRED_ORDER[b] || 99));
-  }, [bundles]);
+  }, [selectedBundle]);
 
   // Base per-type quantities (used as "100%" reference for draw-mode scaling)
   // Use debounced value for expensive calculations
@@ -376,8 +383,7 @@ export default function EngagementOrder() {
 
   // Get service prices from bundle — with auto-match fallback for unlinked items
   const servicePrices = useMemo(() => {
-    if (!bundles || bundles.length === 0) return {};
-    const bundle = bundles[0];
+    const bundle = selectedBundle;
     if (!bundle?.items) return {};
 
     // Keywords to match engagement types in service names
@@ -473,14 +479,12 @@ export default function EngagementOrder() {
       };
     }
     return prices;
-  }, [bundles, allServices, platform, rates]);
+  }, [selectedBundle, allServices, platform, rates]);
 
   // Update engagement configs when bundle or base quantity changes
   // Use debounced value to prevent excessive recalculations
   useEffect(() => {
-    if (!bundles || bundles.length === 0) return;
-
-    const bundle = bundles[0];
+    const bundle = selectedBundle;
     if (!bundle?.items) return;
 
     // Get all engagement types from bundle items
@@ -489,7 +493,14 @@ export default function EngagementOrder() {
 
     const uniqueBundleTypes = [...new Set(bundleTypes)];
 
-    setEngagements((prev) => {
+    const changedBundle = seededBundleRef.current !== bundle.id;
+    seededBundleRef.current = bundle.id;
+    if (changedBundle) {
+      userEditedQtyRef.current.clear();
+      setPreviewSchedules({});
+    }
+    setEngagements((previous) => {
+      const prev = changedBundle ? {} : previous;
       const updated: EngagementConfigs = {};
 
       uniqueBundleTypes.forEach((type) => {
@@ -547,14 +558,14 @@ export default function EngagementOrder() {
       });
       return updated;
     });
-  }, [debouncedBaseQuantity, bundles, servicePrices, userSavedRatios, isAutoRatios]);
+  }, [debouncedBaseQuantity, selectedBundle, servicePrices, userSavedRatios, isAutoRatios]);
 
   // Apply repeat-order per-type overrides once engagements are seeded from the bundle.
   // Prefers the persisted config_snapshot (100% restore) and falls back to
   // reconstructing values from stored drip fields for legacy orders.
   useEffect(() => {
     if (!repeatSource || prefillAppliedRef.current) return;
-    if (!bundles || bundles.length === 0) return;
+    if (!selectedBundle) return;
     const items: any[] = repeatSource.items || [];
     const itemByType = new Map(items.map((item) => [String(item.engagement_type), item]));
     const snap: any = (repeatSource as any).config_snapshot || null;
@@ -697,7 +708,7 @@ export default function EngagementOrder() {
       title: '✅ Order fully restored',
       description: `Repeating Order #${repeatSource.order_number}. Just replace the link and click Place Order.`,
     });
-  }, [repeatSource, bundles, engagements, servicePrices, toast]);
+  }, [repeatSource, selectedBundle, engagements, servicePrices, toast]);
 
 
 
@@ -901,7 +912,8 @@ export default function EngagementOrder() {
       );
     }
 
-    const bundle = bundles?.[0];
+    const bundle = selectedBundle;
+    if (!bundle) throw new Error("Please choose an available bundle");
 
     // Full snapshot of the user's configuration — persisted so Repeat Order
     // can restore 100% of the original settings later, not just guessed values.
@@ -998,7 +1010,7 @@ export default function EngagementOrder() {
     }
     if ((data as any)?.error) throw new Error((data as any).error);
     return data as { order_number: number };
-  }, [user, totalPrice, engagements, bundles, baseQuantity, isOrganicMode, previewSchedules, platform, isAutoRatios, userSavedRatios]);
+  }, [user, totalPrice, engagements, selectedBundle, baseQuantity, isOrganicMode, previewSchedules, platform, isAutoRatios, userSavedRatios]);
 
   // Single-order mutation
   const placeOrderMutation = useMutation({
@@ -1225,6 +1237,23 @@ export default function EngagementOrder() {
             />
           </CardContent>
         </Card>
+
+        <div className="flex min-w-0 items-center gap-2 px-1">
+          <Package className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+          <Label htmlFor="engagement-bundle" className="shrink-0 text-xs">Bundle</Label>
+          <Select value={selectedBundle?.id || ''} onValueChange={setSelectedBundleId} disabled={bundlesLoading || !bundleOptions.length}>
+            <SelectTrigger id="engagement-bundle" className="h-9 min-w-0 flex-1 rounded-lg text-xs [&>span]:min-w-0 [&>span]:truncate">
+              <SelectValue placeholder={bundlesLoading ? 'Loading bundles…' : 'Choose bundle'} />
+            </SelectTrigger>
+            <SelectContent className="max-w-[calc(100vw-2rem)]">
+              {bundleOptions.map((bundle, index) => (
+                <SelectItem key={bundle.id} value={bundle.id} className="text-xs [&>span:last-child]:whitespace-normal [&>span:last-child]:break-words">
+                  {bundle.name}{index === 0 ? ' · Primary' : ''}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         {/* Repeat Order Banner */}
         {(repeatSource || repeatError) && (

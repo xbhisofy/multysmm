@@ -1690,6 +1690,7 @@ export type Database = {
         Args: { p_quantity: number; p_run_id: string; p_scheduled_at: string }
         Returns: Json
       }
+      set_primary_bundle: { Args: { p_bundle_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
