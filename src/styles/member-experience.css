@@ -187,6 +187,7 @@
 .member-nav-svg-wallet .member-nav-gradient-end { stop-color: hsl(var(--nav-purple)); }
 .member-nav-white-stroke { stroke: hsl(var(--member-paper)); }
 .member-nav-white-fill, .member-nav-paper-fill { fill: hsl(var(--member-paper)); }
+.member-nav-engagement-detail { fill: hsl(var(--nav-blue)); }
 
 .member-bottom-nav-item:focus-visible {
   outline: 2px solid hsl(var(--nav-blue));
