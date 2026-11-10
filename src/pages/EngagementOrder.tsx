@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { chooseBundle, platformBundles } from "@/lib/bundle-selection";
+import { bundleQuantityLimits } from '../../supabase/functions/_shared/bundle-quantity-policy';
 import { Package } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -424,8 +425,7 @@ export default function EngagementOrder() {
         prices[item.engagement_type] = {
           pricePerK: manualPricePerK ?? item.service.price,
           serviceId: item.service.id,
-          minQuantity: lowestMatchedMin ?? item.service.min_quantity,
-          maxQuantity: item.service.max_quantity,
+          ...bundleQuantityLimits(item, item.service),
         };
         return;
       }
@@ -442,8 +442,7 @@ export default function EngagementOrder() {
           prices[item.engagement_type] = {
             pricePerK: manualPricePerK ?? match.price,
             serviceId: match.id,
-            minQuantity: Number.isFinite(lowestMin) ? lowestMin : match.min_quantity,
-            maxQuantity: match.max_quantity,
+            ...bundleQuantityLimits(item, match),
           };
           return;
         }
@@ -454,8 +453,7 @@ export default function EngagementOrder() {
         prices[item.engagement_type] = {
           pricePerK: manualPricePerK ?? item.service.price,
           serviceId: item.service.id,
-          minQuantity: lowestMatchedMin ?? item.service.min_quantity,
-          maxQuantity: item.service.max_quantity,
+          ...bundleQuantityLimits(item, item.service),
         };
         return;
       }
@@ -465,14 +463,14 @@ export default function EngagementOrder() {
         prices[item.engagement_type] = {
           pricePerK: manualPricePerK,
           serviceId: null,
-          minQuantity: lowestMatchedMin ?? 0,
+          ...bundleQuantityLimits(item, { min_quantity: lowestMatchedMin ?? 1 }),
         };
       }
     });
     // Enforce platform minimum of 100 for views regardless of provider.
     // Pricing for views (and every other type) comes from bundle_items.price_per_k
     // set by the admin — no hardcoded overrides.
-    if (prices['views']) {
+    if (prices['views'] && bundle.items.find(item => item.engagement_type === 'views')?.min_quantity_override == null) {
       prices['views'] = {
         ...prices['views'],
         minQuantity: Math.max(100, prices['views'].minQuantity || 0),
