@@ -6,11 +6,11 @@ import { Sidebar } from './Sidebar';
 
 type NavIconKind = 'single' | 'history' | 'new' | 'wallet' | 'settings';
 const items: { to: string; label: string; icon: NavIconKind }[] = [
-  { to: '/single-order', label: 'Single Order', icon: 'single' },
-  { to: '/orders', label: 'Order History', icon: 'history' },
-  { to: '/engagement-order', label: 'New Order', icon: 'new' },
+  { to: '/single-order', label: 'Single', icon: 'single' },
+  { to: '/orders', label: 'History', icon: 'history' },
+  { to: '/engagement-order', label: 'Full Engagement', icon: 'new' },
   { to: '/wallet', label: 'Wallet', icon: 'wallet' },
-  { to: '/settings', label: 'Settings', icon: 'settings' },
+  { to: '/settings', label: 'Setting', icon: 'settings' },
 ];
 
 function NavigationIcon({ kind }: { kind: NavIconKind }) {
