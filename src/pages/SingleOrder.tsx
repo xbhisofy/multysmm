@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ServicePicker } from '@/components/ServicePicker';
 import { PlatformIcon } from '@/components/PlatformIcon';
+import { sortSingleOrderCategories } from '@/lib/single-order-category-order';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSingleOrderServices } from '@/hooks/useSingleOrderServices';
@@ -50,7 +51,7 @@ export default function SingleOrder() {
     const text = `${service.service_number ?? ''} ${service.name} ${service.category}`.toLowerCase();
     return matchesPlatform && text.includes(search.trim().toLowerCase());
   }), [services, platform, search]);
-  const categories = useMemo(() => [...new Set(filtered.map(service => service.category))], [filtered]);
+  const categories = useMemo(() => sortSingleOrderCategories([...new Set(filtered.map(service => service.category))]), [filtered]);
   const activeCategory = categories.includes(category) ? category : categories[0] || '';
   const categoryServices = filtered.filter(service => service.category === activeCategory);
   const service = categoryServices.find(item => item.id === serviceId) || categoryServices[0];
