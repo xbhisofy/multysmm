@@ -36,9 +36,17 @@ function NavigationIcon({ kind }: { kind: NavIconKind }) {
         <path d="M34 28v7l4 2" stroke={ink} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
       </>}
       {kind === 'new' && <>
-        <path d="M4 10h7l6 26h23M18 30h23l4-17H29M3 22h7M1 28h8" className="member-nav-white-stroke" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M29 4h8l-5 10h8L26 29l3-12h-7Z" className="member-nav-white-fill" />
-        <circle cx="21" cy="42" r="3" className="member-nav-white-fill" /><circle cx="38" cy="42" r="3" className="member-nav-white-fill" />
+        <g className="member-nav-white-fill">
+          <path d="M26 10h9l-7 12h8L20 39l5-14h-8Z" strokeLinejoin="round" />
+          <path d="M12 7C6 1 1 10 7 15l5 4 5-4c6-5 1-14-5-8Z" />
+          <path d="M4 23h8a4 4 0 0 1 4 4v4a4 4 0 0 1-4 4H8l-4 3v-4a4 4 0 0 1-3-3v-4a4 4 0 0 1 3-4Z" />
+          <path d="m39 17 7 5a2 2 0 0 1 0 3l-7 5a1.5 1.5 0 0 1-2-1V18a1.5 1.5 0 0 1 2-1Z" />
+          <circle cx="29" cy="39" r="3" /><circle cx="37" cy="40" r="2.5" />
+          <path d="M23 47a6 6 0 0 1 12 0Zm13 0a8 8 0 0 0-2-4 5 5 0 0 1 8 4Z" />
+        </g>
+        <g className="member-nav-engagement-detail">
+          <circle cx="5" cy="29" r="1" /><circle cx="8.5" cy="29" r="1" /><circle cx="12" cy="29" r="1" />
+        </g>
       </>}
       {kind === 'wallet' && <>
         <path d="m8 16 29-9 3 10M8 19h30" stroke={ink} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
