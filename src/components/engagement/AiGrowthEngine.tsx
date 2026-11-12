@@ -88,7 +88,7 @@ export function AiGrowthEngine({ availablePlatforms, selectedPlatform, onPlatfor
           </div>
           <div className="hidden sm:flex items-center gap-1.5 text-[12px] font-semibold text-emerald-600">
             <Sparkles className="w-3.5 h-3.5" />
-            Powered by MultySMM
+            Powered by ZoloSMM
           </div>
         </div>
 

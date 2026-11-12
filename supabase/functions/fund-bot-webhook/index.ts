@@ -25,7 +25,7 @@ async function send(chatId: string | number, text: string) {
 async function process(chatId: string | number, command: ReturnType<typeof fundBotCommand>) {
   try {
     if (command === 'menu') {
-      await send(chatId, '🌿 <b>MultySMM Admin Desk</b>\n━━━━━━━━━━━━━━━━━━\n💰 Live provider balances\n📊 Verified unsent-work top-up plan\n🔔 ZapUPI / OxaPay payment alerts\n\nNeeche button tap karein 👇');
+      await send(chatId, '🌿 <b>ZoloSMM Admin Desk</b>\n━━━━━━━━━━━━━━━━━━\n💰 Live provider balances\n📊 Verified unsent-work top-up plan\n🔔 ZapUPI / OxaPay payment alerts\n\nNeeche button tap karein 👇');
       return;
     }
     await send(chatId, '⏳ <b>Live provider check chal raha hai…</b>');

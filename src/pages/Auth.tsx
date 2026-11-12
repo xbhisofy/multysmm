@@ -97,14 +97,14 @@ export default function Auth() {
   return (
     <div className="member-shell member-auth flex items-center justify-center px-6 py-12 relative overflow-hidden">
       <PageMeta
-        title={isLogin ? 'Sign in — MultySMM' : 'Create your account — MultySMM'}
-        description="Sign in or create your free MultySMM account to launch AI-powered Instagram, YouTube and TikTok growth campaigns. No credit card required."
+        title={isLogin ? 'Sign in — ZoloSMM' : 'Create your account — ZoloSMM'}
+        description="Sign in or create your free ZoloSMM account to launch AI-powered Instagram, YouTube and TikTok growth campaigns. No credit card required."
         canonicalPath="/auth"
       />
       <div className="member-auth-card relative">
           {/* Logo */}
           <div className="flex items-center justify-center mb-6">
-            <img src="/logo.png" alt="MultySMM" className="h-12 w-12 rounded-full object-cover bg-white ring-2 ring-blue-100 shadow-md" />
+            <img src="/logo.png" alt="ZoloSMM" className="h-12 w-12 rounded-full object-cover bg-white ring-2 ring-blue-100 shadow-md" />
           </div>
 
           <Link to="/" className="inline-flex items-center gap-1.5 text-[12px] font-medium mb-5" style={{ color: 'hsl(var(--muted-foreground))' }}>
@@ -115,7 +115,7 @@ export default function Auth() {
             {isForgotPassword ? 'Reset password' : isLogin ? 'Welcome back' : 'Create account'}
           </h1>
           <p className="text-[14px] mb-5" style={{ color: 'hsl(var(--muted-foreground))' }}>
-            {isForgotPassword ? 'Enter your email to receive a reset link.' : isLogin ? 'Sign in to your MultySMM account.' : 'Get started for free — no credit card.'}
+            {isForgotPassword ? 'Enter your email to receive a reset link.' : isLogin ? 'Sign in to your ZoloSMM account.' : 'Get started for free — no credit card.'}
           </p>
 
 

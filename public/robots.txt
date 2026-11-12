@@ -1,4 +1,4 @@
-# MultySMM — robots.txt
+# ZoloSMM — robots.txt
 # Site:    https://multysmm.com
 # Updated: 2026-06-26
 
