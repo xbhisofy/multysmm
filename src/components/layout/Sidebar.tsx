@@ -41,7 +41,7 @@ export function Sidebar({ onClose }: SidebarProps) {
             </span>
           <span className="min-w-0">
             <span className="block text-[17px] font-extrabold tracking-tight leading-none" style={{ color: '#0F172A' }}>
-              Multy<span style={{ color: 'hsl(var(--member-green))' }}>SMM</span>
+              Zolo<span style={{ color: 'hsl(var(--member-green))' }}>SMM</span>
             </span>
             <span className="flex items-center gap-1.5 mt-1">
               <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'hsl(var(--member-green))' }} />
