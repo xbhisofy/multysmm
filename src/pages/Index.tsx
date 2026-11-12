@@ -108,7 +108,7 @@ const Index = () => {
         <div className="smm-wrap flex min-h-[4.6rem] items-center justify-between gap-4">
           <Link to="/" aria-label="ZoloSMM home" className="flex items-center gap-2.5">
             <img src="/logo.png" alt="" className="h-9 w-9 rounded-xl object-cover" />
-            <span className="text-base font-extrabold tracking-tight">MULTY<span className="smm-grad-text">SMM</span></span>
+            <span className="text-base font-extrabold tracking-tight">ZOLO<span className="smm-grad-text">SMM</span></span>
           </Link>
 
           <nav className="hidden items-center gap-7 lg:flex">
@@ -356,7 +356,7 @@ const Index = () => {
           <div>
             <Link to="/" className="flex items-center gap-2.5">
               <img src="/logo.png" alt="" className="h-10 w-10 rounded-xl object-cover" />
-              <strong className="text-lg font-extrabold">MULTY<span className="smm-grad-text">SMM</span></strong>
+              <strong className="text-lg font-extrabold">ZOLO<span className="smm-grad-text">SMM</span></strong>
             </Link>
             <p className="mt-5 max-w-xs text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>
               Real organic engagement for creators and brands — genuine audiences, human pacing, zero bots.
