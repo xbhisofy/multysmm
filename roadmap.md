@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Stop provider sync/re-import from overwriting admin service prices; test price retention and deploy the fix plus category presets to VPS without changing environment or payment/order data.
+- [x] Stop provider sync/re-import/mapping edits from overwriting admin service prices and retain bundle price drafts until readback. Deployed fix plus icon/category presets to VPS and Cloud functions; 12 tests passed, build OK, deployed source/function hashes match, live authenticated system rate check returned checked=1/updated=0 and all catalog prices remained unchanged. Live assets verified, environment unchanged, self-hosted backend preserved, code backup refreshed. Signed-in admin UI and paid dispatch unverified; previously overwritten prices not reconstructed.
 
 - [x] Expand admin service category presets for supported platforms with compact shared brand icons; preserve custom categories and existing service data. Eight category-order/pricing tests passed and build OK. Authenticated category selection unverified because requesting account could not be minted; VPS deployment not requested.
 
