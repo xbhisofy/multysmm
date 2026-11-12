@@ -22,7 +22,7 @@ const SUGGESTIONS = [
 const WELCOME: Msg = {
   role: "assistant",
   content:
-    "Hi! I'm your **MultySMM AI Growth Assistant** ✨\n\nAsk me anything about growing your social media — engagement ratios, safe organic pacing, best plans for a target view count, or platform tips.\n\nTry: *\"1000 views par Instagram reel me kitne likes aur comments hone chahiye?\"*",
+    "Hi! I'm your **ZoloSMM AI Growth Assistant** ✨\n\nAsk me anything about growing your social media — engagement ratios, safe organic pacing, best plans for a target view count, or platform tips.\n\nTry: *\"1000 views par Instagram reel me kitne likes aur comments hone chahiye?\"*",
 };
 
 export default function AiAssistant() {
@@ -107,7 +107,7 @@ export default function AiAssistant() {
                 AI Growth Assistant
               </h1>
               <p className="text-xs" style={{ color: "#94A3B8" }}>
-                Powered by MultySMM • Ask anything about social growth
+                Powered by ZoloSMM • Ask anything about social growth
               </p>
             </div>
           </div>

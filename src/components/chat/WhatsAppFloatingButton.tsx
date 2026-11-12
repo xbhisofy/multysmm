@@ -5,7 +5,7 @@ const TELEGRAM_USERNAME = 'Organicsmmcashier';
 
 function buildMessage(email?: string, name?: string | null) {
   return (
-    `Hello MultySMM Support Team! 👋\n\n` +
+    `Hello ZoloSMM Support Team! 👋\n\n` +
     `I need help regarding my account. Here are my details:\n\n` +
     `━━━━━━━━━━━━━━━━━━\n` +
     (name ? `👤 Name: ${name}\n` : '') +

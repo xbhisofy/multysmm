@@ -49,8 +49,8 @@ function issueLabel(code: string): string {
 function buildAlertMessage(issue: Issue, isReminder: boolean, reminderStep: number): string {
   const d = issue.details;
   const header = isReminder
-    ? `⏰ <b>REMINDER #${reminderStep}</b> — MultySMM Order Alert`
-    : `🚨 <b>MultySMM Order Alert</b>`;
+    ? `⏰ <b>REMINDER #${reminderStep}</b> — ZoloSMM Order Alert`
+    : `🚨 <b>ZoloSMM Order Alert</b>`;
   const lines: string[] = [
     header,
     "",

@@ -9,7 +9,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const SYSTEM_PROMPT = `You are MultySMM's AI Growth Assistant — a friendly, expert social media marketing advisor for creators using an SMM (social media marketing) platform.
+const SYSTEM_PROMPT = `You are ZoloSMM's AI Growth Assistant — a friendly, expert social media marketing advisor for creators using an SMM (social media marketing) platform.
 
 You help users plan realistic, natural-looking engagement for Instagram, TikTok, YouTube, Twitter/X, Facebook, and Telegram.
 

@@ -25,8 +25,8 @@ export default function ManualFundCard() {
     const userId = user?.id || 'N/A';
 
     const message =
-      `Hello MultySMM Team,\n\n` +
-      `I would like to manually add funds to my MultySMM wallet.\n\n` +
+      `Hello ZoloSMM Team,\n\n` +
+      `I would like to manually add funds to my ZoloSMM wallet.\n\n` +
       `Requested Amount:\n₹${amt.toLocaleString('en-IN')}\n\n` +
       `Username:\n${username}\n\n` +
       `Email:\n${email}\n\n` +

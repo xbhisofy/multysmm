@@ -7,8 +7,8 @@ export default function ContactUs() {
   return (
     <>
       <PageMeta
-        title="Contact Us | MultySMM"
-        description="Get in touch with MultySMM support team. Email, Telegram and business address for customer support."
+        title="Contact Us | ZoloSMM"
+        description="Get in touch with ZoloSMM support team. Email, Telegram and business address for customer support."
         canonicalPath="/contact"
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Contact Us", path: "/contact" }]}
       />
@@ -87,7 +87,7 @@ export default function ContactUs() {
               <div>
                 <h3 className="font-semibold mb-2">Registered Business Address</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  MultySMM LLC<br />
+                  ZoloSMM LLC<br />
                   8 The Green, Suite #14490,<br />
                   Dover, DE 19901,<br />
                   United States of America

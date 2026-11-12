@@ -97,7 +97,7 @@ const Index = () => {
   return (
     <div id="home" className="smm-home">
       <PageMeta
-        title="MultySMM — Real Organic Engagement, Not Another SMM Panel"
+        title="ZoloSMM — Real Organic Engagement, Not Another SMM Panel"
         description="Get real organic engagement from genuine audiences and creator-led clipping. Human-paced delivery, live tracking and serious growth on every platform."
         canonicalPath="/"
         breadcrumbs={[{ name: 'Home', path: '/' }]}
@@ -106,7 +106,7 @@ const Index = () => {
       {/* ================= NAV ================= */}
       <header className="smm-nav">
         <div className="smm-wrap flex min-h-[4.6rem] items-center justify-between gap-4">
-          <Link to="/" aria-label="MultySMM home" className="flex items-center gap-2.5">
+          <Link to="/" aria-label="ZoloSMM home" className="flex items-center gap-2.5">
             <img src="/logo.png" alt="" className="h-9 w-9 rounded-xl object-cover" />
             <span className="text-base font-extrabold tracking-tight">MULTY<span className="smm-grad-text">SMM</span></span>
           </Link>
@@ -391,7 +391,7 @@ const Index = () => {
           </div>
         </div>
         <div className="smm-wrap mt-12 border-t pt-6 text-xs" style={{ borderColor: 'hsl(var(--smm-line))', color: 'hsl(var(--smm-copy))' }}>
-          © {new Date().getFullYear()} MultySMM. All rights reserved.
+          © {new Date().getFullYear()} ZoloSMM. All rights reserved.
         </div>
       </footer>
     </div>

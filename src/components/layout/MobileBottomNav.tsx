@@ -74,7 +74,7 @@ export function MobileBottomNav() {
             <Menu className="w-4 h-4" style={{ color: 'hsl(var(--member-green-deep))' }} />
           </Button>
           <div className="flex items-center">
-            <img src="/logo.png" alt="MultySMM" className="h-8 w-auto object-contain" />
+            <img src="/logo.png" alt="ZoloSMM" className="h-8 w-auto object-contain" />
           </div>
           <div className="w-9" />
         </div>
