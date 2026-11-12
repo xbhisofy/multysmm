@@ -121,14 +121,22 @@ serve(async (req) => {
             // ─────────── SERVICES ──────────────────────────────────────────────
             // Standard format: [{"service":1,"name":"...","rate":"0.50","min":100,"max":50000,...}]
             case 'services': {
-                const { data: services, error } = await supabase
-                    .from('services')
-                    .select('service_number, name, category, price, min_quantity, max_quantity, drip_feed_enabled, description')
-                    .eq('is_active', true)
-                    .not('provider_id', 'is', null)
-                    .not('service_number', 'is', null)
-                    .order('service_number')
-                if (error) throw error
+                // Page through results: the backend caps each response at 1000 rows,
+                // which silently hid higher service numbers from resellers.
+                const services: any[] = []
+                for (let from = 0; ; from += 1000) {
+                    const { data: page, error } = await supabase
+                        .from('services')
+                        .select('service_number, name, category, price, min_quantity, max_quantity, drip_feed_enabled, description')
+                        .eq('is_active', true)
+                        .not('provider_id', 'is', null)
+                        .not('service_number', 'is', null)
+                        .order('service_number')
+                        .range(from, from + 999)
+                    if (error) throw error
+                    services.push(...(page ?? []))
+                    if (!page || page.length < 1000) break
+                }
                 return json(services.map(s => ({
                     service: s.service_number,
                     name: s.name,
