@@ -5,8 +5,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -221,33 +221,17 @@ Deno.serve(async (req) => {
 
         console.log(`[UPDATE] service=${serviceId} name="${currentPriceMap[serviceId]?.name}" rawCost=${rawCost} from=${highestSource}`);
 
-        // Update service price to RAW provider cost
-        const { error: updateError } = await supabase
-          .from("services")
-          .update({ 
-            price: rawCost,
-            updated_at: new Date().toISOString()
-          })
-          .eq("id", serviceId);
-
-        if (updateError) {
-          errors.push({ serviceId, error: updateError.message });
-        } else {
-          results.push({
-            serviceId,
-            oldPrice,
-            newPrice: rawCost,
-            source: highestSource,
-          });
-        }
+        // Read-only comparison: provider cost must never replace a selling price.
+        results.push({ serviceId, oldPrice, newPrice: oldPrice, source: highestSource });
       } else {
         errors.push({ serviceId, error: "No valid rate found from any provider" });
       }
     }
 
     return new Response(JSON.stringify({
-      message: `Synced ${results.length} service prices (raw provider costs). Markup applied dynamically by frontend.`,
-      updated: results.length,
+      message: `Checked ${results.length} provider rates. Admin selling prices preserved.`,
+      updated: 0,
+      checked: results.length,
       results,
       errors: errors.length > 0 ? errors : undefined,
     }), {

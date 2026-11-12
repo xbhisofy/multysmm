@@ -285,7 +285,7 @@ export default function AdminServices() {
                   });
                   if (error) throw error;
                   if (data?.error) throw new Error(data.error);
-                  toast.success(`${data.updated} service prices synced from providers!`);
+                  toast.success(data.message || 'Provider rates checked; selling prices preserved.');
                   refreshCatalog();
                 } catch (err: any) {
                   toast.error(err.message || 'Sync failed');
@@ -295,7 +295,7 @@ export default function AdminServices() {
               }}
             >
               {isSyncingPrices ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-              Sync Prices
+              Check Provider Rates
             </Button>
             <Button
               variant="outline"
