@@ -1391,7 +1391,7 @@ function ProviderMappingDialog({
           if (src) {
             const firstChecked = Object.entries(mappings).find(([_, v]) => v.checked && v.serviceId.trim());
             const acct = firstChecked ? providerAccounts.find(a => a.id === firstChecked[0]) : undefined;
-            const { id: _i, created_at: _c, updated_at: _u, ...rest } = src as any;
+            const { id: _i, created_at: _c, updated_at: _u, service_number: _n, ...rest } = src as any;
             const label = engagementType ? engagementType.charAt(0).toUpperCase() + engagementType.slice(1) : 'Copy';
             const { data: clone, error: cloneErr } = await supabase
               .from('services')
