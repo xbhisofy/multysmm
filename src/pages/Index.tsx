@@ -107,7 +107,7 @@ const Index = () => {
       <header className="smm-nav">
         <div className="smm-wrap flex min-h-[4.6rem] items-center justify-between gap-4">
           <Link to="/" aria-label="ZoloSMM home" className="flex items-center gap-2.5">
-            <img src="/logo.png" alt="" className="h-9 w-9 rounded-xl object-cover" />
+            <img src="/zolo-logo.png" alt="" className="h-9 w-9 rounded-xl object-cover" />
             <span className="text-base font-extrabold tracking-tight">ZOLO<span className="smm-grad-text">SMM</span></span>
           </Link>
 
@@ -355,7 +355,7 @@ const Index = () => {
         <div className="smm-wrap grid gap-10 md:grid-cols-[1.4fr_2fr]">
           <div>
             <Link to="/" className="flex items-center gap-2.5">
-              <img src="/logo.png" alt="" className="h-10 w-10 rounded-xl object-cover" />
+              <img src="/zolo-logo.png" alt="" className="h-10 w-10 rounded-xl object-cover" />
               <strong className="text-lg font-extrabold">ZOLO<span className="smm-grad-text">SMM</span></strong>
             </Link>
             <p className="mt-5 max-w-xs text-sm leading-6" style={{ color: 'hsl(var(--smm-copy))' }}>

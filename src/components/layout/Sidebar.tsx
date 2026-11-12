@@ -37,7 +37,7 @@ export function Sidebar({ onClose }: SidebarProps) {
         <Link to="/dashboard" onClick={onClose} className="flex items-center gap-2.5 min-w-0">
             <span className="w-9 h-9 rounded-xl overflow-hidden shrink-0 bg-white flex items-center justify-center p-1"
               style={{ border: '1px solid hsl(var(--member-line))', boxShadow: '0 6px 14px -8px hsl(var(--member-green) / 0.5)' }}>
-              <img src="/logo-mark.png" alt="ZoloSMM logo" className="w-full h-full object-contain" />
+              <img src="/zolo-logo-mark.png" alt="ZoloSMM logo" className="w-full h-full object-contain" />
             </span>
           <span className="min-w-0">
             <span className="block text-[17px] font-extrabold tracking-tight leading-none" style={{ color: '#0F172A' }}>

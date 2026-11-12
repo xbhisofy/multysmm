@@ -104,7 +104,7 @@ export default function Auth() {
       <div className="member-auth-card relative">
           {/* Logo */}
           <div className="flex items-center justify-center mb-6">
-            <img src="/logo.png" alt="ZoloSMM" className="h-12 w-12 rounded-full object-cover bg-white ring-2 ring-blue-100 shadow-md" />
+            <img src="/zolo-logo.png" alt="ZoloSMM" className="h-12 w-12 rounded-full object-cover bg-white ring-2 ring-blue-100 shadow-md" />
           </div>
 
           <Link to="/" className="inline-flex items-center gap-1.5 text-[12px] font-medium mb-5" style={{ color: 'hsl(var(--muted-foreground))' }}>
