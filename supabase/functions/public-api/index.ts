@@ -59,6 +59,17 @@ function formatStatus(order: any) {
     }
 }
 
+// Reseller panels often store text in 3-byte UTF-8 columns and silently drop
+// services whose names use styled letters or emoji, so export plain text.
+function plainText(value: string | null | undefined): string {
+    return String(value ?? '')
+        .normalize('NFKC')
+        .replace(/[\u{10000}-\u{10FFFF}]/gu, '')
+        .replace(/[\u2600-\u27BF\uFE0F\u200D]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+}
+
 // ─── JSON response helper ────────────────────────────────────────────────────
 function json(data: unknown, status = 200) {
     return new Response(JSON.stringify(data), {
@@ -139,8 +150,8 @@ serve(async (req) => {
                 }
                 return json(services.map(s => ({
                     service: s.service_number,
-                    name: s.name,
-                    category: s.category,
+                    name: plainText(s.name),
+                    category: plainText(s.category),
                     rate: singleOrderMarkedPrice(Number(s.price)).toFixed(2),
                     type: 'Default',
                     refill: false,
@@ -148,7 +159,7 @@ serve(async (req) => {
                     min: s.min_quantity,
                     max: s.max_quantity,
                     dripfeed: s.drip_feed_enabled ?? false,
-                    description: s.description ?? '',
+                    description: plainText(s.description ?? ''),
                 })))
             }
 
