@@ -36,6 +36,18 @@ import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import type { Service } from '@/lib/supabase';
 import { ImportServicesDialog } from '@/components/admin/ImportServicesDialog';
+import { PlatformIcon } from '@/components/PlatformIcon';
+import { servicePlatform } from '../../../supabase/functions/_shared/single-order-policy';
+import { sortSingleOrderCategories } from '@/lib/single-order-category-order';
+
+const presetCategories = [
+  ...['Instagram', 'TikTok', 'Twitter/X', 'Telegram', 'Facebook', 'YouTube', 'Spotify', 'LinkedIn']
+    .flatMap(platform => ['Views', 'Likes', 'Saves', 'Shares', 'Reposts', 'Comments', 'Followers']
+      .map(service => `${platform} ${service}`)),
+  'YouTube Subscribers',
+  'Telegram Members',
+  'Twitter/X',
+];
 
 export default function AdminServices() {
   const { isAdmin, isLoading: authLoading } = useAuth();
@@ -241,7 +253,10 @@ export default function AdminServices() {
     return <Navigate to="/dashboard" replace />;
   }
 
-  const categories = ['Instagram Views', 'Instagram Likes', 'Instagram Followers', 'TikTok Views', 'TikTok Likes', 'YouTube Views', 'Twitter/X'];
+  const categories = sortSingleOrderCategories([...new Set([
+    ...presetCategories,
+    ...(services ?? []).map(service => service.category).filter(Boolean),
+  ])]);
 
   return (
     <DashboardLayout>
@@ -476,12 +491,17 @@ function ServiceForm({ formData, setFormData, onSubmit, isLoading, categories, i
               }
             }}
           >
-            <SelectTrigger className="input-glass">
+            <SelectTrigger className="input-glass min-w-0 [&>span]:min-w-0 [&>span]:truncate">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
               {categories.map((cat) => (
-                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                <SelectItem key={cat} value={cat}>
+                  <span className="inline-flex min-w-0 items-center gap-2">
+                    <PlatformIcon platform={servicePlatform(cat, '')} className="h-4 w-4 shrink-0" />
+                    <span className="truncate">{cat}</span>
+                  </span>
+                </SelectItem>
               ))}
               <SelectItem value="__custom">+ New custom category…</SelectItem>
             </SelectContent>

@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Expand admin service category presets for supported platforms with compact shared brand icons; preserve custom categories and existing service data. Eight category-order/pricing tests passed and build OK. Authenticated category selection unverified because requesting account could not be minted; VPS deployment not requested.
+
 - [x] Deploy reference-style Full Engagement lightning/engagement icon to VPS; build passed, source hashes matched, live served SVG paths verified, routes HTTP 200, environment unchanged and self-hosted backend preserved. Code-only backup invoked; signed-in live visual check not performed.
 
 - [x] Deploy compact bottom navigation to VPS; build passed, both source hashes matched, live JS labels and CSS bottom:0 verified, routes HTTP 200, .env unchanged and api.multysmm.com target preserved. Invoked existing code-only backup; signed-in live visual check not performed.
