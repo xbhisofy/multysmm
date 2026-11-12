@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { parseOptionalQuantity } from '../../../supabase/functions/_shared/bundle-quantity-policy';
+import { bundlePriceFromInr } from '../../../supabase/functions/_shared/service-price-policy';
 import {
   Select,
   SelectContent,
@@ -397,6 +398,8 @@ export default function AdminBundles() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-bundles'] });
       toast({ title: 'Price updated' });
+      queryClient.invalidateQueries({ queryKey: ['bundles'] });
+      queryClient.invalidateQueries({ queryKey: ['all-bundles-with-items'] });
     },
     onError: (e: any) => toast({ title: 'Price update failed', description: e.message, variant: 'destructive' }),
   });
@@ -509,7 +512,7 @@ export default function AdminBundles() {
       queryClient.invalidateQueries({ queryKey: ['admin-bundles'] });
       queryClient.invalidateQueries({ queryKey: ['admin-services-active'] });
       queryClient.invalidateQueries({ queryKey: ['bundles'] });
-      toast({ title: `Synced ${successCount} services with provider prices${failCount > 0 ? ` (${failCount} failed)` : ''}` });
+      toast({ title: `Refreshed ${successCount} services; selling prices preserved${failCount > 0 ? ` (${failCount} failed)` : ''}` });
     } catch (err: any) {
       toast({ title: 'Sync failed', description: err.message, variant: 'destructive' });
     } finally {
@@ -793,6 +796,22 @@ function BundleCard({
   const [editingPrices, setEditingPrices] = useState<Record<string, string>>({});
   const [customType, setCustomType] = useState('');
   const INR_RATE = 83.5;
+  // Keep the draft visible until the saved value is read back, not just until blur.
+  useEffect(() => {
+    setEditingPrices(previous => {
+      const next = { ...previous };
+      for (const item of bundle.items || []) {
+        const draft = next[item.id];
+        if (draft === undefined) continue;
+        try {
+          const expected = bundlePriceFromInr(draft, INR_RATE);
+          const saved = item.price_per_k == null ? null : Number(item.price_per_k);
+          if (expected === saved) delete next[item.id];
+        } catch { /* Keep invalid drafts for correction. */ }
+      }
+      return next;
+    });
+  }, [bundle.items]);
   const existingTypes = new Set(
     bundle.items?.map((i: any) => i.engagement_type) || []
   );
@@ -1064,15 +1083,13 @@ function BundleCard({
                         setEditingPrices(prev => ({ ...prev, [item.id]: e.target.value }))
                       }
                       onBlur={(e) => {
-                        const raw = e.target.value.trim();
-                        const inr = raw === '' ? null : parseFloat(raw);
-                        if (inr !== null && (isNaN(inr) || inr < 0)) {
-                          setEditingPrices(prev => { const n = { ...prev }; delete n[item.id]; return n; });
-                          return;
+                        if (editingPrices[item.id] === undefined) return;
+                        try {
+                          onUpdatePrice(item.id, bundlePriceFromInr(e.target.value, INR_RATE));
+                        } catch (error) {
+                          e.target.setCustomValidity(error instanceof Error ? error.message : 'Invalid price');
+                          e.target.reportValidity();
                         }
-                        const usd = inr === null ? null : Number((inr / INR_RATE).toFixed(6));
-                        onUpdatePrice(item.id, usd);
-                        setEditingPrices(prev => { const n = { ...prev }; delete n[item.id]; return n; });
                       }}
                       className="h-8 pl-6 text-sm rounded-lg"
                     />
@@ -1522,7 +1539,6 @@ function ProviderMappingDialog({
             provider_service_id: primary[1].serviceId.trim(),
             ...(fresh ? {
               name: fresh.name,
-              price: fresh.price,
               min_quantity: fresh.min_quantity,
               max_quantity: fresh.max_quantity,
               description: fresh.description,

@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { providerRefreshFields } from '../_shared/service-price-policy.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -443,7 +444,7 @@ serve(async (req) => {
         if (existing) {
           const { error } = await supabase
             .from('services')
-            .update(service)
+            .update(providerRefreshFields(service))
             .eq('id', existing.id)
 
           if (error) {
@@ -509,7 +510,7 @@ serve(async (req) => {
         if (existing) {
           const { error } = await supabase
             .from('services')
-            .update(service)
+            .update(providerRefreshFields(service))
             .eq('id', existing.id)
 
           if (error) {
